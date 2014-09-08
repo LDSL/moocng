@@ -24,6 +24,7 @@ from django.utils.translation import ugettext as _
 
 
 from moocng.courses.models import Course, Unit, CourseTeacher
+from moocng.categories.models import Category
 from moocng.http import Http410
 
 
@@ -116,6 +117,28 @@ def get_courses_available_for_user(user):
         # Is a teacher, return draft courses if he is one of its teachers
         return Course.objects.exclude(end_date__lt=date.today()).filter(Q(status='p') | Q(status='d', courseteacher__teacher=user)).distinct()
 
+
+def get_related_courses_available_for_user(course, user):
+    """
+    Filter in a list of courses what courses related to one are available for the user
+    
+    :returns: Object list
+    
+    .. versionadded:: 0.2
+    """
+    
+    # Get categories from selected course
+    category = course.categories.all()[0].name
+    
+    if user.is_superuser or user.is_staff:
+    # Return every course that hasn't finished
+        return Course.objects.exclude(end_date__lt=date.today()).filter(categories__name__contains=category).distinct()
+    elif user.is_anonymous() or not CourseTeacher.objects.filter(teacher=user).exists():
+        # Regular user, return only the published courses
+        return Course.objects.exclude(end_date__lt=date.today()).filter(status='p').filter(categories__name__contains=category).distinct()
+    else:
+        # Is a teacher, return draft courses if he is one of its teachers
+        return Course.objects.exclude(end_date__lt=date.today()).filter(Q(status='p') | Q(status='d', courseteacher__teacher=user)).distinct().filter(categories__name__contains=category)
 
 def get_units_available_for_user(course, user, is_overview=False):
 

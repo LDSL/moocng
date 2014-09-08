@@ -89,5 +89,6 @@ setup(
     entry_points = """
         [moocng.externalapp]
         askbot = moocng.externalapps.apps:Askbot
+        nodebb = moocng.externalapps.apps:NodeBB
     """,
 )

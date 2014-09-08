@@ -1,4 +1,9 @@
 {% load i18n %}
+<div class="button">
 <form method="post" action="{% url free_unenrollment course.slug %}">{% csrf_token %}
-  <input type="submit" class="btn btn-medium btn-primary" value="{% trans "Unenroll me" %}" />
+	<input type="submit" class="btn btn-medium btn-primary" value="{% trans "Unenroll me" %}" />
+	<svg>
+		<path fill="#000000" d="M32,21H21v11h-2V21H8v-2h11V8h2v11h11V21z"/>
+	</svg>
 </form>
+</div>

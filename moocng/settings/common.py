@@ -39,7 +39,7 @@ TEMPLATE_DEBUG = DEBUG
 FFMPEG_DEBUG = DEBUG
 
 ADMINS = (
-    ('Admin', 'admin@example.com'),
+    ('Admin', 'admin@devopenmooc.com'),
 )
 
 MANAGERS = ADMINS
@@ -61,7 +61,7 @@ MONGODB_URI = 'mongodb://localhost:27017/moocng'
 
 BADGES_SERVICE_URL = "backpack.openbadges.org"
 BADGES_ISSUER_NAME = "OpenMOOC"
-BADGES_ISSUER_URL = "http://openmooc.org"
+BADGES_ISSUER_URL = "http://devopenmooc.com"
 BADGES_ISSUER_DESCRIPTION = ""
 BADGES_ISSUER_IMAGE = ""
 BADGES_ISSUER_EMAIL = ""
@@ -70,9 +70,9 @@ BADGES_ISSUER_EMAIL = ""
 API_LIMIT_PER_PAGE = 0
 
 #SMTP server
-EMAIL_HOST = 'idp.openmooc.org'
-SERVER_EMAIL = 'idp.openmooc.org'
-DEFAULT_FROM_EMAIL = 'info@openmooc.org'
+EMAIL_HOST = 'idp.devopenmooc.com'
+SERVER_EMAIL = 'idp.devopenmooc.com'
+DEFAULT_FROM_EMAIL = 'info@openmooc.com'
 EMAIL_PORT = 25
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
@@ -434,7 +434,7 @@ CELERY_CREATE_MISSING_QUEUES = True
 
 BROKER_URL = 'amqp://moocng:adminpass@localhost:5672/moocng'
 
-CERTIFICATE_URL = 'http://example.com/idcourse/%(courseid)s/email/%(email)s'  # Example, to be overwritten in local settings
+CERTIFICATE_URL = 'http://devopenmooc.com/idcourse/%(courseid)s/email/%(email)s'  # Example, to be overwritten in local settings
 
 MASSIVE_EMAIL_BATCH_SIZE = 30
 
@@ -542,8 +542,21 @@ SERIALIZATION_MODULES = {
 
 MOOCNG_EXTERNALAPPS = {
     'askbot': {
-        'instances': ()
+        'instances': (
+			('10.30.102.83', 'http://devopenmooc.com', 10)
+		)
     },
+	'nodebb': {
+		'instances': (
+			('10.30.102.83', 'http://devopenmooc.com', 10)
+		)
+	},
+	'ghost': {
+		'instances': ()
+	},
+	'pumpio': {
+		'instances': ()
+	}
 }
 
 # This settting is a tuple of strings that are not allowed for the slug in the
@@ -562,6 +575,9 @@ FABRIC_ASKBOT_INSTANCES_PATH = '/etc/openmooc/askbot/instances'
 # Path to the ssh key to use to connect to the machines where the external apps
 # are going to be deployed
 FABRIC_SSH_KEY_PATH = '/root/.ssh/id_rsa'
+
+# Fabric parameters for NodeBB
+#FABRIC_NODEBB_INSTANCES_PATH = '/etc/openmooc/nodebb/instances'
 
 # Show courses as a list (classic behaviour) or as a grid
 COURSE_SHOW_AS_LIST = True

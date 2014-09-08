@@ -1,0 +1,124 @@
+{% load i18n %}<!DOCTYPE html>
+<html class="no-js" lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>{{ site.name }}</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <meta name="viewport" content="width=device-width">
+
+  <link rel="icon" href="/favicon.ico"/>
+  <link rel="stylesheet" href="{{ theme.bootstrap_css }}">
+  <link rel="stylesheet" href="{{ theme.moocng_css }}">
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/libs/jquery-1.7.2.min.js"><&#47;script>');</script>
+  <script src="{{ STATIC_URL }}js/libs/modernizr-2.5.3.min.js"></script>
+  <script src="{{ STATIC_URL }}js/libs/bootstrap.min.js"></script>
+  {% block extraheader %}{% endblock %}
+</head>
+<body>
+  <div class="container">
+    <header>
+      {% get_language_info_list for LANGUAGES as languages %}
+      {% if languages|length > 1 %}
+        <ul class="unstyled pull-right" id="language-selector">
+          {% for language in languages %}
+            {% if LANGUAGE_CODE == language.name_local %}
+              <li>{{ language.name_local|capfirst }}</li>
+            {% else %}
+              <li><form action="{% url set_language %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="language" value="{{ language.code }}" />
+                <input class="btn btn-link{% if LANGUAGE_CODE == language.code %} disabled{% endif %}" type="submit" value="{{ language.name_local|capfirst }}" {% if LANGUAGE_CODE == language.code %}disabled="disabled"{% endif %}/>
+              </form></li>
+            {% endif %}
+            {% if not forloop.last %}|{% endif %}
+          {% endfor %}
+        </ul>
+      {% endif %}
+      <hgroup>
+        <h1 class="logo"><a href="{% url home %}" class="hide-text"><img src="{{ theme.logo }}" alt="logo {{ site.name }}" />{{ site.name }}</a></h1>
+        <h2 class="small pull-left">{{ theme.subtitle }}</h2>
+      </hgroup>
+      {% if user.is_authenticated %}
+        {% block useractions %}
+            {% include "courses/include.useractions.html" %}
+        {% endblock %}
+      {% else %}
+      <div class="btn-toolbar pull-right">
+        <a class="btn" href="{% url register %}">{% trans "Register" %}</a>
+        <a class="btn" href="{% url login %}">{% trans "Log in" %}</a>
+      </div>
+      {% endif %}
+      <ul class="unstyled pull-right" id="meta-buttons">
+        <li><a href="{% url home %}" class="btn btn-link">
+            {% trans "Home"%}
+        </a></li>
+        |
+        <li>
+            <a href="{% url faq %}" class="btn btn-link">FAQ</a>
+        </li>
+        |
+        <li>
+            <a href="{% url methodology %}" class="btn btn-link">{% trans "Methodology" %}</a>
+        </li>
+        |
+        <li>
+            <a href="{% url portal_announcements %}" class="btn btn-link">
+                {% trans "Announcements" %}<strong id="announcements-dont-viewed">{% if announcements_dont_viewed %} ({{ announcements_dont_viewed }}){% endif %}</strong>
+            </a>
+        </li>
+      </ul>
+      <div class="clearfix"></div>
+    </header>
+    <div role="main" class="{% block mainclass %}{% endblock %}">
+      {% if messages %}{% for message in messages %}
+      <div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
+        <button class="close" data-dismiss="alert">×</button>
+        {{ message }}
+      </div>
+      {% endfor %}{% endif %}
+
+      {% block nav %}{% endblock %}
+
+      {% block content %}{% endblock %}
+    </div>
+    <footer>
+      <ul>
+        <li><a href="{% url legal %}">{% trans "Legal" %}</a></li>
+        <li><a href="{% url copyright %}">&copy; {% now "Y" %} {{ site.name }}. {% trans "All rights reserved" %}</a></li>
+        {% if show_tos %}
+        <li><a href="{% url tos %}">{% trans "Terms of Use" %}</a></li>
+        {% endif %}
+        <li><a href="{% url contact %}">{% trans "Contact" %}</a></li>
+      </ul>
+    </footer>
+  </div>
+
+  {% block extrajs %}{% endblock %}
+  {% if google_analytics %}
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', '{{ google_analytics }}', '{{ site.domain }}');
+      ga('send', 'pageview');
+    </script>
+  {% endif %}
+  <script type="text/javascript">
+    (function($){
+        $(document).ready(function () {
+            $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) {
+                e.stopPropagation();
+            });
+        });
+    })(jQuery);
+  </script>
+</body>
+</html>

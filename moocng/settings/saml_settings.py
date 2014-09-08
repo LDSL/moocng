@@ -8,6 +8,7 @@ SAML_ATTRIBUTE_MAPPING = {
     'mail': ('username', 'email', ),
     'cn': ('first_name', ),
     'sn': ('last_name', ),
+    'o': ('organization', ),
     'eduPersonAffiliation': ('groups', ),
 }
 
@@ -75,18 +76,18 @@ SAML_CONFIG = {
         {'given_name': 'Sysadmin',
          'sur_name': '',
          'company': 'Example CO',
-         'email_address': 'sysadmin@example.com',
+         'email_address': 'sysadmin@devopenmooc.com',
          'contact_type': 'technical'},
         {'given_name': 'Boss',
          'sur_name': '',
          'company': 'Example CO',
-         'email_address': 'admin@example.com',
+         'email_address': 'admin@devopenmooc.com',
          'contact_type': 'administrative'},
     ],
     # you can set multilanguage information here
     'organization': {
         'name': [('Example CO', 'es'), ('Example CO', 'en')],
-        'display_name': [('Example', 'es'), ('Example', 'en')],
-        'url': [('http://www.example.com', 'es'), ('http://www.example.com', 'en')],
+        'display_name': [('DevOpenMOOC', 'es'), ('DevOpenMOOC', 'en')],
+        'url': [('http://www.devopenmooc.com', 'es'), ('http://www.devopenmooc.com', 'en')],
     },
 }
