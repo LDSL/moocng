@@ -51,7 +51,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'moocng',                # Or path to database file if using sqlite3.
         'USER': 'moocng',                # Not used with sqlite3.
-        'PASSWORD': 'moocng',            # Not used with sqlite3.
+        'PASSWORD': 'adminpass',            # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -170,7 +170,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'r$=%l$j4(#5a%$rd*g+q5o7!m3z&amp;b@z1+n*d!n2im-hf0n%730'
+SECRET_KEY = 'dg131afkjrpm5itw82d40cx5ltpvqtf0'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -432,7 +432,7 @@ import djcelery
 djcelery.setup_loader()
 CELERY_CREATE_MISSING_QUEUES = True
 
-BROKER_URL = 'amqp://moocng:moocngpassword@localhost:5672/moocng'
+BROKER_URL = 'amqp://moocng:adminpass@localhost:5672/moocng'
 
 CERTIFICATE_URL = 'http://example.com/idcourse/%(courseid)s/email/%(email)s'  # Example, to be overwritten in local settings
 
@@ -454,9 +454,9 @@ FREE_ENROLLMENT_CONSISTENT = False
 
 AUTH_HANDLER = "moocng.auth_handlers.handlers.SAML2"
 INSTALLED_APPS.append('djangosaml2')
-REGISTRY_URL = 'https://idp.openmooc.org/simplesaml/module.php/userregistration/newUser.php'
-PROFILE_URL = 'https://idp.openmooc.org/simplesaml/module.php/userregistration/reviewUser.php'
-CHANGEPW_URL = 'https://idp.openmooc.org/simplesaml/module.php/userregistration/changePassword.php'
+REGISTRY_URL = 'https://eco-idp-dev.geographica.gs/simplesaml/module.php/userregistration/newUser.php'
+PROFILE_URL = 'https://eco-idp-dev.geographica.gs/simplesaml/module.php/userregistration/reviewUser.php'
+CHANGEPW_URL = 'https://eco-idp-dev.geographica.gs/simplesaml/module.php/userregistration/changePassword.php'
 
 AUTH_PROFILE_MODULE = 'profile.UserProfile'
 
