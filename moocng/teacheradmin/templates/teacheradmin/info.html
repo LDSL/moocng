@@ -87,6 +87,12 @@
                 {{ form.completion_badge }}
                 {% if form.completion_badge.help_text %}<span class="help-inline">{{ form.completion_badge.help_text }}</span>{% endif %}
             </p>
+            <p>
+                {{ form.ects.errors }}
+                {{ form.ects.label_tag }}
+                {{ form.ects }}
+                {% if form.ects.help_text %}<span class="help-inline">{{ form.ects.help_text }}</span>{% endif %}
+            </p>
         </div>
     </div>
     <ul class="nav nav-tabs">

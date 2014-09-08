@@ -28,6 +28,9 @@ class UserProfile(models.Model):
                                           verbose_name=_('Last announcement viewed'),
                                           null=True,
                                           blank=True)
+    organization = models.CharField(null=True,
+                                    blank=True,
+                                    max_length=100)
 
     class Meta:
         verbose_name = _('User profile')

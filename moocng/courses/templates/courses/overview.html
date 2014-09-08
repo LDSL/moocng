@@ -1,4 +1,4 @@
-{% extends "courses/base_course.html" %}
+{% extends "base.html" %}
 
 {% load cache gravatar i18n enrollment_tags media_contents usercourses %}
 
@@ -9,168 +9,281 @@
 {% endblock %}
 
 {% block content %}
-<h1>{{ course.name }}</h1>
+<div class="course">
+	{% if course.background %}
+	<div class="course-header" style="background-image: url('{{ MEDIA_URL }}{{ course.background }}');">
+	{% else %}
+	<div class="course-header" style="background-image: url('{{ STATIC_URL }}img/course_bck.jpg');">
+	{% endif %}
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 col-md-8 col-sm-8 col-mob-4 title">
+					<h1>{{ course.name }}</h1>
+					
+					{% if course.promotion_media_content_type and course.promotion_media_content_id %}
+					<div class="media-box">
+						{% media_content_iframe_code course.promotion_media_content_type course.promotion_media_content_id height="349px" width="620px" allowfullscreen="1" controls="1" %}
+					</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="bottom-line">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 col-md-8 col-sm-8 col-mob-4">
+					<div class="social_links pull-left">
+						Share
+						<ul class="icons">
+							<li><a href="#"><img src="{{ STATIC_URL }}img/social/fb.png" alt="on Facebook"></a></li>
+							<li><a href="#"><img src="{{ STATIC_URL }}img/social/twitter.png" alt="on Twitter"></a></li>
+							<li><a href="#"><img src="{{ STATIC_URL }}img/social/gplus.png" alt="on Google+"></a></li>
+						</ul>
+					</div>
+					{% if course.certification_available %}
+						<div class="pull-right cert">
+							<img src="{{ STATIC_URL }}img/icon_cert.png" alt="{% trans 'certificated course' %}">
+							Certificado
+						</div>
+					{% endif %}
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-2 col-mob-4">
+					{% if is_enrolled %}
+						{% unenroll_button course %}
+						{% clone_activity course user %}
+					{% else %}
+						{% if user.is_authenticated %}
+							{% enroll_button course %}
+						{% else %}
+						<div class="box action-box">
+							<a href="{% url register %}" class="button">{% blocktrans with site_name=site.name %}Register in {{ site_name }} to enroll in this course{% endblocktrans %}</a>
+						</div>
+						{% endif %}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- COURSE INFO -->
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12 col-md-8 col-sm-8 col-mob-4">
+				{% cache 3600 course_overview_main_info LANGUAGE_CODE course.id %}
+				
+				{% if course.description %}
+					<div class="description">
+						{{ course.description|safe }}
+					</div>
+				{% endif %}
+				
+				<div class="row">
+					<div class="col-lg-4 col-md-4 col-sm-2 col-mob-2 summary">
+						{% cache 3600 course_overview_secondary_info LANGUAGE_CODE course.id %}
+						<dl>
+							{% if course.start_date %}
+								<img src="{{ STATIC_URL }}img/icon_calendar.png"><dt>{% trans "Classes Start" %}</dt><dd>{{ course.start_date|date:"d / M / Y" }}</dd>
+							{% endif %}
+							{% if course.end_date %}
+								<img src="{{ STATIC_URL }}img/icon_duration.png"><dt>{% trans "Classes End" %}</dt><dd>{{ course.end_date|date:"d / M / Y" }}</dd>
+							{% endif %}
+							{% if course.estimated_effort %}
+								<img src="{{ STATIC_URL }}img/icon_effort.png"><dt>{% trans "Estimated Effort" %}</dt><dd>{{ course.estimated_effort|safe }}</dd>
+							{% endif %}
+							{% if course.ects > 0 %}
+								<img src="{{ STATIC_URL }}img/icon_ects.png"><dt>{% trans "Certified Credits" %}</dt><dd>{{ course.ects|safe }}</dd>
+							{% endif %}
+							{% if course.static_page %}
+								<dt><a href="{% url course_extra_info course.slug %}">{{ course.static_page.title }}</a></dt>
+							{% endif %}
+							{% if use_old_calculus %}
+								<dt><a target="_new" href="{% url oldscore %}" >{% trans "Evaluation criteria" %}</a></dt>
+							{% else %}
+								<dt><a target="_new" href="{% url score %}" >{% trans "Evaluation criteria" %}</a></dt>
+							{% endif %}
+							<dt><a href="{% url transcript course.slug %}" >{% trans "My transcript" %}</a></dt>
+						</dl>
+						{% endcache %}
+					</div>
+					<div class="col-lg-12 col-md-8 col-sm-6 col-mob-2 info">
+						<h2>{% trans "Course summary" %}</h2>
+						{{ course.description|safe }}
+						
+						{% if course.learning_goals %}
+							<h2>{% trans "Learning goals" %}</h2>
+							{{ course.learning_goals|safe }}
+						{% endif %}
 
-<div class="row">
-    {% cache 3600 course_overview_main_info LANGUAGE_CODE course.id %}
-    <div class="span8">
+						{% if course.requirements %}
+							<h2>{% trans "Recommended requirements" %}</h2>
+							{{ course.requirements|safe }}
+						{% endif %}
 
-        {% if course.promotion_media_content_type and course.promotion_media_content_id %}
-            <div class="media-box">
-                {% media_content_iframe_code course.promotion_media_content_type course.promotion_media_content_id height="349px" width="620px" allowfullscreen="1" controls="1" %}
-            </div>
-        {% endif %}
+						{% if course.intended_audience %}
+							<h2>{% trans "Intended audience" %}</h2>
+							{{ course.intended_audience|safe }}
+						{% endif %}
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-lg-4 col-md-4 col-sm-2 col-mob-4">
+				{% if rating %}
+					<div class="box">
+						<h2 class="inline">{% trans "Rating" %}</h2>
+						<ul class="rating inline">
+							{% for i in rating.rating_loop %}
+								<li class="full">{{i}}</li>
+							{% endfor %}
+							{% for i in rating.empty_loop %}
+								<li>{{i}}</li>
+							{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+			
+				{% if organizers %}
+					<div class="box">
+						<h2>{% trans "Organizers" %}</h2>
+						<ul>
+							{% for organizer in organizers %}
+								<li><a href="#">{{ organizer }}</a></li>
+							{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+				
+				{% if course.categories.all %}
+					<div class="box tags">
+						<h2>{% trans "Categories" %}</h2>
+						<ul>
+							{% for category in course.categories.all %}
+								<li><a href="{% url category categories=category.slug %}">{{ category.name }}</a></li>
+							{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+        
+				<div class="box transparent">
+					<h2>{% trans "Teachers" %}</h2>
+					<ul class="unstyled clearfix">
+					{% for course_teacher in course_teachers %}
+						<li class="teacher">
+						<img src="{% gravatar_for_email course_teacher.teacher.email %}?s=48" alt="{% trans 'Profile image of' %} {% firstof course_teacher.teacher.get_full_name course_teacher.teacher.username %" />
+						<p>{% firstof course_teacher.teacher.get_full_name course_teacher.teacher.username %}</p>
+						{% if course_teacher.teacher.get_profile.organization %}
+							<span>{{ course_teacher.teacher.get_profile.organization }}</span>
+						{% endif %}
+						</li>
+					{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
 
-        <div class="box">
-            <h2>{% trans "Course summary" %}</h2>
-            {{ course.description|safe }}
-        </div>
+		<div class="bck_grey">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
+						<h1>{% trans "Related courses" %}</h1>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
+						{% for ncourse in relatedcourses %}
+							{% if ncourse.is_public %}
+							<div class="course box col-lg-4 col-md-4 col-sm-4 col-mob-2 published">
+							{% else %}
+							<div class="course box col-lg-4 col-md-4 col-sm-4 col-mob-2 draft">
+								<span class="label pull-right">{% trans "Draft" %}</span>
+							{% endif %}
+								<div class="front_face">
+									<div class="images">
+									{% if ncourse.thumbnail %}
+										<a href="{{ ncourse.get_absolute_url }}" style="background-image: url('{{ MEDIA_URL }}{{ ncourse.thumbnail }}');" class="hide-text">{% if ncourse.thumbnail_alt %}{{ ncourse.thumbnail_alt }}{% else %}{% trans 'decorative classroom image' %}{% endif %}</a>
+									{% else %}
+										<a href="{{ ncourse.get_absolute_url }}" style="background-image: url('{{ STATIC_URL }}img/classroom.jpg');" class="hide-text">{% trans 'decorative classroom image' %}</a>
+									{% endif %}
+									{% if ncourse.certification_available %}
+										<img class="cert" src="{{ STATIC_URL }}img/icon_cert.png" alt="{% trans 'certificated course' %}">
+									{% endif %}
+									</div>
+									<div class="content">
+										<h3><a href="#">{{ ncourse.owner }}</a></h3>
+										<h2 class="line-clamp">{{ ncourse.name }}</h2>
+										<span class="date">{{ ncourse.start_date }}</span>
+									</div>
+								</div>
+								<div class="back_face">
+									<div class="content">
+										<h3><a href="#">{{ ncourse.owner }}</a></h3>
+										<h2><a href="{{ ncourse.get_absolute_url }}">{{ ncourse.name }}</a></h2>
+										<span class="date">{{ ncourse.start_date }}</span>
+										{% if ncourse.ects > 0 %}
+										<span class="ects"><img src="{{ STATIC_URL }}img/icon_ects.png">{{ ncourse.ects }}
+											{% if ncourse.ects > 1 %}
+											credits
+											{% else %}
+											credit
+											{% endif %}
+										</span>
+										{% endif %}
+										<div class="desc line-clamp">{{ ncourse.description|safe|truncatewords_html:60 }}</div>
+									</div>
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+		
+<!--    <div class="container">
+			<div class="span4">
+			{% if announcements %}
+			<div class="box">
+				<h2>
+					{% trans "Announcements" %}
+					<a class="pull-right" href="{% url announcements_feed course.slug %}"><img src="{{ STATIC_URL }}img/share_icons/rss.png" alt="{% trans "Subscribe to Announcements RSS" %}" /></a>
+				</h2>
+				<dl>
+					{% for announcement in announcements %}
+						<dt>{{ announcement.datetime|date:"d / M / Y - H:i" }}</dt>
+						<dd><a href="{% url announcement_detail course.slug announcement.id announcement.slug %}">{{ announcement.title|truncatewords:8 }}</a></dd>
+					{% endfor %}
+				</dl>
+			</div>
+			{% endif %}
 
-        {% if course.learning_goals %}
-            <div class="box">
-                <h2>{% trans "Learning goals" %}</h2>
-                {{ course.learning_goals|safe }}
-            </div>
-        {% endif %}
+			<div class="box">
+				<h2>{% trans "Syllabus" %}</h2>
+				<ul>
+					{% for unit in units %}
+					{% if unit.status == 'l' %}
+						<li>{{ unit.title }}</li>
+					{% else %}
+						<li><a href="{% url course_overview course.slug %}classroom/#unit{{ unit.id }}">{{ unit.title }}</a></li>
+					{% endif %}
+					{% endfor %}
+				</ul>
+			</div>
 
-        {% if course.requirements %}
-            <div class="box">
-                <h2>{% trans "Recommended requirements" %}</h2>
-                {{ course.requirements|safe }}
-            </div>
-        {% endif %}
-
-        {% if course.intended_audience %}
-            <div class="box">
-                <h2>{% trans "Intended audience" %}</h2>
-                {{ course.intended_audience|safe }}
-            </div>
-        {% endif %}
-    </div>
-    {% endcache %}
-
-    <div class="span4">
-        {% if is_enrolled %}
-        <div class="box action-box">
-            <div class="alert alert-success">
-                <strong>{% trans "You are enrolled in this course" %}</strong>
-                {% unenroll_button course %}
-                {% clone_activity course user %}
-            </div>
-        </div>
-        {% else %}
-          {% if user.is_authenticated %}
-            {% enroll_button course %}
-          {% else %}
-          <div class="box action-box">
-              <a href="{% url register %}" class="btn btn-large btn-primary">{% blocktrans with site_name=site.name %}Register in {{ site_name }} to enroll in this course{% endblocktrans %}</a>
-          </div>
-          {% endif %}
-        {% endif %}
-
-        {% if course.certification_available %}
-            <div style="text-align: center">
-                {% if user.is_authenticated %}
-                    <a href="{% url transcript %}#{{ course.slug }}">
-                        {% if course.certification_banner %}
-                        <img class="mb20" src="{{ course.certification_banner.url }}" width="300" title="{% trans "Get a certification in this course" %}" alt="{% if certification_alt %}{{ course.certification_alt }}{% else %}}{% trans "Get a certification in this course" %}{% endif %}" />
-                        {% else %}
-                        <img class="mb20" src="{{ theme.cert_banner }}" width="300" title="{% trans "Get a certification in this course" %}" alt="{% trans "Get a certification in this course" %}" />
-                        {% endif %}
-                    </a>
-                {% else %}
-                    <a href="{% url register %}" class="btn btn-large btn-primary mb20">{% blocktrans with site_name=site.name %}Register in {{ site_name }} to get a certification in this course{% endblocktrans %}</a>
-                {% endif %}
-            </div>
-        {% endif %}
-
-        {% cache 3600 course_overview_secondary_info LANGUAGE_CODE course.id %}
-        <div class="box">
-            <h2>{% trans "Teachers" %}</h2>
-            <ul class="unstyled clearfix">
-            {% for course_teacher in course_teachers %}
-                <li class="teacher">
-                  <img src="{% gravatar_for_email course_teacher.teacher.email %}" width="50" height="50" alt="{% trans 'Profile image of' %} {% firstof course_teacher.teacher.get_full_name course_teacher.teacher.username %" />
-                  <strong>{% firstof course_teacher.teacher.get_full_name course_teacher.teacher.username %}</strong>
-                </li>
-            {% endfor %}
-            </ul>
-        </div>
-
-        <div class="box">
-            <h2>{% trans "Information" %}</h2>
-            <dl>
-                <dt>{% trans "Course Code" %}</dt><dd>{{ course.slug }}</dd>
-                {% if course.start_date %}
-                    <dt>{% trans "Classes Start" %}</dt><dd>{{ course.start_date|date:"d / M / Y" }}</dd>
-                {% endif %}
-                {% if course.end_date %}
-                    <dt>{% trans "Classes End" %}</dt><dd>{{ course.end_date|date:"d / M / Y" }}</dd>
-                {% endif %}
-                {% if course.estimated_effort %}
-                    <dt>{% trans "Estimated Effort" %}</dt><dd>{{ course.estimated_effort|safe }}</dd>
-                {% endif %}
-                {% if course.static_page %}
-                    <dt><a href="{% url course_extra_info course.slug %}">{{ course.static_page.title }}</a></dt>
-                {% endif %}
-                {% if use_old_calculus %}
-                    <dt><a target="_new" href="{% url oldscore %}" >{% trans "Evaluation criteria" %}</a></dt>
-                {% else %}
-                    <dt><a target="_new" href="{% url score %}" >{% trans "Evaluation criteria" %}</a></dt>
-                {% endif %}
-                <dt><a href="{% url transcript course.slug %}" >{% trans "My transcript" %}</a></dt>
-            </dl>
-        </div>
-
-        {% if announcements %}
-        <div class="box">
-            <h2>
-                {% trans "Announcements" %}
-                <a class="pull-right" href="{% url announcements_feed course.slug %}"><img src="{{ STATIC_URL }}img/share_icons/rss.png" alt="{% trans "Subscribe to Announcements RSS" %}" /></a>
-            </h2>
-            <dl>
-                {% for announcement in announcements %}
-                    <dt>{{ announcement.datetime|date:"d / M / Y - H:i" }}</dt>
-                    <dd><a href="{% url announcement_detail course.slug announcement.id announcement.slug %}">{{ announcement.title|truncatewords:8 }}</a></dd>
-                {% endfor %}
-            </dl>
-        </div>
-        {% endif %}
-
-        <div class="box">
-            <h2>{% trans "Syllabus" %}</h2>
-            <ul>
-                {% for unit in units %}
-                {% if unit.status == 'l' %}
-                    <li>{{ unit.title }}</li>
-                {% else %}
-                    <li><a href="{% url course_overview course.slug %}classroom/#unit{{ unit.id }}">{{ unit.title }}</a></li>
-                {% endif %}
-                {% endfor %}
-            </ul>
-        </div>
-
-        {% if course.categories.all %}
-        <div class="box">
-            <h2>{% trans "Categories" %}</h2>
-            <ul>{% for category in course.categories.all %}
-                <li><a href="{% url category categories=category.slug %}">{{ category.name }}</a></li>
-            {% endfor %}</ul>
-        </div>
-        {% endif %}
-
-        <div class="box">
-            <h2>{% trans "Share" %}</h2>
-            <ul id="share">
-                <li class="pull-left"><a href="https://twitter.com/share" target='_blank'><img src="{{ STATIC_URL }}img/share_icons/twitter.png" alt="Share in Twitter" /></a></li>
-                <li class="pull-left"><a href="http://www.facebook.com/sharer.php?u={{ request.build_absolute_uri }}" target='_blank'><img src="{{ STATIC_URL }}img/share_icons/facebook.png" alt="Share in Facebook" /></a></li>
-                <li class="pull-left"><a href="https://plus.google.com/share?url={{ request.build_absolute_uri }}" target='_blank'><img src="{{ STATIC_URL }}img/share_icons/googleplus.png" alt="Share in Google Plus" /></a></li>
-                <li class="pull-left"><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{ request.build_absolute_uri }}" target='_blank'><img src="{{ STATIC_URL }}img/share_icons/linkedin.png" alt="Share in LinkedIn" /></a></li>
-                <li class="pull-left"><a href="http://reddit.com/submit?url={{ request.build_absolute_uri }}" target='_blank'><img src="{{ STATIC_URL }}img/share_icons/reddit.png" alt="Share in Reddit" /></a></li>
-                <li class="pull-left"><a href="mailto:?subject=Look at this great course&amp;body={{ request.build_absolute_uri }}" target='_blank'><img src="{{ STATIC_URL }}img/share_icons/email.png" alt="Share through email" /></a></li>
-            </ul>
-        </div>
-        {% endcache %}
-    </div>
+			<div class="box">
+				<h2>{% trans "Share" %}</h2>
+				<ul id="share">
+					<li class="pull-left"><a href="https://twitter.com/share" target='_blank'><img src="{{ STATIC_URL }}img/share_icons/twitter.png" alt="Share in Twitter" /></a></li>
+					<li class="pull-left"><a href="http://www.facebook.com/sharer.php?u={{ request.build_absolute_uri }}" target='_blank'><img src="{{ STATIC_URL }}img/share_icons/facebook.png" alt="Share in Facebook" /></a></li>
+					<li class="pull-left"><a href="https://plus.google.com/share?url={{ request.build_absolute_uri }}" target='_blank'><img src="{{ STATIC_URL }}img/share_icons/googleplus.png" alt="Share in Google Plus" /></a></li>
+					<li class="pull-left"><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{ request.build_absolute_uri }}" target='_blank'><img src="{{ STATIC_URL }}img/share_icons/linkedin.png" alt="Share in LinkedIn" /></a></li>
+					<li class="pull-left"><a href="http://reddit.com/submit?url={{ request.build_absolute_uri }}" target='_blank'><img src="{{ STATIC_URL }}img/share_icons/reddit.png" alt="Share in Reddit" /></a></li>
+					<li class="pull-left"><a href="mailto:?subject=Look at this great course&amp;body={{ request.build_absolute_uri }}" target='_blank'><img src="{{ STATIC_URL }}img/share_icons/email.png" alt="Share through email" /></a></li>
+				</ul>
+			</div>
+			{% endcache %}
+		</div>
+		</div>-->
+	</div>
 </div>
 {% endblock %}

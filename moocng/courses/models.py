@@ -71,6 +71,10 @@ class Course(Sortable):
                                   blank=True, null=True)
     end_date = models.DateField(verbose_name=_(u'End date'),
                                 blank=True, null=True)
+    
+    ects = models.PositiveSmallIntegerField(verbose_name=_(u'ECTS:'),
+                                                              default=8)
+    
     teachers = models.ManyToManyField(User, verbose_name=_(u'Teachers'),
                                       through='CourseTeacher',
                                       related_name='courses_as_teacher')
@@ -141,6 +145,14 @@ class Course(Sortable):
                                                  help_text=_('This text is used to describe the thumbnail image. '
                                                      'It is necessary for accessibility ')
                                                  )
+
+    background = models.ImageField(
+        verbose_name=_(u'Background'),
+        upload_to='course_backgrounds',
+        blank=True,
+        null=True
+    )
+
     static_page = models.OneToOneField(
         'StaticPage',
         verbose_name=_(u'Static page'),

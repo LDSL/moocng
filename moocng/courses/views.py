@@ -39,7 +39,8 @@ from moocng.courses.utils import (get_unit_badge_class, is_course_ready,
 from moocng.courses.marks import get_course_mark, get_course_intermediate_calculations, normalize_unit_weight
 from moocng.courses.security import (get_course_if_user_can_view_or_404,
                                      get_courses_available_for_user,
-                                     get_units_available_for_user)
+                                     get_units_available_for_user,
+                                     get_related_courses_available_for_user)
 from moocng.courses.tasks import clone_activity_user_course_task
 from moocng.slug import unique_slugify
 from moocng.utils import use_cache
@@ -197,6 +198,8 @@ def course_overview(request, course_slug):
     .. versionadded:: 0.1
     """
     course = get_course_if_user_can_view_or_404(course_slug, request)
+    
+    relatedcourses = get_related_courses_available_for_user(course, request.user)
 
     if request.user.is_authenticated():
         is_enrolled = course.students.filter(id=request.user.id).exists()
@@ -206,11 +209,26 @@ def course_overview(request, course_slug):
         is_teacher = False
 
     course_teachers = CourseTeacher.objects.filter(course=course)
+    
+    organizers = []
+    for teacher in course_teachers:
+        organization = teacher.teacher.get_profile().organization
+        if(organization not in organizers):
+            organizers.append(organization)
+    
     announcements = Announcement.objects.filter(course=course).order_by('datetime').reverse()[:5]
     units = get_units_available_for_user(course, request.user, True)
+    
+    # Rating is dummy right now
+    rating = {}
+    rating['rating_loop'] = range(1,4)
+    rating['empty_loop'] = range(4,6)
 
     return render_to_response('courses/overview.html', {
         'course': course,
+        'relatedcourses': relatedcourses,
+        'organizers': organizers,
+        'rating': rating,
         'units': units,
         'is_enrolled': is_enrolled,
         'is_teacher': is_teacher,
@@ -266,6 +284,58 @@ def course_classroom(request, course_slug):
     }
 
     return render_to_response('courses/classroom.html', {
+        'course': course,
+        'unit_list': units,
+        'is_enrolled': is_enrolled,
+        'is_teacher': is_teacher_test(request.user, course),
+        'peer_review': peer_review
+    }, context_instance=RequestContext(request))
+
+@login_required
+def course_dashboard(request, course_slug):
+
+    """
+    Main view of the course content (class). If the user is not enrolled we
+    show him a message. If the course is not ready and the user is not admin
+    we redirect the user to a denied access page.
+
+    :permissions: login
+    :context: course, is_enrolled, ask_admin, unit_list, is_teacher, peer_view
+
+    .. versionadded:: 0.1
+    """
+    course = get_course_if_user_can_view_or_404(course_slug, request)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+    if not is_enrolled:
+        messages.error(request, _('You are not enrolled in this course'))
+        return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
+
+    is_ready, ask_admin = is_course_ready(course)
+
+    if not is_ready and not request.user.is_superuser:
+        return render_to_response('courses/no_content.html', {
+            'course': course,
+            'is_enrolled': is_enrolled,
+            'ask_admin': ask_admin,
+        }, context_instance=RequestContext(request))
+
+    units = []
+    for u in get_units_available_for_user(course, request.user):
+        unit = {
+            'id': u.id,
+            'title': u.title,
+            'unittype': u.unittype,
+            'badge_class': get_unit_badge_class(u),
+            'badge_tooltip': u.get_unit_type_name(),
+        }
+        units.append(unit)
+
+    peer_review = {
+        'text_max_size': settings.PEER_REVIEW_TEXT_MAX_SIZE,
+        'file_max_size': settings.PEER_REVIEW_FILE_MAX_SIZE,
+    }
+
+    return render_to_response('courses/dashboard.html', {
         'course': course,
         'unit_list': units,
         'is_enrolled': is_enrolled,
