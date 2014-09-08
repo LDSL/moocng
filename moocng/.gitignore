@@ -1,0 +1,4 @@
+*.pyc
+collected_static/
+settings/common.py
+settings/saml_settings.py
