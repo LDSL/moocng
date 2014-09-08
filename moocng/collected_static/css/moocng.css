@@ -1,0 +1,633 @@
+/*
+ * Copyright 2012 UNED
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+body {
+    background-color: #f1f1f1;
+}
+
+header {
+    border-bottom: 1px solid #dddddd;
+    margin-bottom: 1em;
+    position: relative;
+}
+
+header h2 {
+    margin-bottom: 0;
+    padding-top: 0.5em;
+    font-size: 1.15em;
+}
+
+h1.logo a {
+    display: inline-block;
+    overflow: auto;
+}
+
+h1.logo a img {
+    display: block;
+}
+
+a.hide-text {
+    text-decoration: none;
+}
+
+a.hide-text:hover {
+    text-decoration: none;
+}
+
+a.externallink {
+    display: block;
+    width: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#language-selector,
+#language-selector li,
+#language-selector form,
+#meta-buttons,
+#meta-buttons li {
+    display: inline;
+}
+
+#language-selector form .btn-link,
+#meta-buttons .btn-link {
+    padding: 0;
+    border: 0;
+}
+
+#language-selector form .disabled:hover {
+    text-decoration: none;
+}
+
+#meta-buttons {
+    margin: 20px 15px 0 0;
+}
+
+footer {
+    border-top: 1px solid #dddddd;
+    padding: 1em 0;
+}
+
+footer ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+footer ul li {
+    display: inline;
+    padding-right: 1em;
+}
+
+.media-box {
+    margin-bottom: 1em;
+}
+
+.content-title {
+    color: #ffffff;
+    background-color: #000000;
+    padding: 0.25em 0.5em;
+    margin: 0 0 0.5em 0;
+}
+
+.box {
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.draft {
+    background-color: #F5F2D1;
+}
+
+.action-box {
+    background-color: transparent;
+    box-shadow: none;
+    text-align: center;
+    padding: 0;
+}
+
+.action-box form {
+    margin: 5px 0 10px;
+}
+
+.action-box div.alert {
+    padding: 6px;
+}
+
+#clone-activity {
+    padding: 4px;
+}
+
+
+.box h2 {
+    border-bottom: 1px solid #dddddd;
+    margin-bottom: 0.5em;
+    padding: 0;
+}
+
+.box-footer {
+    margin-top: 1em;
+    padding: 1em 0 0 0;
+    border-top: 1px solid #dddddd;
+}
+
+.box-award {
+    margin-left: 0;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.mb0 {
+    margin-bottom: 0px;
+}
+
+.mb10 {
+    margin-bottom: 10px;
+}
+
+.mb20 {
+    margin-bottom: 20px;
+}
+
+.row.alerts {
+    margin-top: 10px;
+}
+
+.visual-clear {
+    display: block;
+    clear: both;
+}
+
+.align-right {
+    text-align: right !important;
+}
+
+.inlineb {
+    display: inline-block;
+}
+
+.wide {
+    width: 100%;
+}
+
+.white {
+    background-color: #FAFAFA;
+}
+
+li.teacher {
+    margin-bottom: 10px;
+}
+
+li.teacher:last-child {
+    margin-bottom: -10px;
+}
+
+
+li.teacher img,
+li.teacher strong {
+    vertical-align: top;
+    display: inline-block;
+}
+
+li.teacher strong {
+    width: 210px;
+    margin-left: 5px;
+}
+
+html.ie li.teacher {
+    float: left;
+    width: 100%;
+    clear: both;
+}
+
+html.ie li.teacher:last-child {
+    margin-bottom: 0;
+}
+
+html.ie li.teacher img,
+html.ie li.teacher strong {
+    float: left;
+}
+
+html.ie li.teacher img {
+    width: 50px;
+    height: 50px;
+}
+
+img.award {
+    margin-right: 10px;
+}
+
+i.icon-openbadges {
+    background-image: url("../img/openbadges.png");
+    background-position: 0 0;
+}
+
+.unit-n {}
+
+.unit-h {}
+
+.unit-e {}
+
+#share {
+    list-style: none;
+    margin: 0 0 45px 0;
+}
+
+#share li {
+    margin-right: 12px;
+}
+
+.collapse.accordion-body {
+    display: none;
+}
+
+.collapse.accordion-body.in {
+    display: block;
+}
+
+.courseprogress #unit-progress-bar .progress,
+.courseprogress #unit-progress-bar .progress .bar {
+    height: 18px;
+}
+
+.courseprogress #unit-kqs li {
+    margin-bottom: 5px;
+}
+
+.classroom #unit-selector {
+    max-height: 430px;
+    overflow-y: auto;
+}
+
+.classroom #unit-selector .accordion-group {
+    background-color: #FAFAFA;
+}
+
+.classroom #kq-video {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.classroom #kq-video.question img {
+    display: block;
+    margin: 0 auto;
+}
+
+.classroom #kq-video.question input,
+.classroom #kq-video.question textarea,
+.classroom #kq-video.question .btn {
+    position: absolute;
+    margin: 0;
+}
+
+.classroom #kq-video.question .btn {
+    padding: 3px;
+}
+
+.classroom #kq-video.question textarea.text {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    transition: none;
+    width: auto;
+    height: auto;
+    /* Because of the scale factor 1.1481481 */
+    font-size: 16px;
+    line-height: 23px;
+}
+
+.classroom #kq-video.question input.correct {
+    background-color: #DFF0D8;
+    border: 4px solid #468847;
+}
+
+.classroom #kq-video.question input.incorrect {
+    background-color: #F2DEDE;
+    border: 4px solid #B94A48;
+}
+
+.classroom #kq-video.question input.correct[type=checkbox],
+.classroom #kq-video.question input.correct[type=radio]
+{
+    outline: 2px solid #468847;
+}
+
+.classroom #kq-video.question input.incorrect[type=checkbox],
+.classroom #kq-video.question input.incorrect[type=radio]
+{
+    outline: 2px solid #B94A48;
+}
+
+
+.classroom div.kqContainer li {
+    margin-top: 3px;
+}
+
+.classroom div.kqContainer span {
+    cursor: pointer;
+}
+
+.classroom #kq-q-buttons {
+    text-align: center;
+}
+
+.classroom .solution-wrapper {
+    padding: 10px;
+    border: 1px solid #e5e5e5;
+/*     height: 350px;  /* it's 372 counting the padding and border */
+    overflow: auto;
+}
+
+.classroom #pr-submission {
+    width: 570px;
+    height: 220px;
+}
+
+.announcement div.content {
+    margin-top: 30px;
+}
+
+code {
+    padding: 2px 4px;
+    color: #333;
+    background-color: #F7F7F9;
+    border: 1px solid #E1E1E8;
+}
+
+.category-box {
+    text-align: center;
+    position: relative;
+}
+
+.category-box .banner {
+    position:relative;
+    -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+}
+
+.category-box .banner:before,
+.category-box .banner:after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    -moz-box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    top: 0;
+    bottom: 0;
+    left: 10px;
+    right: 10px;
+    -moz-border-radius: 100px / 10px;
+    border-radius: 100px / 10px;
+}
+
+.category-box .banner:after {
+    right: 10px;
+    left: auto;
+    -webkit-transform:skew(8deg) rotate(3deg);
+    -moz-transform:skew(8deg) rotate(3deg);
+    -ms-transform:skew(8deg) rotate(3deg);
+    -o-transform:skew(8deg) rotate(3deg);
+    transform:skew(8deg) rotate(3deg);
+}
+
+.category-box .banner img {
+    width: 940px; /* bootstrap span12 */
+    height: 240px;
+}
+
+.category-box img.icon {
+    width: 140px; /* bootstrap span2 */
+    height: 140px;
+    border: 1px solid black;
+    -webkit-box-shadow: 0 10px 6px -6px #777;
+    -moz-box-shadow: 0 10px 6px -6px #777;
+    box-shadow: 0 10px 6px -6px #777;
+}
+
+.category-box img.icon.center {
+    position: absolute;
+    top: 50px;
+    left: 400px;
+}
+
+.category-box.liquid {
+    margin: 0 10px;
+}
+
+.errorlist {
+    color: red;
+    padding-top: 10px;
+}
+
+.teacheradmin-units .ui-state-highlight {
+    min-height: 30px;
+    margin-bottom: 10px;
+}
+
+.teacheradmin-units .kq-container {
+    min-height: 30px;
+}
+
+.teacheradmin-units .unit,
+.teacheradmin-units .kq {
+    padding: 10px;
+    margin-bottom: 10px;
+    position: relative;
+    border: 1px solid #AAA;
+}
+
+.teacheradmin-units .unit-right {
+    width: 728px;
+    vertical-align: top;
+    margin-left: 30px;
+}
+
+.teacheradmin-units .kq-right {
+    width: 556px;
+    margin-left: 10px;
+    vertical-align: top;
+}
+
+.teacheradmin-units .unit .header span.badge,
+.teacheradmin-units .unit .header span.label {
+    position: relative;
+    top: -5px;
+}
+
+.teacheradmin-units .unit .header h3 {
+    display: inline-block;
+    margin-top: 0;
+    padding-left: 15px;
+    max-width: 500px;
+}
+
+.teacheradmin-units .kq h4 {
+    display: inline-block;
+    margin-top: 0;
+    max-width: 400px;
+}
+
+.teacheradmin-units .kq p {
+    margin: 0 0 3px 0;
+}
+
+.teacheradmin-units .drag-handle {
+    position: absolute;
+    top: 10px;
+    bottom: 10px;
+    width: 20px;
+    background-color: #CCC;
+    cursor: move;
+}
+
+.teacheradmin-units .kq .badge {
+    position: relative;
+    top: 8px;
+    margin-right: 10px;
+}
+
+.teacheradmin-units label.required:before {
+    content: "* ";
+    color: red;
+}
+
+.teacheradmin-units .nav-tabs > .active > a,
+.teacheradmin-units .nav-tabs > .active > a:hover {
+    background-color: #f1f1f1;
+}
+
+.teacheradmin-units table th.center,
+.teacheradmin-units table td.center {
+    text-align: center;
+}
+
+.teacheradmin-units a.thumbnail {
+    display: inline-block;
+    padding: 1px;
+}
+
+.teacheradmin-units a.thumbnail img {
+    width: 106px;
+}
+
+.teacheradmin-units select#type {
+    width: 284px;
+}
+
+#media-player {
+    width: 660px;
+}
+
+.classroom div.loading.backdrop,
+.teacheradmin-units div.loading.backdrop,
+.teacheradmin-stats div.loading.backdrop {
+    z-index: 99999999;
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    opacity: 0.6;
+    background: black;
+}
+
+.classroom div.loading.indicator,
+.teacheradmin-units div.loading.indicator,
+.teacheradmin-stats div.loading.indicator {
+    z-index: 100000000;
+    width: 54px;
+    height: 55px;
+    background: url(../img/ajax-loader.gif);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -22px;
+    margin-left: -22px;
+}
+
+.teacheradmin-question fieldset textarea {
+    height: auto;
+    width: auto;
+}
+
+.teacheradmin-stats .pie.viewport svg {
+    height: 250px;
+}
+
+.teacheradmin-stats #tendencies .viewport svg,
+.teacheradmin-stats #units .viewport svg,
+.teacheradmin-stats #kqs .viewport svg {
+    height: 350px;
+}
+
+.teacheradmin-stats .stats-navigation {
+    margin-left: 20px;
+    position: relative;
+    top: -3px;
+}
+
+.cell-drag-handle {
+    cursor: move;
+    width: 16px;
+}
+
+td.red a.ui-state-default {
+    background: #ff0000;
+}
+
+td.yellow a.ui-state-default {
+    background: #ffff00;
+}
+
+td.orange a.ui-state-default {
+    background: #ff9900;
+}
+
+td.green a.ui-state-default {
+    background: #00ff00;
+}
+
+.big {
+    font-size: 1.2em;
+}
+
+.small {
+    font-size: 85%;
+}
+
+.criterion {
+    height: 100px;
+    overflow: auto;
+}
+
+.mce-content-body {
+    border: 1px dotted #333;
+    outline: none !important;
+    background-color: white;
+    min-height: 100px;
+}
+
+.tab-content-no-overflow {
+    overflow: hidden;
+}

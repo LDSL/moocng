@@ -1,0 +1,5 @@
+lessc skin.less -x > skin.min.css
+lessc skin.ie7.less -x > skin.ie7.min.css
+
+lessc Content.Inline.less -x > content.inline.min.css
+lessc Content.less -x > content.min.css 
