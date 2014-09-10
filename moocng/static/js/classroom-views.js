@@ -33,6 +33,7 @@ MOOC.views.Unit = Backbone.View.extend({
         "click li span.as": "showAS"
     },
 
+	/* RENDER INDEX */
     render: function () {
         "use strict";
         var html = '<div class="accordion-inner kqContainer"><ol>', css_class = null;
@@ -101,8 +102,8 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
 
             iframe_template = _.template(this.model.get('iframe_code'));
             html = iframe_template({
-                height: '372px',
-                width: '620px',
+                height: 'auto',
+                width: '100%',
                 allowfullscreen: true,
                 controls: true,
                 origin: MOOC.host
@@ -172,7 +173,7 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
             this.model.get("attachmentList").each(function (attachment) {
                 var view = new MOOC.views.Attachment({
                     model: attachment,
-                    el: $("#supplementary").find("ul#attachments")[0]
+                    el: $("#attachments ul")[0]
                 });
                 view.render();
             });
