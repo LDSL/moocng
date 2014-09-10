@@ -10,25 +10,27 @@
 
 {% block content %}
 <div class="course">
-	{% if course.background %}
-	<div class="course-header" style="background-image: url('{{ MEDIA_URL }}{{ course.background }}');">
-	{% else %}
-	<div class="course-header" style="background-image: url('{{ STATIC_URL }}img/course_bck.jpg');">
-	{% endif %}
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12 col-md-8 col-sm-8 col-mob-4 title">
-					<h1>{{ course.name }}</h1>
-					
-					{% if course.promotion_media_content_type and course.promotion_media_content_id %}
-					<div class="media-box">
-						{% media_content_iframe_code course.promotion_media_content_type course.promotion_media_content_id height="349px" width="620px" allowfullscreen="1" controls="1" %}
+	{% if not is_enrolled %}
+		{% if course.background %}
+		<div class="course-header" style="background-image: url('{{ MEDIA_URL }}{{ course.background }}');">
+		{% else %}
+		<div class="course-header" style="background-image: url('{{ STATIC_URL }}img/course_bck.jpg');">
+		{% endif %}
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12 col-md-8 col-sm-8 col-mob-4 title">
+						<h1>{{ course.name }}</h1>
+						
+						{% if course.promotion_media_content_type and course.promotion_media_content_id %}
+						<div class="media-box">
+							{% media_content_iframe_code course.promotion_media_content_type course.promotion_media_content_id height="349px" width="620px" allowfullscreen="1" controls="1" %}
+						</div>
+						{% endif %}
 					</div>
-					{% endif %}
 				</div>
 			</div>
 		</div>
-	</div>
+	{% endif %}
 	<div class="bottom-line">
 		<div class="container">
 			<div class="row">

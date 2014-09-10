@@ -51,7 +51,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'moocng',                # Or path to database file if using sqlite3.
         'USER': 'moocng',                # Not used with sqlite3.
-        'PASSWORD': 'adminpass',            # Not used with sqlite3.
+        'PASSWORD': 'pass',            # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -454,9 +454,9 @@ FREE_ENROLLMENT_CONSISTENT = False
 
 AUTH_HANDLER = "moocng.auth_handlers.handlers.SAML2"
 INSTALLED_APPS.append('djangosaml2')
-REGISTRY_URL = 'https://eco-idp-dev.geographica.gs/simplesaml/module.php/userregistration/newUser.php'
-PROFILE_URL = 'https://eco-idp-dev.geographica.gs/simplesaml/module.php/userregistration/reviewUser.php'
-CHANGEPW_URL = 'https://eco-idp-dev.geographica.gs/simplesaml/module.php/userregistration/changePassword.php'
+REGISTRY_URL = 'https://idp.devopenmooc.com/simplesaml/module.php/userregistration/newUser.php'
+PROFILE_URL = 'https://idp.devopenmooc.com/simplesaml/module.php/userregistration/reviewUser.php'
+CHANGEPW_URL = 'https://idp.devopenmooc.com/simplesaml/module.php/userregistration/changePassword.php'
 
 AUTH_PROFILE_MODULE = 'profile.UserProfile'
 

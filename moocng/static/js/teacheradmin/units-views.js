@@ -179,13 +179,13 @@ if (_.isUndefined(window.MOOC)) {
 
         tinyMCEOptions = {
             mode: "exact",
-            plugins: "paste,searchreplace",
-            theme: "advanced",
+            //plugins: "paste,searchreplace",
+            /*theme: "advanced",
             theme_advanced_resizing : true,
             theme_advanced_toolbar_location: "top",
             theme_advanced_buttons1: "bold,italic,underline,strikethrough,separator,link,unlink,separator,undo,redo,copy,paste,separator,cleanup,separator,bullist,numlist",
             theme_advanced_buttons2: "",
-            theme_advanced_buttons3: ""
+            theme_advanced_buttons3: ""*/
         },
 
         invert = function (obj) {
@@ -951,6 +951,7 @@ if (_.isUndefined(window.MOOC)) {
                     width: "380", // bootstrap span5
                     elements: "kqsupplementary, kqcomments, reviewdescription"
                 });
+				tinyMCE.baseURL = '/static/tiny_mce';
                 tinyMCE.init(options);
                 options = _.extend(_.clone(tinyMCEOptions), {
                     width: "780", // bootstrap span10

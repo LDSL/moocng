@@ -17,7 +17,7 @@ SAML_CONFIG = {
     'xmlsec_binary': '/usr/bin/xmlsec1',
 
     # your entity id, usually your subdomain plus the url to the metadata view
-    'entityid': 'http://eco-moocng-dev.geographica.gs/auth/saml2/metadata/',
+    'entityid': 'http://moocng.devopenmooc.com/auth/saml2/metadata/',
 
     # directory with attribute mapping
     'attribute_map_dir': os.path.join(BASEDIR, 'attributemaps'),
@@ -31,12 +31,12 @@ SAML_CONFIG = {
                 # url and binding to the assetion consumer service view
                 # do not change the binding or service name
                 'assertion_consumer_service': [
-                    ('http://eco-moocng-dev.geographica.gs/auth/saml2/acs/', saml2.BINDING_HTTP_POST),
+                    ('http://moocng.devopenmooc.com/auth/saml2/acs/', saml2.BINDING_HTTP_POST),
                 ],
                 # url and binding to the single logout service view
                 # do not change the binding or service name
                 'single_logout_service': [
-                    ('http://eco-moocng-dev.geographica.gs/auth/saml2/ls/', saml2.BINDING_HTTP_REDIRECT),
+                    ('http://moocng.devopenmooc.com.geographica.gs/auth/saml2/ls/', saml2.BINDING_HTTP_REDIRECT),
                 ],
             },
 
@@ -47,12 +47,12 @@ SAML_CONFIG = {
                 # present in our metadata
 
                 # the keys of this dictionary are entity ids
-                'https://eco-idp-dev.geographica.gs/simplesaml/saml2/idp/metadata.php': {
+                'https://idp.devopenmooc.com/simplesaml/saml2/idp/metadata.php': {
                     'single_sign_on_service': {
-                        saml2.BINDING_HTTP_REDIRECT: 'https://eco-idp-dev.geographica.gs/simplesaml/saml2/idp/SSOService.php',
+                        saml2.BINDING_HTTP_REDIRECT: 'https://idp.devopenmooc.com/simplesaml/saml2/idp/SSOService.php',
                     },
                     'single_logout_service': {
-                        saml2.BINDING_HTTP_REDIRECT: 'https://eco-idp-dev.geographica.gs/simplesaml/saml2/idp/SingleLogoutService.php',
+                        saml2.BINDING_HTTP_REDIRECT: 'https://idp.devopenmooc.com/simplesaml/saml2/idp/SingleLogoutService.php',
                     },
                 },
             },
@@ -68,8 +68,8 @@ SAML_CONFIG = {
     'debug': 1,
 
     # certificate
-    'key_file': os.path.join(BASEDIR, 'moocngserver.key'),  # private part
-    'cert_file': os.path.join(BASEDIR, 'moocngserverpublic.pem'),  # public part
+    'key_file': os.path.join(BASEDIR, 'server.key'),  # private part
+    'cert_file': os.path.join(BASEDIR, 'server.pem'),  # public part
 
     # own metadata settings
     'contact_person': [
