@@ -20,7 +20,7 @@ from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
-from moocng.profile.models import UserProfile
+from moocng.profile.models import UserProfile,Organization
 
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
@@ -35,3 +35,5 @@ class UserAdmin(UserAdmin):
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+admin.site.register(Organization)
+

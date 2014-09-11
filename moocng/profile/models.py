@@ -21,6 +21,11 @@ from django.utils.translation import ugettext_lazy as _
 
 from moocng.courses.models import Announcement
 
+class Organization(models.Model):
+    name = models.CharField(verbose_name=_(u"Organization name"),
+                                    max_length=256)
+    logo = models.ImageField(upload_to="organizations",verbose_name=_(u"Organization logo"),max_length=256)
+
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, verbose_name=_('User'))
@@ -28,9 +33,8 @@ class UserProfile(models.Model):
                                           verbose_name=_('Last announcement viewed'),
                                           null=True,
                                           blank=True)
-    organization = models.CharField(null=True,
-                                    blank=True,
-                                    max_length=100)
+
+    organization = models.ManyToManyField(Organization, verbose_name=_(u'Organization'))
 
     class Meta:
         verbose_name = _('User profile')
