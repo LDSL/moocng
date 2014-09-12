@@ -115,15 +115,10 @@
 		<div class="col-lg-12 col-md-8 col-sm-8 col-mob-4">
 			<div id="kq-video"></div>
 			<div class="row">
-				<div class="span2">
-					<button class="btn" id="kq-previous">{% trans "Previous" %}</button>
-				</div>
-				<div class="span4 hide" id="kq-q-buttons">
+				<div id="kq-q-buttons">
+					<a class="btn" id="kq-q-showq">{% trans "Do activity" %}<img src="{{ STATIC_URL }}img/icon_test.png"></a>
 					<button class="btn" id="kq-q-showkq">{% trans "Show lecture" %}</button>
 					<button class="btn" id="kq-q-submit">{% trans "Submit" %}</button>
-				</div>
-				<div class="span2 offset4" id="kq-next-container">
-					<button class="btn pull-right" id="kq-next">{% trans "Next" %}</button>
 				</div>
 			</div>
 			<div class="row kq-extrainfo">
@@ -191,9 +186,25 @@
 						</ul>
 					</div>
 					<div class="bottom-bar">
-						<a href="#" class="button pull-right">@raul.yeguas<img src="{{ STATIC_URL }}/img/icon_goto.png"></a>
+						<a href="#" class="button pull-right">{% trans "Post in the forum" %}<img src="{{ STATIC_URL }}/img/feed_comment.png"></a>
 					</div>
 				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="kq-navigation">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 wrapper">
+				<a id="kq-previous">
+					<span class="label">{% trans "Previous" %}</span>
+					<span class="title"></span>
+				</a>
+				<a id="kq-next">
+					<span class="label">{% trans "Next" %}</span>
+					<span class="title"></span>
+				</a>
 			</div>
 		</div>
 	</div>
@@ -202,16 +213,22 @@
 	<a class="handle"><img src="{{ STATIC_URL }}img/icon_index.png"></a>
 	
 	<div class="unit-menu">
-		{% for unit in unit_list %}
-		<div class="accordion-group">
-			<div class="accordion-heading">
-				<a class="accordion-toggle" href="#unit{{ unit.id }}" data-target="#unit{{ unit.id }}-container" data-parent="#unit-selector"><span class="badge {{ unit.badge_class }}" title="{{ unit.badge_tooltip }}">{{ unit.unittype|capfirst }}</span> - {{ unit.title }}</a>
-			</div>
-			<div id="unit{{ unit.id }}-container" class="collapse accordion-body" unit-type="{{ unit.unittype }}">
-				<div class="accordion-inner"></div>
-			</div>
+		<div class="heading">
+			<a class="title" href="#"><img src="{{ STATIC_URL }}img/icon_index.png">{% trans "Index" %}</a>
+			<a class="syllabus-link" href="#">{% trans "Syllabus" %}</a>
 		</div>
-		{% endfor %}
+		<ol>
+			{% for unit in unit_list %}
+			<li class="accordion-group">
+				<div class="accordion-heading">
+					<a class="accordion-toggle" href="#unit{{ unit.id }}" data-target="#unit{{ unit.id }}-container" data-parent="#unit-selector"><span class="badge {{ unit.badge_class }}" title="{{ unit.badge_tooltip }}">{{ unit.unittype|capfirst }}</span> - {{ unit.title }}</a>
+				</div>
+				<div id="unit{{ unit.id }}-container" class="collapse accordion-body" unit-type="{{ unit.unittype }}">
+					<div class="accordion-inner"></div>
+				</div>
+			</li>
+			{% endfor %}
+		</ol>
 	</div>
 </div>
 {% endblock %}
@@ -275,7 +292,9 @@
                 asMinutes: "{% trans "minutes" %}",
                 asRequisites: "{% trans "Requisites for making a reservation:" %}",
                 asReservations: "{% trans "Reservations: " %}",
-                asSlotLength:  "{% trans "Slot length: " %}"
+                asSlotLength:  "{% trans "Slot length: " %}",
+                startOfUnit: "{% trans "Start Of Unit" %}",
+                endOfUnit: "{% trans "End of Unit" %}"
             },
             peerreview: {
                 prFileMaxSize: "{% trans "Your file is too big" %}",

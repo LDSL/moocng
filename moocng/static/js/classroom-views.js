@@ -30,16 +30,19 @@ MOOC.views.Unit = Backbone.View.extend({
         "click li span.q": "showQ",
         "click li span.a": "showA",
         "click li span.pr": "showPR",
-        "click li span.as": "showAS"
+        "click li span.as": "showAS",
+		"click #kq-q-showq": "showPR",
     },
 
 	/* RENDER INDEX */
     render: function () {
         "use strict";
         var html = '<div class="accordion-inner kqContainer"><ol>', css_class = null;
+		var that = this;
         this.model.get("knowledgeQuantumList").each(function (kq) {
-            css_class = MOOC.models.activity.hasKQ(kq.get('id')) ? ' label-info' : '';
-            html += '<li id="kq' + kq.get("id") + '"><span class="kq label' + css_class + '" title="' + kq.get("title") + '">' + kq.truncateTitle(25) + '</span>';
+            css_class = MOOC.models.activity.hasKQ(kq.get('id')) ? ' done' : '';
+			css_class += kq.get('id') == that.model.get("id") ? ' current': '';
+            html += '<li id="kq' + kq.get("id") + '" class="' + css_class + '"><span class="kq label" title="' + kq.get("title") + '">' + kq.truncateTitle(25) + '</span>';
             if (kq.has("question")) {
                 html += ' <span class="q label" title="' + MOOC.trans.classroom.qTooltip + '">' + MOOC.trans.classroom.q + '</span> ';
                 html += '/ <span class="a label" title="' + MOOC.trans.classroom.aTooltip + '">' + MOOC.trans.classroom.a + '</span>';
@@ -190,7 +193,8 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
 
         getUrlForOtherKQ = function (position, next) {
             var aux = unit.get("knowledgeQuantumList").getAdjacent(position, next),
-                url;
+                url,
+				title;
             if (_.isUndefined(aux)) {
                 $(selector).addClass("disabled");
             } else {
@@ -202,7 +206,7 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
                 } else if (!next && aux.has("asset_availability")) {
                     url += "/as";
                 }
-                return url;
+                return {"url": url, "title": aux.get("title")};
             }
         };
 
@@ -250,10 +254,23 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
 
         if (_.isUndefined(url)) {
             $(selector).addClass("disabled");
+			if(next){
+				$(selector + " .title").html(MOOC.trans.classroom.endOfUnit);
+			}else{
+				$(selector + " .title").html(MOOC.trans.classroom.startOfUnit);
+			}
         } else {
+			var urltext,
+				title;
+			if (_.isObject(url)) {
+				urltext = url.url;
+				$(selector + " .title").html(url.title);
+			}else{
+				urltext = url;
+			}
             $(selector).removeClass("disabled");
             $(selector).click(function (evt) {
-                MOOC.router.navigate(url, { trigger: true });
+                MOOC.router.navigate(urltext, { trigger: true });
             });
         }
     },
