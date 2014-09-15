@@ -50,6 +50,13 @@ from moocng.media_contents import get_media_content_types_choices, media_content
 logger = logging.getLogger(__name__)
 
 
+class Language(models.Model):
+    name = models.CharField(verbose_name=_(u'Name'), max_length=200)
+    
+    def __unicode__(self):
+        return self.name
+
+
 class Course(Sortable):
     THUMBNAIL_WIDTH = 300
     THUMBNAIL_HEIGHT = 185
@@ -78,13 +85,36 @@ class Course(Sortable):
     teachers = models.ManyToManyField(User, verbose_name=_(u'Teachers'),
                                       through='CourseTeacher',
                                       related_name='courses_as_teacher')
+    
     owner = models.ForeignKey(User, verbose_name=_(u'Teacher owner'),
                               related_name='courses_as_owner', blank=False,
                               null=False)
+
     students = models.ManyToManyField(User, verbose_name=_(u'Students'),
                                       through='CourseStudent',
                                       related_name='courses_as_student',
                                       blank=True)
+
+    languages = models.ManyToManyField(Language, verbose_name=_(u'Languages'),
+                                      through='CourseLanguage',
+                                      related_name='courses_as_language')
+
+    estimated_effort = models.CharField(verbose_name=_(u'Estimated effort'),
+                                 null = True,
+                                 blank=True,
+                                 max_length=128)
+
+    hashtag = models.CharField(verbose_name=_(u'Hashtag'),
+                                default='Hashtag',
+                                max_length=128)
+
+    ects = models.PositiveSmallIntegerField(verbose_name=_(u'ECTS:'),
+                                                              default=8)
+
+    user_score = models.PositiveSmallIntegerField(verbose_name=_(u'User score'),
+                                            null=True)
+
+
     promotion_media_content_type = models.CharField(verbose_name=_(u'Content type'),
                                                     max_length=20,
                                                     null=True,
@@ -172,6 +202,9 @@ class Course(Sortable):
     max_mass_emails_month = models.PositiveSmallIntegerField(
         verbose_name=_('Maximum of massive emails that a course can send per month'),
         default=settings.DEFAULT_MAX_EMAILS_PER_MONTH)
+
+
+    highlight = models.BooleanField(default=False)
 
     objects = CourseManager()
 
@@ -358,6 +391,12 @@ class CourseStudent(models.Model):
 
     def can_clone_activity(self):
         return self.course.can_clone_activity() and self.old_course_status == 'n'
+
+
+
+class CourseLanguage(models.Model):
+    course = models.ForeignKey(Course, verbose_name=_(u'Course'))
+    language = models.ForeignKey(Language, verbose_name=_(u'Language'))
 
 
 class Announcement(models.Model):

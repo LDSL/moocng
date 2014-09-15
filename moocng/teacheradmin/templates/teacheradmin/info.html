@@ -26,11 +26,19 @@
     </div>
     <div class="row">
         <div class="span5">
+
             <p>
                 {{ form.name.errors }}
                 {{ form.name.label_tag }}
                 {{ form.name }}
                 {% if form.name.help_text %}<span class="help-inline">{{ form.name.help_text }}</span>{% endif %}
+            </p>
+            <p>
+                {{ form.languages.errors }}
+                {{ form.languages.label_tag }}
+                {{ form.languages }}
+                {% if form.languages.help_text %}<span class="help-inline">{{ form.languages.help_text }}</span>{% endif %}
+            </p>
             <p>
                 {{ form.promotion_media_content_type.errors }}
                 {{ form.promotion_media_content_type.label_tag }}
@@ -76,10 +84,22 @@
                 {% if form.threshold.help_text %}<span class="help-inline">{{ form.threshold.help_text }}</span>{% endif %}
             </p>
             <p>
+                {{ form.highlight.errors }}
+                {{ form.highlight.label_tag }}
+                {{ form.highlight }}
+                {% if form.highlight.help_text %}<span class="help-inline">{{ form.highlight.help_text }}</span>{% endif %}
+            </p>
+            <p>
                 {{ form.max_reservations_total.errors }}
                 {{ form.max_reservations_total.label_tag }}
                 {{ form.max_reservations_total }}
                 {% if form.max_reservations_total.help_text %}<span class="help-inline">{{ form.max_reservations_total.help_text }}</span>{% endif %}
+            </p>
+             <p>
+                {{ form.estimated_effort.errors }}
+                {{ form.estimated_effort.label_tag }}
+                {{ form.estimated_effort }}
+                {% if form.estimated_effort.help_text %}<span class="help-inline">{{ form.estimated_effort.help_text }}</span>{% endif %}
             </p>
             <p>
                 {{ form.completion_badge.errors }}
@@ -114,6 +134,7 @@
         <li>
             <a href="#tab-extra_info" data-toggle="tab">{% trans "Extra info" %}</a>
         </li>
+        
     </ul>
     <div class="tab-content tab-content-no-overflow">
         <div class="tab-pane active" id="tab-description">
