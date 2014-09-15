@@ -45,11 +45,17 @@ MOOC.views.Unit = Backbone.View.extend({
             html += '<li id="kq' + kq.get("id") + '" class="' + css_class + '"><span class="kq label" title="' + kq.get("title") + '">' + kq.truncateTitle(25) + '</span>';
             if (kq.has("question")) {
                 html += ' <span class="q label" title="' + MOOC.trans.classroom.qTooltip + '">' + MOOC.trans.classroom.q + '</span> ';
-                html += '/ <span class="a label" title="' + MOOC.trans.classroom.aTooltip + '">' + MOOC.trans.classroom.a + '</span>';
+                html += ' <span class="a label" title="' + MOOC.trans.classroom.aTooltip + '">' + MOOC.trans.classroom.a + '</span>';
             } else if (kq.has("peer_review_assignment")) {
                 html += ' <span class="pr label" title="' + MOOC.trans.classroom.prTooltip + '">' + MOOC.trans.classroom.pr + '</span>';
             } else if (kq.has("asset_availability")) {
                 html += ' <span class="as label" title="' + MOOC.trans.classroom.asTooltip + '">' + MOOC.trans.classroom.as + '</span>';
+            }
+            var content_type = kq.get("media_content_type");
+            if (content_type == "youtube" || content_type == "vimeo"){
+				html += ' <span class="video label" title="' + MOOC.trans.classroom.videoTooltip + '">' + MOOC.trans.classroom.video + '</span>';
+            } else if (content_type == "prezi" || content_type == "scribd") {
+				html += ' <span class="presentation label" title="' + MOOC.trans.classroom.presentationTooltip + '">' + MOOC.trans.classroom.presentation + '</span>';
             }
             html += '</li>';
         });

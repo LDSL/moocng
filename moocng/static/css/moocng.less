@@ -373,6 +373,17 @@ body {
 			padding-top: 20px;
 		}
 		
+		h3 {
+			font-size: 14px;
+			font-weight: 400;
+			
+			span {
+				color: @neutral_light_2;
+				font-size: 12px;
+				text-transform: uppercase;
+			}
+		}
+		
 		.menu {
 			position: absolute;
 			bottom: 0;
@@ -1644,9 +1655,38 @@ ul.rating {
 							}
 						}
 						
-						& > span:before{
+						& > span.kq:before{
 							content: counters(item, ".") ". ";
 							counter-increment: item;
+						}
+						
+						
+						& > span.video, & > span.presentation, & > span.q, & > span.pr {
+							font-size: 0;
+							
+							&:after {
+								float: right;
+								margin-left: 5px;
+							}
+						}
+						& > span.video:after{
+							content: url('/static/img/icon_play.png');
+						}
+						
+						& > span.presentation:after{
+							content: url('/static/img/icon_effort.png');
+						}
+						
+						& > span.q:after{
+							content: url('/static/img/icon_test.png');
+						}
+						
+						& > span.pr:after{
+							content: url('/static/img/icon_microblog.png');
+						}
+						
+						& > span.a, & > span.as {
+							display: none;
 						}
 					}
 				}
@@ -1755,6 +1795,14 @@ ul.rating {
 			
 			@media screen and (min-width: 1280px) {
 				height: 480px;
+			}
+		}
+		
+		&.question {
+			position: relative;
+			
+			& > input, & > textarea {
+				position: absolute;
 			}
 		}
 	}
