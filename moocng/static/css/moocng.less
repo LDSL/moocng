@@ -1758,6 +1758,118 @@ ul.rating {
 			}
 		}
 	}
+	
+	#kq-q-buttons {
+		text-align: center;
+		margin: 8px 0 12px 0;
+		
+		&:after {
+			content: "";
+			display: block;
+			clear:  both;
+		}
+		
+		.btn {
+			color: @highlight;
+			font-size: 16px;
+			cursor: pointer;
+			
+			img {
+				vertical-align: top;
+				margin-right: 8px;
+			}
+			
+			span + img {
+				margin-left: 8px;
+				margin-right: 0;
+			}
+						
+			&.squared {
+				font-size: 13px;
+				text-transform: uppercase;
+				padding: 8px 8px 8px 15px;
+				border: 2px solid @highlight;
+			}
+		}
+	}
+	
+	.solution-wrapper {
+		border-bottom: 1px solid @neutral_light_1;
+		margin-bottom: 5px;
+		
+		h4 {
+			font-size: 14px;
+			text-transform: uppercase;
+			margin-bottom: 15px;
+			
+			a {
+				text-transform: none;
+				font-weight: 400;
+				color: @highlight;
+				border-bottom: 1px solid @comp;
+			}
+		}
+		
+		#pr-description {
+			font-size: 18px;
+		}
+		
+		.alert {
+			color: @ok;
+			padding: 20px 0;
+		}
+		
+		label {
+			font-size: 14px;
+			display: inline-block;
+			margin-bottom: 5px;
+			
+			& + p {
+				font-size: 13px;
+			}
+		}
+		
+		textarea {
+			width: 100%;
+			min-height: 200px;
+			padding: 5px;
+			margin-bottom: 14px;
+			font-family: inherit;
+		}
+		
+		.fileupload {
+			display: inline-block;
+			margin-left: 5px;
+			width: calc(~'100% - 260px');
+			
+			.uneditable-input {
+				vertical-align: bottom;
+				max-width: calc(~'100% - 160px');
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow-x: hidden;
+			}
+			
+			.btn {
+				padding: 2px 4px;
+				font-size: 13px;
+				text-transform: uppercase;
+				color: @highlight;
+				vertical-align: baseline;
+			}
+			
+			a.btn {
+				padding-left: 6px;
+				border-left: 1px solid @neutral_light_1;
+			}
+			
+			input[type="file"] {
+				transform: translate(0,0) scale(1);
+				width: 100%;
+				height: 100%;
+			}
+		}
+	}
 
 	.kq-extrainfo {
 		padding-top: 65px;
@@ -1811,7 +1923,7 @@ ul.rating {
 	
 	.dash-box {
 		height: 100%;
-		margin-top: 0;
+		margin: 0 0 20px 0;
 		background: fade(@neutral_light_3, 40%);
 		
 		.content {

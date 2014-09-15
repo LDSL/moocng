@@ -121,7 +121,12 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
                 }
             }, this);
 
-            $("#kq-q-buttons").addClass("hide");
+            //$("#kq-q-buttons").addClass("hide");
+			$("#kq-q-showq").addClass("hide");
+			$("#kq-q-showkq").addClass("hide");
+			$("#kq-q-submit").addClass("hide");
+			$("#kq-q-showa").addClass("hide");
+			
             $("#kq-next-container").addClass("offset4");
 
             if (this.model.has("question")) {
@@ -268,10 +273,25 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
 			}else{
 				urltext = url;
 			}
-            $(selector).removeClass("disabled");
-            $(selector).click(function (evt) {
-                MOOC.router.navigate(urltext, { trigger: true });
-            });
+			
+			switch(target){
+				case "next":
+				case "prev":
+					$(selector).removeClass("disabled");
+					$(selector).click(function (evt) {
+						MOOC.router.navigate(urltext, { trigger: true });
+					});
+					break;
+				case "exercise":
+					$("#kq-q-showq").click(function(){
+						MOOC.router.navigate(urltext, { trigger: true });
+					}).removeClass('hide');
+					$(selector).addClass("disabled");
+					break;
+				case "answer":
+				case "same":
+					$(selector).addClass("disabled");
+			}
         }
     },
 
@@ -641,7 +661,13 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
 
             $("#kq-video").removeClass("question").html(html);
             $("#kq-video").css("height", "auto");
-            $("#kq-q-buttons").addClass("hide");
+            
+			//$("#kq-q-buttons").addClass("hide");
+			$("#kq-q-showq").addClass("hide");
+			$("#kq-q-showkq").addClass("hide");
+			$("#kq-q-submit").addClass("hide");
+			$("#kq-q-showa").addClass("hide");
+			
             $("#kq-next-container").addClass("offset4");
             $("#kq-title").html(this.model.truncateTitle(MOOC.views.KQ_TITLE_MAX_LENGTH));
 
@@ -697,7 +723,12 @@ MOOC.views.Question = Backbone.View.extend({
         this.$el.html(html);
         this.$el.addClass("question");
 
-        $("#kq-q-buttons").removeClass("hide");
+        //$("#kq-q-buttons").removeClass("hide");
+		$("#kq-q-showkq").removeClass("hide");
+		$("#kq-q-submit").removeClass("hide");
+		$("#kq-q-showq").addClass("hide");
+		$("#kq-q-showa").removeClass("hide");
+		
         if (this.model.isActive()) {
             $("#kq-q-submit").attr("disabled", false);
         } else {
@@ -1005,7 +1036,12 @@ MOOC.views.PeerReviewAssignment = Backbone.View.extend({
 
         if (this.model.get("_submitted")) {
             // Message telling the student he has already sent the exercise
-            $("#kq-q-buttons").addClass("hide");
+            //$("#kq-q-buttons").addClass("hide");
+			$("#kq-q-showq").addClass("hide");
+			$("#kq-q-showkq").addClass("hide");
+			$("#kq-q-submit").addClass("hide");
+			$("#kq-q-showa").addClass("hide");
+			
             $("#kq-next-container").addClass("offset4");
 
             html = ["<div class='alert alert-block"];
@@ -1040,7 +1076,12 @@ MOOC.views.PeerReviewAssignment = Backbone.View.extend({
                 }
             });
 
-            $("#kq-q-buttons").removeClass("hide");
+            //$("#kq-q-buttons").removeClass("hide");
+			$("#kq-q-showkq").removeClass("hide");
+			$("#kq-q-submit").removeClass("hide");
+			$("#kq-q-showq").addClass("hide");
+			$("#kq-q-showa").removeClass("hide");
+			
             $("#kq-q-submit").attr("disabled", false);
             $("#kq-q-showkq").off('click').on('click', function () {
                 MOOC.router.navigate(kqPath, { trigger: true });

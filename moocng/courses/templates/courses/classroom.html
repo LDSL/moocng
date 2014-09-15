@@ -19,22 +19,20 @@
 <script id="peer-review-tpl" type="text/template">
     <div class='solution-wrapper white'><form method='post' action='{% url course_review_upload course_slug=course.slug %}' enctype='multipart/form-data'>
         {% csrf_token %}
-        <h4>{% trans "Peer review assignment" %}</h4>
+        <h4>
+			{% trans "Peer review assignment" %}
+			<a href="#" class='btn' id='pr-view-criteria'><span class="icon-info-sign"></span> ({% trans "Evaluation criteria" %})</a>
+		</h4>
         <div id='pr-description' class="mathjax"></div>
-
-        <p class="align-right">
-            <button class='btn' id='pr-view-criteria'><span class="icon-info-sign"></span> {% trans "View the evaluation criteria" %}</button>
-        </p>
-
+        
         <div class="alert">
             <strong>{% trans "Remember!" %}</strong> {% trans "At least one, the text or the file, must be present in the submission." %}
         </div>
 
         <label for='pr-submission'><strong>{% trans "Write your submission here:" %}</strong></label>
-        <p>{% blocktrans with max=peer_review.text_max_size %}The max length of the text is {{ max }} characters.{% endblocktrans %}</p>
-        <textarea id='pr-submission' name='pr-submission' maxlength='{{ peer_review.text_max_size }}'></textarea>
+        <textarea id='pr-submission' name='pr-submission' maxlength='{{ peer_review.text_max_size }}' placeholder='{% blocktrans with max=peer_review.text_max_size %}The max length of the text is {{ max }} characters.{% endblocktrans %}'></textarea>
 
-        <label for='id_pr_file'><strong>{% trans "Attach a file to your submission:" %}</strong></label>
+        <label for='id_pr_file'><strong>{% trans "Or attach a file to your submission:" %}</strong></label>
         <div class='fileupload fileupload-new' data-provides='fileupload'>
             <div class='input-append'>
                 <div class='uneditable-input span3'>
@@ -115,10 +113,13 @@
 		<div class="col-lg-12 col-md-8 col-sm-8 col-mob-4">
 			<div id="kq-video"></div>
 			<div class="row">
-				<div id="kq-q-buttons">
-					<a class="btn" id="kq-q-showq">{% trans "Do activity" %}<img src="{{ STATIC_URL }}img/icon_test.png"></a>
-					<button class="btn" id="kq-q-showkq">{% trans "Show lecture" %}</button>
-					<button class="btn" id="kq-q-submit">{% trans "Submit" %}</button>
+				<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
+					<div id="kq-q-buttons">
+						<a class="btn pull-left" id="kq-q-showkq"><img src="{{ STATIC_URL }}img/icon_play.png"><span>{% trans "Show lecture" %}</span></a>
+						<a class="btn squared" id="kq-q-submit"><span>{% trans "Submit answer" %}</span><img src="{{ STATIC_URL }}img/icon_submit.png"></a>
+						<a class="btn pull-right" id="kq-q-showq"><span>{% trans "Do activity" %}</span><img src="{{ STATIC_URL }}img/icon_test.png"></a>
+						<a class="btn pull-right" id="kq-q-showa"><span>{% trans "Show result" %}</span></a>
+					</div>
 				</div>
 			</div>
 			<div class="row kq-extrainfo">
@@ -292,9 +293,7 @@
                 asMinutes: "{% trans "minutes" %}",
                 asRequisites: "{% trans "Requisites for making a reservation:" %}",
                 asReservations: "{% trans "Reservations: " %}",
-                asSlotLength:  "{% trans "Slot length: " %}",
-                startOfUnit: "{% trans "Start Of Unit" %}",
-                endOfUnit: "{% trans "End of Unit" %}"
+                asSlotLength:  "{% trans "Slot length: " %}"
             },
             peerreview: {
                 prFileMaxSize: "{% trans "Your file is too big" %}",
