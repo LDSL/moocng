@@ -1,4 +1,5 @@
 {% load i18n %}<!DOCTYPE html>
+
 <html class="no-js" lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="utf-8">
@@ -26,7 +27,7 @@
   {% block extraheader %}{% endblock %}
 </head>
 {% if user.is_authenticated %}
-	{% if is_enrolled %}
+	{% if is_enrolled and not is_overview %}
 	<body class="course">
 	{% else %}
 	<body>
@@ -47,7 +48,7 @@
         </a></li>
       </ul>
       {% if user.is_authenticated %}
-		{% if is_enrolled %}
+		{% if is_enrolled and not is_overview%}
 			<h2 class="course-title pull-left">{{ course.name }}</h2>
 		{% endif %}
 		
@@ -57,7 +58,7 @@
     </div>
 
         {% block courseactions %}
-			{% if is_enrolled %}
+			{% if is_enrolled and not is_overview %}
 				{% include "courses/include.courseactions.html" %}
 			{% endif %}
 		{% endblock %}

@@ -8,6 +8,7 @@
 				<h3><span>Hashtag: </span>{{ course.hashtag }}</h3>
 				{% endif %}
 			</div>
+			{% if is_ready %}
 			<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4 alt-column top">
 				<div class="progress-fraction">
 					<img src="{{ STATIC_URL }}img/icon_ects.png">
@@ -20,26 +21,62 @@
 					<h4 class="noLowRes">{% trans "Total Tasks" %}</h4>
 				</div>
 			</div>
+			{% endif %}
 		</div>
 		<div class="row bottom-row">
 			<div class="col-lg-12 col-md-8 col-sm-5 col-mob-4">
 				<ul class="menu">
-					<li><a href="#" class="selected"><img src="{{ STATIC_URL }}img/icon_dashboard.png" alt="{% trans "Dashboard" %}"></a></li>
-					<li><a href="#">{% trans "Syllabus" %}</a></li>
-					<li><a href="#">{% trans "Calendar" %}</a></li>
-					<li><a href="#">{% trans "Team" %}</a></li>
-					<li class="noLowRes"><a href="#">{% trans "Blog" %}</a></li>
-					<li class="noLowRes"><a href="#">{% trans "Wiki" %}</a></li>
+					<li>
+						{% url course_dashboard course.slug as url_dashboard %}
+						<a href="{{ url_dashboard }}" {% if request.path == url_dashboard %} class="selected"{% endif %}>
+							<img src="{{ STATIC_URL }}img/icon_dashboard.png" alt="{% trans "Dashboard" %}">
+						</a>
+					</li>
+					<li>
+						{% url course_syllabus course.slug as url_syllabus %}
+						<a href="{{ url_syllabus }}" {% if request.path == url_syllabus %} class="selected"{% endif %}>
+							{% trans "Syllabus" %}
+						</a>
+					</li>
+					<li>
+						{% url course_calendar course.slug as url_calendar %}
+						<a href="{{ url_calendar }}" {% if request.path == url_calendar %} class="selected"{% endif %}>
+							{% trans "Calendar" %}
+						</a>
+					<li>
+						{% url course_team course.slug as url_team %}
+						<a href="{{ url_team }}" {% if request.path == url_team %} class="selected"{% endif %}>
+							{% trans "Team" %}
+						</a>
+					</li>
+					<li>
+						{% url course_forum course.slug as url_forum %}
+						<a href="{{ url_forum }}" {% if request.path == url_forum %} class="selected"{% endif %}>
+							{% trans "Forum" %}
+						</a>
+					</li>
+					<!-- <li class="noLowRes"><a href="#">{% trans "Blog" %}</a></li>
+					<li class="noLowRes"><a href="#">{% trans "Wiki" %}</a></li> -->
 					<li class="btn-group">
 						<a href="#" class="dropdown-btn dropdown-btn">{% trans "More" %}</a>
 						<ul class="dropdown-menu">
-							<li><a href="#">{% trans "Course forum" %}</a></li>
-							<li><a href="#">{% trans "Teachers" %}</a></li>
-							<li><a href="#">{% trans "General information" %}</a></li>
+							<li>
+								{% url course_teachers course.slug as url_teachers %}
+								<a href="{{ url_teachers }}" {% if request.path == url_teachers %} class="selected"{% endif %}>
+									{% trans "Teachers" %}
+								</a>
+							</li>
+							<li>
+								{% url course_overview course.slug as url_overview %}
+								<a href="{{ url_overview }}" {% if request.path == url_overview %} class="selected"{% endif %}>
+									{% trans "General information" %}
+								</a>
+							</li>
 						</ul>
 					</li>
 				</ul>
 			</div>
+			{% if is_ready %}
 			<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4 alt-column bottom">
 				<div class="progress-bar">
 					<h4>{% trans "Your progress" %}</h4>
@@ -48,6 +85,7 @@
 					<div class="progress"><span style="width: 7%;"></span></div>
 				</div>
 			</div>
+			{% endif %}
 		</div>
 	</div>
 </div>

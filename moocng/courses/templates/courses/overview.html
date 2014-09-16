@@ -10,7 +10,7 @@
 
 {% block content %}
 <div class="course">
-	{% if not is_enrolled %}
+	{% if not is_enrolled or not course_has_started %}
 		{% if course.background %}
 		<div class="course-header" style="background-image: url('{{ MEDIA_URL }}{{ course.background }}');">
 		{% else %}
@@ -38,9 +38,9 @@
 					<div class="social_links pull-left">
 						Share
 						<ul class="icons">
-							<li><a href="#"><img src="{{ STATIC_URL }}img/social/fb.png" alt="on Facebook"></a></li>
-							<li><a href="#"><img src="{{ STATIC_URL }}img/social/twitter.png" alt="on Twitter"></a></li>
-							<li><a href="#"><img src="{{ STATIC_URL }}img/social/gplus.png" alt="on Google+"></a></li>
+							<li><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"><img src="{{ STATIC_URL }}img/social/fb.png" alt="on Facebook"></a></li>
+							<li><a target="_blank" href="https://twitter.com/home?status={{ request.build_absolute_uri }}" ><img src="{{ STATIC_URL }}img/social/twitter.png" alt="on Twitter"></a></li>
+							<li><a target="_blank"  href="https://plus.google.com/share?url={{ request.build_absolute_uri }}"><img src="{{ STATIC_URL }}img/social/gplus.png" alt="on Google+"></a></li>
 						</ul>
 					</div>
 					{% if course.certification_available %}
@@ -52,7 +52,7 @@
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-2 col-mob-4">
 					{% if is_enrolled %}
-						{% unenroll_button course %}
+						<a href="{% url course_dashboard course.slug %}"> {% trans "Go to course" %}</a>
 						{% clone_activity course user %}
 					{% else %}
 						{% if user.is_authenticated %}
@@ -93,6 +93,12 @@
 							{% if course.estimated_effort %}
 								<img src="{{ STATIC_URL }}img/icon_effort.png"><dt>{% trans "Estimated Effort" %}</dt><dd>{{ course.estimated_effort|safe }}</dd>
 							{% endif %}
+							{% if course.languages%}
+								<img src="{{ STATIC_URL }}img/icon_effort.png"><dt>{% trans "Languages" %}</dt>
+								{% for lang in course.languages.all %}
+									<dd>{{ lang }}</dd>
+								{% endfor %}
+							{% endif %}
 							{% if course.ects > 0 %}
 								<img src="{{ STATIC_URL }}img/icon_ects.png"><dt>{% trans "Certified Credits" %}</dt><dd>{{ course.ects|safe }}</dd>
 							{% endif %}
@@ -109,6 +115,7 @@
 						{% endcache %}
 					</div>
 					<div class="col-lg-12 col-md-8 col-sm-6 col-mob-2 info">
+
 						<h2>{% trans "Course summary" %}</h2>
 						{{ course.description|safe }}
 						
@@ -131,7 +138,7 @@
 			</div>
 			
 			<div class="col-lg-4 col-md-4 col-sm-2 col-mob-4">
-				{% if rating %}
+				{% if course.user_score %}
 					<div class="box">
 						<h2 class="inline">{% trans "Rating" %}</h2>
 						<ul class="rating inline">
@@ -150,7 +157,12 @@
 						<h2>{% trans "Organizers" %}</h2>
 						<ul>
 							{% for organizer in organizers %}
-								<li><a href="#">{{ organizer }}</a></li>
+								<li>
+									<a href="#">
+										<img src="{{ organizer.logo.url }}"/>
+										<span>{{ organizer.name }}</span>
+									</a>
+								</li>
 							{% endfor %}
 						</ul>
 					</div>
@@ -175,7 +187,9 @@
 						<img src="{% gravatar_for_email course_teacher.teacher.email %}?s=48" alt="{% trans 'Profile image of' %} {% firstof course_teacher.teacher.get_full_name course_teacher.teacher.username %" />
 						<p>{% firstof course_teacher.teacher.get_full_name course_teacher.teacher.username %}</p>
 						{% if course_teacher.teacher.get_profile.organization %}
-							<span>{{ course_teacher.teacher.get_profile.organization }}</span>
+							{% for org in course_teacher.teacher.get_profile.organization.all%}
+							<span>{{ org }}</span>
+							{% endfor %}
 						{% endif %}
 						</li>
 					{% endfor %}
