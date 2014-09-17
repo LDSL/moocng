@@ -8,7 +8,7 @@ SAML_ATTRIBUTE_MAPPING = {
     'mail': ('username', 'email', ),
     'cn': ('first_name', ),
     'sn': ('last_name', ),
-    'o': ('organization', ),
+    #'o': ('organization', ),
     'eduPersonAffiliation': ('groups', ),
 }
 
@@ -36,7 +36,7 @@ SAML_CONFIG = {
                 # url and binding to the single logout service view
                 # do not change the binding or service name
                 'single_logout_service': [
-                    ('http://moocng.devopenmooc.com.geographica.gs/auth/saml2/ls/', saml2.BINDING_HTTP_REDIRECT),
+                    ('http://moocng.devopenmooc.com/auth/saml2/ls/', saml2.BINDING_HTTP_REDIRECT),
                 ],
             },
 

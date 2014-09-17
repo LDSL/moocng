@@ -471,24 +471,28 @@ MEDIA_CONTENT_TYPES = [
         'name': 'YouTube',
         'handler': 'moocng.media_contents.handlers.youtube.YoutubeMediaContentHandler',
         'can_get_last_frame': True,
+        'type' : 'video'
     },
     {
         'id': 'vimeo',
         'name': 'Vimeo',
         'handler': 'moocng.media_contents.handlers.vimeo.VimeoMediaContentHandler',
         'can_get_last_frame': False,
+        'type' : 'video'
     },
     {
         'id': 'scribd',
         'name': 'Scribd',
         'handler': 'moocng.media_contents.handlers.scribd.ScribdMediaContentHandler',
         'can_get_last_frame': False,
+        'type' : 'presentation'
     },
     {
         'id': 'prezi',
         'name': 'Prezi',
         'handler': 'moocng.media_contents.handlers.prezi.PreziMediaContentHandler',
         'can_get_last_frame': False,
+        'type' : 'presentation'
     },
 ]
 

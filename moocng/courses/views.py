@@ -33,10 +33,10 @@ from django.utils.translation import ugettext as _
 from datetime import date
 
 from moocng.badges.models import Award
-from moocng.courses.models import Course, CourseTeacher, Announcement
+from moocng.courses.models import Course, CourseTeacher, Announcement,KnowledgeQuantum
 from moocng.courses.utils import (get_unit_badge_class, is_course_ready,
                                   is_teacher as is_teacher_test,
-                                  send_mail_wrapper)
+                                  send_mail_wrapper,get_sillabus_tree)
 from moocng.courses.marks import get_course_mark, get_course_intermediate_calculations, normalize_unit_weight
 from moocng.courses.security import (get_course_if_user_can_view_or_404,
                                      get_courses_available_for_user,
@@ -316,25 +316,15 @@ def course_dashboard(request, course_slug):
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
     is_ready, ask_admin = is_course_ready(course)
+    is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready:
+    if not is_ready and not is_teacher :
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
             'ask_admin': ask_admin,
         }, context_instance=RequestContext(request))
-
-    units = []
-    for u in get_units_available_for_user(course, request.user):
-        unit = {
-            'id': u.id,
-            'title': u.title,
-            'unittype': u.unittype,
-            'badge_class': get_unit_badge_class(u),
-            'badge_tooltip': u.get_unit_type_name(),
-        }
-        units.append(unit)
 
     peer_review = {
         'text_max_size': settings.PEER_REVIEW_TEXT_MAX_SIZE,
@@ -343,10 +333,10 @@ def course_dashboard(request, course_slug):
 
     return render_to_response('courses/dashboard.html', {
         'course': course,
-        'unit_list': units,
+        'unit_list': get_sillabus_tree(course,request.user),
         'is_enrolled': is_enrolled,
-        'is_teacher': is_teacher_test(request.user, course),
-        'is_ready' : is_ready
+        'is_teacher': is_teacher,
+        'is_ready' : is_ready,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -358,9 +348,10 @@ def course_syllabus(request, course_slug):
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
     is_ready, ask_admin = is_course_ready(course)
+    is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready:
+    if not is_ready and not is_teacher:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -370,7 +361,9 @@ def course_syllabus(request, course_slug):
     return render_to_response('courses/syllabus.html', {
         'course': course,
         'is_enrolled' : is_enrolled,   
-        'is_ready' : is_ready
+        'is_ready' : is_ready,
+        'is_teacher': is_teacher,
+        'unit_list': get_sillabus_tree(course,request.user,minversion=False)
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -382,9 +375,10 @@ def course_team(request, course_slug):
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
     is_ready, ask_admin = is_course_ready(course)
+    is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready:
+    if not is_ready and not is_teacher:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -394,7 +388,8 @@ def course_team(request, course_slug):
     return render_to_response('courses/team.html', {
         'course': course,
         'is_enrolled' : is_enrolled,   
-        'is_ready' : is_ready
+        'is_ready' : is_ready,
+        'is_teacher': is_teacher,
 
     }, context_instance=RequestContext(request))
 
@@ -407,9 +402,10 @@ def course_forum(request, course_slug):
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
     is_ready, ask_admin = is_course_ready(course)
+    is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready:
+    if not is_ready and not is_teacher:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -419,7 +415,8 @@ def course_forum(request, course_slug):
     return render_to_response('courses/forum.html', {
         'course': course,
         'is_enrolled' : is_enrolled,  
-        'is_ready' : is_ready 
+        'is_ready' : is_ready,
+        'is_teacher': is_teacher,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -431,9 +428,9 @@ def course_calendar(request, course_slug):
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
     is_ready, ask_admin = is_course_ready(course)
-
+    is_teacher = is_teacher_test(request.user, course)
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready:
+    if not is_ready and not is_teacher:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -443,7 +440,8 @@ def course_calendar(request, course_slug):
     return render_to_response('courses/calendar.html', {
         'course': course,
         'is_enrolled' : is_enrolled,   
-        'is_ready' : is_ready
+        'is_ready' : is_ready,
+        'is_teacher': is_teacher,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -455,9 +453,10 @@ def course_teachers(request, course_slug):
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
     is_ready, ask_admin = is_course_ready(course)
+    is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready:
+    if not is_ready and not is_teacher:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -467,7 +466,8 @@ def course_teachers(request, course_slug):
     return render_to_response('courses/teachers.html', {
         'course': course,
         'is_enrolled' : is_enrolled,   
-        'is_ready' : is_ready
+        'is_ready' : is_ready,
+        'is_teacher': is_teacher
     }, context_instance=RequestContext(request))
 
 @login_required
