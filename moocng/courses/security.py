@@ -73,6 +73,9 @@ def check_user_can_view_course(course, request):
     """
     can_view, reason = can_user_view_course(course, request.user)
 
+    import pprint
+    pprint.pprint(reason)
+
     if can_view:
         if reason != 'active':
             msg_table = {

@@ -112,8 +112,8 @@ class Course(Sortable):
                                                               default=8)
 
     user_score = models.PositiveSmallIntegerField(verbose_name=_(u'User score'),
-                                            null=True)
-
+                                            null=True,
+                                            blank = True)
 
     promotion_media_content_type = models.CharField(verbose_name=_(u'Content type'),
                                                     max_length=20,

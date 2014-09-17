@@ -30,6 +30,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
+from datetime import date
 
 from moocng.badges.models import Award
 from moocng.courses.models import Course, CourseTeacher, Announcement
@@ -212,17 +213,21 @@ def course_overview(request, course_slug):
     
     organizers = []
     for teacher in course_teachers:
-        organization = teacher.teacher.get_profile().organization
-        if(organization not in organizers):
-            organizers.append(organization)
-    
+        organization = teacher.teacher.get_profile().organization.all()
+
+        for v in organization:            
+            if(v not in organizers):
+                organizers.append(v)
+
+    #course_has_started = True if date.today() >= course.start_date else False
     announcements = Announcement.objects.filter(course=course).order_by('datetime').reverse()[:5]
     units = get_units_available_for_user(course, request.user, True)
     
     # Rating is dummy right now
     rating = {}
-    rating['rating_loop'] = range(1,4)
-    rating['empty_loop'] = range(4,6)
+    if course.user_score:
+        rating['rating_loop'] = range(1,course.user_score+1)
+        rating['empty_loop'] = range(course.user_score+1,6)
 
     return render_to_response('courses/overview.html', {
         'course': course,
@@ -236,8 +241,8 @@ def course_overview(request, course_slug):
         'course_teachers': course_teachers,
         'announcements': announcements,
         'use_old_calculus': settings.COURSES_USING_OLD_TRANSCRIPT,
+        'is_overview' : True
     }, context_instance=RequestContext(request))
-
 
 @login_required
 def course_classroom(request, course_slug):
@@ -312,7 +317,8 @@ def course_dashboard(request, course_slug):
 
     is_ready, ask_admin = is_course_ready(course)
 
-    if not is_ready and not request.user.is_superuser:
+    # if not is_ready and not request.user.is_superuser:
+    if not is_ready:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -340,9 +346,129 @@ def course_dashboard(request, course_slug):
         'unit_list': units,
         'is_enrolled': is_enrolled,
         'is_teacher': is_teacher_test(request.user, course),
-        'peer_review': peer_review
+        'is_ready' : is_ready
     }, context_instance=RequestContext(request))
 
+@login_required
+def course_syllabus(request, course_slug):
+    course = get_course_if_user_can_view_or_404(course_slug, request)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+    if not is_enrolled:
+        messages.error(request, _('You are not enrolled in this course'))
+        return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
+
+    is_ready, ask_admin = is_course_ready(course)
+
+    # if not is_ready and not request.user.is_superuser:
+    if not is_ready:
+        return render_to_response('courses/no_content.html', {
+            'course': course,
+            'is_enrolled': is_enrolled,
+            'ask_admin': ask_admin,
+        }, context_instance=RequestContext(request))
+
+    return render_to_response('courses/syllabus.html', {
+        'course': course,
+        'is_enrolled' : is_enrolled,   
+        'is_ready' : is_ready
+    }, context_instance=RequestContext(request))
+
+@login_required
+def course_team(request, course_slug):
+    course = get_course_if_user_can_view_or_404(course_slug, request)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+    if not is_enrolled:
+        messages.error(request, _('You are not enrolled in this course'))
+        return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
+
+    is_ready, ask_admin = is_course_ready(course)
+
+    # if not is_ready and not request.user.is_superuser:
+    if not is_ready:
+        return render_to_response('courses/no_content.html', {
+            'course': course,
+            'is_enrolled': is_enrolled,
+            'ask_admin': ask_admin,
+        }, context_instance=RequestContext(request))
+
+    return render_to_response('courses/team.html', {
+        'course': course,
+        'is_enrolled' : is_enrolled,   
+        'is_ready' : is_ready
+
+    }, context_instance=RequestContext(request))
+
+@login_required
+def course_forum(request, course_slug):
+    course = get_course_if_user_can_view_or_404(course_slug, request)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+    if not is_enrolled:
+        messages.error(request, _('You are not enrolled in this course'))
+        return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
+
+    is_ready, ask_admin = is_course_ready(course)
+
+    # if not is_ready and not request.user.is_superuser:
+    if not is_ready:
+        return render_to_response('courses/no_content.html', {
+            'course': course,
+            'is_enrolled': is_enrolled,
+            'ask_admin': ask_admin,
+        }, context_instance=RequestContext(request))
+
+    return render_to_response('courses/forum.html', {
+        'course': course,
+        'is_enrolled' : is_enrolled,  
+        'is_ready' : is_ready 
+    }, context_instance=RequestContext(request))
+
+@login_required
+def course_calendar(request, course_slug):
+    course = get_course_if_user_can_view_or_404(course_slug, request)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+    if not is_enrolled:
+        messages.error(request, _('You are not enrolled in this course'))
+        return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
+
+    is_ready, ask_admin = is_course_ready(course)
+
+    # if not is_ready and not request.user.is_superuser:
+    if not is_ready:
+        return render_to_response('courses/no_content.html', {
+            'course': course,
+            'is_enrolled': is_enrolled,
+            'ask_admin': ask_admin,
+        }, context_instance=RequestContext(request))
+
+    return render_to_response('courses/calendar.html', {
+        'course': course,
+        'is_enrolled' : is_enrolled,   
+        'is_ready' : is_ready
+    }, context_instance=RequestContext(request))
+
+@login_required
+def course_teachers(request, course_slug):
+    course = get_course_if_user_can_view_or_404(course_slug, request)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+    if not is_enrolled:
+        messages.error(request, _('You are not enrolled in this course'))
+        return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
+
+    is_ready, ask_admin = is_course_ready(course)
+
+    # if not is_ready and not request.user.is_superuser:
+    if not is_ready:
+        return render_to_response('courses/no_content.html', {
+            'course': course,
+            'is_enrolled': is_enrolled,
+            'ask_admin': ask_admin,
+        }, context_instance=RequestContext(request))
+
+    return render_to_response('courses/teachers.html', {
+        'course': course,
+        'is_enrolled' : is_enrolled,   
+        'is_ready' : is_ready
+    }, context_instance=RequestContext(request))
 
 @login_required
 def course_progress(request, course_slug):

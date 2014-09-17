@@ -24,7 +24,14 @@ from moocng.courses.models import Announcement
 class Organization(models.Model):
     name = models.CharField(verbose_name=_(u"Organization name"),
                                     max_length=256)
-    logo = models.ImageField(upload_to="organizations",verbose_name=_(u"Organization logo"),max_length=256)
+    logo = models.ImageField(upload_to="organizations",
+                            # height_field=256,
+                            # width_field=256,
+                            verbose_name=_(u"Organization logo"),
+                            max_length=256)
+
+    def __unicode__(self):
+        return unicode(self.name)
 
 
 class UserProfile(models.Model):
