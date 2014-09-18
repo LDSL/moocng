@@ -88,9 +88,9 @@
 			<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4 alt-column bottom">
 				<div class="progress-bar">
 					<h4>{% trans "Your progress" %}</h4>
-					<p>7%</p>
+					<p>{{ progress }}%</p>
 					<div class="clearfix"></div>
-					<div class="progress"><span style="width: 7%;"></span></div>
+					<div class="progress"><span style="width: {{ progress }}%;"></span></div>
 				</div>
 			</div>
 			{% endif %}

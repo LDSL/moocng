@@ -52,16 +52,13 @@
 					<div class="content">
 						<ul class="tabs">
 							<li class="selected">
-								<h4>{% trans "Singles" %}<span><strong>2</strong>/7</span></h4>
+								{% regroup task_list by done as tasks_done %}
+								<h4>{% trans "Singles" %}<span><strong>{{ tasks_done|length }}</strong>/{{ task_list|length}}</span></h4>
 								<div class="content">
 									<ol>
-										<li class="done"><span>Duis eleifend urna elit, a consectetur sem eleifend eget.</span></li>
-										<li class="done"><span>Donec interdum ex ut eros sollicitudin sollicitudin.</span></li>
-										<li><span>Sed id molestie elit.</span></li>
-										<li><span>Nunc eget porta elit. Morbi eget ante nec ex gravida ullamcorper.</span></li>
-										<li><span>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae.</span></li>
-										<li><span>Nam egestas commodo velit a porta.</span></li>
-										<li><span>Mauris vestibulum leo at pellentesque sagittis.</span></li>
+										{% for task in task_list %}
+										<li class="{% if task.done %} done {% endif %}"><a href="{% url course_classroom course.slug %}#unit{{ task.item.kq.unit_id }}/kq{{ task.item.kq.id }}/{{task.type}}">{{ task.title }}</a></li>
+										{% endfor %}
 									</ol>
 								</div>
 							</li>
@@ -254,6 +251,42 @@
 {% endblock %}
 
 {% block extrajs %}
+	<script src="{{ STATIC_URL }}js/libs/underscore-1.3.3.min.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/libs/backbone-0.9.2.min.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/libs/async.min.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/libs/moment.min.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/libs/langs.min.js" type="text/javascript"></script>
+    <script src="{% url jsi18n %}" type="text/javascript"></script>
+    
+    <script src="{{ STATIC_URL }}js/ajax.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/models.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/routes.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/dashboard-views.js" type="text/javascript"></script>
+    
+    <script type="text/javascript">
+        var units = [
+			{% for unit in unit_list %}
+				{"id":{{unit.id}}, "title": "{{unit.title}}", "type": "{{unit.unittype}}"},
+			{% endfor %}
+        ]
+        _.each(units, function (el, idx) {
+            MOOC.models.course.add(new MOOC.models.Unit({
+                order: idx,
+                id: el.id,
+                title: el.title,
+                type: el.type
+            }));
+        });
+        MOOC.peerReview = {
+            urls: {
+                prReview: "{% url course_reviews course_slug=course.slug %}"
+            }
+        };
+        MOOC.init({{ course.id }});
+        $("#review-details-modal").modal({show: false});
+        moment.lang('{{ LANGUAGE_CODE }}');
+    </script>
+
 	<script>
 		function resizeDashboard(){
 			var width = $('.dash-box .content').outerWidth();

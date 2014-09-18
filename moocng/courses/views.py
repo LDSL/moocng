@@ -41,7 +41,9 @@ from moocng.courses.marks import get_course_mark, get_course_intermediate_calcul
 from moocng.courses.security import (get_course_if_user_can_view_or_404,
                                      get_courses_available_for_user,
                                      get_units_available_for_user,
-                                     get_related_courses_available_for_user)
+                                     get_related_courses_available_for_user,
+                                     get_tasks_available_for_user,
+                                     get_course_progress_for_user)
 from moocng.courses.tasks import clone_activity_user_course_task
 from moocng.slug import unique_slugify
 from moocng.utils import use_cache
@@ -334,7 +336,9 @@ def course_dashboard(request, course_slug):
 
     return render_to_response('courses/dashboard.html', {
         'course': course,
+        'progress': get_course_progress_for_user(course, request.user),
         'unit_list': get_sillabus_tree(course,request.user),
+        'task_list': get_tasks_available_for_user(course, request.user),
         'is_enrolled': is_enrolled,
         'is_teacher': is_teacher,
         'is_ready' : is_ready,
