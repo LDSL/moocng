@@ -344,29 +344,18 @@ def update_course_mark_by_user(course, user):
 
 def get_sillabus_tree(course,user,minversion=True):
     units = []
+
+    current_mark_kq = course.get_user_mark(user)
+
     for u in get_units_available_for_user(course, user):
 
         questions = []
 
         unitcomplete = True
 
-        current_kq_pk = None
-        current_kq_found = False
-
         for q in  KnowledgeQuantum.objects.filter(unit_id=u.id):
 
             completed = q.is_completed(user)
-
-            if not current_kq_pk:
-                # Initialize current kq_pk
-                current_kq_pk = q.pk
-
-            if not current_kq_found and completed:
-                # Current kq not found yet. Search continue...
-                current_kq_pk = q.pk
-            elif not current_kq_pk and not completed:
-                # First kq not completed, we got the current
-                current_kq_found = True
 
             # If one question is not completed unit is not completed
             if unitcomplete and not completed:
@@ -376,7 +365,7 @@ def get_sillabus_tree(course,user,minversion=True):
                 "completed" : completed,
                 "pk" : q.pk,
                 "title": q.title,
-                "current" : False
+                "current" : q == current_mark_kq
             }
 
             if not minversion:
@@ -398,11 +387,5 @@ def get_sillabus_tree(course,user,minversion=True):
         }
         units.append(unit)
 
-
-    ## mark current kq
-    for u in units:
-        for q in questions:
-            if q["pk"] == current_kq_pk:
-                q["current"] = True
 
     return units

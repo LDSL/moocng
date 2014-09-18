@@ -219,6 +219,21 @@ class Course(Sortable):
     def natural_key(self):
         return (self.slug,)
 
+    def get_user_mark(self,user):
+        db = get_db()
+        activity = db.get_collection("activity")
+
+        mark = activity.find_one({
+            "user_id": user.id,
+            "course_id": self.id,
+            "current" : True
+        })
+
+        if mark:
+            return KnowledgeQuantum.objects.get(pk=mark["kq_id"])
+        else:
+            return None
+
     def save(self, *args, **kwargs):
         if self.promotion_media_content_type and self.promotion_media_content_id:
             self.promotion_media_content_id = media_content_extract_id(self.promotion_media_content_type, self.promotion_media_content_id)
@@ -602,6 +617,29 @@ class KnowledgeQuantum(Sortable):
         })
 
         return user_activity_exists.count() > 0
+
+    def set_as_current(self,user):
+        db = get_db()
+        activity = db.get_collection("activity")
+
+        activity.update({
+                "user_id": user.id,
+                "course_id": self.unit.course.id,
+                "current" : True
+            },
+            {
+                "$unset": { "current": "" },  
+            }
+        )
+
+        activity.update({
+            "user_id": user.id,
+            "kq_id": self.id
+            },
+            {
+                "$set": { "current": True },
+            }
+        )
 
     def natural_key(self):
         return self.unit.natural_key() + (self.title, )

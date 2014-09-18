@@ -25,7 +25,7 @@ from django.contrib.sites.models import get_current_site
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.core.validators import validate_email
-from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseBadRequest
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseBadRequest,HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.utils.translation import get_language
@@ -311,6 +311,7 @@ def course_dashboard(request, course_slug):
 
     .. versionadded:: 0.1
     """
+
     course = get_course_if_user_can_view_or_404(course_slug, request)
     is_enrolled = course.students.filter(id=request.user.id).exists()
     if not is_enrolled:
@@ -342,6 +343,12 @@ def course_dashboard(request, course_slug):
         'is_teacher': is_teacher,
         'is_ready' : is_ready,
     }, context_instance=RequestContext(request))
+
+@login_required
+def course_setmark(request,knowledgequantumid):
+    kq = get_object_or_404(KnowledgeQuantum,pk=knowledgequantumid)
+    kq.set_as_current(request.user)
+    return HttpResponse(kq.title)
 
 @login_required
 def course_syllabus(request, course_slug):
