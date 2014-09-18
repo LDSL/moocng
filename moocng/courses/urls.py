@@ -65,6 +65,8 @@ urlpatterns = patterns(
         AnnouncementCourseFeed(), name='announcements_feed'),
     url(r'^course/(?P<course_slug>[-\w]+)/clone-activity/$', 'clone_activity', name='course_clone_activity'),
 
+    url(r'^course/setmark/(?P<knowledgequantumid>\d+)/$','course_setmark',name='course_setmark'),
+
     # Teacher's course administration
     url(r'^course/(?P<course_slug>[-\w]+)/teacheradmin/',
         include('moocng.teacheradmin.urls')),
