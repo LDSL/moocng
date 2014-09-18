@@ -38,6 +38,11 @@ from moocng.courses.serializer import (CourseClone, UnitClone, KnowledgeQuantumC
                                        EvaluationCriterionClone, OptionClone, AttachmentClone)
 from moocng.peerreview.models import PeerReviewAssignment, EvaluationCriterion
 
+
+from moocng.courses.security import get_units_available_for_user
+
+from moocng.media_contents import get_media_type
+
 logger = logging.getLogger(__name__)
 
 TRACE_CLONE_COURSE_DIR = 'trace_clone_course'
@@ -336,3 +341,68 @@ def update_course_mark_by_user(course, user):
         update_passed(db, 'stats_unit', passed_unit_now, {'unit_id': unit.pk})
     updated_course, passed_course_now = update_course_mark(db, course, user)
     update_passed(db, 'stats_course', passed_course_now, {'course_id': course.pk})
+
+def get_sillabus_tree(course,user,minversion=True):
+    units = []
+    for u in get_units_available_for_user(course, user):
+
+        questions = []
+
+        unitcomplete = True
+
+        current_kq_pk = None
+        current_kq_found = False
+
+        for q in  KnowledgeQuantum.objects.filter(unit_id=u.id):
+
+            completed = q.is_completed(user)
+
+            if not current_kq_pk:
+                # Initialize current kq_pk
+                current_kq_pk = q.pk
+
+            if not current_kq_found and completed:
+                # Current kq not found yet. Search continue...
+                current_kq_pk = q.pk
+            elif not current_kq_pk and not completed:
+                # First kq not completed, we got the current
+                current_kq_found = True
+
+            # If one question is not completed unit is not completed
+            if unitcomplete and not completed:
+                unitcomplete = False
+
+            qa = {
+                "completed" : completed,
+                "pk" : q.pk,
+                "title": q.title,
+                "current" : False
+            }
+
+            if not minversion:
+                qa["has_video"] = get_media_type(q.media_content_type) == "video"
+                qa["has_presentation"] = get_media_type(q.media_content_type) == "presentation"
+                qa["has_attachments"] = len(q.attachment_set.filter()) > 0
+                qa["has_test"] = len(q.question_set.filter()) > 0
+
+            questions.append(qa)
+
+        unit = {
+            'id': u.id,
+            'title': u.title,
+            'unittype': u.unittype,
+            'badge_class': get_unit_badge_class(u),
+            'badge_tooltip': u.get_unit_type_name(),
+            'complete' : unitcomplete,
+            'questions' : questions
+        }
+        units.append(unit)
+
+
+    ## mark current kq
+    for u in units:
+        for q in questions:
+            if q["pk"] == current_kq_pk:
+                q["current"] = True
+
+    return units

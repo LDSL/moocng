@@ -72,6 +72,14 @@
 									{% trans "General information" %}
 								</a>
 							</li>
+							<li>
+								{% if is_teacher %}
+								{% url teacheradmin_info course.slug as url_course_admin %}
+								<a href="{{ url_course_admin }}" {% if request.path == url_course_admin %} class="selected"{% endif %}>
+									{% trans "Admin course" %}
+								</a>
+								{% endif %}
+							</li>
 						</ul>
 					</li>
 				</ul>

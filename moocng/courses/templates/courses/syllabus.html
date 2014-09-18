@@ -2,8 +2,35 @@
 
 {% block content %}
 
-Hi guy,
+{% for unit in unit_list %}
+    <li class="{% if unit.complete %}done{% endif %}"><span>{{unit.title}}</span>
+    {% if unit.questions %}
+        <ol>
+            {% for q in unit.questions %}
+            <li class="{% if q.current %} current {% endif %}">
 
-I'm the syllabus
+                <span>{{q.title}}</span> [
+                {% if q.has_video %}
+                    <span>Video</span>
+                {% endif %} 
+
+                {% if q.has_presentation %}
+                    <span>Presentation</span>
+                {% endif %} 
+
+                {% if q.has_attachments %}
+                    <span>Attachments</span>
+                {% endif %} 
+
+                {% if q.has_test %}
+                    <span>Test</span>
+                {% endif %} ]
+
+            </li>
+            {% endfor %}
+        </ol>
+    {% endif %}
+    </li>
+{% endfor %}
 
 {% endblock %}
