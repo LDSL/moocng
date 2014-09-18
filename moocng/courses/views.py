@@ -25,7 +25,7 @@ from django.contrib.sites.models import get_current_site
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.core.validators import validate_email
-from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseBadRequest,HttpResponse
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.utils.translation import get_language
@@ -233,6 +233,7 @@ def course_overview(request, course_slug):
 
     return render_to_response('courses/overview.html', {
         'course': course,
+        'progress': get_course_progress_for_user(course, request.user),
         'relatedcourses': relatedcourses,
         'organizers': organizers,
         'rating': rating,
@@ -292,6 +293,7 @@ def course_classroom(request, course_slug):
 
     return render_to_response('courses/classroom.html', {
         'course': course,
+        'progress': get_course_progress_for_user(course, request.user),
         'unit_list': units,
         'is_enrolled': is_enrolled,
         'is_teacher': is_teacher_test(request.user, course),
@@ -311,7 +313,6 @@ def course_dashboard(request, course_slug):
 
     .. versionadded:: 0.1
     """
-
     course = get_course_if_user_can_view_or_404(course_slug, request)
     is_enrolled = course.students.filter(id=request.user.id).exists()
     if not is_enrolled:
@@ -345,12 +346,6 @@ def course_dashboard(request, course_slug):
     }, context_instance=RequestContext(request))
 
 @login_required
-def course_setmark(request,knowledgequantumid):
-    kq = get_object_or_404(KnowledgeQuantum,pk=knowledgequantumid)
-    kq.set_as_current(request.user)
-    return HttpResponse(kq.title)
-
-@login_required
 def course_syllabus(request, course_slug):
     course = get_course_if_user_can_view_or_404(course_slug, request)
     is_enrolled = course.students.filter(id=request.user.id).exists()
@@ -371,6 +366,7 @@ def course_syllabus(request, course_slug):
 
     return render_to_response('courses/syllabus.html', {
         'course': course,
+        'progress': get_course_progress_for_user(course, request.user),
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
@@ -398,6 +394,7 @@ def course_team(request, course_slug):
 
     return render_to_response('courses/team.html', {
         'course': course,
+        'progress': get_course_progress_for_user(course, request.user),
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
@@ -425,6 +422,7 @@ def course_forum(request, course_slug):
 
     return render_to_response('courses/forum.html', {
         'course': course,
+        'progress': get_course_progress_for_user(course, request.user),
         'is_enrolled' : is_enrolled,  
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
@@ -444,12 +442,14 @@ def course_calendar(request, course_slug):
     if not is_ready and not is_teacher:
         return render_to_response('courses/no_content.html', {
             'course': course,
+            'progress': get_course_progress_for_user(course, request.user),
             'is_enrolled': is_enrolled,
             'ask_admin': ask_admin,
         }, context_instance=RequestContext(request))
 
     return render_to_response('courses/calendar.html', {
         'course': course,
+        'progress': get_course_progress_for_user(course, request.user),
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
@@ -470,12 +470,14 @@ def course_teachers(request, course_slug):
     if not is_ready and not is_teacher:
         return render_to_response('courses/no_content.html', {
             'course': course,
+            'progress': get_course_progress_for_user(course, request.user),
             'is_enrolled': is_enrolled,
             'ask_admin': ask_admin,
         }, context_instance=RequestContext(request))
 
     return render_to_response('courses/teachers.html', {
         'course': course,
+        'progress': get_course_progress_for_user(course, request.user),
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher
@@ -505,6 +507,7 @@ def course_progress(request, course_slug):
     if not is_ready:
         return render_to_response('courses/no_content.html', {
             'course': course,
+            'progress': get_course_progress_for_user(course, request.user),
             'is_enrolled': is_enrolled,
             'ask_admin': ask_admin,
         }, context_instance=RequestContext(request))
@@ -522,6 +525,7 @@ def course_progress(request, course_slug):
 
     return render_to_response('courses/progress.html', {
         'course': course,
+        'progress': get_course_progress_for_user(course, request.user),
         'unit_list': units,
         'is_enrolled': is_enrolled,  # required due course nav templatetag
         'is_teacher': is_teacher_test(request.user, course),
@@ -535,6 +539,7 @@ def course_extra_info(request, course_slug):
 
     return render_to_response('courses/static_page.html', {
         'course': course,
+        'progress': get_course_progress_for_user(course, request.user),
         'is_enrolled': is_enrolled,  # required due course nav templatetag
         'is_teacher': is_teacher_test(request.user, course),
         'static_page': course.static_page,
@@ -555,6 +560,7 @@ def announcement_detail(request, course_slug, announcement_id, announcement_slug
 
     return render_to_response('courses/announcement.html', {
         'course': course,
+        'progress': get_course_progress_for_user(course, request.user),
         'announcement': announcement,
         'template_base': 'courses/base_course.html'
     }, context_instance=RequestContext(request))
@@ -606,6 +612,7 @@ def transcript(request, course_slug=None):
             units_info_ordered.append(uinfo)
         courses_info.append({
             'course': course,
+            'progress': get_course_progress_for_user(course, request.user),
             'units_info': units_info_ordered,
             'mark': total_mark,
             'award': award,
