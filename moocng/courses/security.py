@@ -23,7 +23,8 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 
 
-from moocng.courses.models import Course, Unit, CourseTeacher
+from moocng.courses.models import Course, Unit, CourseTeacher, KnowledgeQuantum
+from moocng.peerreview.models import PeerReviewAssignment
 from moocng.categories.models import Category
 from moocng.http import Http410
 
@@ -173,29 +174,39 @@ def get_units_available_for_user(course, user, is_overview=False):
 
 
 def get_tasks_available_for_user(course, user, is_overview=False):
+    tasks = []
 
-    """
-    Filter tasks of a course what courses are available for the user.
+    for u in get_units_available_for_user(course, user):
+        for q in KnowledgeQuantum.objects.filter(unit_id=u.id):
+            t = None
+            ttype = None;
+            if (len(q.question_set.filter()) > 0):
+                t = q.question_set.all()[0]
+                ttype = 'q';
+            else:
+                pr = PeerReviewAssignment.objects.filter(kq=q)
+                if (len(pr) > 0):
+                    t = pr.all()[0]
+                    ttype = 'p'
+            
+            if t is not None:
+                task = {
+					'title': q.title,
+					'type': ttype,
+					'item': t,
+					'done': q.is_completed(user)
+                }
+                tasks.append(task)
+                
+    return tasks
 
-    :returns: Object list
+def get_course_progress_for_user(course, user):
+    kq_passed = 0
+    kq_total = 0
 
-    .. versionadded:: 0.1
-    """
-    if user.is_superuser or user.is_staff:
-        return course.unit_set.all()
-    elif user.is_anonymous():
-        if is_overview:
-            return course.unit_set.filter(Q(status='p') | Q(status='l'))
-        else:
-            return []
-    else:
-        if is_overview:
-            return Unit.objects.filter(
-                Q(status='p', course=course) |
-                Q(status='l', course=course) |
-                Q(status='d', course=course, course__courseteacher__teacher=user, course__courseteacher__course=course)).distinct()
-        else:
-            return Unit.objects.filter(
-                Q(status='p', course=course) |
-                Q(status='l', course=course, course__courseteacher__teacher=user, course__courseteacher__course=course) |
-                Q(status='d', course=course, course__courseteacher__teacher=user, course__courseteacher__course=course)).distinct()
+    for u in get_units_available_for_user(course, user):
+        for q in KnowledgeQuantum.objects.filter(unit_id=u.id):
+            kq_total += 1
+            if q.is_completed(user):
+                kq_passed += 1
+    return kq_passed*100/kq_total

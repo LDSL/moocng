@@ -52,16 +52,13 @@
 					<div class="content">
 						<ul class="tabs">
 							<li class="selected">
-								<h4>{% trans "Singles" %}<span><strong>2</strong>/7</span></h4>
+								{% regroup task_list by done as tasks_done %}
+								<h4>{% trans "Singles" %}<span><strong>{{ tasks_done|length }}</strong>/{{ task_list|length}}</span></h4>
 								<div class="content">
 									<ol>
-										<li class="done"><span>Duis eleifend urna elit, a consectetur sem eleifend eget.</span></li>
-										<li class="done"><span>Donec interdum ex ut eros sollicitudin sollicitudin.</span></li>
-										<li><span>Sed id molestie elit.</span></li>
-										<li><span>Nunc eget porta elit. Morbi eget ante nec ex gravida ullamcorper.</span></li>
-										<li><span>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae.</span></li>
-										<li><span>Nam egestas commodo velit a porta.</span></li>
-										<li><span>Mauris vestibulum leo at pellentesque sagittis.</span></li>
+										{% for task in task_list %}
+										<li class="{% if task.done %} done {% endif %}"><a href="{% url course_classroom course.slug %}#unit{{ task.item.kq.unit_id }}/kq{{ task.item.kq.id }}/{{task.type}}">{{ task.title }}</a></li>
+										{% endfor %}
 									</ol>
 								</div>
 							</li>
