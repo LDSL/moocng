@@ -170,3 +170,32 @@ def get_units_available_for_user(course, user, is_overview=False):
                 Q(status='p', course=course) |
                 Q(status='l', course=course, course__courseteacher__teacher=user, course__courseteacher__course=course) |
                 Q(status='d', course=course, course__courseteacher__teacher=user, course__courseteacher__course=course)).distinct()
+
+
+def get_tasks_available_for_user(course, user, is_overview=False):
+
+    """
+    Filter tasks of a course what courses are available for the user.
+
+    :returns: Object list
+
+    .. versionadded:: 0.1
+    """
+    if user.is_superuser or user.is_staff:
+        return course.unit_set.all()
+    elif user.is_anonymous():
+        if is_overview:
+            return course.unit_set.filter(Q(status='p') | Q(status='l'))
+        else:
+            return []
+    else:
+        if is_overview:
+            return Unit.objects.filter(
+                Q(status='p', course=course) |
+                Q(status='l', course=course) |
+                Q(status='d', course=course, course__courseteacher__teacher=user, course__courseteacher__course=course)).distinct()
+        else:
+            return Unit.objects.filter(
+                Q(status='p', course=course) |
+                Q(status='l', course=course, course__courseteacher__teacher=user, course__courseteacher__course=course) |
+                Q(status='d', course=course, course__courseteacher__teacher=user, course__courseteacher__course=course)).distinct()
