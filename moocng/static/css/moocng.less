@@ -1305,6 +1305,8 @@ ul.rating {
 		& > ol {
 			font-size: 16px;
 			line-height: 28px;
+			max-height: calc(~"100% - 48px");
+			overflow-y: auto;
 			color: @neutral_medium_1;
 			padding: 35px 25px 25px 60px;
 			counter-reset: item 0; /* cuando se implemente podremos usar attr(start integer);*/
@@ -1547,6 +1549,10 @@ ul.rating {
 				.content {
 					display: block;
 					width: 100%;
+					
+					ol {
+						max-height: 100%;
+					}
 				}
 			}
 		}
@@ -2061,6 +2067,41 @@ ul.rating {
 				
 				.title {
 					display: none;
+				}
+			}
+		}
+	}
+}
+
+/** SYLLABUS **/
+.syllabus {
+	padding-left: 40px;
+	list-style: none;
+	counter-reset: item;
+	border-bottom: 1px solid @neutral_light_1;
+	
+	li{
+		.unit {
+			font-size: 22px;
+			color: @highlight;
+			font-weight: 600;
+			border-bottom: @neutral_light_1;
+
+			&:before {
+				content: counters(item, ".") ". ";
+				counter-increment: item;
+			}
+		}
+		
+		ol {
+			padding-left: 40px;
+			list-style: none;
+			counter-reset: item;
+			
+			li {
+				.kq:before {
+					content: counters(item, ".") ". ";
+					counter-increment: item;
 				}
 			}
 		}

@@ -1,36 +1,42 @@
 {% extends "courses/base_course.html" %}
-
+{% load i18n %}
 {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-bg-16 col-md-12 col-sm-8 col-mob-4">
+            <h3>{% trans "Syllabus" %}</h3>
+            <ol class="syllabus">
+            {% for unit in unit_list %}
+                <li class="{% if unit.complete %}done{% endif %}"><span class="unit">{{unit.title}}</span>
+                {% if unit.questions %}
+                    <ol>
+                        {% for q in unit.questions %}
+                        <li class="{% if q.current %}current{% endif %}{% if q.completed %}done{% endif %}">
 
-{% for unit in unit_list %}
-    <li class="{% if unit.complete %}done{% endif %}"><span>{{unit.title}}</span>
-    {% if unit.questions %}
-        <ol>
-            {% for q in unit.questions %}
-            <li class="{% if q.current %} current {% endif %}">
+                            <span class="kq">{{q.title}}</span>
+                            {% if q.has_video %}
+                                <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_video.svg">{% trans "Video" %}</span>
+                            {% endif %} 
 
-                <span>{{q.title}}</span> [
-                {% if q.has_video %}
-                    <span>Video</span>
-                {% endif %} 
+                            {% if q.has_presentation %}
+                                <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_presentacion.svg">{% trans "Presentation" %}</span>
+                            {% endif %} 
 
-                {% if q.has_presentation %}
-                    <span>Presentation</span>
-                {% endif %} 
+                            {% if q.has_attachments %}
+                                <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_fichero.svg">{% trans "Attachments" %}</span>
+                            {% endif %} 
 
-                {% if q.has_attachments %}
-                    <span>Attachments</span>
-                {% endif %} 
-
-                {% if q.has_test %}
-                    <span>Test</span>
-                {% endif %} ]
-
-            </li>
+                            {% if q.has_test %}
+                                <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_tarea-test.svg">{% trans "Test" %}</span>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ol>
+                {% endif %}
+                </li>
             {% endfor %}
-        </ol>
-    {% endif %}
-    </li>
-{% endfor %}
-
+            </ol>
+        </div>
+    </div>
+</div>
 {% endblock %}
