@@ -234,6 +234,7 @@ def course_overview(request, course_slug):
     return render_to_response('courses/overview.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
+        'task_list': get_tasks_available_for_user(course, request.user),
         'relatedcourses': relatedcourses,
         'organizers': organizers,
         'rating': rating,
@@ -294,6 +295,7 @@ def course_classroom(request, course_slug):
     return render_to_response('courses/classroom.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
+        'task_list': get_tasks_available_for_user(course, request.user),
         'unit_list': units,
         'is_enrolled': is_enrolled,
         'is_teacher': is_teacher_test(request.user, course),
@@ -373,6 +375,7 @@ def course_syllabus(request, course_slug):
     return render_to_response('courses/syllabus.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
+        'task_list': get_tasks_available_for_user(course, request.user),
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
@@ -401,6 +404,7 @@ def course_team(request, course_slug):
     return render_to_response('courses/team.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
+        'task_list': get_tasks_available_for_user(course, request.user),
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
@@ -429,6 +433,7 @@ def course_forum(request, course_slug):
     return render_to_response('courses/forum.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
+        'task_list': get_tasks_available_for_user(course, request.user),
         'is_enrolled' : is_enrolled,  
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
@@ -456,6 +461,7 @@ def course_calendar(request, course_slug):
     return render_to_response('courses/calendar.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
+        'task_list': get_tasks_available_for_user(course, request.user),
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
@@ -477,6 +483,7 @@ def course_teachers(request, course_slug):
         return render_to_response('courses/no_content.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
+        'task_list': get_tasks_available_for_user(course, request.user),
             'is_enrolled': is_enrolled,
             'ask_admin': ask_admin,
         }, context_instance=RequestContext(request))
@@ -484,6 +491,7 @@ def course_teachers(request, course_slug):
     return render_to_response('courses/teachers.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
+        'task_list': get_tasks_available_for_user(course, request.user),
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher
@@ -514,6 +522,7 @@ def course_progress(request, course_slug):
         return render_to_response('courses/no_content.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
+            'task_list': get_tasks_available_for_user(course, request.user),
             'is_enrolled': is_enrolled,
             'ask_admin': ask_admin,
         }, context_instance=RequestContext(request))
@@ -532,6 +541,7 @@ def course_progress(request, course_slug):
     return render_to_response('courses/progress.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
+        'task_list': get_tasks_available_for_user(course, request.user),
         'unit_list': units,
         'is_enrolled': is_enrolled,  # required due course nav templatetag
         'is_teacher': is_teacher_test(request.user, course),
@@ -546,6 +556,7 @@ def course_extra_info(request, course_slug):
     return render_to_response('courses/static_page.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
+        'task_list': get_tasks_available_for_user(course, request.user),
         'is_enrolled': is_enrolled,  # required due course nav templatetag
         'is_teacher': is_teacher_test(request.user, course),
         'static_page': course.static_page,
@@ -567,6 +578,7 @@ def announcement_detail(request, course_slug, announcement_id, announcement_slug
     return render_to_response('courses/announcement.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
+        'task_list': get_tasks_available_for_user(course, request.user),
         'announcement': announcement,
         'template_base': 'courses/base_course.html'
     }, context_instance=RequestContext(request))
@@ -619,6 +631,7 @@ def transcript(request, course_slug=None):
         courses_info.append({
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
+            'task_list': get_tasks_available_for_user(course, request.user),
             'units_info': units_info_ordered,
             'mark': total_mark,
             'award': award,
