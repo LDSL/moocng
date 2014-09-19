@@ -432,7 +432,7 @@ import djcelery
 djcelery.setup_loader()
 CELERY_CREATE_MISSING_QUEUES = True
 
-BROKER_URL = 'amqp://moocng:adminpass@localhost:5672/moocng'
+BROKER_URL = 'amqp://moocng2:adminpass@localhost:5672/moocng'
 
 CERTIFICATE_URL = 'http://devopenmooc.com/idcourse/%(courseid)s/email/%(email)s'  # Example, to be overwritten in local settings
 
