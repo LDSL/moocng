@@ -43,6 +43,7 @@
 @ok: #008833;
 
 @facebook: #3b59b4;
+@twitter: #55acee;
 @gplus: #dd4b39;
 
 .v_middle {
@@ -800,7 +801,8 @@ body {
 
 /* COURSE */
 div.course {
-	.button {
+	div.button, a.button {
+		display: block;
 		color: @highlight;
 		border: 2px solid @highlight;
 		background: none;
@@ -821,9 +823,9 @@ div.course {
 		}
 		
 		svg {
-			width: 24px;
-			height: 24px;
 			float: right;
+			position: relative;
+			top: -2px;
 			
 			path {
 				fill: @black;
@@ -853,6 +855,10 @@ div.course {
 			clear: both;
 		}
 	}
+
+	a.button:after {
+		display: none;
+	}
 	
 	.course-header {
 		min-height: 220px;
@@ -870,6 +876,58 @@ div.course {
 			h1 {
 				font-size: 36px;
 				font-weight: 300;
+				float: left;
+			}
+
+			.media-box {
+				float: right;
+				text-align: center;
+
+				.play {
+					font-size: 12px;
+					text-transform: uppercase;
+
+					img {
+						display: block;
+						padding: 18px;
+						border: 2px solid @white;
+						margin-bottom: 6px;
+					}
+				}
+
+				.iframe {
+					display: none;
+					border: 6px solid @white;
+					background-color: @white;
+					z-index: 6;
+					position: fixed;
+					left: 50%;
+					top: 50%;
+					margin-left: -310px;
+					margin-top: -177px;
+					cursor: pointer;
+				}
+
+				.background {
+					display: none;
+					background: fade(@neutral_intense, 50%);
+					position: fixed;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					z-index: 5;
+				}
+
+				&.show {
+					.iframe {
+						display: block;
+					}
+
+					.background {
+						display: block;
+					}
+				}
 			}
 		}
 	}
@@ -907,8 +965,36 @@ div.course {
 				width: 48px;
 				background-color: @neutral_light_3;
 				margin: 0 10px;
-				padding: 12px 0;
 				text-align: center;
+				transition: background-color .1s ease-in-out;
+
+				svg {
+					height: 48px;
+					width: 48px;
+					
+					path, polygon {
+						fill: @neutral_medium_1;
+						transition: fill .1s ease-in-out;
+					}
+				}
+
+				&:hover {
+					path, polygon {
+						fill: @white;
+					}
+				}
+
+				&.facebook:hover {
+					background-color: @facebook;
+				}
+
+				&.twitter:hover {
+					background-color: @twitter;
+				}
+
+				&.gplus:hover {
+					background-color: @gplus;
+				}
 			}
 		}
 	}
@@ -942,6 +1028,8 @@ div.course {
 		}
 		
 		& > ul {
+			list-style: none;
+
 			li {
 				color: @highlight;
 				font-size: 14px;
@@ -951,6 +1039,7 @@ div.course {
 				img {
 					vertical-align: middle;
 					margin: 0 10px 8px 0;
+					height: 48px;
 				}
 			}
 		}
@@ -1226,6 +1315,11 @@ div.course {
 					content: "";
 					display: block;
 					clear: both;
+				}
+
+				ul {
+					list-style: none;
+					padding-left: 36px;
 				}
 			}
 		}
@@ -1676,19 +1770,19 @@ ul.rating {
 							}
 						}
 						& > span.video:after{
-							content: url('/static/img/icon_play.png');
+							content: url('/static/img/ECO_icon_contenido_video.svg');
 						}
 						
 						& > span.presentation:after{
-							content: url('/static/img/icon_effort.png');
+							content: url('/static/img/ECO_icon_contenido_presentacion.svg');
 						}
 						
 						& > span.q:after{
-							content: url('/static/img/icon_test.png');
+							content: url('/static/img/ECO_icon_contenido_tarea-test.svg');
 						}
 						
 						& > span.pr:after{
-							content: url('/static/img/icon_microblog.png');
+							content: url('/static/img/ECO_icon_contenido_tarea-desarrollo.svg');
 						}
 						
 						& > span.a, & > span.as {
@@ -2075,33 +2169,118 @@ ul.rating {
 
 /** SYLLABUS **/
 .syllabus {
-	padding-left: 40px;
-	list-style: none;
-	counter-reset: item;
-	border-bottom: 1px solid @neutral_light_1;
+	h3 {
+		font-size: 22px;
+		font-weight: 300;
+		color: @neutral_medium_1;
+		padding: 25px 0;
+	}
 	
-	li{
-		.unit {
+	& > ol {
+		list-style: none;
+		counter-reset: item;
+		border-bottom: 1px solid @neutral_light_1;
+
+		& > li{
+			border-top: 1px solid @neutral_light_1;
 			font-size: 22px;
 			color: @highlight;
 			font-weight: 600;
-			border-bottom: @neutral_light_1;
 
 			&:before {
 				content: counters(item, ".") ". ";
 				counter-increment: item;
+				float: left;
+				margin-right: 3px;
+				padding: 30px 0 0 40px;
 			}
-		}
-		
-		ol {
-			padding-left: 40px;
-			list-style: none;
-			counter-reset: item;
+
+			.unit {
+				position: relative;
+				padding: 30px 40px 30px 0;
+				margin-left: 40px;
+				border-bottom: 1px solid @neutral_light_1;
+				display: block;
+
+				&.done:before {
+					content: url('/static/img/ECO_icon_check.svg');
+					background-color: @neutral_light_3;
+					display: block;
+					box-sizing: border-box;
+					width: 16px;
+					height: 100%;
+					padding-top: 30px;
+					position: absolute;
+					left: -40px;
+					top: 0;
+					border-bottom: 1px solid @neutral_light_3;
+				}
+			}
+
+			.fblike {
+				color: @facebook;
+				font-weight: 400;
+				float: right;
+			}
+
+			.gplusone {
+				color: @gplus;
+				font-weight: 400;
+				float: right;
+			}
 			
-			li {
-				.kq:before {
-					content: counters(item, ".") ". ";
-					counter-increment: item;
+			ol {
+				list-style: none;
+				counter-reset: item;
+				font-weight: 400;
+				padding-left: 80px;
+				
+				li {
+					position: relative;
+					padding: 30px 40px 30px 0;
+					border-bottom: 1px solid @neutral_light_1;
+
+					&:last-child {
+						border-bottom: none;
+					}
+
+					&.done:before {
+						content: url('/static/img/ECO_icon_check.svg');
+						background-color: @neutral_light_3;
+						display: block;
+						box-sizing: border-box;
+						width: 16px;
+						height: 100%;
+						padding-top: 30px;
+						position: absolute;
+						left: -80px;
+						top: 0;
+					}
+
+					.kq {
+						display: block;
+						font-size: 22px;
+						color: @highlight;
+						margin-bottom: 12px;
+
+						&:before {
+							content: counters(item, ".") ". ";
+							counter-increment: item;
+						}
+					}
+
+					span {
+						font-size: 12px;
+						text-transform: uppercase;
+						color: @neutral_medium_1;
+						margin-right: 20px;
+
+						img {
+							display: inline-block;
+							vertical-align: middle;
+							margin-right: 7px;
+						}
+					}
 				}
 			}
 		}

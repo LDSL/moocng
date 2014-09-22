@@ -365,6 +365,7 @@ def get_sillabus_tree(course,user,minversion=True):
                 "completed" : completed,
                 "pk" : q.pk,
                 "title": q.title,
+                "url": "/course/"+course.slug+"/classroom/#!unit"+str(u.pk)+"/kq"+str(q.pk),
                 "current" : q == current_mark_kq
             }
 
@@ -379,6 +380,7 @@ def get_sillabus_tree(course,user,minversion=True):
         unit = {
             'id': u.id,
             'title': u.title,
+            'url': "/course/"+course.slug+"/classroom/#!unit"+str(u.pk),
             'unittype': u.unittype,
             'badge_class': get_unit_badge_class(u),
             'badge_tooltip': u.get_unit_type_name(),
