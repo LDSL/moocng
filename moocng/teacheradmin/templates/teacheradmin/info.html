@@ -34,6 +34,12 @@
                 {% if form.name.help_text %}<span class="help-inline">{{ form.name.help_text }}</span>{% endif %}
             </p>
             <p>
+                {{ form.hashtag.errors }}
+                {{ form.hashtag.label_tag }}
+                {{ form.hashtag }}
+                {% if form.hashtag.help_text %}<span class="help-inline">{{ form.hashtag.help_text }}</span>{% endif %}
+            </p>
+            <p>
                 {{ form.languages.errors }}
                 {{ form.languages.label_tag }}
                 {{ form.languages }}
