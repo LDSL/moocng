@@ -126,9 +126,6 @@
             <a href="#tab-intended_audience" data-toggle="tab">{{ form.intended_audience.label }}</a>
         </li>
         <li>
-            <a href="#tab-estimated_effort" data-toggle="tab">{{ form.estimated_effort.label }}</a>
-        </li>
-        <li>
             <a href="#tab-learning_goals" data-toggle="tab">{{ form.learning_goals.label }}</a>
         </li>
         <li>
@@ -154,12 +151,6 @@
             {{ form.intended_audience.label_tag }}
             {{ form.intended_audience }}
             {% if form.intended_audience.help_text %}<span class="help-block">{{ form.intended_audience.help_text }}</span>{% endif %}
-        </div>
-        <div class="tab-pane" id="tab-estimated_effort">
-            {{ form.estimated_effort.errors }}
-            {{ form.estimated_effort.label_tag }}
-            {{ form.estimated_effort }}
-            {% if form.estimated_effort.help_text %}<span class="help-block">{{ form.estimated_effort.help_text }}</span>{% endif %}
         </div>
         <div class="tab-pane" id="tab-learning_goals">
             {{ form.learning_goals.errors }}
