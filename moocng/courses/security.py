@@ -132,17 +132,20 @@ def get_related_courses_available_for_user(course, user):
     """
     
     # Get categories from selected course
-    category = course.categories.all()[0].name
-    
-    if user.is_superuser or user.is_staff:
-    # Return every course that hasn't finished
-        return Course.objects.exclude(end_date__lt=date.today()).filter(categories__name__contains=category).distinct()
-    elif user.is_anonymous() or not CourseTeacher.objects.filter(teacher=user).exists():
-        # Regular user, return only the published courses
-        return Course.objects.exclude(end_date__lt=date.today()).filter(status='p').filter(categories__name__contains=category).distinct()
+    if(len(course.categories.filter()) > 0):
+        category = course.categories.all()[0].name
+        
+        if user.is_superuser or user.is_staff:
+        # Return every course that hasn't finished
+            return Course.objects.exclude(end_date__lt=date.today()).filter(categories__name__contains=category).distinct()
+        elif user.is_anonymous() or not CourseTeacher.objects.filter(teacher=user).exists():
+            # Regular user, return only the published courses
+            return Course.objects.exclude(end_date__lt=date.today()).filter(status='p').filter(categories__name__contains=category).distinct()
+        else:
+            # Is a teacher, return draft courses if he is one of its teachers
+            return Course.objects.exclude(end_date__lt=date.today()).filter(Q(status='p') | Q(status='d', courseteacher__teacher=user)).distinct().filter(categories__name__contains=category)
     else:
-        # Is a teacher, return draft courses if he is one of its teachers
-        return Course.objects.exclude(end_date__lt=date.today()).filter(Q(status='p') | Q(status='d', courseteacher__teacher=user)).distinct().filter(categories__name__contains=category)
+        return []
 
 def get_units_available_for_user(course, user, is_overview=False):
 
@@ -209,4 +212,7 @@ def get_course_progress_for_user(course, user):
             kq_total += 1
             if q.is_completed(user):
                 kq_passed += 1
-    return kq_passed*100/kq_total
+    if kq_total != 0:
+        return kq_passed*100/kq_total
+    else:
+        return 0
