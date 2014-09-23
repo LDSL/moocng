@@ -45,6 +45,7 @@
 @facebook: #3b59b4;
 @twitter: #55acee;
 @gplus: #dd4b39;
+@youtube: #cd201f;
 
 .v_middle {
   position: relative;
@@ -102,12 +103,18 @@ a {
   &.grey_squared {
     & > span {
       border-bottom: 1px solid @comp;
+      transition: border .2s ease-in-out;
     }
     img {
       padding: 11px 15px;
       margin-left: 15px;
       background-color: @neutral_light_3;
       vertical-align: middle;
+    }
+    &:hover {
+    	span {
+    		border-bottom-color: @highlight;
+    	}
     }
   }
 }
@@ -180,6 +187,32 @@ a {
 		position: absolute;
 		top: 0;
 		left: 0;
+	}
+}
+
+.alert {
+	padding: 8px 0;
+	width: 100%;
+	border-top: 1px solid @neutral_light_1;
+	font-size: 14px;
+	font-weight: 600;
+
+	.ok {
+		display: none;
+	}
+
+	&.alert-success {
+		background: fade(@ok,10%);
+		color: @ok;
+		border-top-color: @ok;
+
+		.ok {
+			display: inline-block;
+
+			path, polygon {
+				fill: @alerts;
+			}
+		}
 	}
 }
 
@@ -396,15 +429,12 @@ body {
 				
 				&.btn-group {
 					.dropdown-btn {
-			
-						&:after {
-							content: url('/static/img/arrow_down.png');
-							display: inline-block;
-							vertical-align: top;
-							margin-left: 10px;
+						transition: background .1s ease-in-out, color .1s ease-in-out;
+
+						path {
+							transition: fill .1s ease-in-out;
 						}
 					}
-					
 					.dropdown-menu {
 						color: @highlight;
 						top: 46px;
@@ -429,6 +459,10 @@ body {
 						border-bottom-color: transparent;
 						background-color: @neutral_light_3;
 						color: @highlight;
+
+						path {
+							fill: @highlight;
+						}
 					}
 				}
 				
@@ -461,6 +495,8 @@ body {
 				display: inline-block;
 				vertical-align: top;
 				margin-right: 6px;
+				position: relative;
+				top: -2px;
 			}
 			
 			p {
@@ -567,6 +603,59 @@ body {
 	}
 }
 
+.social_links {
+	font-size: 22px;
+	font-weight: 300;
+	color: @neutral_medium_1;
+	
+	ul.icons {
+		display: inline-block;
+		vertical-align: middle;
+		
+		li {
+			display: inline-block;
+			height: 48px;
+			width: 48px;
+			background-color: @neutral_light_3;
+			margin: 0 10px;
+			text-align: center;
+			transition: background-color .1s ease-in-out;
+
+			svg {
+				height: 48px;
+				width: 48px;
+				
+				path, polygon {
+					fill: @neutral_medium_1;
+					transition: fill .1s ease-in-out;
+				}
+			}
+
+			&:hover {
+				path, polygon {
+					fill: @white;
+				}
+			}
+
+			&.facebook:hover {
+				background-color: @facebook;
+			}
+
+			&.twitter:hover {
+				background-color: @twitter;
+			}
+
+			&.gplus:hover {
+				background-color: @gplus;
+			}
+
+			&.youtube:hover {
+				background-color: @youtube;
+			}
+		}
+	}
+}
+
 .main_banner {
   background-size: cover;
   background-position: 50% 50%;
@@ -647,6 +736,14 @@ body {
       position: relative;
       height: 318px;
 
+
+		.label {
+			position: absolute;
+			right: 10px;
+			top: 10px;
+			z-index: 1;
+		}
+
       .front_face {
 		display: block;
 		height: 298px;
@@ -671,7 +768,7 @@ body {
 			.cert {
 				border: none;
 				position: absolute;
-				right: 10px;
+				right: 0;
 				bottom: -16px;
 				padding: 12px 16px 8px 16px;
 				background: rgba(255,255,255,0.75);
@@ -727,6 +824,7 @@ body {
 		background: @highlight;
 		position: absolute;
 		top: 5px;
+		cursor: pointer;
 		
 		transition: all .1s ease-in-out;
 		
@@ -759,7 +857,7 @@ body {
 			text-transform: uppercase;
 			color: @highlight;
 			background-color: @comp;
-			margin-top: 10px;
+			margin: 10px 10px 0 0;
 			padding: 1px 5px;
 		}
 		
@@ -768,7 +866,14 @@ body {
 			font-size: 12px;
 			text-transform: uppercase;
 			color: @comp;
-			margin-left: 10px;
+			margin-top: 5px;
+
+			img {
+				vertical-align: middle;
+				position: relative;
+				top: -2px;
+				margin-right: 5px;
+			}
 		}
 		
 		.desc {
@@ -799,7 +904,7 @@ body {
   }
 }
 
-/* COURSE */
+/* COURSE OVERVIEW */
 div.course {
 	div.button, a.button {
 		display: block;
@@ -934,68 +1039,24 @@ div.course {
 	
 	.bottom-line {
 		border-bottom: 1px solid @neutral_light_1;
-		padding: 19px 0;
+		padding: 19px 0 0 0;
 		margin-bottom: 19px;
+
+		.social_links {
+			margin-bottom: 19px;
+		}
 	}
 	
 	.bck_grey {
 		background-color: @neutral_light_3;
 		border-top: 1px solid @neutral_light_1;
 		padding: 30px 0;
+		margin-top: 60px;
 		
 		h1 {
 			font-size: 22px;
 			font-weight: 300;
 			margin-bottom: 12px;
-		}
-	}
-	
-	.social_links {
-		font-size: 22px;
-		font-weight: 300;
-		color: @neutral_medium_1;
-		
-		ul.icons {
-			display: inline-block;
-			vertical-align: middle;
-			
-			li {
-				display: inline-block;
-				height: 48px;
-				width: 48px;
-				background-color: @neutral_light_3;
-				margin: 0 10px;
-				text-align: center;
-				transition: background-color .1s ease-in-out;
-
-				svg {
-					height: 48px;
-					width: 48px;
-					
-					path, polygon {
-						fill: @neutral_medium_1;
-						transition: fill .1s ease-in-out;
-					}
-				}
-
-				&:hover {
-					path, polygon {
-						fill: @white;
-					}
-				}
-
-				&.facebook:hover {
-					background-color: @facebook;
-				}
-
-				&.twitter:hover {
-					background-color: @twitter;
-				}
-
-				&.gplus:hover {
-					background-color: @gplus;
-				}
-			}
 		}
 	}
 	
@@ -1060,6 +1121,7 @@ div.course {
 						border-left: 1px solid @highlight;
 						margin: 0 18px 10px 0;
 						position: relative;
+						transition: background-color .1s ease-in-out, color .1s ease-in-out;
 						
 						&:before {
 							content: "";
@@ -1073,6 +1135,7 @@ div.course {
 							border-width: 12px 12px 0 0;
 							border-color: @white transparent transparent transparent;
 							box-shadow: 0 -10px @white;
+							transition: border-color .1s ease-in-out, box-shadow .1s ease-in-out;
 						}
 						
 						&:after {
@@ -1087,6 +1150,22 @@ div.course {
 							border-width: 12px 0 0 12px;
 							border-color: transparent transparent transparent @white;
 							box-shadow: 0 10px @white;
+							transition: border-color .1s ease-in-out, box-shadow .1s ease-in-out;
+						}
+
+						&:hover {
+							background-color: @highlight;
+							color: @white;
+
+							&:before {
+								border-color: @highlight transparent transparent transparent;
+								box-shadow: 0 -10px @highlight;
+							}
+
+							&:after{
+								border-color: transparent transparent transparent @highlight;
+								box-shadow: 0 10px @highlight;
+							}
 						}
 					}
 				}
@@ -1135,6 +1214,13 @@ div.course {
 			border-bottom: none;
 			padding: 0 6px;
 
+			.label {
+				position: absolute;
+				right: 10px;
+				top: 10px;
+				z-index: 1;
+			}
+
 			.front_face {
 				display: block;
 				height: 298px;
@@ -1159,7 +1245,7 @@ div.course {
 					.cert {
 						border: none;
 						position: absolute;
-						right: 10px;
+						right: 0;
 						bottom: -16px;
 						padding: 12px 16px 8px 16px;
 						background: rgba(255,255,255,0.75);
@@ -1215,6 +1301,7 @@ div.course {
 				background: @highlight;
 				position: absolute;
 				top: 5px;
+				cursor: pointer;
 				
 				transition: all .1s ease-in-out;
 				
@@ -1247,7 +1334,7 @@ div.course {
 						text-transform: uppercase;
 						color: @highlight;
 						background-color: @comp;
-						margin-top: 10px;
+						margin: 10px 10px 0 0;
 						padding: 1px 5px;
 					}
 					
@@ -1256,7 +1343,14 @@ div.course {
 						font-size: 12px;
 						text-transform: uppercase;
 						color: @comp;
-						margin-left: 10px;
+						margin-top: 5px;
+
+						img {
+							vertical-align: middle;
+							position: relative;
+							top: -2px;
+							margin-right: 5px;
+						}
 					}
 					
 					.desc {
@@ -1339,6 +1433,10 @@ div.course {
 			font-size: 16px;
 			margin-bottom: 18px;
 		}
+
+		ul {
+			padding-left: 40px;
+		}
 	}
 }
 
@@ -1351,14 +1449,14 @@ ul.rating {
 		font-size: 0 !important;
 		
 		&:after {
-			content: url('/static/img/icon_star_empty.png');
+			content: url('/static/img/ECO_icon_estrella_0.svg');
 		}
 		
 		&.full {
 			font-weight: 700;
 			
 			&:after {
-				content: url('/static/img/icon_star_full.png');
+				content: url('/static/img/ECO_icon_estrella_1.svg');
 			}
 		}
 	}
@@ -1415,7 +1513,7 @@ ul.rating {
 					position: relative;
 					
 					&:before {
-						content: url('/static/img/icon_tick.png');
+						content: url('/static/img/ECO_icon_check.svg');
 						display: block;
 						position: absolute;
 						left: -35px;
@@ -1431,7 +1529,7 @@ ul.rating {
 					position: relative;
 					
 					&:before {
-						content: url('/static/img/icon_bookmark.png');
+						content: url('/static/img/ECO_icon_marcador_1.svg');
 						display: block;
 						position: absolute;
 						left: -35px;
@@ -1483,7 +1581,7 @@ ul.rating {
 				color: @highlight;
 				
 				img {
-					vertical-align: bottom;
+					vertical-align: top;
 					
 					&:first-child {
 						margin-right: 10px;
@@ -1553,6 +1651,11 @@ ul.rating {
 						color: @highlight;
 						border-bottom: 1px solid @comp;
 						margin-left: 8px;
+						transition: border .2s ease-in-out;
+
+						&:hover{
+							border-bottom-color: @highlight;
+						}
 					}
 				}
 				
@@ -1675,7 +1778,7 @@ ul.rating {
 			color: @neutral_medium_1;
 			
 			img {
-				vertical-align: middle;
+				vertical-align: top;
 				margin-right: 10px;
 			}
 		}
@@ -1746,7 +1849,7 @@ ul.rating {
 							background: @neutral_light_3;
 							
 							&:before {
-								content: url('/static/img/icon_tick.png');
+								content: url('/static/img/ECO_icon_check.svg');
 								position: absolute;
 								left: 0;
 								top: 0;
@@ -1937,6 +2040,27 @@ ul.rating {
 				text-transform: uppercase;
 				padding: 8px 8px 8px 15px;
 				border: 2px solid @highlight;
+				transition: background .1s ease-in-out, color .1s ease-in-out;
+				
+				svg {
+					position: relative;
+					top: 2px;
+					margin-left: 10px;
+
+					polygon {
+						fill: @black;
+						transition: fill .1s ease-in-out;
+					}
+				}
+
+				&:hover {
+					color: @white;
+					background-color: @highlight;
+
+					polygon {
+						fill: @white;
+					}
+				}
 			}
 		}
 	}
@@ -1955,6 +2079,11 @@ ul.rating {
 				font-weight: 400;
 				color: @highlight;
 				border-bottom: 1px solid @comp;
+				transition: border .2s ease-in-out;
+
+				&:hover {
+					border-bottom-color: @highlight;
+				}
 			}
 		}
 		
@@ -2139,7 +2268,7 @@ ul.rating {
 				
 				&:not(.disabled){
 					&:after {
-						content: url('/static/img/icon_goto.png');
+						content: url('/static/img/ECO_icon_flecha_enlace.svg');
 						display: block;
 						vertical-align: top;
 						width: 24px;
@@ -2183,24 +2312,19 @@ ul.rating {
 
 		& > li{
 			border-top: 1px solid @neutral_light_1;
-			font-size: 22px;
-			color: @highlight;
-			font-weight: 600;
 
-			&:before {
-				content: counters(item, ".") ". ";
-				counter-increment: item;
-				float: left;
-				margin-right: 3px;
-				padding: 30px 0 0 40px;
+			& > .row {
+				border-bottom: 1px solid @neutral_light_1;
 			}
 
 			.unit {
 				position: relative;
 				padding: 30px 40px 30px 0;
 				margin-left: 40px;
-				border-bottom: 1px solid @neutral_light_1;
 				display: block;
+				font-size: 22px;
+				color: @highlight;
+				font-weight: 600;
 
 				&.done:before {
 					content: url('/static/img/ECO_icon_check.svg');
@@ -2211,22 +2335,44 @@ ul.rating {
 					height: 100%;
 					padding-top: 30px;
 					position: absolute;
-					left: -40px;
+					left: -45px;
 					top: 0;
 					border-bottom: 1px solid @neutral_light_3;
 				}
+
+				.num {
+					&:before {
+						content: counters(item, ".") ". ";
+						counter-increment: item;
+					}
+				}
 			}
 
-			.fblike {
-				color: @facebook;
-				font-weight: 400;
-				float: right;
-			}
+			.social {
+				padding-top: 30px;
 
-			.gplusone {
-				color: @gplus;
-				font-weight: 400;
-				float: right;
+				& > * {
+					border-right: 1px solid @neutral_light_2;
+					padding: 0 15px;
+
+					&:first-child {
+						border-left: 1px solid @neutral_light_2;
+					}
+
+					img {
+						position: relative;
+						top: 2px;
+						margin-right: 5px;
+					}
+				}
+
+				.fblike {
+					color: @facebook;
+				}
+
+				.gplusone {
+					color: @gplus;
+				}
 			}
 			
 			ol {
@@ -2288,96 +2434,81 @@ ul.rating {
 }
 
 footer {
-  color: @neutral_medium_1;
-  
-  a {
-    color: @highlight;
-  }
-  
-  .social_links {
-    background: @neutral_medium_1;
-    color: @neutral_light_3;
-    padding: 20px;
-    font-size: 22px;
-    font-weight: 300;
-    text-align: center;
-    
-    ul.icons{
-      display: inline-block;
-      margin: 0;
-      
-      li {
-	display: inline-block;
-	
+	color: @neutral_medium_1;
+
 	a {
-	  display: inline-block;
-	  padding: 12px 9px 6px;
-	  margin-left: 18px;
-	  background: @neutral_light_3;
+		color: @highlight;
 	}
-	
-	&:first-child {
-	  margin-left: 0;
+
+	.social_links {
+		background: @neutral_medium_1;
+		color: @neutral_light_3;
+		padding: 20px;
+		font-size: 22px;
+		font-weight: 300;
+		text-align: center;
 	}
-      }
-    }
-  }
   
-  .prefoot {
-    padding: 30px 0 50px;
-    border-top: 10px solid @highlight;
-    
-    p {
-      margin-bottom: 22px;
-      
-      a {
-	border-bottom: 1px solid @comp;
-      }
-    }
-    
-    strong {
-      font-weight: 800;
-    }
-    
-    .logos {
-      li {
-	margin-right: 40px;
-	
-	&:not(.noBorder) {
-	  padding-right: 40px;
-	  border-right: 1px solid @neutral_light_2;
+	.prefoot {
+		padding: 30px 0 50px;
+		border-top: 10px solid @highlight;
+
+		p {
+			margin-bottom: 22px;
+
+			a {
+				border-bottom: 1px solid @comp;
+				transition: border .2s ease-in-out;
+
+				&:hover {
+					border-bottom-color: @highlight;
+				}
+			}
+		}
+
+		strong {
+			font-weight: 800;
+		}
+
+		.logos {
+			li {
+				margin-right: 40px;
+
+				&:not(.noBorder) {
+					padding-right: 40px;
+					border-right: 1px solid @neutral_light_2;
+				}
+
+				&:last-child {
+					border-right: none;
+				}
+			}
+
+			&.stretch {
+				li {
+					margin-right: 14px;
+
+				&:not(.noBorder) {
+					padding-right: 14px;
+					border-right: 1px solid @neutral_light_2;
+				}
+
+				&:last-child {
+					border-right: none;
+				}
+				}
+			}
+		}
 	}
-	
-	&:last-child {
-	  border-right: none;
+
+	.footer {
+		padding: 18px 20px;
+		background: @neutral_light_2;
+		border-top: 1px solid @neutral_medium_2;
+		font-size: 14px;
+
+		ul li {
+			margin-left: 20px;
+		}
 	}
-      }
-	
-      &.stretch {
-	li {
-	  margin-right: 14px;
-	
-	  &:not(.noBorder) {
-	    padding-right: 14px;
-	    border-right: 1px solid @neutral_light_2;
-	  }
-	  
-	  &:last-child {
-	    border-right: none;
-	  }
-	}
-      }
-    }
-  }
-  
-  .footer {
-    padding: 18px 20px;
-    background: @neutral_light_2;
-    border-top: 1px solid @neutral_medium_2;
-    font-size: 14px;
-    
-    ul li {
-      margin-left: 20px;
-    }
-  }
 }

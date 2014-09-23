@@ -114,7 +114,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- COURSE INFO -->
 	<div class="container">
 		<div class="row">
@@ -260,9 +260,9 @@
 					<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
 						{% for ncourse in relatedcourses %}
 							{% if ncourse.is_public %}
-							<div class="course box col-lg-4 col-md-4 col-sm-4 col-mob-2 published">
+							<div url="{{ ncourse.get_absolute_url }}" class="course box col-lg-4 col-md-4 col-sm-4 col-mob-2 published">
 							{% else %}
-							<div class="course box col-lg-4 col-md-4 col-sm-4 col-mob-2 draft">
+							<div url="{{ ncourse.get_absolute_url }}" class="course box col-lg-4 col-md-4 col-sm-4 col-mob-2 draft">
 								<span class="label pull-right">{% trans "Draft" %}</span>
 							{% endif %}
 								<div class="front_face">
@@ -273,7 +273,7 @@
 										<a href="{{ ncourse.get_absolute_url }}" style="background-image: url('{{ STATIC_URL }}img/classroom.jpg');" class="hide-text">{% trans 'decorative classroom image' %}</a>
 									{% endif %}
 									{% if ncourse.certification_available %}
-										<img class="cert" src="{{ STATIC_URL }}img/icon_cert.png" alt="{% trans 'certificated course' %}">
+										<img class="cert" src="{{ STATIC_URL }}img/ECO_icon_certificado.svg" alt="{% trans 'certificated course' %}">
 									{% endif %}
 									</div>
 									<div class="content">
@@ -288,7 +288,7 @@
 										<h2><a href="{{ ncourse.get_absolute_url }}">{{ ncourse.name }}</a></h2>
 										<span class="date">{{ ncourse.start_date }}</span>
 										{% if ncourse.ects > 0 %}
-										<span class="ects"><img src="{{ STATIC_URL }}img/icon_ects.png">{{ ncourse.ects }}
+										<span class="ects"><img src="{{ STATIC_URL }}img/ECO_icon_creditos_white.svg">{{ ncourse.ects }}
 											{% if ncourse.ects > 1 %}
 											credits
 											{% else %}
@@ -362,6 +362,10 @@
 
 	$('.course-header .title .media-box .background').click(function(){
 		$(this).parent().toggleClass('show');
+	});
+	$('.course .back_face').click(function(e){
+		e.preventDefault();
+		window.location.href = $(this).parent().attr('url');
 	});
 </script>
 {% endblock %}

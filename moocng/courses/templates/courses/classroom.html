@@ -116,8 +116,13 @@
 				<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
 					<div id="kq-q-buttons">
 						<a class="btn pull-left" id="kq-q-showkq"><img src="{{ STATIC_URL }}img/ECO_icon_contenido_video.svg"><span>{% trans "Show lecture" %}</span></a>
-						<a class="btn squared" id="kq-q-submit"><span>{% trans "Submit answer" %}</span><img src="{{ STATIC_URL }}img/icon_submit.png"></a>
-						<a class="btn pull-right" id="kq-q-showq"><span>{% trans "Do activity" %}</span><img src="{{ STATIC_URL }}img/icon_test.png"></a>
+						<a class="btn squared" id="kq-q-submit">
+                            <span>{% trans "Submit answer" %}</span>
+                            <svg width="16px" height="14px">
+                                <polygon points="7,2 11.113,6 1,6 1,8 11.138,8 7,12 8.414,13.414 15,7 8.414,0.586   "/>
+                            </svg>
+                        </a>
+						<a class="btn pull-right" id="kq-q-showq"><span>{% trans "Do activity" %}</span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_tarea-test.svg"></a>
 						<a class="btn pull-right" id="kq-q-showa"><span>{% trans "Show result" %}</span></a>
 					</div>
 				</div>
@@ -187,7 +192,7 @@
 						</ul>
 					</div>
 					<div class="bottom-bar">
-						<a href="#" class="button pull-right">{% trans "Post in the forum" %}<img src="{{ STATIC_URL }}/img/feed_comment.png"></a>
+						<a href="#" class="button pull-right">{% trans "Post in the forum" %}<img src="{{ STATIC_URL }}/img/ECO_icon_comentar_foro.svg"></a>
 					</div>
 				</div>
 			</div>
@@ -211,11 +216,11 @@
 	</div>
 </div>
 <div id="unit-selector">
-	<a class="handle"><img src="{{ STATIC_URL }}img/icon_index.png"></a>
+	<a class="handle"><img src="{{ STATIC_URL }}img/ECO_icon_toc.svg"></a>
 	
 	<div class="unit-menu">
 		<div class="heading">
-			<a class="title" href="#"><img src="{{ STATIC_URL }}img/icon_index.png">{% trans "Index" %}</a>
+			<a class="title" href="#"><img src="{{ STATIC_URL }}img/ECO_icon_toc.svg">{% trans "Index" %}</a>
 			<a class="syllabus-link" href="#">{% trans "Syllabus" %}</a>
 		</div>
 		<ol>

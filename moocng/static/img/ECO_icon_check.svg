@@ -5,5 +5,6 @@
 	 width="16px" height="14px" viewBox="0 0 16 14" enable-background="new 0 0 16 14" xml:space="preserve">
 <g>
 	<polygon fill="#55555D" points="0.586,8.414 2,7 5,10.172 14,1 15.414,2.414 5,13 	"/>
+	<script>document.getElementsByTagName("polygon")[0].setAttribute("fill", location.hash);</script>
 </g>
 </svg>

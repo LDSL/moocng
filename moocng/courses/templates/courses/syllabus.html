@@ -3,38 +3,52 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-bg-16 col-md-12 col-sm-8 col-mob-4 syllabus">
+        <div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 syllabus">
             <h3>{% trans "Syllabus" %}</h3>
             <ol>
             {% for unit in unit_list %}
                 <li>
-                    <a href="{{unit.url}}" class="unit {% if unit.complete %}done{% endif %}">{{unit.title}}</a>
-                    <a class="fblike"><img src="{{ STATIC_URL }}img/ECO_icon_gusta_fb.svg"><span></span></a>
-                    <a class="gplusone"><img src="{{ STATIC_URL }}img/ECO_icon_gusta_google.svg"><span></span></a>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-8 col-sm-5 col-mob-4">
+                            <a href="{{unit.url}}" class="unit {% if unit.complete %}done{% endif %}"><span class="num"></span>{{unit.title}}</a>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-3 col-mob-4">
+                            <div class="social">
+                                <a class="fblike"><img src="{{ STATIC_URL }}img/ECO_icon_gusta_fb.svg"><span></span></a>
+                                <a class="gplusone"><img src="{{ STATIC_URL }}img/ECO_icon_gusta_google.svg"><span></span></a>
+                            </div>
+                        </div>
+                    </div>
                 {% if unit.questions %}
                     <ol>
                         {% for q in unit.questions %}
                         <li class="{% if q.current %}current{% endif %}{% if q.completed %}done{% endif %}">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-8 col-sm-5 col-mob-4">
+                                    <a class="kq" href="{{q.url}}">{{q.title}}</a>
+                                    {% if q.has_video %}
+                                        <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_video.svg">{% trans "Video" %}</span>
+                                    {% endif %} 
 
-                            <a class="kq" href="{{q.url}}">{{q.title}}</a>
-                            <a class="fblike"><img src="{{ STATIC_URL }}img/ECO_icon_gusta_fb.svg"><span></span></a>
-                            <a class="gplusone"><img src="{{ STATIC_URL }}img/ECO_icon_gusta_google.svg"><span></span></a>
+                                    {% if q.has_presentation %}
+                                        <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_presentacion.svg">{% trans "Presentation" %}</span>
+                                    {% endif %} 
 
-                            {% if q.has_video %}
-                                <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_video.svg">{% trans "Video" %}</span>
-                            {% endif %} 
+                                    {% if q.has_attachments %}
+                                        <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_fichero.svg">{% trans "Attachments" %}</span>
+                                    {% endif %} 
 
-                            {% if q.has_presentation %}
-                                <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_presentacion.svg">{% trans "Presentation" %}</span>
-                            {% endif %} 
-
-                            {% if q.has_attachments %}
-                                <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_fichero.svg">{% trans "Attachments" %}</span>
-                            {% endif %} 
-
-                            {% if q.has_test %}
-                                <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_tarea-test.svg">{% trans "Test" %}</span>
-                            {% endif %}
+                                    {% if q.has_test %}
+                                        <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_tarea-test.svg">{% trans "Test" %}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-3 col-mob-4">
+                                    <div class="social">
+                                        <a class="fblike"><img src="{{ STATIC_URL }}img/ECO_icon_gusta_fb.svg"><span></span></a>
+                                        <a class="gplusone"><img src="{{ STATIC_URL }}img/ECO_icon_gusta_google.svg"><span></span></a>
+                                    </div>
+                                </div>
+                            </div>
                         </li>
                         {% endfor %}
                     </ol>
@@ -52,8 +66,8 @@
         $(function(){
             var host = window.location.origin;
             $('.syllabus a.unit').each(function(){
-                var $fb = $(this).siblings('.fblike').first();
-                var $gplus = $(this).siblings('.gplusone').first();
+                var $fb = $(this).parent().parent().find('.fblike').first();
+                var $gplus = $(this).parent().parent().find('.gplusone').first();
                 var url = $(this).attr('href');
                 url = url.replace('#!','?_escaped_fragment=')
                 /* FB */
@@ -63,24 +77,10 @@
                     $fb.children('span').html(data.shares);
                 });
                 /* GPLUS */
-                $.ajax({
+                /*$.ajax({
                     cache: false,
-                    type: 'POST',
-                    url: 'https://clients6.google.com/rpc',
-                    data:[{
-                        'method': 'pos.plusones.get',
-                        'id': 'p',
-                        'jsonrpc': '2.0',
-                        'key': 'p',
-                        'apiVersion': 'v1',
-                        'params': {
-                            'nolog': true,
-                            'id': host+url,
-                            'source':'widget',
-                            'userId': '@viewer',
-                            'groupId': '@self'
-                        }
-                    }],
+                    type: 'GET',
+                    url: 'https://plusone.google.com/_/+1/fastbutton?url='+host+url,
                     crossDomain: true,
                     jsonp: true,
                     timeout: 5000,
@@ -88,13 +88,15 @@
                     contentType: 'application/javascript; charset=utf-8',
                     success: function(data){
                         console.log('YEAH!');
-                        console.log(data);
+                        var count = data.match('/window.__SSR');
+                        console.log(count);
                     },
                     allways: function(data){
                         console.log(data);
                     }
-                });
+                });*/
             });
         });
+
     </script>
 {% endblock %}

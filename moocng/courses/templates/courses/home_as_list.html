@@ -21,7 +21,7 @@
 	      <a href="#" class="col-lg-8 col-md-6 col-sm-4 col-mob-2">Oncoming</a>
 	    </div>
 	</div>
-	<a class="pull-right grey_squared col-lg-4 col-md-4 col-sm-4 col-mob-2" href="#"><span><span class="noLowRes">Explore the full </span>catalogue</span> <img src="{{ STATIC_URL }}img/arrow-right.png"></a> 
+	<a class="pull-right grey_squared col-lg-4 col-md-4 col-sm-4 col-mob-2" href="#"><span><span class="noLowRes">Explore the full </span>catalogue</span> <img src="{{ STATIC_URL }}img/ECO_icon_flecha-xl.svg"></a> 
       </div>
     </div>
     <div class="content">
@@ -30,52 +30,64 @@
 	      {% conditionalcache use_cache 3600 course_list LANGUAGE_CODE %}
 		  {% for course in courses %}
 		      {% if course.is_public %}
-			  <div class="course box col-lg-4 col-md-4 col-sm-4 col-mob-2 published">
+			  <div url="{{ course.get_absolute_url }}" class="course box col-lg-4 col-md-4 col-sm-4 col-mob-2 published">
 		      {% else %}
-			  <div class="course box col-lg-4 col-md-4 col-sm-4 col-mob-2 draft">
+			  <div url="{{ course.get_absolute_url }}" class="course box col-lg-4 col-md-4 col-sm-4 col-mob-2 draft">
 			      <span class="label pull-right">{% trans "Draft" %}</span>
 		      {% endif %}
 			      <div class="front_face">
-				<div class="images">
-				{% if course.thumbnail %}
-				    <a href="{{ course.get_absolute_url }}" style="background-image: url('{{ MEDIA_URL }}{{ course.thumbnail }}');" class="hide-text">{% if course.thumbnail_alt %}{{ course.thumbnail_alt }}{% else %}{% trans 'decorative classroom image' %}{% endif %}</a>
-				{% else %}
-				    <a href="{{ course.get_absolute_url }}" style="background-image: url('{{ STATIC_URL }}img/classroom.jpg');" class="hide-text">{% trans 'decorative classroom image' %}</a>
-				{% endif %}
-				{% if course.certification_available %}
-				    <img class="cert" src="{{ STATIC_URL }}img/icon_cert.png" alt="{% trans 'certificated course' %}">
-				{% endif %}
-				</div>
-				<div class="content">
-				  <h3><a href="#">{{ course.owner }}</a></h3>
-				  <h2 class="line-clamp">{{ course.name }}</h2>
-				  <span class="date">{{ course.start_date }}</span>
-				</div>
+					<div class="images">
+					{% if course.thumbnail %}
+					    <a href="{{ course.get_absolute_url }}" style="background-image: url('{{ MEDIA_URL }}{{ course.thumbnail }}');" class="hide-text">{% if course.thumbnail_alt %}{{ course.thumbnail_alt }}{% else %}{% trans 'decorative classroom image' %}{% endif %}</a>
+					{% else %}
+					    <a href="{{ course.get_absolute_url }}" style="background-image: url('{{ STATIC_URL }}img/classroom.jpg');" class="hide-text">{% trans 'decorative classroom image' %}</a>
+					{% endif %}
+					{% if course.certification_available %}
+					    <img class="cert" src="{{ STATIC_URL }}img/ECO_icon_certificado.svg" alt="{% trans 'certificated course' %}">
+					{% endif %}
+					</div>
+					<div class="content">
+					  <h3><a href="#">{{ course.owner }}</a></h3>
+					  <h2 class="line-clamp">{{ course.name }}</h2>
+					  {% if course.start_date %}
+					  <span class="date">{{ course.start_date }}</span>
+					  {% endif %}
+					</div>
 			      </div>
 			      <div class="back_face">
-				<div class="content">
-				  <h3><a href="#">{{ course.owner }}</a></h3>
-				  <h2><a href="{{ course.get_absolute_url }}">{{ course.name }}</a></h2>
-				  <span class="date">{{ course.start_date }}</span>
-				  {% if course.ects > 0 %}
-				  <span class="ects"><img src="{{ STATIC_URL }}img/icon_ects.png">{{ course.ects }}
-				    {% if course.ects > 1 %}
-				     credits
-				    {% else %}
-				     credit
-				    {% endif %}
-				  </span>
-				  {% endif %}
-				  <div class="desc line-clamp">{{ course.description|safe|truncatewords_html:60 }}</div>
-				</div>
+					<div class="content">
+					  <h3><a href="#">{{ course.owner }}</a></h3>
+					  <h2><a href="{{ course.get_absolute_url }}">{{ course.name }}</a></h2>
+					  {% if course.start_date %}
+					  	<span class="date">{{ course.start_date }}</span>
+					  {% endif %}
+					  {% if course.ects > 0 %}
+					  <span class="ects"><img src="{{ STATIC_URL }}img/ECO_icon_creditos_white.svg">{{ course.ects }}
+					    {% if course.ects > 1 %}
+					     credits
+					    {% else %}
+					     credit
+					    {% endif %}
+					  </span>
+					  {% endif %}
+					  <div class="desc line-clamp">{{ course.description|safe|truncatewords_html:60 }}</div>
+					</div>
 			      </div>
 			  </div>
 		  {% endfor %}
 	      {% endconditionalcache %}
 	  </section>
 	  <div class="row">
-	    <a class="pull-right grey_squared col-lg-4 col-md-4 col-sm-4 col-mob-4" href="#"><span>Explore the full catalogue</span> <img src="{{ STATIC_URL }}img/arrow-right.png"></a> 
+	    <a class="pull-right grey_squared col-lg-4 col-md-4 col-sm-4 col-mob-4" href="#"><span>Explore the full catalogue</span> <img src="{{ STATIC_URL }}img/ECO_icon_flecha-xl.svg"></a> 
 	   </div>
       </div>
     </div>
+{% endblock %}
+{% block extrajs %}
+	<script>
+		$('.course .back_face').click(function(e){
+			e.preventDefault();
+			window.location.href = $(this).parent().attr('url');
+		});
+	</script>
 {% endblock %}

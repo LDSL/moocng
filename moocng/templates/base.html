@@ -70,11 +70,14 @@
     
     <div role="main" class="{% block mainclass %}{% endblock %}">
       {% if messages %}{% for message in messages %}
-      <div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
-        <button class="close" data-dismiss="alert">×</button>
-        {{ message }}
-      </div>
-      {% endfor %}{% endif %}
+			<div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
+				<div class="container">
+					<object type="image/svg+xml" class="ok" data="{{ STATIC_URL }}img/ECO_icon_check.svg?#008833"></object>
+	    			<!--<button class="close" data-dismiss="alert">×</button>-->
+	    			{{ message }}
+	    		</div>
+			</div>
+		{% endfor %}{% endif %}
 
       {% block nav %}{% endblock %}
 
