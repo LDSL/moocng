@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+{% include "profile/include.userheader.html" %}
+<div class="userprofile white">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-4 col-md-4 col-sm-8 col-mob-4">
+				<dl class="info">
+					{% if user.location %}
+					<div class="row separator_h">
+						<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 element">
+							<img class="icon" src="{{ STATIC_URL }}img/ECO_icon_info_localizacion.svg">
+							<dt>{% trans "Location" %}</dt>
+							<dd>{{ user.location }}</dd>
+						</div>
+					</div>
+					{% endif %}
+					{% if user.languages %}
+					<div class="row separator_h">
+						<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 element">
+							<img class="icon" src="{{ STATIC_URL }}img/ECO_icon_info_idioma.svg">
+							<dt>{% trans "Languages" %}</dt>
+							{% for language in user.languages %}
+							<dd>{{ language }}</dd>
+							{% endfor %}
+						</div>
+					</div>
+					{% endif %}
+					{% if user.sex %}
+					<div class="row separator_h">
+						<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 element">
+							<img class="icon" src="{{ STATIC_URL }}img/ECO_icon_info_sexo-M.svg">
+							<dt>{% trans "Sex" %}</dt>
+							<dd>{{ user.sex }}</dd>
+						</div>
+					</div>
+					{% endif %}
+					{% if user.birth %}
+					<div class="row separator_h">
+						<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 element">
+							<img class="icon" src="{{ STATIC_URL }}img/ECO_icon_info_edad.svg">
+							<dt>{% trans "Age" %}</dt>
+							<dd>{{ user.birth|timesince }}</dd>
+						</div>
+					</div>
+					{% endif %}
+				</dl>
+			</div>
+			<div class="col-lg-12 col-md-8 col-sm-8 col-mob-4">
+				<div class="profile">
+					<div class="links-bar">
+						{% if user.personalweb %}
+						<a class="pull-left" href="{{ user.personalweb }}">
+							<img src="{{ STATIC_URL }}img/ECO_icon_info_enlace.svg">
+							<span>{{ user.personalweb }}</span>
+						</a>
+						{% endif %}
+						{% if user.email %}
+						<a class="pull-left" href="mailto:{{ user.email }}">
+							<img src="{{ STATIC_URL }}img/ECO_icon_info_email.svg">
+							<span>{{ user.email }}</span>
+						</a>
+						{% endif %}
+						{% if is_user %}
+						<a class="pull-right" href="#">
+							<span>{% trans "Edit profile" %}</span>
+						</a>
+						{% endif %}
+					</div>
+					{% if user.bio %}
+					<div class="bio">{{ user.bio|safe }}</div>
+					{% endif %}
+					{% if user.socialmedia|length > 0 %}
+					<div class="social separator_h">
+						<h5>{% trans "Social profiles" %}</h5>
+						{% for social in user.socialmedia %}
+							<a class="hide-text" href="{{ social.url }}">
+								<object data="{{ STATIC_URL }}img/ECO_icon_seguir_{{ social.name }}.svg?#55555d" type="image/svg+xml"></object>
+								{{ social.name }}
+							</a>
+						{% endfor %}
+					</div>
+					{% endif %}
+					{% if user.interests|length > 0 %}
+					<div class="interests">
+						<h5>{% trans "Interests areas" %}</h5>
+						<ul class="tags">
+							{% for interest in user.interests %}
+							<li><a href="#">{{ interest }}</a></li>
+							{% endfor %}
+						</ul>
+					</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
