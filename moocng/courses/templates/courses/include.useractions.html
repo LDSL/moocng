@@ -30,7 +30,7 @@
 			<img src="{% gravatar_for_email user.email %}?s=48" alt="{% firstof user.get_full_name user.username %}">      
 		</a>
 		<ul class="dropdown-menu">
-			<li><a href="{% url profile_timeline 'neokore' %}">{% trans "Profile" %}</a></li>
+			<li><a href="{% url profile_timeline user.username %}">{% trans "Profile" %}</a></li>
 			<li><a href="{% url home %}">{% trans "See all courses" %}</a></li>
 			<li><a href="{% url transcript %}">{% trans "My transcript" %}</a></li>
 			<li><a href="{% url my_badges %}">{% trans "My badges" %}</a></li>

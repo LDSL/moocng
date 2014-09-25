@@ -18,8 +18,7 @@
 				{% if task_list %}
 				<div class="progress-fraction">
 					<img src="{{ STATIC_URL }}img/ECO_icon_tareas.svg">
-					{% regroup task_list by done as tasks_done %}
-					<p>{{ tasks_done|length }}<span>/{{ task_list|length }}</span></p>
+					<p>{{ tasks_done }}<span>/{{ task_list|length }}</span></p>					
 					<h4 class="noLowRes">{% trans "Total Tasks" %}</h4>
 				</div>
 				{% endif %}

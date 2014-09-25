@@ -41,7 +41,29 @@ class UserProfile(models.Model):
                                           null=True,
                                           blank=True)
 
-    organization = models.ManyToManyField(Organization, verbose_name=_(u'Organization'))
+    organization = models.ManyToManyField(Organization, verbose_name=_(u'Organization'),
+                                                        null=True)
+    GENDER_CHOICES = (
+        ('m', _(u'Male')),
+        ('f', _(u'Female'))
+    )
+    gender = models.CharField(verbose_name=_(u"Gender"),
+                                    max_length=1,
+                                    choices=GENDER_CHOICES,
+                                    null=True,
+                                    blank=True)
+    personalweb = models.CharField(verbose_name=_(u"Personal website"),
+                                    max_length=256,
+                                    null=True,
+                                    blank=True)
+    birthdate = models.DateField(verbose_name=_(u"Birthdate"),
+                                    null=True)
+    bio = models.TextField(verbose_name=_(u"Biography"),
+                                    null=True,
+                                    blank=True)
+    karma = models.IntegerField(verbose_name=_(u"Karma"),
+                                    default=0)
+    
 
     class Meta:
         verbose_name = _('User profile')
@@ -49,7 +71,6 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return unicode(self.user)
-
 
 @receiver(signals.post_save, sender=User, dispatch_uid="create_user_profile")
 def create_user_profile(sender, instance, created, **kwargs):

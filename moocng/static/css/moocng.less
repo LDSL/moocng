@@ -244,6 +244,7 @@ body {
 		}
 		
 		&.big {
+			position: absolute;
 			.main-bar {
 				padding: 10px 30px 10px 265px;
 			}
@@ -2579,7 +2580,9 @@ ul.rating {
 			padding-bottom: 15px;
 
 			& + dd {
-				padding-bottom: 0;
+				padding-bottom: 5px !important;
+				position: relative;
+				top: -10px;
 			}
 		}
 
@@ -2599,7 +2602,7 @@ ul.rating {
 		}
 	}
 
-	a.button {
+	div.button, a.button {
 		color: @highlight;
 		text-transform: uppercase;
 
@@ -2638,6 +2641,18 @@ ul.rating {
 			
 			img,object {
 				float: right;
+			}
+
+			input {
+				background: none;
+				border: none;
+				font-size: 18px;
+				text-transform: uppercase;
+				font-weight: 400;
+				float: left;
+				padding-top: 3px;
+				color: inherit;
+				cursor: inherit;
 			}
 
 			&.alert {

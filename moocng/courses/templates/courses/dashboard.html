@@ -52,8 +52,7 @@
 					<div class="content">
 						<ul class="tabs">
 							<li class="selected">
-								{% regroup task_list by done as tasks_done %}
-								<h4>{% trans "Singles" %}<span><strong>{{ tasks_done|length }}</strong>/{{ task_list|length}}</span></h4>
+								<h4>{% trans "Singles" %}<span><strong>{{ tasks_done }}</strong>/{{ task_list|length}}</span></h4>
 								<div class="content">
 									<ol>
 										{% for task in task_list %}

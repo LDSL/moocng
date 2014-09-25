@@ -399,6 +399,8 @@ class CourseStudent(models.Model):
                                          choices=COURSE_STATUSES,
                                          default='f',
                                          max_length=1)
+    progress = models.IntegerField(verbose_name=_(u'Progress'),
+                                        default=0)
 
     class Meta:
         verbose_name = _(u'course student')

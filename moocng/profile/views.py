@@ -18,13 +18,16 @@ from django.utils.translation import ugettext as _
 from datetime import date
 
 from moocng.profile.models import UserProfile
-from moocng.courses.security import (get_courses_available_for_user)
+from moocng.courses.security import (get_courses_available_for_user,
+									get_courses_user_is_enrolled,
+									get_course_progress_for_user)
+from moocng.courses.utils import (is_teacher as is_teacher_test)
 
 from moocng.slug import unique_slugify
 from moocng.utils import use_cache
 
 def profile_timeline(request, user_slug):
-	user = {
+	profile = {
 		'cn': 'Raul',
 		'sn': 'Yeguas',
 		'username': 'raul.yeguas',
@@ -43,13 +46,13 @@ def profile_timeline(request, user_slug):
 	}
 
 	return render_to_response('profile/timeline.html', {
-		'user': user,
+		'profile': profile,
 		'request': request,
 		'user_slug': user_slug
 		}, context_instance=RequestContext(request))
 
 def profile_groups(request, user_slug):
-	user = {
+	profile = {
 		'cn': 'Raul',
 		'sn': 'Yeguas',
 		'username': 'raul.yeguas',
@@ -68,13 +71,13 @@ def profile_groups(request, user_slug):
 	}
 
 	return render_to_response('profile/groups.html', {
-		'user': user,
+		'profile': profile,
 		'request': request
 		}, context_instance=RequestContext(request))
 
 @login_required
 def profile_courses(request, user_slug):
-	user = {
+	profile = {
 		'cn': 'Raul',
 		'sn': 'Yeguas',
 		'username': 'raul.yeguas',
@@ -92,17 +95,29 @@ def profile_courses(request, user_slug):
 		'slug': user_slug,
 	}
 
-	courses = get_courses_available_for_user(request.user)
+	courses = get_courses_user_is_enrolled(request.user)
+	courses_completed = 0
+	for course in courses:
+		if request.user.is_authenticated():
+			course.is_enrolled = course.students.filter(id=request.user.id).exists()
+			course.is_teacher = is_teacher_test(request.user, course)
+			course.progress = get_course_progress_for_user(course, request.user)
+			if course.progress == 100:
+				courses_completed +=1
+		else:
+			course.is_enrolled = False
+			course.is_teacher = False
 
 	return render_to_response('profile/courses.html', {
-		'user': user,
+		'profile': profile,
 		'request': request,
-		'courses': courses
+		'courses': courses,
+		'courses_completed': courses_completed
 		}, context_instance=RequestContext(request))
 
 @login_required
 def profile_calendar(request, user_slug):
-	user = {
+	profile = {
 		'cn': 'Raul',
 		'sn': 'Yeguas',
 		'username': 'raul.yeguas',
@@ -120,17 +135,14 @@ def profile_calendar(request, user_slug):
 		'slug': user_slug,
 	}
 
-	courses = get_courses_available_for_user(request.user)
-
 	return render_to_response('profile/calendar.html', {
-		'user': user,
+		'profile': profile,
 		'request': request,
-		'courses': courses
 		}, context_instance=RequestContext(request))
 
 @login_required
 def profile_user(request, user_slug):
-	user = {
+	profile = {
 		'cn': 'Raul',
 		'sn': 'Yeguas',
 		'username': 'raul.yeguas',
@@ -173,10 +185,10 @@ def profile_user(request, user_slug):
 		'interests': ['Science', 'Geology', 'Technology', 'Design']
 	}
 
-	courses = get_courses_available_for_user(request.user)
+	courses = get_courses_user_is_enrolled(request.user)
 
 	return render_to_response('profile/user.html', {
-		'user': user,
+		'profile': profile,
 		'request': request,
 		'courses': courses,
 		'is_user': True

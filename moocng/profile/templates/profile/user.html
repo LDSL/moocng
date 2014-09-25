@@ -9,41 +9,45 @@
 		<div class="row">
 			<div class="col-lg-4 col-md-4 col-sm-8 col-mob-4">
 				<dl class="info">
-					{% if user.location %}
+					{% if profile.location %}
 					<div class="row separator_h">
 						<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 element">
 							<img class="icon" src="{{ STATIC_URL }}img/ECO_icon_info_localizacion.svg">
 							<dt>{% trans "Location" %}</dt>
-							<dd>{{ user.location }}</dd>
+							<dd>{{ profile.location }}</dd>
 						</div>
 					</div>
 					{% endif %}
-					{% if user.languages %}
+					{% if profile.languages %}
 					<div class="row separator_h">
 						<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 element">
 							<img class="icon" src="{{ STATIC_URL }}img/ECO_icon_info_idioma.svg">
 							<dt>{% trans "Languages" %}</dt>
-							{% for language in user.languages %}
+							{% for language in profile.languages %}
 							<dd>{{ language }}</dd>
 							{% endfor %}
 						</div>
 					</div>
 					{% endif %}
-					{% if user.sex %}
+					{% if user.get_profile.gender %}
 					<div class="row separator_h">
 						<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 element">
-							<img class="icon" src="{{ STATIC_URL }}img/ECO_icon_info_sexo-M.svg">
-							<dt>{% trans "Sex" %}</dt>
-							<dd>{{ user.sex }}</dd>
+							<img class="icon" src="{{ STATIC_URL }}img/ECO_icon_info_sexo-{{user.get_profile.gender}}.svg">
+							<dt>{% trans "Gender" %}</dt>
+							{% if user.get_profile.gender == 'm' %}
+							<dd>{% trans "Male" %}</dd>
+							{% else %}
+							<dd>{% trans "Female" %}</dd>
+							{% endif %}
 						</div>
 					</div>
 					{% endif %}
-					{% if user.birth %}
+					{% if user.get_profile.birthdate %}
 					<div class="row separator_h">
 						<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 element">
 							<img class="icon" src="{{ STATIC_URL }}img/ECO_icon_info_edad.svg">
 							<dt>{% trans "Age" %}</dt>
-							<dd>{{ user.birth|timesince }}</dd>
+							<dd>{{ user.get_profile.birthdate|timesince }}</dd>
 						</div>
 					</div>
 					{% endif %}
@@ -52,10 +56,10 @@
 			<div class="col-lg-12 col-md-8 col-sm-8 col-mob-4">
 				<div class="profile">
 					<div class="links-bar">
-						{% if user.personalweb %}
-						<a class="pull-left" href="{{ user.personalweb }}">
+						{% if user.get_profile.personalweb %}
+						<a class="pull-left" href="{{ profile.personalweb }}">
 							<img src="{{ STATIC_URL }}img/ECO_icon_info_enlace.svg">
-							<span>{{ user.personalweb }}</span>
+							<span>{{ user.get_profile.personalweb }}</span>
 						</a>
 						{% endif %}
 						{% if user.email %}
@@ -70,13 +74,13 @@
 						</a>
 						{% endif %}
 					</div>
-					{% if user.bio %}
-					<div class="bio">{{ user.bio|safe }}</div>
+					{% if user.get_profile.bio %}
+					<div class="bio">{{ user.get_profile.bio|safe }}</div>
 					{% endif %}
-					{% if user.socialmedia|length > 0 %}
+					{% if profile.socialmedia|length > 0 %}
 					<div class="social separator_h">
 						<h5>{% trans "Social profiles" %}</h5>
-						{% for social in user.socialmedia %}
+						{% for social in profile.socialmedia %}
 							<a class="hide-text" href="{{ social.url }}">
 								<object data="{{ STATIC_URL }}img/ECO_icon_seguir_{{ social.name }}.svg?#55555d" type="image/svg+xml"></object>
 								{{ social.name }}
@@ -84,11 +88,11 @@
 						{% endfor %}
 					</div>
 					{% endif %}
-					{% if user.interests|length > 0 %}
+					{% if profile.interests|length > 0 %}
 					<div class="interests">
 						<h5>{% trans "Interests areas" %}</h5>
 						<ul class="tags">
-							{% for interest in user.interests %}
+							{% for interest in profile.interests %}
 							<li><a href="#">{{ interest }}</a></li>
 							{% endfor %}
 						</ul>
