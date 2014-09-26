@@ -2663,7 +2663,6 @@ ul.rating {
 				position: relative;
 				top: -2px;
 				vertical-align: middle;
-				float: right;
 				
 				path, polygon {
 					fill: @black;
@@ -2694,6 +2693,10 @@ ul.rating {
 				&:hover {
 					background-color: @alerts;
 					color: @white;
+				}
+
+				svg {
+					float: right;
 				}
 			}
 		}
@@ -2925,6 +2928,7 @@ ul.rating {
 			a.button {
 				padding: 5px 8px;
 				margin-right: 10px;
+				display: inline-block;
 			}
 		}
 
@@ -2937,6 +2941,7 @@ ul.rating {
 				display: table;
 				padding: 20px;
 				border-bottom: 1px solid @neutral_light_1;
+				width: 100%;
 
 				.cell {
 					display: table-cell;
