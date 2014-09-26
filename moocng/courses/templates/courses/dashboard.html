@@ -39,7 +39,7 @@
 							{% endfor %}
 						</ol>
 						<div class="bottom-bar">
-							<a href="{% url course_syllabus course.slug %}" class="button pull-right"><img src="{{ STATIC_URL }}/img/ECO_icon_toc.svg">Índice completo</a>
+							<a href="{% url course_syllabus course.slug %}" class="button pull-right"><img src="{{ STATIC_URL }}/img/ECO_icon_toc.svg">{% trans "Syllabus" %}</a>
 						</div>
 					</div>
 				</div>
@@ -52,7 +52,7 @@
 					<div class="content">
 						<ul class="tabs">
 							<li class="selected">
-								<h4>{% trans "Singles" %}<span><strong>{{ tasks_done }}</strong>/{{ task_list|length}}</span></h4>
+								<h4>{% trans "Personal" %}<span><strong>{{ tasks_done }}</strong>/{{ task_list|length}}</span></h4>
 								<div class="content">
 									<ol>
 										{% for task in task_list %}

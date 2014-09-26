@@ -542,9 +542,9 @@ if (_.isUndefined(window.MOOC)) {
                         "<img src='" + this.model.get("thumbnail_url") + "' alt='" + MOOC.trans.kq.screenshot + this.model.get("title") + "' /></a>";
                 }
 
-                data = "<p>" + MOOC.trans.kq.teacher_comments + ": " +
+                data = "<p class='noLowRes'>" + MOOC.trans.kq.teacher_comments + ": " +
                     truncate(_.escape(stripTags(this.model.get("teacher_comments")))) + "</p>" +
-                    "<p>" + MOOC.trans.kq.supplementary_material + ": " +
+                    "<p class='noLowRes'>" + MOOC.trans.kq.supplementary_material + ": " +
                     truncate(_.escape(stripTags(this.model.get("supplementary_material")))) + "<p/>";
 
 

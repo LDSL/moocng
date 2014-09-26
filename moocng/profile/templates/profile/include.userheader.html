@@ -36,31 +36,31 @@
 				<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
 					<ul class="menu">
 						<li>
-							{% url profile_timeline profile.slug as url_timeline %}
+							{% url profile_timeline as url_timeline %}
 							<a href="{{ url_timeline }}" {% if request.path == url_timeline %} class="selected" {% endif %}>
 								{% trans "Timeline" %}
 							</a>
 						</li>
 						<li>
-							{% url profile_groups profile.slug as url_groups %}
+							{% url profile_groups as url_groups %}
 							<a href="{{ url_groups }}" {% if request.path == url_groups %} class="selected" {% endif %}>
 								{% trans "Groups" %}
 							</a>
 						</li>
 						<li>
-							{% url profile_courses profile.slug as url_courses %}
+							{% url profile_courses as url_courses %}
 							<a href="{{ url_courses }}" {% if request.path == url_courses %} class="selected" {% endif %}>
 								{% trans "Courses" %}
 							</a>
 						</li>
 						<li>
-							{% url profile_calendar profile.slug as url_calendar %}
+							{% url profile_calendar as url_calendar %}
 							<a href="{{ url_calendar }}" {% if request.path == url_calendar %} class="selected" {% endif %}>
 								{% trans "Calendar" %}
 							</a>
 						</li>
 						<li>
-							{% url profile_user profile.slug as url_profile %}
+							{% url profile_user as url_profile %}
 							<a href="{{ url_profile }}" {% if request.path == url_profile %} class="selected" {% endif %}>
 								{% trans "Profile" %}
 							</a>

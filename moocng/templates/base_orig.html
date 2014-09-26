@@ -12,67 +12,44 @@
 
   <link rel="icon" href="/favicon.ico"/>
   <link rel="stylesheet" href="{{ theme.bootstrap_css }}">
-  <link rel="stylesheet" href="{{ theme.moocng_css }}">
+  <!--<link rel="stylesheet" href="{{ theme.moocng_css }}">-->
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400italic,400,700,800' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet/less" type="text/css" href="{{ STATIC_URL }}css/grid.less" />
+  <link rel="stylesheet/less" type="text/css" href="{{ STATIC_URL }}css/moocng_teacheradmin.less" />
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/libs/jquery-1.7.2.min.js"><&#47;script>');</script>
   <script src="{{ STATIC_URL }}js/libs/modernizr-2.5.3.min.js"></script>
   <script src="{{ STATIC_URL }}js/libs/bootstrap.min.js"></script>
+  <script src="{{ STATIC_URL }}js/libs/less-1.7.3.min.js"></script>
   {% block extraheader %}{% endblock %}
 </head>
 <body>
   <div class="container">
     <header>
-      {% get_language_info_list for LANGUAGES as languages %}
-      {% if languages|length > 1 %}
-        <ul class="unstyled pull-right" id="language-selector">
-          {% for language in languages %}
-            {% if LANGUAGE_CODE == language.name_local %}
-              <li>{{ language.name_local|capfirst }}</li>
-            {% else %}
-              <li><form action="{% url set_language %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="language" value="{{ language.code }}" />
-                <input class="btn btn-link{% if LANGUAGE_CODE == language.code %} disabled{% endif %}" type="submit" value="{{ language.name_local|capfirst }}" {% if LANGUAGE_CODE == language.code %}disabled="disabled"{% endif %}/>
-              </form></li>
-            {% endif %}
-            {% if not forloop.last %}|{% endif %}
-          {% endfor %}
-        </ul>
-      {% endif %}
-      <hgroup>
-        <h1 class="logo"><a href="{% url home %}" class="hide-text"><img src="{{ theme.logo }}" alt="logo {{ site.name }}" />{{ site.name }}</a></h1>
-        <h2 class="small pull-left">{{ theme.subtitle }}</h2>
-      </hgroup>
+    <div class="row main-bar">
+      <h1 class="logo"><a href="{% url home %}" class="hide-text"><img src="{{ theme.logo }}" alt="logo {{ site.name }}" />{{ site.name }}</a></h1>
+      <img class="logo-mini" src="{{ STATIC_URL }}img/logo_mini.png" alt="logo {{ site.name }}" />
+      <ul class="btn-link pull-left" id="meta-buttons">
+        <li><a href="{% url home %}" class="btn btn-link">{% trans "Catalogue"%}</a></li>
+        <li><a href="{% url faq %}" class="btn btn-link">Groups</a></li>
+        <li><a href="{% url methodology %}" class="btn btn-link">{% trans "About" %}</a></li>
+        <li class="noLowRes"><a href="{% url portal_announcements %}" class="btn btn-link">
+    {% trans "How it works" %}<strong id="announcements-dont-viewed">{% if announcements_dont_viewed %} ({{ announcements_dont_viewed }}){% endif %}</strong>
+        </a></li>
+      </ul>
       {% if user.is_authenticated %}
+    {% if is_enrolled and not is_overview%}
+      <h2 class="course-title pull-left">{{ course.name }}</h2>
+    {% endif %}
+    
         {% block useractions %}
             {% include "courses/include.useractions.html" %}
         {% endblock %}
+    </div>
       {% else %}
-      <div class="btn-toolbar pull-right">
-        <a class="btn" href="{% url register %}">{% trans "Register" %}</a>
-        <a class="btn" href="{% url login %}">{% trans "Log in" %}</a>
-      </div>
+        <a class="btn-link pull-right" href="{% url login %}">{% trans "Log in" %}</a>
       {% endif %}
-      <ul class="unstyled pull-right" id="meta-buttons">
-        <li><a href="{% url home %}" class="btn btn-link">
-            {% trans "Home"%}
-        </a></li>
-        |
-        <li>
-            <a href="{% url faq %}" class="btn btn-link">FAQ</a>
-        </li>
-        |
-        <li>
-            <a href="{% url methodology %}" class="btn btn-link">{% trans "Methodology" %}</a>
-        </li>
-        |
-        <li>
-            <a href="{% url portal_announcements %}" class="btn btn-link">
-                {% trans "Announcements" %}<strong id="announcements-dont-viewed">{% if announcements_dont_viewed %} ({{ announcements_dont_viewed }}){% endif %}</strong>
-            </a>
-        </li>
-      </ul>
       <div class="clearfix"></div>
     </header>
     <div role="main" class="{% block mainclass %}{% endblock %}">

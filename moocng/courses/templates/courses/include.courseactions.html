@@ -1,11 +1,11 @@
-{% load i18n usercourses %}
+{% load i18n usercourses peer_review_tags %}
 <div class="course-toolbar">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-12 col-md-8 col-sm-5 col-mob-4">
 				<h1>{{ course.name }}</h1>
 				{% if course.hashtag %}
-				<h3><span>Hashtag: </span>{{ course.hashtag }}</h3>
+				<h3 class="noLowRes"><span>Hashtag: </span>{{ course.hashtag }}</h3>
 				{% endif %}
 			</div>
 			{% if is_ready %}
@@ -40,18 +40,25 @@
 							{% trans "Syllabus" %}
 						</a>
 					</li>
-					<li>
+					{% if_has_peer_review_assignments course %}
+                	<li {% block nav-course-reviews %}{% endblock %}>
+                		{% url course_reviews course.slug as url_reviews %}
+                    	<a href="{% url course_reviews course.slug %}" {% if request.path == url_reviews %} class="selected"{% endif %}>{% trans "Reviews" %}</a>
+                	</li>
+            		{% endif_has_peer_review_assignments %}
+					<li class="noLowRes">
 						{% url course_calendar course.slug as url_calendar %}
 						<a href="{{ url_calendar }}" {% if request.path == url_calendar %} class="selected"{% endif %}>
 							{% trans "Calendar" %}
 						</a>
-					<li>
+					</li>
+					<li class="noLowRes">
 						{% url course_team course.slug as url_team %}
 						<a href="{{ url_team }}" {% if request.path == url_team %} class="selected"{% endif %}>
 							{% trans "Team" %}
 						</a>
 					</li>
-					<li>
+					<li class="noLowRes">
 						{% url course_forum course.slug as url_forum %}
 						<a href="{{ url_forum }}" {% if request.path == url_forum %} class="selected"{% endif %}>
 							{% trans "Forum" %}
@@ -67,6 +74,24 @@
 							</svg>
 						</a>
 						<ul class="dropdown-menu">
+							<li class="onlyLowRes">
+								{% url course_calendar course.slug as url_calendar %}
+								<a href="{{ url_calendar }}" {% if request.path == url_calendar %} class="selected"{% endif %}>
+									{% trans "Calendar" %}
+								</a>
+							</li>
+							<li class="onlyLowRes">
+								{% url course_team course.slug as url_team %}
+								<a href="{{ url_team }}" {% if request.path == url_team %} class="selected"{% endif %}>
+									{% trans "Team" %}
+								</a>
+							</li>
+							<li class="onlyLowRes">
+								{% url course_forum course.slug as url_forum %}
+								<a href="{{ url_forum }}" {% if request.path == url_forum %} class="selected"{% endif %}>
+									{% trans "Forum" %}
+								</a>
+							</li>
 							<li>
 								{% url course_teachers course.slug as url_teachers %}
 								<a href="{{ url_teachers }}" {% if request.path == url_teachers %} class="selected"{% endif %}>

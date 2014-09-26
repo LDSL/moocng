@@ -11,8 +11,8 @@
 {% block section %}
 <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
     {{ form.non_field_errors }}
-    <div class="row">
-        <div class="span10">
+    <div class="">
+        <div>
             <fieldset>
                 <legend></legend>
                 <p>
@@ -91,8 +91,8 @@
             </p>
             <p>
                 {{ form.highlight.errors }}
-                {{ form.highlight.label_tag }}
                 {{ form.highlight }}
+                {{ form.highlight.label_tag }}
                 {% if form.highlight.help_text %}<span class="help-inline">{{ form.highlight.help_text }}</span>{% endif %}
             </p>
             <p>

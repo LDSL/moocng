@@ -26,7 +26,7 @@ from moocng.courses.utils import (is_teacher as is_teacher_test)
 from moocng.slug import unique_slugify
 from moocng.utils import use_cache
 
-def profile_timeline(request, user_slug):
+def profile_timeline(request):
 	profile = {
 		'cn': 'Raul',
 		'sn': 'Yeguas',
@@ -41,17 +41,15 @@ def profile_timeline(request, user_slug):
 			'followings': 1,
 			'starred': 359,
 			'lists': ['Mesozoico', 'RMS can\'t skate', 'Linus vs nVidia']
-		},
-		'slug': user_slug
+		}
 	}
 
 	return render_to_response('profile/timeline.html', {
 		'profile': profile,
-		'request': request,
-		'user_slug': user_slug
+		'request': request
 		}, context_instance=RequestContext(request))
 
-def profile_groups(request, user_slug):
+def profile_groups(request):
 	profile = {
 		'cn': 'Raul',
 		'sn': 'Yeguas',
@@ -66,8 +64,7 @@ def profile_groups(request, user_slug):
 			'followings': 1,
 			'starred': 359,
 			'lists': ['Mesozoico', 'RMS can\'t skate', 'Linus vs nVidia']
-		},
-		'slug': user_slug
+		}
 	}
 
 	return render_to_response('profile/groups.html', {
@@ -76,7 +73,7 @@ def profile_groups(request, user_slug):
 		}, context_instance=RequestContext(request))
 
 @login_required
-def profile_courses(request, user_slug):
+def profile_courses(request):
 	profile = {
 		'cn': 'Raul',
 		'sn': 'Yeguas',
@@ -91,8 +88,7 @@ def profile_courses(request, user_slug):
 			'followings': 1,
 			'starred': 359,
 			'lists': ['Mesozoico', 'RMS can\'t skate', 'Linus vs nVidia']
-		},
-		'slug': user_slug,
+		}
 	}
 
 	courses = get_courses_user_is_enrolled(request.user)
@@ -116,7 +112,7 @@ def profile_courses(request, user_slug):
 		}, context_instance=RequestContext(request))
 
 @login_required
-def profile_calendar(request, user_slug):
+def profile_calendar(request):
 	profile = {
 		'cn': 'Raul',
 		'sn': 'Yeguas',
@@ -131,8 +127,7 @@ def profile_calendar(request, user_slug):
 			'followings': 1,
 			'starred': 359,
 			'lists': ['Mesozoico', 'RMS can\'t skate', 'Linus vs nVidia']
-		},
-		'slug': user_slug,
+		}
 	}
 
 	return render_to_response('profile/calendar.html', {
@@ -141,7 +136,7 @@ def profile_calendar(request, user_slug):
 		}, context_instance=RequestContext(request))
 
 @login_required
-def profile_user(request, user_slug):
+def profile_user(request):
 	profile = {
 		'cn': 'Raul',
 		'sn': 'Yeguas',
@@ -157,7 +152,6 @@ def profile_user(request, user_slug):
 			'starred': 359,
 			'lists': ['Mesozoico', 'RMS can\'t skate', 'Linus vs nVidia']
 		},
-		'slug': user_slug,
 		'location': 'Spain',
 		'languages': ['Spanish', 'English'],
 		'sex': 'Male',
