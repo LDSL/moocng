@@ -8,7 +8,7 @@ SAML_ATTRIBUTE_MAPPING = {
     'mail': ('username', 'email', ),
     'cn': ('first_name', ),
     'sn': ('last_name', ),
-    'o': ('organization', ),
+    'username' : ('eduPersonNickname', ),
     'eduPersonAffiliation': ('groups', ),
 }
 

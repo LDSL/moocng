@@ -21,6 +21,18 @@ from django.utils.translation import ugettext_lazy as _
 
 from moocng.courses.models import Announcement
 
+class Organization(models.Model):
+    name = models.CharField(verbose_name=_(u"Organization name"),
+                                    max_length=256)
+    logo = models.ImageField(upload_to="organizations",
+                            # height_field=256,
+                            # width_field=256,
+                            verbose_name=_(u"Organization logo"),
+                            max_length=256)
+
+    def __unicode__(self):
+        return unicode(self.name)
+
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, verbose_name=_('User'))
@@ -28,9 +40,30 @@ class UserProfile(models.Model):
                                           verbose_name=_('Last announcement viewed'),
                                           null=True,
                                           blank=True)
-    organization = models.CharField(null=True,
-                                    blank=True,
-                                    max_length=100)
+
+    organization = models.ManyToManyField(Organization, verbose_name=_(u'Organization'),
+                                                        null=True)
+    GENDER_CHOICES = (
+        ('m', _(u'Male')),
+        ('f', _(u'Female'))
+    )
+    gender = models.CharField(verbose_name=_(u"Gender"),
+                                    max_length=1,
+                                    choices=GENDER_CHOICES,
+                                    null=True,
+                                    blank=True)
+    personalweb = models.CharField(verbose_name=_(u"Personal website"),
+                                    max_length=256,
+                                    null=True,
+                                    blank=True)
+    birthdate = models.DateField(verbose_name=_(u"Birthdate"),
+                                    null=True)
+    bio = models.TextField(verbose_name=_(u"Biography"),
+                                    null=True,
+                                    blank=True)
+    karma = models.IntegerField(verbose_name=_(u"Karma"),
+                                    default=0)
+    
 
     class Meta:
         verbose_name = _('User profile')
@@ -38,7 +71,6 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return unicode(self.user)
-
 
 @receiver(signals.post_save, sender=User, dispatch_uid="create_user_profile")
 def create_user_profile(sender, instance, created, **kwargs):

@@ -1,4 +1,5 @@
 {% load i18n %}<!DOCTYPE html>
+
 <html class="no-js" lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="utf-8">
@@ -26,7 +27,7 @@
   {% block extraheader %}{% endblock %}
 </head>
 {% if user.is_authenticated %}
-	{% if is_enrolled %}
+	{% if is_enrolled and not is_overview %}
 	<body class="course">
 	{% else %}
 	<body>
@@ -40,14 +41,14 @@
       <img class="logo-mini" src="{{ STATIC_URL }}img/logo_mini.png" alt="logo {{ site.name }}" />
       <ul class="btn-link pull-left" id="meta-buttons">
         <li><a href="{% url home %}" class="btn btn-link">{% trans "Catalogue"%}</a></li>
-        <li><a href="{% url faq %}" class="btn btn-link">Groups</a></li>
-        <li><a href="{% url methodology %}" class="btn btn-link">{% trans "About" %}</a></li>
-        <li><a href="{% url portal_announcements %}" class="btn btn-link">
+        <li><a href="#" class="btn btn-link">Groups</a></li>
+        <li><a href="#" class="btn btn-link">{% trans "About" %}</a></li>
+        <li class="noLowRes"><a href="#" class="btn btn-link">
 	  {% trans "How it works" %}<strong id="announcements-dont-viewed">{% if announcements_dont_viewed %} ({{ announcements_dont_viewed }}){% endif %}</strong>
         </a></li>
       </ul>
       {% if user.is_authenticated %}
-		{% if is_enrolled %}
+		{% if is_enrolled and not is_overview%}
 			<h2 class="course-title pull-left">{{ course.name }}</h2>
 		{% endif %}
 		
@@ -57,7 +58,7 @@
     </div>
 
         {% block courseactions %}
-			{% if is_enrolled %}
+			{% if is_enrolled and not is_overview %}
 				{% include "courses/include.courseactions.html" %}
 			{% endif %}
 		{% endblock %}
@@ -69,11 +70,14 @@
     
     <div role="main" class="{% block mainclass %}{% endblock %}">
       {% if messages %}{% for message in messages %}
-      <div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
-        <button class="close" data-dismiss="alert">×</button>
-        {{ message }}
-      </div>
-      {% endfor %}{% endif %}
+			<div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
+				<div class="container">
+					<object type="image/svg+xml" class="ok" data="{{ STATIC_URL }}img/ECO_icon_check.svg?#008833"></object>
+	    			<!--<button class="close" data-dismiss="alert">×</button>-->
+	    			{{ message }}
+	    		</div>
+			</div>
+		{% endfor %}{% endif %}
 
       {% block nav %}{% endblock %}
 
