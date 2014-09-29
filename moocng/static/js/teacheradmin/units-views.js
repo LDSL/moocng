@@ -856,13 +856,13 @@ if (_.isUndefined(window.MOOC)) {
 
                         titleInput = "<input type=\"text\" name=\"" + titleInputId + "\" id=\"" + titleInputId + "\" maxlength=\"100\" class=\"input-large\" required=\"required\" />";
                         titleLabel = "<label for=\"" + titleInputId + "\" class=\"required\">" + MOOC.trans.evaluationCriterion.title + "</label>";
-                        descriptionInput = "<input type=\"text\" name=\"" + descriptionInputId + "\" id=\"" + descriptionInputId + "\" maxlength=\"200\" class=\"input-xlarge\" required=\"required\" />";
+                        descriptionInput = "<input type=\"text\" name=\"" + descriptionInputId + "\" id=\"" + descriptionInputId + "\" maxlength=\"200\" class=\"input\" required=\"required\" />";
                         descriptionLabel = "<label for=\"" + descriptionInputId + "\" class=\"required\">" + MOOC.trans.evaluationCriterion.description + "</label>";
                         removeBtn = "<button id=\"" + removeBtnId + "\" class=\"removecriterion btn btn-danger\">" + MOOC.trans.evaluationCriterion.remove + "</button>";
                         criterionDiv = "<div id=\"" + criterionDivId + "\">"
-                                       + "<div class=\"row mb10\"> <div class=\"span3\">" + titleLabel + titleInput + "</div>"
-                                       + "<div class=\"span4\">" + descriptionLabel + descriptionInput + "</div></div>"
-                                       + "<div class=\"row mb20\"><div class=\"align-right span10\">" + removeBtn + "</div></div></divZ";
+                                       + "<div class=\"\"> <div>" + titleLabel + titleInput + "</div>"
+                                       + "<div class=\"\">" + descriptionLabel + descriptionInput + "</div></div>"
+                                       + "<div class=\"\"><div class=\"align-right\">" + removeBtn + "</div></div></divZ";
 
                         criterionListDiv.append(criterionDiv);
                         criterionListDiv.find("#" + titleInputId).val(criterion.get("title"));

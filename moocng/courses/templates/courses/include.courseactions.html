@@ -53,6 +53,12 @@
 						</a>
 					</li>
 					<li class="noLowRes">
+						{% url course_wiki course.slug as url_wiki %}
+						<a href="{{ url_wiki }}" {% if request.path == url_wiki %} class="selected"{% endif %}>
+							{% trans "Wiki" %}
+						</a>
+					</li>
+					<li class="noLowRes">
 						{% url course_team course.slug as url_team %}
 						<a href="{{ url_team }}" {% if request.path == url_team %} class="selected"{% endif %}>
 							{% trans "Team" %}
@@ -78,6 +84,12 @@
 								{% url course_calendar course.slug as url_calendar %}
 								<a href="{{ url_calendar }}" {% if request.path == url_calendar %} class="selected"{% endif %}>
 									{% trans "Calendar" %}
+								</a>
+							</li>
+							<li class="onlyLowRes">
+								{% url course_wiki course.slug as url_wiki %}
+								<a href="{{ url_wiki }}" {% if request.path == url_wiki %} class="selected"{% endif %}>
+									{% trans "Wiki" %}
 								</a>
 							</li>
 							<li class="onlyLowRes">
