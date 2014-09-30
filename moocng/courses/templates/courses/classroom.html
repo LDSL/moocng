@@ -16,6 +16,26 @@
 {% endblock %}
 
 {% block content %}
+<div class="alerts">
+    <div class="alert alert-block alert-error hide">
+        <div class="container">
+            <h4 class="alert-heading">title</h4>
+            <p>message</p>
+        </div>
+    </div>
+    <div class="alert alert-block alert-success hide">
+        <div class="container">
+            <h4 class="alert-heading">title</h4>
+            <p>message</p>
+        </div>
+    </div>
+    <div class="alert alert-block alert-info hide">
+        <div class="container">
+            <h4 class="alert-heading">title</h4>
+            <p>message</p>
+        </div>
+    </div>
+</div>
 <script id="peer-review-tpl" type="text/template">
     <div class='solution-wrapper white'><form method='post' action='{% url course_review_upload course_slug=course.slug %}' enctype='multipart/form-data'>
         {% csrf_token %}
@@ -55,7 +75,6 @@
 
 <div id="evaluation-criteria" class="modal hide fade">
     <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3>{% trans "Evaluation criteria" %}</h3>
     </div>
     <div class="modal-body mathjax"></div>
@@ -73,7 +92,10 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn" data-dismiss="modal">{% trans "Cancel" %}</button>
-        <button type="button" class="btn btn-danger" id="pr-confirm">{% trans "Send" %}</button>
+        <button type="button" class="btn squared" id="pr-confirm">
+            {% trans "Send" %}
+            <svg width="16px" height="14px" viewBox="0 0 16 14"><polygon points="7,2 11.113,6 1,6 1,8 11.138,8 7,12 8.414,13.414 15,7 8.414,0.586   "/></svg>
+        </button>
     </div>
 </div>
 
@@ -98,36 +120,16 @@
 </div>
 
 <!-- NUGGET VIEW -->
-<div class="alerts">
-    <div class="alert alert-block alert-error hide">
-        <div class="container">
-            <h4 class="alert-heading">title</h4>
-            <p>message</p>
-        </div>
-    </div>
-    <div class="alert alert-block alert-success hide">
-        <div class="container">
-            <h4 class="alert-heading">title</h4>
-            <p>message</p>
-        </div>
-    </div>
-    <div class="alert alert-block alert-info hide">
-        <div class="container">
-            <h4 class="alert-heading">title</h4>
-            <p>message</p>
-        </div>
-    </div>
-</div>
 <div class="container">
 	<div class="row kq-header">
 		<div class="col-lg-12 col-md-8 col-sm-5 col-mob-4">
 			<h2 id="kq-title" class="pull-left">{{ course.title }}</h2>
-			<a class="bookmark pull-right" href="#"><img src="{{ STATIC_URL }}img/icon_bookmark.png" alt="{% trans 'Bookmark' %}"></a>
+			<!--<a class="bookmark pull-right" href="#"><img src="{{ STATIC_URL }}img/icon_bookmark.png" alt="{% trans 'Bookmark' %}"></a>-->
 		</div>
-		<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4">
+		<!--<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4">
 			<a class="hide-text social_like facebook selected" href="#">{% trans 'Like this on Facebook' %} <span>10</span></a>
 			<a class="hide-text social_like gplus" href="#">{% trans '+1 on Google+' %} <span>10</span></a>
-		</div>
+		</div>-->
 	</div>
 	<div class="row kq">
 		<div class="col-lg-12 col-md-8 col-sm-8 col-mob-4">
@@ -164,7 +166,7 @@
 				</ul>
 			</div>
 		</div>
-		<div class="col-lg-4 col-md-4 col-sm-8 col-mob-4">
+		<!--<div class="col-lg-4 col-md-4 col-sm-8 col-mob-4">
 			<div class="dash-box">
 				<div class="title">
 					<h3>{% trans "Class forum" %}</h3>
@@ -200,7 +202,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div>-->
 	</div>
 </div>
 <div class="kq-navigation">

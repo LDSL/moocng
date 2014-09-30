@@ -12,12 +12,12 @@
                         <div class="col-lg-12 col-md-8 col-sm-5 col-mob-4">
                             <a href="{{unit.url}}" class="unit {% if unit.complete %}done{% endif %}"><span class="num"></span>{{unit.title}}</a>
                         </div>
-                        <div class="col-lg-4 col-md-4 col-sm-3 col-mob-4">
+                        <!--<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4">
                             <div class="social">
                                 <a class="fblike"><img src="{{ STATIC_URL }}img/ECO_icon_gusta_fb.svg"><span></span></a>
                                 <a class="gplusone"><img src="{{ STATIC_URL }}img/ECO_icon_gusta_google.svg"><span></span></a>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                 {% if unit.questions %}
                     <ol>
@@ -42,12 +42,12 @@
                                         <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_tarea-test.svg">{% trans "Test" %}</span>
                                     {% endif %}
                                 </div>
-                                <div class="col-lg-4 col-md-4 col-sm-3 col-mob-4">
+                                <!--<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4">
                                     <div class="social">
                                         <a class="fblike"><img src="{{ STATIC_URL }}img/ECO_icon_gusta_fb.svg"><span></span></a>
                                         <a class="gplusone"><img src="{{ STATIC_URL }}img/ECO_icon_gusta_google.svg"><span></span></a>
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                         </li>
                         {% endfor %}

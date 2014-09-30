@@ -9,6 +9,15 @@
 {% endblock %}
 
 {% block content %}
+{% if messages %}{% for message in messages %}
+	<div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
+		<div class="container">
+			<object type="image/svg+xml" class="ok" data="{{ STATIC_URL }}img/ECO_icon_check.svg?#008833"></object>
+			<!--<button class="close" data-dismiss="alert">×</button>-->
+			{{ message }}
+		</div>
+	</div>
+{% endfor %}{% endif %}
 <div class="course">
 	{% if not is_enrolled or not course_has_started %}
 		{% if course.background %}
@@ -159,7 +168,7 @@
 							{% else %}
 								<dt><a target="_new" href="{% url score %}" >{% trans "Evaluation criteria" %}</a></dt>
 							{% endif %}
-							<dt><a href="{% url transcript course.slug %}" >{% trans "My transcript" %}</a></dt>
+							<!--<dt><a href="{% url transcript course.slug %}" >{% trans "My transcript" %}</a></dt>-->
 						</dl>
 						{% endcache %}
 					</div>
@@ -208,7 +217,7 @@
 						<ul>
 							{% for organizer in organizers %}
 								<li>
-									<a href="#">
+									<a>
 										<img src="{{ organizer.logo.url }}"/>
 										<span>{{ organizer.name }}</span>
 									</a>
