@@ -294,6 +294,11 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
 					$(selector).addClass("disabled");
 					break;
 				case "answer":
+                    $("#kq-q-showa").click(function(){
+                        MOOC.router.navigate(urltext, { trigger: true });
+                    }).removeClass('hide');
+                    $(selector).addClass("disabled");
+                    break;
 				case "same":
 					$(selector).addClass("disabled");
 			}
