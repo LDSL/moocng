@@ -42,11 +42,11 @@
       <img class="logo-mini" src="{{ STATIC_URL }}img/logo_mini.png" alt="logo {{ site.name }}" />
       <ul class="btn-link pull-left" id="meta-buttons">
         <li><a href="{% url home %}" class="btn btn-link">{% trans "Catalogue"%}</a></li>
-        <li><a href="#" class="btn btn-link">Groups</a></li>
-        <li><a href="#" class="btn btn-link">{% trans "About" %}</a></li>
-        <li class="noLowRes"><a href="#" class="btn btn-link">
+        <!--<li><a href="#" class="btn btn-link">Groups</a></li>-->
+        <!--<li><a href="#" class="btn btn-link">{% trans "About" %}</a></li>-->
+        <!--<li class="noLowRes"><a href="#" class="btn btn-link">
 	  {% trans "How it works" %}<strong id="announcements-dont-viewed">{% if announcements_dont_viewed %} ({{ announcements_dont_viewed }}){% endif %}</strong>
-        </a></li>
+        </a></li>-->
       </ul>
       {% if user.is_authenticated %}
 		{% if is_enrolled and not is_overview%}
@@ -80,44 +80,44 @@
 		<div class="container">
 		<div class="row">
 			<div class="col-lg-7 col-md-5 col-sm-4 col-mob-2">
-			<p class="text-normal"><span class="grey"><strong>ECO</strong> + Open<em>MOOC</em></span> es una plataforma creada por la <a href="#" target="_blank">UNED</a> y las Universidades de <a href="#">Cantabria</a>, <a href="#">Oviedo</a> y <a href="#">Zaragoza</a> para fomentar la participación gratuita en los Cursos Online Masivos de Acceso Libre.</p>
+			<p class="text-normal"><span class="grey"><strong>ECO</strong> + Open<em>MOOC</em></span> es una plataforma creada por la <a href="http://www.uned.es/" target="_blank">UNED</a> y las Universidades de <a href="http://www.unican.es/" target="_blank" target="_blank">Cantabria</a>, <a href="http://www.uniovi.es/" target="_blank">Oviedo</a> y <a href="http://www.unizar.es/" target="_blank">Zaragoza</a> para fomentar la participación gratuita en los Cursos Online Masivos de Acceso Libre.</p>
 			</div>
-			<div class="col-lg-3 col-md-3 col-sm-2 col-mob-1 col-lg-push-1 col-md-push-1">
+			<!--<div class="col-lg-3 col-md-3 col-sm-2 col-mob-1 col-lg-push-1 col-md-push-1">
 			<ul class="nobullet">
 			<li><a href="#">Catalogue of courses</a></li>
 			<li><a href="#">Groups</a></li>
 			<li><a href="#">About</a></li>
 			<li><a href="#">How it works</a></li>
 			</ul>
-			</div>
-			<div class="col-lg-2 col-md-2 col-sm-2 col-mob-1 col-lg-push-1 col-md-push-1">
+			</div>-->
+			<!--<div class="col-lg-2 col-md-2 col-sm-2 col-mob-1 col-lg-push-1 col-md-push-1">
 			<ul class="nobullet">
 			<li><a href="#">Staff</a></li>
 			<li><a href="#">FAQ</a></li>
 			<li><a href="#">Contact</a></li>
 			</ul>
-			</div>
+			</div>-->
 		</div>
 		<div class="row mt-20">
 			<div class="col-lg-7 col-md-5 col-sm-4 col-mob-2">
 			<ul class="logos stretch inlineblock">
-			<li><a href="#"><img src="{{ STATIC_URL }}img/logo_uned.png" alt="Universidad Nacional de Educación a Distancia"></a></li>
-			<li><a href="#"><img src="{{ STATIC_URL }}img/logo_uc.png" alt="Universidad de Cantabria"></a></li>
-			<li><a href="#"><img src="{{ STATIC_URL }}img/logo_uo.png" alt="Universidad de Oviedo"></a></li>
-			<li><a href="#"><img src="{{ STATIC_URL }}img/logo_uz.png" alt="Universidad de Zaragoza"></a></li>
+			<li><a href="http://www.uned.es/" target="_blank"><img src="{{ STATIC_URL }}img/logo_uned.png" alt="Universidad Nacional de Educación a Distancia"></a></li>
+			<li><a href="http://www.unican.es/" target="_blank"><img src="{{ STATIC_URL }}img/logo_uc.png" alt="Universidad de Cantabria"></a></li>
+			<li><a href="http://www.uniovi.es/" target="_blank"><img src="{{ STATIC_URL }}img/logo_uo.png" alt="Universidad de Oviedo"></a></li>
+			<li><a href="http://www.unizar.es/" target="_blank"><img src="{{ STATIC_URL }}img/logo_uz.png" alt="Universidad de Zaragoza"></a></li>
 			</ul>
 			</div>
 			<div class="col-lg-7 col-md-5 col-sm-4 col-mob-2 col-lg-push-1 col-md-push-1">
 			<ul class="logos inlineblock">
-			<li><a href="#"><img src="{{ STATIC_URL }}img/logo-eco.png" alt="ECO"></a></li>
-			<li class="noBorder"><a href="#"><img src="{{ STATIC_URL }}img/logo-cip.png" alt="CIP"></a></li>
-			<li><a href="#"><img src="{{ STATIC_URL }}img/logo-ec.png" alt="European Commission"></a></li>
+			<li><a href="http://ecolearning.eu/" target="_blank"><img src="{{ STATIC_URL }}img/logo-eco.png" alt="ECO"></a></li>
+			<li class="noBorder"><a href="http://ec.europa.eu/cip/" target="_blank"><img src="{{ STATIC_URL }}img/logo-cip.png" alt="CIP"></a></li>
+			<li><a href="http://ec.europa.eu/" target="_blank"><img src="{{ STATIC_URL }}img/logo-ec.png" alt="European Commission"></a></li>
 			</ul>
 			</div>
 		</div>
 		<div class="row mt-20">
 			<div class="col-lg-7 col-md-5 col-sm-4 col-mob-2">
-			<p class="text-small">Plataforma integrada en el Proyecto<br><a href="#" target="_blank"><strong>ECO: Elearning, Communication and Open-data</strong></a></p>
+			<p class="text-small">Plataforma integrada en el Proyecto<br><a href="http://ecolearning.eu/our-project/" target="_blank"><strong>ECO: Elearning, Communication and Open-data</strong></a></p>
 			</div>
 			<div class="col-lg-7 col-md-5 col-sm-4 col-mob-2 col-lg-push-1 col-md-push-1">
 			<p class="text-tiny">Project funded from the European Community's CIP (Programme under grant agreement nº 21127)</p>
@@ -136,7 +136,7 @@
 	      {% if show_tos %}
 	      <li><a href="{% url tos %}">{% trans "Terms of Service" %}</a></li>
 	      {% endif %}
-	      <li>Powered by <a href="{% url contact %}">{% trans "Open" %}{% trans "MOOC" %}</a></li>
+	      <li>Powered by <a>{% trans "Open" %}{% trans "MOOC" %}</a></li>
 	    </ul>
 	  </div>
 	</div>

@@ -46,30 +46,30 @@
                     	<a href="{% url course_reviews course.slug %}" {% if request.path == url_reviews %} class="selected"{% endif %}>{% trans "Reviews" %}</a>
                 	</li>
             		{% endif_has_peer_review_assignments %}
-					<li class="noLowRes">
+					<!--<li class="noLowRes">
 						{% url course_calendar course.slug as url_calendar %}
 						<a href="{{ url_calendar }}" {% if request.path == url_calendar %} class="selected"{% endif %}>
 							{% trans "Calendar" %}
 						</a>
-					</li>
-					<li class="noLowRes">
+					</li>-->
+					<!--<li class="noLowRes">
 						{% url course_wiki course.slug as url_wiki %}
 						<a href="{{ url_wiki }}" {% if request.path == url_wiki %} class="selected"{% endif %}>
 							{% trans "Wiki" %}
 						</a>
-					</li>
-					<li class="noLowRes">
+					</li>-->
+					<!--<li class="noLowRes">
 						{% url course_team course.slug as url_team %}
 						<a href="{{ url_team }}" {% if request.path == url_team %} class="selected"{% endif %}>
 							{% trans "Team" %}
 						</a>
-					</li>
-					<li class="noLowRes">
+					</li>-->
+					<!--<li class="noLowRes">
 						{% url course_forum course.slug as url_forum %}
 						<a href="{{ url_forum }}" {% if request.path == url_forum %} class="selected"{% endif %}>
 							{% trans "Forum" %}
 						</a>
-					</li>
+					</li>-->
 					<!-- <li class="noLowRes"><a href="#">{% trans "Blog" %}</a></li>
 					<li class="noLowRes"><a href="#">{% trans "Wiki" %}</a></li> -->
 					<li class="btn-group">
@@ -80,36 +80,36 @@
 							</svg>
 						</a>
 						<ul class="dropdown-menu">
-							<li class="onlyLowRes">
+							<!--<li class="onlyLowRes">
 								{% url course_calendar course.slug as url_calendar %}
 								<a href="{{ url_calendar }}" {% if request.path == url_calendar %} class="selected"{% endif %}>
 									{% trans "Calendar" %}
 								</a>
-							</li>
-							<li class="onlyLowRes">
+							</li>-->
+							<!--<li class="onlyLowRes">
 								{% url course_wiki course.slug as url_wiki %}
 								<a href="{{ url_wiki }}" {% if request.path == url_wiki %} class="selected"{% endif %}>
 									{% trans "Wiki" %}
 								</a>
-							</li>
-							<li class="onlyLowRes">
+							</li>-->
+							<!--<li class="onlyLowRes">
 								{% url course_team course.slug as url_team %}
 								<a href="{{ url_team }}" {% if request.path == url_team %} class="selected"{% endif %}>
 									{% trans "Team" %}
 								</a>
-							</li>
-							<li class="onlyLowRes">
+							</li>-->
+							<!--<li class="onlyLowRes">
 								{% url course_forum course.slug as url_forum %}
 								<a href="{{ url_forum }}" {% if request.path == url_forum %} class="selected"{% endif %}>
 									{% trans "Forum" %}
 								</a>
-							</li>
-							<li>
+							</li>-->
+							<!--<li>
 								{% url course_teachers course.slug as url_teachers %}
 								<a href="{{ url_teachers }}" {% if request.path == url_teachers %} class="selected"{% endif %}>
 									{% trans "Teachers" %}
 								</a>
-							</li>
+							</li>-->
 							<li>
 								{% url course_overview course.slug as url_overview %}
 								<a href="{{ url_overview }}" {% if request.path == url_overview %} class="selected"{% endif %}>
