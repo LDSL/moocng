@@ -6,9 +6,11 @@
     <div class="media-box">
         {% if theme.top_banner %}
             <div class="main_banner" style="background-image: url('{{ theme.top_banner }}');">
-		<h2><strong>UNED</strong> + Open<em>MOOC</em></h2>
-		<h1>Una plataforma creada para facilitar la búsqueda de contenidos educativos abiertos</h1>
-		<a class="button" href="{% url register %}">Register now</a>
+            	<div class="color_back">
+					<h2><strong>UNED</strong> + Open<em>MOOC</em></h2>
+					<h1>Una plataforma creada para facilitar la búsqueda de contenidos educativos abiertos</h1>
+					<a class="button" href="{% url register %}">Register now</a>
+				</div>
             </div>
         {% endif %}
     </div>

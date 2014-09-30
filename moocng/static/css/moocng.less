@@ -753,32 +753,36 @@ body {
 .main_banner {
   background-size: cover;
   background-position: 50% 50%;
-  color: @white;
-  text-align: center;
-  padding: 120px 20px 100px;
   
-  h2 {
-    font-size: 30px;
-    font-weight: 300;
-    
-    strong {
-      font-weight: 800;
-    }
-  }
-  
-  h1 {
-    font-size: 72px;
-    font-weight: 300;
-    line-height: 1em;
-    max-width: 1074px;
-    margin: 12px auto 72px;
-  }
-  
-  .button {
-    color: @comp;
-    border: 2px solid @comp;
-    padding: 14px 30px;
-    text-transform: uppercase;
+  .color_back {
+  	background: fade(@highlight, 90%);
+  	color: @white;
+  	text-align: center;
+  	padding: 120px 20px 100px;
+
+	  h2 {
+	    font-size: 30px;
+	    font-weight: 300;
+	    
+	    strong {
+	      font-weight: 800;
+	    }
+	  }
+	  
+	  h1 {
+	    font-size: 72px;
+	    font-weight: 300;
+	    line-height: 1em;
+	    max-width: 1074px;
+	    margin: 12px auto 72px;
+	  }
+	  
+	  .button {
+	    color: @comp;
+	    border: 2px solid @comp;
+	    padding: 14px 30px;
+	    text-transform: uppercase;
+	  }
   }
 }
 
