@@ -53,6 +53,8 @@ urlpatterns = patterns(
         name='course_forum'),
     url(r'^course/(?P<course_slug>[-\w]+)/calendar/$', 'course_calendar',
         name='course_calendar'),
+    url(r'^course/(?P<course_slug>[-\w]+)/wiki/$', 'course_wiki',
+        name='course_wiki'),
     url(r'^course/(?P<course_slug>[-\w]+)/team/$', 'course_team',
         name='course_team'),
     url(r'^course/(?P<course_slug>[-\w]+)/teachers/$', 'course_teachers',
