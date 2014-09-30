@@ -180,8 +180,7 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
         $("#comments").html(comments);
 
         supplementary = this.model.get("supplementary_material") || '';
-        supplementary += "<ul id='attachments'></ul>";
-        $("#supplementary").html(supplementary);
+        $("#attachments ul").empty();
 
         this.setupListernerFor(this.model, "attachmentList", _.bind(function () {
             this.model.get("attachmentList").each(function (attachment) {
@@ -295,6 +294,11 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
 					$(selector).addClass("disabled");
 					break;
 				case "answer":
+                    $("#kq-q-showa").click(function(){
+                        MOOC.router.navigate(urltext, { trigger: true });
+                    }).removeClass('hide');
+                    $(selector).addClass("disabled");
+                    break;
 				case "same":
 					$(selector).addClass("disabled");
 			}
@@ -1094,6 +1098,8 @@ MOOC.views.PeerReviewAssignment = Backbone.View.extend({
             });
             $("#kq-q-submit").off('click').on('click', this.submit);
             $("#kq-next-container").removeClass("offset4");
+
+            $("#pr-view-criteria").off('click').on('click', this.viewCriteria);
         }
 
         if (_.isObject(window.MathJax)) {
@@ -1124,6 +1130,7 @@ MOOC.views.PeerReviewAssignment = Backbone.View.extend({
             });
         }
         $modal.modal('show');
+        $modal.removeClass('hide');
     },
 
     submit: function (evt) {
