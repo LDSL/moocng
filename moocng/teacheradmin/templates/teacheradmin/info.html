@@ -127,7 +127,7 @@
         </li>
         
     </ul>
-    <div class="tab-content tab-content-no-overflow">
+    <div class="tab-content tab-content-no-overflow mb20">
         <div class="tab-pane active" id="tab-description">
             {{ form.description.errors }}
             {{ form.description.label_tag }}
@@ -161,26 +161,6 @@
             {% if static_page_form.help_text %}<span class="help-block">{{ static_page_form.help_text }}</span>{% endif %}
         </div>
     </div>
-    <p>
-        {{ form.certification_available.errors }}
-        <label for="id_certification_available" style="margin: 32px 0;">
-          {{ form.certification_available }}
-          {% trans "Certification available" %}
-        </label>
-        {% if form.certification_available.help_text %}<span class="help-inline">{{ form.certification_available.help_text }}</span>{% endif %}
-    </p>
-    <p>
-        {{ form.certification_banner.errors }}
-        {{ form.certification_banner.label_tag }}
-        {{ form.certification_banner }}
-        {% if form.certification_banner.help_text %}<span class="help-inline">{{ form.certification_banner.help_text }}</span>{% endif %}
-    </p>
-        <p>
-        {{ form.certification_alt.errors }}
-        {{ form.certification_alt.label_tag }}
-        {{ form.certification_alt }}
-        {% if form.certification_alt.help_text %}<span class="help-inline">{{ form.certification_alt.help_text }}</span>{% endif %}
-    </p>
     <p>
         {{ form.thumbnail.errors }}
         {{ form.thumbnail.label_tag }}

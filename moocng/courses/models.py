@@ -95,9 +95,9 @@ class Course(Sortable):
                                       related_name='courses_as_student',
                                       blank=True)
 
-    languages = models.ManyToManyField(Language, verbose_name=_(u'Languages'),
-                                      through='CourseLanguage',
-                                      related_name='courses_as_language')
+    languages = models.ManyToManyField(Language,
+                                       verbose_name=_(u'Language')
+                                       )
 
     estimated_effort = models.CharField(verbose_name=_(u'Estimated effort'),
                                  null = True,
@@ -126,17 +126,6 @@ class Course(Sortable):
         verbose_name=_(u'Pass threshold'),
         max_digits=4, decimal_places=2,
         blank=True, null=True, help_text="0.00 - 10.00")
-    certification_available = models.BooleanField(
-        default=False,
-        verbose_name=_(u'Certification available'))
-    certification_banner = models.ImageField(
-        verbose_name=_(u'Certification banner'),
-        upload_to='certification_banners', blank=True, null=True)
-    certification_alt = models.CharField(verbose_name=_('Certification image alternative text'), max_length=200,
-                                                 null=True, blank=True,
-                                                 help_text=_('This text is used to describe the certification image. '
-                                                             'It is necessary for accessibility ')
-                                                 )
     completion_badge = models.ForeignKey(
         Badge, blank=True, null=True, verbose_name=_(u'Completion badge'),
         related_name='course')
@@ -402,12 +391,6 @@ class CourseStudent(models.Model):
 
     def can_clone_activity(self):
         return self.course.can_clone_activity() and self.old_course_status == 'n'
-
-
-
-class CourseLanguage(models.Model):
-    course = models.ForeignKey(Course, verbose_name=_(u'Course'))
-    language = models.ForeignKey(Language, verbose_name=_(u'Language'))
 
 
 class Announcement(models.Model):

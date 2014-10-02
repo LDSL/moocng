@@ -279,3 +279,4 @@ class StaticPageForm(forms.ModelForm, BootstrapMixin):
                 widget.attrs['class'] = 'input-xxlarge'
             elif isinstance(widget, forms.widgets.Textarea):
                 widget.mce_attrs['width'] = '780'  # bootstrap span10
+

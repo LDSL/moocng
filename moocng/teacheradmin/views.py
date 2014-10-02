@@ -445,6 +445,7 @@ def teacheradmin_info(request, course_slug):
             course = form.save(commit=False)
             course.static_page = static_page
             course.save()
+            form.save_m2m()
 
             messages.success(request, _(u"Your changes were saved."))
 
