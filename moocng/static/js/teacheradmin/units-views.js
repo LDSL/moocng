@@ -951,7 +951,7 @@ if (_.isUndefined(window.MOOC)) {
                     width: "380", // bootstrap span5
                     elements: "kqsupplementary, kqcomments, reviewdescription"
                 });
-				tinyMCE.baseURL = '/static/tiny_mce';
+				tinyMCE.baseURL = '/static/tinymce';
                 tinyMCE.init(options);
                 options = _.extend(_.clone(tinyMCEOptions), {
                     width: "780", // bootstrap span10
