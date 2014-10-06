@@ -98,10 +98,101 @@ def extra_settings(request):
     except AttributeError:
         mathjax_enabled = False
 
+    try:
+        feature_groups = settings.FEATURE_GROUPS
+    except AttributeError:
+        feature_groups = False
+
+    try:
+        feature_calendar = settings.FEATURE_CALENDAR
+    except AttributeError:
+        feature_calendar = False
+
+    try:
+        feature_wiki = settings.FEATURE_WIKI
+    except AttributeError:
+        feature_wiki = False
+
+    try:
+        feature_teams = settings.FEATURE_TEAMS
+    except AttributeError:
+        feature_teams = False
+
+    try:
+        feature_teams_video = settings.FEATURE_TEAMS_VIDEO
+    except AttributeError:
+        feature_teams_video = False
+
+    try:
+        feature_forum = settings.FEATURE_FORUM
+    except AttributeError:
+        feature_forum = False
+
+    try:
+        feature_blog = settings.FEATURE_BLOG
+    except AttributeError:
+        feature_blog = False
+
+    try:
+        feature_notifications = settings.FEATURE_NOTIFICATIONS
+    except AttributeError:
+        feature_notifications = False
+
+    try:
+        feature_sec_catalogue = settings.FEATURE_SEC_CATALOGUE
+    except AttributeError:
+        feature_sec_catalogue = False
+
+    try:
+        feature_sec_about = settings.FEATURE_SEC_ABOUT
+    except AttributeError:
+        feature_sec_about = False
+
+    try:
+        feature_sec_howitworks = settings.FEATURE_SEC_HOWITWORKS
+    except AttributeError:
+        feature_sec_howitworks = False
+        
+    try:
+        feature_sec_staff = settings.FEATURE_SEC_STAFF
+    except AttributeError:
+        feature_sec_staff = False
+        
+    try:
+        feature_sec_faq = settings.FEATURE_SEC_FAQ
+    except AttributeError:
+        feature_sec_faq = False
+        
+    try:
+        feature_sec_contact = settings.FEATURE_SEC_CONTACT
+    except AttributeError:
+        feature_sec_contact = False
+
+    try:
+        feature_sec_teachers = settings.FEATURE_SEC_TEACHERS
+    except AttributeError:
+        feature_sec_teachers = False
+
     context = {
         'sandbox': sandbox,
         'mathjax_enabled': mathjax_enabled,
+        'feature_groups': feature_groups,
+        'feature_calendar': feature_calendar,
+        'feature_wiki': feature_wiki,
+        'feature_teams': feature_teams,
+        'feature_teams_video': feature_teams_video,
+        'feature_forum': feature_forum,
+        'feature_blog': feature_blog,
+        'feature_notifications': feature_notifications,
+        'feature_sec_catalogue': feature_sec_catalogue,
+        'feature_sec_about': feature_sec_about,
+        'feature_sec_howitworks': feature_sec_howitworks,
+        'feature_sec_staff': feature_sec_staff,
+        'feature_sec_faq': feature_sec_faq,
+        'feature_sec_contact': feature_sec_contact,
+        'feature_sec_teachers': feature_sec_teachers,
     }
+
     return context
 
 
