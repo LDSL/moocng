@@ -84,9 +84,9 @@ DEFAULT_MAX_EMAILS_PER_MONTH = 3
 SUBJECT_CLONE_ACTIVITY = gettext('Cloned course activity')
 
 # Amazon credentials
-AWS_ACCESS_KEY_ID = ""
-AWS_SECRET_ACCESS_KEY = ""
-AWS_STORAGE_BUCKET_NAME = ""
+AWS_ACCESS_KEY_ID = ''
+AWS_SECRET_ACCESS_KEY = ''
+AWS_STORAGE_BUCKET_NAME = ''
 AWS_S3_UPLOAD_EXPIRE_TIME = (60 * 5)  # 5 minutes
 
 # Local time zone for this installation. Choices can be found here:
