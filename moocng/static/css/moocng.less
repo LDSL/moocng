@@ -2634,6 +2634,73 @@ ul.rating {
 				color: @white;
 			}
 		}
+	}
+
+	&.review {
+		h2 {
+			font-size: 22px;
+			line-height: 30px;
+			color: @neutral_medium_1;
+			font-weight: 400;
+			border-bottom: 1px solid @neutral_light_1;
+			margin-bottom: 20px;
+			padding: 20px 0;
+		}
+
+		h3 {
+			font-size: 14px;
+			font-weight: 600;
+			line-height: 20px;
+			text-transform: uppercase;
+			color: @neutral_intense;
+			padding: 0;
+		}
+
+		p {
+			font-size: 18px;
+			line-height: 22px;
+			color: @neutral_medium_1;
+			margin-top: 28px;
+		}
+
+		.note {
+			background-color: fade(@comp, 10%);
+			padding: 32px 20px;
+			margin-bottom: 30px;
+		}
+
+		.box {
+			margin: 60px 0 80px 0;
+			background: @white;
+			border-top: 4px solid @highlight;
+			box-shadow: 0 1px 10px 0 rgba(0,0,0,.25);
+			
+			h3 {
+				font-size: 22px;
+				line-height: 24px;
+				font-weight: 300;
+				text-transform: none;
+				color: @neutral_medium_1;
+				padding: 10px 20px;
+				background-color: @neutral_light_3;
+				border-bottom: 1px solid @neutral_light_2;
+			}
+
+			.content {
+				height: 100%;
+				padding-bottom: 48px;
+				
+				.feed {
+					height: 100%;
+					max-height: 90vh;
+					overflow-y: auto;
+				}
+				
+				.bottom-bar {
+					bottom: 0;
+				}
+			}
+		}
 
 		.btn-group .btn {
 			color: @highlight;
@@ -2653,6 +2720,10 @@ ul.rating {
 				background-color: @highlight;
 				color: @white;
 			}
+		}
+
+		form {
+			padding: 20px;
 		}
 
 		label {

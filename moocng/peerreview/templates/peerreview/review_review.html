@@ -46,7 +46,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="peerreview">
+    <div class="peerreview review">
         <div id="confirm-review" class="modal hide fade">
             <div class="modal-header">
                 <h3>{% trans "Confirm submission" %}</h3>
@@ -73,73 +73,83 @@
 
         <div class="container">
             <div class="row">
-                <div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
-                    <h2>{% trans "Review for" %} {{ assignment.kq.title }}</h2>
+                <div class="col-lg-16 col-md-8 col-sm-8 col-mob-4">
+                    <h2><em>{% trans "Review: " %}</em> {{ assignment.kq.title }}</h2>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-8 col-sm-8 col-mob-4">
+                            <div class="note">
+                                <h3>{% trans "Activity description" %}</h3>
+                                <p>{{ assignment.description|safe }}</p>
+                            </div>
 
-                    <h3>{% trans "Activity description" %}</h3>
-                    {{ assignment.description|safe }}
-
-                    <h3>{% trans "Student response" %}</h3>
-                    {{ submission.text }}
-                    {% if submission.file %}
-                        <p>
-                            <a href="{{ submission.file }}">{% trans "Download student's submission" %}</a>
-                        </p>
-                        <div class="alert">
-                            <strong>{% trans "Warning!" %}</strong>
-                            {% blocktrans with site=site %}
-                                You should scan this file with your antivirus software. {{ site }}
-                                is not responsible for any harm this may cause to your computer.
-                            {% endblocktrans %}
-                        </div>
-                    {% endif %}
-                    <h3>{% trans "Your review" %}</h3>
-                    <div class="alert">
-                        {% if is_assignation_expired %}
-                            <strong>{% trans "Warning!" %}</strong>
-                            {% blocktrans with assignation_expire=assignation_expire %}
-                                This submission can be now claimed by other student. Your claim
-                                expired on {{ assignation_expire }}, but you still can send your review.
-                                Hurry up!
-                            {% endblocktrans %}
-                        {% else %}
-                            <strong>{% trans "Remember:" %}</strong>
-                            {% blocktrans with assignation_expire=assignation_expire %}
-                                You must review this exercise before {{ assignation_expire }}. After this,
-                                date, the review can be reassigned to another student.
-                            {% endblocktrans %}
-                        {% endif %}
-                    </div>
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ criteria_formset.management_form }}
-                        {% for criterion in criteria_formset %}
-                            {% if forloop.counter0|divisibleby:"2" %}
-                                <div class="row">
-                            {% endif %}
-                                    <div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
-                                        {{ criterion.evaluation_criterion_id }}
-                                        <p><strong>{{ criterion.evaluation_criterion_id.value|get_criterion_title }}</strong></p>
-                                        <p class="small criterion">{{ criterion.evaluation_criterion_id.value|get_criterion_description|escape }}</p>
-                                        <div class="btn-group pull-right" data-toggle="buttons-radio">
-                                            {% for choice in criterion.value %}
-                                                <button type="button" data-name="{{ criterion.value.html_name }}" data-value="{{ choice.choice_value }}" class="btn criterion_value">
-                                                    {{ choice.choice_label }}
-                                                </button>
-                                            {% endfor %}
-                                            <input type="hidden" class="criterion_value" name="{{ criterion.value.html_name }}" value="{% if criterion.value.value %}{{ criterion.value.value }}{% endif %}">
-                                        </div>
-                                        {{ criterion.value.errors }}
-                                    </div>
-                            {% if forloop.counter|divisibleby:"2" or forloop.last %}
+                            <h3>{% trans "Student response" %}</h3>
+                            <p>{{ submission.text }}</p>
+                            {% if submission.file %}
+                                <p>
+                                    <a href="{{ submission.file }}">{% trans "Download student's submission" %}</a>
+                                </p>
+                                <div class="alert">
+                                    <strong>{% trans "Warning!" %}</strong>
+                                    {% blocktrans with site=site %}
+                                        You should scan this file with your antivirus software. {{ site }}
+                                        is not responsible for any harm this may cause to your computer.
+                                    {% endblocktrans %}
                                 </div>
                             {% endif %}
-                        {% endfor %}
-                        {{ submission_form }}
-                        <div class="form-actions">
-                            <input type="submit" class="btn btn-primary pull-right" id="send_review" value="{% trans "Send review" %}" />
+
+                            <div class="box">
+                                <h3>{% trans "Evaluation criteria and review" %}</h3>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    {{ criteria_formset.management_form }}
+                                    {% for criterion in criteria_formset %}
+                                        {% if forloop.counter0|divisibleby:"2" %}
+                                            <div class="row">
+                                        {% endif %}
+                                                <div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
+                                                    {{ criterion.evaluation_criterion_id }}
+                                                    <p><strong>{{ criterion.evaluation_criterion_id.value|get_criterion_title }}</strong></p>
+                                                    <p class="small criterion">{{ criterion.evaluation_criterion_id.value|get_criterion_description|escape }}</p>
+                                                    <div class="btn-group pull-right" data-toggle="buttons-radio">
+                                                        {% for choice in criterion.value %}
+                                                            <button type="button" data-name="{{ criterion.value.html_name }}" data-value="{{ choice.choice_value }}" class="btn criterion_value">
+                                                                {{ choice.choice_label }}
+                                                            </button>
+                                                        {% endfor %}
+                                                        <input type="hidden" class="criterion_value" name="{{ criterion.value.html_name }}" value="{% if criterion.value.value %}{{ criterion.value.value }}{% endif %}">
+                                                    </div>
+                                                    {{ criterion.value.errors }}
+                                                </div>
+                                        {% if forloop.counter|divisibleby:"2" or forloop.last %}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {{ submission_form }}
+                                    <div class="form-actions">
+                                        <input type="submit" class="btn btn-primary pull-right" id="send_review" value="{% trans "Send review" %}" />
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </form>
+                        <div class="col-lg-4 col-md-4 col-sm-8 col-mob-4">
+                            <div class="alert">
+                                {% if is_assignation_expired %}
+                                    <strong>{% trans "Warning!" %}</strong>
+                                    {% blocktrans with assignation_expire=assignation_expire %}
+                                        This submission can be now claimed by other student. Your claim
+                                        expired on {{ assignation_expire }}, but you still can send your review.
+                                        Hurry up!
+                                    {% endblocktrans %}
+                                {% else %}
+                                    <strong>{% trans "Remember:" %}</strong>
+                                    {% blocktrans with assignation_expire=assignation_expire %}
+                                        You must review this exercise before {{ assignation_expire }}. After this,
+                                        date, the review can be reassigned to another student.
+                                    {% endblocktrans %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
