@@ -29,7 +29,7 @@
 }
 
 /* SWATCHES */
-@highlight: #55555d;/*#002595;*/
+@highlight: #002595;
 @comp: #fedd00;
 @black: #000;
 @neutral_intense: #27272e;
@@ -2543,6 +2543,125 @@ ul.rating {
 		font-weight: 300;
 		color: @neutral_medium_1;
 		padding: 25px 0;
+	}
+
+	h2 {
+		padding: 25px 0;
+		font-size: 22px;
+		color: @highlight;
+		font-weight: 600;
+	}
+
+	h4 {
+		position: relative;
+		padding: 30px 40px;
+		display: block;
+		font-size: 22px;
+		color: @highlight;
+		font-weight: 600;
+		border: solid @neutral_light_1;
+		border-width: 1px 0;
+	}
+
+	.kq-list .well {
+		margin: 0 0 40px 80px;
+		padding-top: 40px;
+		border-top: 1px solid @neutral_light_1;
+
+		&:first-child {
+			border-top: none;
+		}
+
+		p, ul li {
+			font-size: 14px;
+			color: @neutral_medium_1;
+		}
+
+		ul {
+			padding-left: 40px;
+			margin-bottom: 20px;
+
+			li {
+				margin-top: 4px;
+			}
+
+			a {
+				color: @highlight;
+				border-bottom: 1px solid @comp;
+				transition: border-color .1s ease-in-out;
+
+				&:hover {
+					border-bottom-color: @highlight;
+				}
+			}
+		}
+	}
+
+	h5 {
+		display: block;
+		font-size: 22px;
+		font-weight: 400;
+		color: @highlight;
+		margin-bottom: 12px;
+	}
+
+	form {
+		margin: 20px 0;
+
+		&:after {
+			content: "";
+			display: block;
+			clear: both;
+		}
+
+		input[type="submit"] {
+			color: @highlight;
+			text-transform: uppercase;
+			display: inline-block;
+			border: 2px solid @highlight;
+			background-color: @white;
+			padding: 10px 15px;
+			margin-top: 5px;
+			text-transform: uppercase;
+			cursor: pointer;
+			
+			transition: background-color .1s ease-in-out, color .1s ease-in-out;
+			
+			&:hover {
+				background-color: @highlight;
+				color: @white;
+			}
+		}
+
+		.btn-group .btn {
+			color: @highlight;
+			background-color: @white;
+			margin: 0;
+			border: solid @highlight;
+			border-width: 2px 2px 2px 0;
+			float: left;
+			cursor: pointer;
+			outline: none;
+
+			&:first-child {
+				border-left-width: 2px;
+			}
+
+			&:hover, &.selected {
+				background-color: @highlight;
+				color: @white;
+			}
+		}
+
+		label {
+			display: block;
+			margin-top: 20px;
+		}
+
+		textarea {
+			width: 100%;
+			padding: 10px;
+		}
 	}
 }
 
