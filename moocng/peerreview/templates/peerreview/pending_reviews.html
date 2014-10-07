@@ -22,7 +22,13 @@
 
 {% if has_sent_submission %}
 <form action="{% url course_review_assign course_slug peer_review_assignment_id %}" method="post">{% csrf_token %}
-  <input type="submit" class="btn btn-primary" value='{% trans "Review another submission" %}' />
+  <input type="submit" class="btn btn-primary" 
+  {% if reviewed.count == 0 %}
+  	value='{% trans "Review a submission" %}'
+  {% else %}
+  	value='{% trans "Review another submission" %}'
+  {% endif %}
+   />
 </form>
 {% else %}
 <p><span class="icon-warning-sign"></span> {% trans "You must send your submission before reviewing your classmates' ones" %}</p>
