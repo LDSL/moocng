@@ -130,6 +130,10 @@ a {
   }
 }
 
+button, input {
+	font-family: inherit;
+}
+
 .btn-group{
 	position: relative;
 	float: left;
@@ -2565,6 +2569,12 @@ ul.rating {
 		border-width: 1px 0;
 	}
 
+	h6 {
+		font-size: 16px;
+		font-weight: 400;
+		color: @neutral_intense;
+	}
+
 	.kq-list .well {
 		margin: 0 0 40px 80px;
 		padding-top: 40px;
@@ -2577,6 +2587,10 @@ ul.rating {
 		p, ul li {
 			font-size: 14px;
 			color: @neutral_medium_1;
+		}
+
+		p {
+			margin-bottom: 20px;
 		}
 
 		ul {
@@ -2616,7 +2630,7 @@ ul.rating {
 			clear: both;
 		}
 
-		input[type="submit"] {
+		button, input[type="submit"] {
 			color: @highlight;
 			text-transform: uppercase;
 			display: inline-block;
@@ -2626,12 +2640,27 @@ ul.rating {
 			margin-top: 5px;
 			text-transform: uppercase;
 			cursor: pointer;
+			outline: none;
 			
 			transition: background-color .1s ease-in-out, color .1s ease-in-out;
 			
+			svg {
+				.img_v_middle;
+				top: -1px;
+				margin-left: 5px;
+
+				path, polygon {
+					transition: fill .1s ease-in-out;
+				}
+			}
+
 			&:hover {
 				background-color: @highlight;
 				color: @white;
+
+				path, polygon {
+					fill: @white;
+				}
 			}
 		}
 	}
@@ -2657,16 +2686,84 @@ ul.rating {
 		}
 
 		p {
-			font-size: 18px;
-			line-height: 22px;
+			font-size: 16px;
+			line-height: 20px;
 			color: @neutral_medium_1;
 			margin-top: 28px;
+		}
+
+		a {
+			color: @highlight;
+			border-bottom: 1px solid @comp;
+			transition: border-color .1s ease-in-out;
+
+			&:hover {
+				border-bottom-color: @highlight;
+			}
+		}
+
+		img {
+			.img_v_middle;
+
+			& + a {
+				margin-left: 12px;
+			}
 		}
 
 		.note {
 			background-color: fade(@comp, 10%);
 			padding: 32px 20px;
 			margin-bottom: 30px;
+
+			p {
+				font-size: 18px;
+				line-height: 22px;
+			}
+
+			&.little {
+				padding: 20px 20px 35px;
+
+				h3 {
+					font-size: 12px;
+					line-height: 18px;
+				}
+
+				p {
+					font-size: 14px;
+					line-height: 18px;
+					margin-top: 22px;
+
+					.important {
+						font-size: 18px;
+						line-height: 22px;
+						color: @neutral_intense;
+						display: block;
+						margin: 22px 0;
+					}
+				}
+			}
+
+			&.warning {
+				padding: 0;
+				margin-top: 42px;
+
+				h3 {
+					color: @alerts;
+				}
+
+				p {
+					margin-top: 0;
+				}
+			}
+
+			&.grey {
+				background-color: @neutral_light_3;
+				border-bottom: 1px solid @neutral_light_1;
+			}
+
+			&.trans {
+				background-color: transparent;
+			}
 		}
 
 		.box {
@@ -2686,54 +2783,92 @@ ul.rating {
 				border-bottom: 1px solid @neutral_light_2;
 			}
 
-			.content {
-				height: 100%;
-				padding-bottom: 48px;
-				
-				.feed {
-					height: 100%;
-					max-height: 90vh;
-					overflow-y: auto;
+			form {
+				margin: 0;
+				padding: 0;
+
+				.block {
+					padding: 22px;
+					border-bottom: 1px solid @neutral_light_2;
+
+					&:last-child {
+						border-bottom: none;
+					}
+
+					&:after {
+						content: "";
+						display: block;
+						clear: both;	
+					}
+
+					h4 {
+						font-size: 18px;
+						line-height: 22px;
+						font-weight: 400;
+						color: @highlight;
+						padding: 0;
+						border: none;
+					}
+
+					p {
+						font-size: 14px;
+						line-height: 18px;
+						color: @neutral_medium_1;
+						margin-top: 10px;
+					}
+
+					label {
+						display: block;
+						margin-top: 6px;
+						font-size: 14px;
+						line-height: 18px;
+					}
+
+					textarea {
+						font-family: inherit;
+						width: 100%;
+						padding: 10px;
+						margin-top: 8px;
+						background-color: @neutral_light_3;
+						border: 1px solid @neutral_light_1;
+						outline: none;
+					}
 				}
-				
-				.bottom-bar {
-					bottom: 0;
+			}
+		}
+
+		.btn-group {
+			margin: 34px 0 16px;
+
+			span {
+				float: left;
+				padding: 10px 0;
+				margin-right: 20px;
+				font-size: 18px;
+				color: @neutral_medium_1;
+			}
+
+			.btn {
+				font-size: 18px;
+				font-family: inherit;
+				color: @highlight;
+				background-color: @white;
+				margin: 0;
+				border: solid @highlight;
+				border-width: 2px 2px 2px 0;
+				float: left;
+				cursor: pointer;
+				outline: none;
+
+				&:first-of-type {
+					border-left-width: 2px;
+				}
+
+				&:hover, &.selected {
+					background-color: @highlight;
+					color: @white;
 				}
 			}
-		}
-
-		.btn-group .btn {
-			color: @highlight;
-			background-color: @white;
-			margin: 0;
-			border: solid @highlight;
-			border-width: 2px 2px 2px 0;
-			float: left;
-			cursor: pointer;
-			outline: none;
-
-			&:first-child {
-				border-left-width: 2px;
-			}
-
-			&:hover, &.selected {
-				background-color: @highlight;
-				color: @white;
-			}
-		}
-
-		form {
-			padding: 20px;
-		}
-
-		label {
-			display: block;
-			margin-top: 20px;
-		}
-
-		textarea {
-			width: 100%;
-			padding: 10px;
 		}
 	}
 }

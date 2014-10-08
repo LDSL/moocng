@@ -173,6 +173,11 @@ def extra_settings(request):
     except AttributeError:
         feature_sec_teachers = False
 
+    try:
+        feature_social = settings.FEATURE_SOCIAL
+    except AttributeError:
+        feature_social = False
+
     context = {
         'sandbox': sandbox,
         'mathjax_enabled': mathjax_enabled,
@@ -191,6 +196,7 @@ def extra_settings(request):
         'feature_sec_faq': feature_sec_faq,
         'feature_sec_contact': feature_sec_contact,
         'feature_sec_teachers': feature_sec_teachers,
+        'feature_social': feature_social
     }
 
     return context

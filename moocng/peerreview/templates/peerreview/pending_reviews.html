@@ -8,7 +8,7 @@
 
 {% if assigned.count > 0 %}
 
-<p>{% trans "You are currently reviewing the following submissions:" %}</p>
+<h6>{% trans "You are currently reviewing the following submissions:" %}</h6>
 
 <ul>
   {% for assign in assigned %}
@@ -38,7 +38,7 @@
 
 
 {% if reviewed.count > 0 %}
-<h5>{% trans "Submissions already reviewed" %}</h5>
+<h6>{% trans "Submissions already reviewed" %}:</h6>
 
 <ul>
   {% for review in reviewed %}
