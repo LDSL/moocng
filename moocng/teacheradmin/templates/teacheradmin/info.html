@@ -162,6 +162,14 @@
         </div>
     </div>
     <p>
+        {{ form.certification_available.errors }}
+        <label for="id_certification_available" style="margin: 32px 0;">
+          {{ form.certification_available }}
+          {% trans "Certification available" %}
+        </label>
+        {% if form.certification_available.help_text %}<span class="help-inline">{{ form.certification_available.help_text }}</span>{% endif %}
+    </p>
+    <p>
         {{ form.thumbnail.errors }}
         {{ form.thumbnail.label_tag }}
         {{ form.thumbnail }}

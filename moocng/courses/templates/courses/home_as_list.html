@@ -14,7 +14,8 @@
             </div>
         {% endif %}
     </div>
-    <!--<div class="container filter_bar">
+    {% if feature_sec_catalogue %}
+    <div class="container filter_bar">
       <div class="row">
 		<div class="filter pull-left col-lg-6 col-md-6 col-sm-4 col-mob-2">
 		    <span class="col-lg-6 col-md-4 col-sm-2 col-mob-1">Filter<span class="noLowRes"> courses by</span>:</span>
@@ -25,7 +26,8 @@
 		</div>
 		<a class="pull-right grey_squared col-lg-4 col-md-4 col-sm-4 col-mob-2" href="#"><span><span class="noLowRes">Explore the full </span>catalogue</span> <img src="{{ STATIC_URL }}img/ECO_icon_flecha-xl.svg"></a> 
       </div>
-    </div>-->
+    </div>
+    {% endif %}
     <div class="content">
       <div class="container course_list">
 	  <section class="row">
@@ -79,9 +81,11 @@
 		  {% endfor %}
 	      {% endconditionalcache %}
 	  </section>
-	  <!--<div class="row">
+	  {% if feature_sec_catalogue %}
+	  <div class="row">
 	    <a class="pull-right grey_squared col-lg-4 col-md-4 col-sm-4 col-mob-4" href="#"><span>Explore the full catalogue</span> <img src="{{ STATIC_URL }}img/ECO_icon_flecha-xl.svg"></a> 
-	   </div>-->
+	   </div>
+	   {% endif %}
       </div>
     </div>
 {% endblock %}

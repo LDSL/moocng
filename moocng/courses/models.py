@@ -126,6 +126,9 @@ class Course(Sortable):
         verbose_name=_(u'Pass threshold'),
         max_digits=4, decimal_places=2,
         blank=True, null=True, help_text="0.00 - 10.00")
+    certification_available = models.BooleanField(
+        default=False,
+        verbose_name=_(u'Certification available'))
     completion_badge = models.ForeignKey(
         Badge, blank=True, null=True, verbose_name=_(u'Completion badge'),
         related_name='course')
