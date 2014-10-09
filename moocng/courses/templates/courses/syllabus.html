@@ -22,7 +22,7 @@
                 {% if unit.questions %}
                     <ol>
                         {% for q in unit.questions %}
-                        <li class="{% if q.current %}current{% endif %}{% if q.completed %}done{% endif %}">
+                        <li class="{% if q.completed %}done{% endif %} {% if q.current %}current{% endif %}">
                             <div class="row">
                                 <div class="col-lg-12 col-md-8 col-sm-5 col-mob-4">
                                     <a class="kq" href="{{q.url}}">{{q.title}}</a>
