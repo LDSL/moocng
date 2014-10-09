@@ -1602,7 +1602,7 @@ ul.rating {
 			line-height: 28px;
 			max-height: calc(~"100% - 48px");
 			overflow-y: auto;
-			color: @neutral_medium_1;
+			color: @neutral_intense;
 			padding: 35px 25px 25px 60px;
 			counter-reset: item 0; /* cuando se implemente podremos usar attr(start integer);*/
 			
@@ -1612,14 +1612,14 @@ ul.rating {
 				display: block;
 				
 				&.done {
-					color: @neutral_intense;
+					color: @neutral_medium_1;
 					position: relative;
 					
 					&:before {
 						content: url('/static/img/ECO_icon_check.svg');
 						display: block;
 						position: absolute;
-						left: -35px;
+						left: -37px;
 						top: 2px;
 					}
 				}
@@ -1635,7 +1635,7 @@ ul.rating {
 						content: url('/static/img/ECO_icon_marcador_1.svg');
 						display: block;
 						position: absolute;
-						left: -35px;
+						left: -40px;
 						top: 3px;
 					}
 				}
@@ -1658,8 +1658,12 @@ ul.rating {
 					counter-reset: item;
 					padding-left: 20px;
 					
-					li.done:before, li.current:before {
+					li.done:before {
 						left: -57px;
+					}
+
+					li.current:before {
+						left: -60px;
 					}
 				}
 			}
@@ -2438,9 +2442,9 @@ ul.rating {
 					background-color: @neutral_light_3;
 					display: block;
 					box-sizing: border-box;
-					width: 16px;
+					width: 22px;
 					height: 100%;
-					padding-top: 30px;
+					padding: 30px 0 0 3px;
 					position: absolute;
 					left: -45px;
 					top: 0;
@@ -2502,9 +2506,21 @@ ul.rating {
 						background-color: @neutral_light_3;
 						display: block;
 						box-sizing: border-box;
-						width: 16px;
+						width: 22px;
 						height: 100%;
-						padding-top: 30px;
+						padding: 30px 0 0 3px;
+						position: absolute;
+						left: -80px;
+						top: 0;
+					}
+
+					&.current:before {
+						content: url('/static/img/ECO_icon_marcador_1.svg');
+						display: block;
+						box-sizing: border-box;
+						width: 22px;
+						height: 100%;
+						padding: 30px 0 0 0;
 						position: absolute;
 						left: -80px;
 						top: 0;

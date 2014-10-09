@@ -152,6 +152,21 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
             this.$el.parent().children().removeClass("active");
             this.$el.addClass("active");
 
+            var self = this;
+            if(!this.model.get('marked')){
+                $("#bookmark_btn img").attr('src','/static/img/ECO_icon_marcador_0.svg');
+            }else{
+                $("#bookmark_btn img").attr('src','/static/img/ECO_icon_marcador_1.svg');
+            }
+            $("#bookmark_btn").off('click').on('click', function () {
+                $.ajax({
+                    url: '/course/setmark/'+self.model.get("id")+'/',
+                    type: 'GET'
+                }).done(function(data){
+                    $("#bookmark_btn img").attr('src','/static/img/ECO_icon_marcador_1.svg');
+                });
+            });
+
             this.renderExtraTabs();
 
             if (_.isObject(window.MathJax)) {

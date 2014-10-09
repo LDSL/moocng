@@ -202,6 +202,7 @@ class KnowledgeQuantumResource(BaseModelResource):
     peer_review_score = fields.IntegerField(readonly=True)
     correct = fields.BooleanField(readonly=True)
     completed = fields.BooleanField(readonly=True)
+    marked = fields.BooleanField(readonly=True)
     normalized_weight = fields.IntegerField(readonly=True)
 
     class Meta:
@@ -273,6 +274,9 @@ class KnowledgeQuantumResource(BaseModelResource):
 
     def dehydrate_completed(self, bundle):
         return bundle.obj.is_completed(bundle.request.user)
+
+    def dehydrate_marked(self, bundle):
+        return bundle.obj.unit.course.get_user_mark(bundle.request.user).id == bundle.obj.id
 
     def dehydrate_course(self, bundle):
         return bundle.obj.unit.course.id

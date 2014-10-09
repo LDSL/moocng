@@ -18,20 +18,12 @@
 					</div>
 					<div class="content">
 						<ol start="2">
-							<!-- <li class="done"><span>Conceptos básicos</span></li>
-							<li class="done"><span>Principios básicos</span>
-								<ol>
-									<li class="current"><span>Base del mapa geológico: mapa topográfico</span></li>
-									<li><span>Intersección de capas geológicas planas para topografía</span></li>
-									<li><span>Capas plegadas. Intersección de los pliegues con la topografía</span></li>
-								</ol>
-							</li> -->
 							{% for unit in unit_list %}
-								<li class="{% if unit.complete %}done{% endif %}"><span>{{unit.title}}</span>
+								<li class="{% if unit.complete %}done{% endif %}"><a href="{{ unit.url }}">{{unit.title}}</a>
 								{% if unit.questions %}
 									<ol>
 										{% for q in unit.questions %}
-										<li class="{% if q.current %} current {% endif %}"><span>{{q.title}}</span></li>
+										<li class="{% if q.completed %}done{% endif %} {% if q.current %} current {% endif %}"><a href="{{ q.url }}">{{q.title}}</a></li>
 										{% endfor %}
 									</ol>
 								{% endif %}
