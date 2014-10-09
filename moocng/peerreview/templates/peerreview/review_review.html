@@ -156,7 +156,7 @@
                         </div>
                         <div class="col-lg-4 col-md-4 noLowRes">
                             <div class="note little grey">
-                                {% if not is_assignation_expired %}
+                                {% if is_assignation_expired %}
                                     <h3>{% trans "Warning!" %}</h3>
                                     {% blocktrans with assignation_expire=assignation_expire %}
                                         <p>This submission can be now claimed by other student. Your claim
