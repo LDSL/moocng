@@ -348,7 +348,7 @@ def course_dashboard(request, course_slug):
     return render_to_response('courses/dashboard.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
-        'unit_list': get_sillabus_tree(course,request.user),
+        'unit_list': get_sillabus_tree(course,request.user, True, True),
         'task_list': task_list,
         'tasks_done': tasks_done,
         'is_enrolled': is_enrolled,

@@ -276,7 +276,11 @@ class KnowledgeQuantumResource(BaseModelResource):
         return bundle.obj.is_completed(bundle.request.user)
 
     def dehydrate_marked(self, bundle):
-        return bundle.obj.unit.course.get_user_mark(bundle.request.user).id == bundle.obj.id
+        current_mark = bundle.obj.unit.course.get_user_mark(bundle.request.user)
+        if current_mark is None:
+            return False
+        else:
+            return current_mark.id == bundle.obj.id
 
     def dehydrate_course(self, bundle):
         return bundle.obj.unit.course.id

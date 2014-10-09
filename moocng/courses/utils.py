@@ -342,52 +342,86 @@ def update_course_mark_by_user(course, user):
     updated_course, passed_course_now = update_course_mark(db, course, user)
     update_passed(db, 'stats_course', passed_course_now, {'course_id': course.pk})
 
-def get_sillabus_tree(course,user,minversion=True):
+def get_sillabus_tree(course,user,minversion=True,incontext=False):
     units = []
 
     current_mark_kq = course.get_user_mark(user)
 
-    for u in get_units_available_for_user(course, user):
+    course_units = get_units_available_for_user(course, user)
 
-        questions = []
+    if not incontext:
 
-        unitcomplete = True
+        for u in course_units:
+            unit, current_mark_kq = get_unit_tree(u, user, current_mark_kq, minversion)            
+            units.append(unit)
 
-        for q in  KnowledgeQuantum.objects.filter(unit_id=u.id):
-
-            completed = q.is_completed(user)
-
-            # If one question is not completed unit is not completed
-            if unitcomplete and not completed:
-                unitcomplete = False
-
-            qa = {
-                "completed" : completed,
-                "pk" : q.pk,
-                "title": q.title,
-                "url": "/course/"+course.slug+"/classroom/#!unit"+str(u.pk)+"/kq"+str(q.pk),
-                "current" : q == current_mark_kq
-            }
-
-            if not minversion:
-                qa["has_video"] = get_media_type(q.media_content_type) == "video"
-                qa["has_presentation"] = get_media_type(q.media_content_type) == "presentation"
-                qa["has_attachments"] = len(q.attachment_set.filter()) > 0
-                qa["has_test"] = len(q.question_set.filter()) > 0
-
-            questions.append(qa)
-
-        unit = {
-            'id': u.id,
-            'title': u.title,
-            'url': "/course/"+course.slug+"/classroom/#!unit"+str(u.pk),
-            'unittype': u.unittype,
-            'badge_class': get_unit_badge_class(u),
-            'badge_tooltip': u.get_unit_type_name(),
-            'complete' : unitcomplete,
-            'questions' : questions
-        }
-        units.append(unit)
-
+    else:
+        if current_mark_kq is not None:
+            unit, current_mark_kq = get_unit_tree(current_mark_kq.unit, user, current_mark_kq, minversion)
+            units.append(unit)
+        else:
+            prev = None
+            for u in course_units:
+                unit, current_mark_kq = get_unit_tree(u, user, current_mark_kq, minversion)
+                
+                if not unit['complete']:
+                    units.append(unit)
+                    return units
+                else:
+                    prev = unit
+                    print prev
+            units.append(prev)
 
     return units
+
+def get_unit_tree(unit, user, current_mark_kq, minversion=True):
+    questions = []
+    unitcomplete = True
+    current_marked = False
+
+    for q in  KnowledgeQuantum.objects.filter(unit_id=unit.id):
+
+        completed = q.is_completed(user)
+
+        # If one question is not completed unit is not completed
+        if unitcomplete and not completed:
+            unitcomplete = False
+
+        current = False
+        if not current_marked and current_mark_kq is not None:
+            current = q == current_mark_kq
+        elif not current_marked:
+            current = not completed
+
+        if current == True:
+            current_marked = True
+            current_mark_kq = q
+
+        qa = {
+            "completed" : completed,
+            "pk" : q.pk,
+            "title": q.title,
+            "url": "/course/"+unit.course.slug+"/classroom/#!unit"+str(unit.pk)+"/kq"+str(q.pk),
+            "current" : current
+        }
+
+        if not minversion:
+            qa["has_video"] = get_media_type(q.media_content_type) == "video"
+            qa["has_presentation"] = get_media_type(q.media_content_type) == "presentation"
+            qa["has_attachments"] = len(q.attachment_set.filter()) > 0
+            qa["has_test"] = len(q.question_set.filter()) > 0
+
+        questions.append(qa)
+
+    unit = {
+        'id': unit.id,
+        'title': unit.title,
+        'url': "/course/"+unit.course.slug+"/classroom/#!unit"+str(unit.pk),
+        'unittype': unit.unittype,
+        'badge_class': get_unit_badge_class(unit),
+        'badge_tooltip': unit.get_unit_type_name(),
+        'complete' : unitcomplete,
+        'questions' : questions
+    }
+
+    return unit, current_mark_kq
