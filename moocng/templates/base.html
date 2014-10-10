@@ -86,6 +86,13 @@
     </header>
     
     <div role="main" class="{% block mainclass %}{% endblock %}">
+      {% if messages %}{% for message in messages %}
+      <div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
+        <button class="close" data-dismiss="alert">×</button>
+        {{ message }}
+      </div>
+      {% endfor %}{% endif %}
+
       {% block nav %}{% endblock %}
 
       {% block content %}{% endblock %}

@@ -31,7 +31,7 @@
 							{% endfor %}
 						</ol>
 						<div class="bottom-bar">
-							<a href="{% url course_syllabus course.slug %}" class="button pull-right"><img src="{{ STATIC_URL }}/img/ECO_icon_toc.svg">{% trans "Syllabus" %}</a>
+							<a href="{% url course_syllabus course.slug %}" class="button pull-right"><img src="{{ STATIC_URL }}/img/ECO_icon_toc.svg">{% trans "View full syllabus" %}</a>
 						</div>
 					</div>
 				</div>
@@ -244,8 +244,18 @@
 {% block extrajs %}
 	<script>
 		function resizeDashboard(){
-			var width = $('.dash-box .content').outerWidth();
-			$('.dash-box .content .tabs .content').width(width);
+			$('.dash-box').each(function(index, value){
+				var $dash = $(value);
+				var width = $dash.children('.content').first().outerWidth();
+				$dash.find('.content .tabs .content').width(width);
+				var height = $dash.find('.content ol')[0].scrollHeight;
+				var bottombar = $dash.find('.bottom-bar');
+				if (bottombar.length > 0){
+					height += bottombar.outerHeight() + 5;
+				}
+				$dash.children('.content').first().height(height);
+				$dash.find('.content .tabs .content').first().height(height);
+			});
 		}
 		
 		$(function(){
