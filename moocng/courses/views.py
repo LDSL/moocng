@@ -31,6 +31,8 @@ from django.template import RequestContext
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 from datetime import date
+import requests
+import json
 
 from moocng.badges.models import Award
 from moocng.courses.models import Course, CourseTeacher, Announcement,KnowledgeQuantum
@@ -165,6 +167,24 @@ def course_add(request):
         course.save()
 
         CourseTeacher.objects.create(course=course, teacher=owner)
+
+        # Create forum categories
+        data = {
+            "name": name,
+            "description": "No description by now",
+            "bgColor": "#DDD",
+            "color": "#F00"
+        }
+        headers = {
+            'Content-type': 'application/json',
+            'auth-hash': '426c92087adafca18e37d807c34b70e5',
+            'auth-timestamp': '1412694158305'
+        }
+        try:
+            r = requests.post(settings.FORUM_URL + 'api2/categories', data=json.dumps(data), headers=headers)
+            print r.json()
+        except:
+            print "Error creating course forum category"
 
         if not allow_public:
             subject = _('Your course "%s" has been created') % name
