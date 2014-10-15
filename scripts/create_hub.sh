@@ -114,9 +114,10 @@ databasecreation(){
 			exit 1
 		fi
 	else
-		echo "You must add to the server's pg_hba.conf file the following line:"
+		echo "You must add to the server's pg_hba.conf file the following line BEFORE CONTINUING:"
 		host_ip=$(hostname -I)
 		echo "host	$hubname	$hubname	$host_ip	md5"
+		read -p "Press any key to continue..."
 	fi
 }
 
@@ -225,4 +226,5 @@ ssh $idp_username@$idp_address "sed -i \"/components =  array (/a array \('$hubn
 
 
 echo "Hub $hubname created!"
+echo "Remember to link the hub domain and restart moocngd and nginx services!"
 exit 0

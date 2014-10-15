@@ -19,7 +19,7 @@ server {
         listen 80;
 
         # Make site accessible from http://localhost/
-        server_name dev.hubX.ecolearning.eu;
+        server_name hubX.ecolearning.eu;
 
         access_log /home/hubX/log/access.log;
         error_log /home/hubX/log/error.log;
@@ -43,7 +43,7 @@ server {
 #
 server {
         listen 443;
-        server_name dev.hubX.ecolearning.eu;
+        server_name hubX.ecolearning.eu;
 
         access_log /home/hubX/log/access-ssl.log;
         error_log /home/hubX/log/error-ssl.log;
