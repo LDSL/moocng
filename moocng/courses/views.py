@@ -50,6 +50,10 @@ from moocng.courses.tasks import clone_activity_user_course_task
 from moocng.slug import unique_slugify
 from moocng.utils import use_cache
 
+import hashlib
+import time
+#from django.core import mail
+
 
 def home(request):
 
@@ -72,6 +76,23 @@ def home(request):
             courses = grouper(courses, 3)
     else:
         template = 'courses/home_as_list.html'
+
+    #######################################################################
+    # print "DEBUG!!!! %s" % settings.EMAIL_BACKEND
+    # connection = mail.get_connection()
+
+    # # Manually open the connection
+    # connection.open()
+
+    # # Construct an email message that uses the connection
+    # email1 = mail.EmailMessage('Hello', 'Body goes here', 'na@devopenmooc.com',
+    #                           ['raul.yeguas@geographica.gs'], connection=connection)
+    # email1.send() # Send the email
+
+    # # The connection was already open so send_messages() doesn't close it.
+    # # We need to manually close the connection.
+    # connection.close()
+    #######################################################################
 
     return render_to_response(template, {
         'courses': courses,
@@ -175,12 +196,15 @@ def course_add(request):
             "bgColor": "#DDD",
             "color": "#F00"
         }
+        timestamp = int(round(time.time() * 1000))
+        authhash = hashlib.md5(settings.FORUM_API_SECRET + str(timestamp)).hexdigest()
         headers = {
             'Content-type': 'application/json',
-            'auth-hash': '426c92087adafca18e37d807c34b70e5',
-            'auth-timestamp': '1412694158305'
+            'auth-hash': authhash,
+            'auth-timestamp': timestamp
         }
         try:
+            print headers
             r = requests.post(settings.FORUM_URL + 'api2/categories', data=json.dumps(data), headers=headers)
             print r.json()
         except:

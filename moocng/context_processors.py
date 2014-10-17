@@ -178,6 +178,11 @@ def extra_settings(request):
     except AttributeError:
         feature_social = False
 
+    try:
+        forum_url = settings.FORUM_URL
+    except AttributeError:
+        forum_url = '#'
+
     context = {
         'sandbox': sandbox,
         'mathjax_enabled': mathjax_enabled,
@@ -196,7 +201,8 @@ def extra_settings(request):
         'feature_sec_faq': feature_sec_faq,
         'feature_sec_contact': feature_sec_contact,
         'feature_sec_teachers': feature_sec_teachers,
-        'feature_social': feature_social
+        'feature_social': feature_social,
+        'forum_url': forum_url
     }
 
     return context

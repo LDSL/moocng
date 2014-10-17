@@ -601,6 +601,3 @@ FEATURE_SEC_FAQ = False
 FEATURE_SEC_CONTACT = False
 FEATURE_SEC_TEACHERS = False
 FEATURE_SOCIAL = False
-
-# Forum URL
-FORUM_URL = 'http://forum.devopenmooc.com/'

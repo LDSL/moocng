@@ -24,7 +24,7 @@ from deep_serializer import serializer, deserializer
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
-from django.core.mail import EmailMessage, EmailMultiAlternatives, get_connection
+from django.core.mail import get_connection, EmailMultiAlternatives, EmailMessage
 from django.template import loader
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
@@ -132,15 +132,20 @@ def send_mass_mail_wrapper(subject, message, recipients, html_message=None):
 
     .. versionadded: 0.1
     """
-    mails = []
-    content = message
-    for to in recipients:
-        email = EmailMultiAlternatives(subject, content, settings.DEFAULT_FROM_EMAIL, [to])
-        if html_message:
-            email.attach_alternative(html_message, "text/html")
-        mails.append(email)
     try:
-        get_connection().send_messages(mails)
+        connection = get_connection()
+        connection.open()
+
+        mails = []
+        content = message
+        for to in recipients:
+            email = EmailMultiAlternatives(subject, content, settings.DEFAULT_FROM_EMAIL, [to], connection=connection)
+            if html_message:
+                email.attach_alternative(html_message, "text/html")
+            mails.append(email)
+    
+        connection.send_messages(mails)
+        connection.close()
     except IOError as ex:
         logger.error('The massive email "%s" to %s could not be sent because of %s' % (subject, recipients, str(ex)))
 
