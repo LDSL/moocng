@@ -33,6 +33,7 @@ from django.utils.translation import ugettext as _
 from datetime import date
 import requests
 import json
+import sys
 
 from moocng.badges.models import Award
 from moocng.courses.models import Course, CourseTeacher, Announcement,KnowledgeQuantum
@@ -183,12 +184,6 @@ def course_add(request):
             messages.error(request, _('The name can\'t be an empty string'))
             return HttpResponseRedirect(reverse('course_add'))
 
-        course = Course(name=name, owner=owner, description=_('To fill'))
-        unique_slugify(course, name)
-        course.save()
-
-        CourseTeacher.objects.create(course=course, teacher=owner)
-
         # Create forum categories
         data = {
             "name": name,
@@ -199,16 +194,28 @@ def course_add(request):
         timestamp = int(round(time.time() * 1000))
         authhash = hashlib.md5(settings.FORUM_API_SECRET + str(timestamp)).hexdigest()
         headers = {
-            'Content-type': 'application/json',
+            'Content-Type': 'application/json',
             'auth-hash': authhash,
             'auth-timestamp': timestamp
         }
+        slug = None
         try:
-            print headers
             r = requests.post(settings.FORUM_URL + 'api2/categories', data=json.dumps(data), headers=headers)
-            print r.json()
+            slug = r.json()['slug']
+            print slug
+
         except:
             print "Error creating course forum category"
+            #print "Unexpected error:", sys.exc_info()[0]
+
+        if slug is not None:
+            course = Course(name=name, owner=owner, description=_('To fill'), forum_slug=slug)
+        else:
+            course = Course(name=name, owner=owner, description=_('To fill'))
+        unique_slugify(course, name)
+        course.save()
+
+        CourseTeacher.objects.create(course=course, teacher=owner)
 
         if not allow_public:
             subject = _('Your course "%s" has been created') % name

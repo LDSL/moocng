@@ -122,6 +122,11 @@ class Course(Sortable):
                                                   blank=True,
                                                   max_length=200)
 
+    forum_slug = models.CharField(verbose_name=_(u'Forum slug'),
+                                    null=True,
+                                    blank=True,
+                                    max_length=350)
+
     threshold = models.DecimalField(
         verbose_name=_(u'Pass threshold'),
         max_digits=4, decimal_places=2,
