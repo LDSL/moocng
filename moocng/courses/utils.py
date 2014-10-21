@@ -133,19 +133,15 @@ def send_mass_mail_wrapper(subject, message, recipients, html_message=None):
     .. versionadded: 0.1
     """
     try:
-        connection = get_connection()
-        connection.open()
-
         mails = []
         content = message
         for to in recipients:
-            email = EmailMultiAlternatives(subject, content, settings.DEFAULT_FROM_EMAIL, [to], connection=connection)
+            email = EmailMultiAlternatives(subject, content, settings.DEFAULT_FROM_EMAIL, [to])
             if html_message:
                 email.attach_alternative(html_message, "text/html")
             mails.append(email)
     
-        send_mass_mail(mails)
-        connection.close()
+        get_connection().send_messages(mails)
     except IOError as ex:
         logger.error('The massive email "%s" to %s could not be sent because of %s' % (subject, recipients, str(ex)))
 
