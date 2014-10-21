@@ -53,7 +53,7 @@ from moocng.utils import use_cache
 
 import hashlib
 import time
-#from django.core import mail
+from django.core import mail
 
 
 def home(request):
@@ -77,23 +77,6 @@ def home(request):
             courses = grouper(courses, 3)
     else:
         template = 'courses/home_as_list.html'
-
-    #######################################################################
-    # print "DEBUG!!!! %s" % settings.EMAIL_BACKEND
-    # connection = mail.get_connection()
-
-    # # Manually open the connection
-    # connection.open()
-
-    # # Construct an email message that uses the connection
-    # email1 = mail.EmailMessage('Hello', 'Body goes here', 'na@devopenmooc.com',
-    #                           ['raul.yeguas@geographica.gs'], connection=connection)
-    # email1.send() # Send the email
-
-    # # The connection was already open so send_messages() doesn't close it.
-    # # We need to manually close the connection.
-    # connection.close()
-    #######################################################################
 
     return render_to_response(template, {
         'courses': courses,

@@ -144,7 +144,7 @@ def send_mass_mail_wrapper(subject, message, recipients, html_message=None):
                 email.attach_alternative(html_message, "text/html")
             mails.append(email)
     
-        connection.send_messages(mails)
+        connection.send_mass_mail(mails)
         connection.close()
     except IOError as ex:
         logger.error('The massive email "%s" to %s could not be sent because of %s' % (subject, recipients, str(ex)))
