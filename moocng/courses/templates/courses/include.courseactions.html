@@ -151,6 +151,9 @@
 			<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4 alt-column bottom">
 				<div class="progress-bar">
 					<h4>{% trans "Your progress" %}</h4>
+					{% if progress > 60 and not rate %}
+					<p>Más del 60%!</p>
+					{% endif %}
 					<p>{{ progress }}%</p>
 					<div class="clearfix"></div>
 					<div class="progress"><span style="width: {{ progress }}%;"></span></div>

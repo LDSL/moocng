@@ -238,3 +238,7 @@ def get_course_progress_for_user(course, user):
         return kq_passed*100/kq_total
     else:
         return 0
+
+def get_course_rating_for_user(course, user):
+    user_course = CourseStudent.objects.filter(student_id=user.id)
+    return user_course

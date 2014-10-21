@@ -270,6 +270,7 @@ def course_overview(request, course_slug):
     return render_to_response('courses/overview.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
+        'rating': get_course_rating_for_user(course, request.user),
         'task_list': task_list,
         'tasks_done': tasks_done,
         'relatedcourses': relatedcourses,

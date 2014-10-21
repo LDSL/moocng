@@ -392,6 +392,8 @@ class CourseStudent(models.Model):
                                          max_length=1)
     progress = models.IntegerField(verbose_name=_(u'Progress'),
                                         default=0)
+    rate = models.PositiveSmallIntegerField(verbose_name=_(u'Rate'),
+                                            null=True)
 
     class Meta:
         verbose_name = _(u'course student')
