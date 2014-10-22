@@ -65,20 +65,20 @@
         {% endif %}
       </ul>
       {% if user.is_authenticated %}
-		{% if is_enrolled and not is_overview%}
-			<h2 class="course-title pull-left">{{ course.name }}</h2>
-		{% endif %}
+    		{% if is_enrolled and not is_overview%}
+    			<h2 class="course-title pull-left">{{ course.name }}</h2>
+    		{% endif %}
 		
         {% block useractions %}
             {% include "courses/include.useractions.html" %}
         {% endblock %}
-    </div>
+        </div>
 
         {% block courseactions %}
-			{% if is_enrolled and not is_overview %}
-				{% include "courses/include.courseactions.html" %}
-			{% endif %}
-		{% endblock %}
+			     {% if is_enrolled and not is_overview %}
+				      {% include "courses/include.courseactions.html" %}
+			     {% endif %}
+		    {% endblock %}
       {% else %}
         <a class="btn-link pull-right" href="{% url login %}">{% trans "Log in" %}</a>
       {% endif %}
@@ -99,87 +99,21 @@
     </div>
     
     <footer>
-      <div class="prefoot">
-		<div class="container">
-		<div class="row">
-			<div class="col-lg-7 col-md-5 col-sm-4 col-mob-2">
-			<p class="text-normal">
-				<span class="grey">Open<em>MOOC</em></span> es una plataforma Open Source impulsada por la <a href="http://www.uned.es/" target="_blank">UNED</a>.</p>
-			<p class="text-normal">Las Universidades de <a href="http://www.unican.es/" target="_blank" target="_blank">Cantabria</a>, <a href="http://www.uniovi.es/" target="_blank">Oviedo</a>, <a href="http://www.unizar.es/" target="_blank">Zaragoza</a> y <a href="http://www.uva.es/" target="_blank">Valladolid</a> y la <a href="http://www.uned.es/" target="_blank">UNED</a> colaboran en <strong>ECO</strong> para fomentar la participación gratuita en los Cursos Online Masivos de Acceso Libre.</p>
-			</div>
-			<div class="col-lg-3 col-md-3 col-sm-2 col-mob-1 col-lg-push-1 col-md-push-1">
-			<ul class="nobullet">
-			{% if feature_sec_catalogue %}
-				<li><a href="#">Catalogue of courses</a></li>
-			{% endif %}
-			{% if feature_groups %}
-				<li><a href="#">Groups</a></li>
-			{% endif %}
-			{% if feature_sec_about %}
-				<li><a href="#">About</a></li>
-			{% endif %}
-			{% if feature_sec_howitworks %}
-				<li><a href="#">How it works</a></li>
-			{% endif %}
-			</ul>
-			</div>
-			<div class="col-lg-2 col-md-2 col-sm-2 col-mob-1 col-lg-push-1 col-md-push-1">
-			<ul class="nobullet">
-			{% if feature_sec_staff %}
-				<li><a href="#">Staff</a></li>
-			{% endif %}
-			{% if feature_sec_faq %}
-				<li><a href="#">FAQ</a></li>
-			{% endif %}
-			{% if feature_sec_contact %}
-				<li><a href="#">Contact</a></li>
-			{% endif %}
-			</ul>
-			</div>
-		</div>
-		<div class="row mt-20">
-			<div class="col-lg-7 col-md-5 col-sm-4 col-mob-2">
-			<ul class="logos stretch inlineblock">
-			<li><a href="http://www.uned.es/" target="_blank"><img src="{{ STATIC_URL }}img/logo_uned.png" alt="Universidad Nacional de Educación a Distancia"></a></li>
-			<li><a href="http://www.unican.es/" target="_blank"><img src="{{ STATIC_URL }}img/logo_uc.png" alt="Universidad de Cantabria"></a></li>
-			<li><a href="http://www.uniovi.es/" target="_blank"><img src="{{ STATIC_URL }}img/logo_uo.png" alt="Universidad de Oviedo"></a></li>
-			<li><a href="http://www.unizar.es/" target="_blank"><img src="{{ STATIC_URL }}img/logo_uz.png" alt="Universidad de Zaragoza"></a></li>
-			<li><a href="http://www.uva.es/" target="_blank"><img src="{{ STATIC_URL }}img/logo_uva.png" alt="Universidad de Valladolid"></a></li>
-			</ul>
-			</div>
-			<div class="col-lg-7 col-md-5 col-sm-4 col-mob-2 col-lg-push-1 col-md-push-1">
-			<ul class="logos inlineblock">
-			<li><a href="http://ecolearning.eu/" target="_blank"><img src="{{ STATIC_URL }}img/logo-eco.png" alt="ECO"></a></li>
-			<li class="noBorder"><a href="http://ec.europa.eu/cip/" target="_blank"><img src="{{ STATIC_URL }}img/logo-cip.png" alt="CIP"></a></li>
-			<li><a href="http://ec.europa.eu/" target="_blank"><img src="{{ STATIC_URL }}img/logo-ec.png" alt="European Commission"></a></li>
-			</ul>
-			</div>
-		</div>
-		<div class="row mt-20">
-			<div class="col-lg-7 col-md-5 col-sm-4 col-mob-2">
-			<p class="text-small">Plataforma integrada en el Proyecto<br><a href="http://ecolearning.eu/our-project/" target="_blank"><strong>ECO: Elearning, Communication and Open-data</strong></a></p>
-			</div>
-			<div class="col-lg-7 col-md-5 col-sm-4 col-mob-2 col-lg-push-1 col-md-push-1">
-			<p class="text-tiny">Project funded from the European Community's CIP (Programme under grant agreement nº 21127)</p>
-			</div>
-		</div>
-		</div>
-      </div>
       <div class="footer">
-	<div class="row">
-	  <p class="pull-left">
-	    <a href="{% url copyright %}">&copy; {% now "Y" %} {{ site.name }}. {% trans "All rights reserved" %}</a>
-	  </p>
-	  <div class="pull-right">
-	    <ul class="inline">
-	      <li><a href="{% url legal %}">{% trans "Privacy Policy" %}</a></li>
-	      {% if show_tos %}
-	      <li><a href="{% url tos %}">{% trans "Terms of Service" %}</a></li>
-	      {% endif %}
-	      <li>Powered by <a>{% trans "Open" %}{% trans "MOOC" %}</a></li>
-	    </ul>
-	  </div>
-	</div>
+		<div class="row">
+	  		<p class="pull-left">
+	    		<a href="{% url copyright %}">&copy; {% now "Y" %} {{ site.name }}. {% trans "All rights reserved" %}</a>
+	  		</p>
+	  		<div class="pull-right">
+			    <ul class="inline">
+			      <li><a href="{% url legal %}">{% trans "Privacy Policy" %}</a></li>
+			      {% if show_tos %}
+			      <li><a href="{% url tos %}">{% trans "Terms of Service" %}</a></li>
+			      {% endif %}
+			      <li>Powered by <a>{% trans "Open" %}{% trans "MOOC" %}</a></li>
+			    </ul>
+	  		</div>
+		</div>
       </div>
     </footer>
 

@@ -197,19 +197,17 @@
 			</div>
 			
 			<div class="col-lg-4 col-md-4 col-sm-2 col-mob-4">
-				{% if course.user_score %}
-					<div class="box">
-						<h2 class="inline">{% trans "Rating" %}</h2>
-						<ul class="rating inline">
-							{% for i in rating.rating_loop %}
-								<li class="full">{{i}}</li>
-							{% endfor %}
-							{% for i in rating.empty_loop %}
-								<li>{{i}}</li>
-							{% endfor %}
-						</ul>
-					</div>
-				{% endif %}
+				<div class="box">
+					<h2 class="inline">{% trans "Rating" %}</h2>
+					<ul class="rating inline">
+						{% for i in rating.rating_loop %}
+							<li class="full">{{i}}</li>
+						{% endfor %}
+						{% for i in rating.empty_loop %}
+							<li>{{i}}</li>
+						{% endfor %}
+					</ul>
+				</div>
 			
 				{% if organizers %}
 					<div class="box">

@@ -70,10 +70,10 @@
 						</a>
 					</li>
 					{% endif %}
-					{% if feature_forum %}
+					{% if feature_forum and course.forum_slug %}
 					<li class="noLowRes">
-						{% url course_forum course.slug as url_forum %}
-						<a href="{{ url_forum }}" {% if request.path == url_forum %} class="selected"{% endif %}>
+						{% url course_forum course.forum_slug as url_forum %}
+						<a href="{{ forum_url }}category/{{course.forum_slug}}" {% if request.path == url_forum %} class="selected"{% endif %}>
 							{% trans "Forum" %}
 						</a>
 					</li>

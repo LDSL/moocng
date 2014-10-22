@@ -239,6 +239,12 @@
 			</div>-->
 		</div>		
 	</div>
+	<div class="popup">
+		{% if progress > 60 and not rating %}
+			<p>Rate me!</p>
+			{{ rating_form }}
+		{% endif %}
+	</div>
 {% endblock %}
 
 {% block extrajs %}

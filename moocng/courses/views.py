@@ -25,6 +25,7 @@ from django.contrib.sites.models import get_current_site
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.core.validators import validate_email
+from django.forms.formsets import formset_factory
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
@@ -33,6 +34,7 @@ from django.utils.translation import ugettext as _
 from datetime import date
 import requests
 import json
+import sys
 
 from moocng.badges.models import Award
 from moocng.courses.models import Course, CourseTeacher, Announcement,KnowledgeQuantum
@@ -45,10 +47,16 @@ from moocng.courses.security import (get_course_if_user_can_view_or_404,
                                      get_units_available_for_user,
                                      get_related_courses_available_for_user,
                                      get_tasks_available_for_user,
-                                     get_course_progress_for_user)
+                                     get_course_progress_for_user,
+                                     get_course_rating_for_user)
 from moocng.courses.tasks import clone_activity_user_course_task
+from moocng.courses.forms import CourseRatingForm
 from moocng.slug import unique_slugify
 from moocng.utils import use_cache
+
+import hashlib
+import time
+from django.core import mail
 
 
 def home(request):
@@ -73,9 +81,12 @@ def home(request):
     else:
         template = 'courses/home_as_list.html'
 
+    institutions = settings.INSTITUTIONS
+
     return render_to_response(template, {
         'courses': courses,
         'use_cache': use_cache(request.user),
+        'institutions': institutions
     }, context_instance=RequestContext(request))
 
 
@@ -162,12 +173,6 @@ def course_add(request):
             messages.error(request, _('The name can\'t be an empty string'))
             return HttpResponseRedirect(reverse('course_add'))
 
-        course = Course(name=name, owner=owner, description=_('To fill'))
-        unique_slugify(course, name)
-        course.save()
-
-        CourseTeacher.objects.create(course=course, teacher=owner)
-
         # Create forum categories
         data = {
             "name": name,
@@ -175,16 +180,31 @@ def course_add(request):
             "bgColor": "#DDD",
             "color": "#F00"
         }
+        timestamp = int(round(time.time() * 1000))
+        authhash = hashlib.md5(settings.FORUM_API_SECRET + str(timestamp)).hexdigest()
         headers = {
-            'Content-type': 'application/json',
-            'auth-hash': '426c92087adafca18e37d807c34b70e5',
-            'auth-timestamp': '1412694158305'
+            'Content-Type': 'application/json',
+            'auth-hash': authhash,
+            'auth-timestamp': timestamp
         }
+        slug = None
         try:
             r = requests.post(settings.FORUM_URL + 'api2/categories', data=json.dumps(data), headers=headers)
-            print r.json()
+            slug = r.json()['slug']
+            print slug
+
         except:
             print "Error creating course forum category"
+            #print "Unexpected error:", sys.exc_info()[0]
+
+        if slug is not None:
+            course = Course(name=name, owner=owner, description=_('To fill'), forum_slug=slug)
+        else:
+            course = Course(name=name, owner=owner, description=_('To fill'))
+        unique_slugify(course, name)
+        course.save()
+
+        CourseTeacher.objects.create(course=course, teacher=owner)
 
         if not allow_public:
             subject = _('Your course "%s" has been created') % name
@@ -245,22 +265,22 @@ def course_overview(request, course_slug):
     announcements = Announcement.objects.filter(course=course).order_by('datetime').reverse()[:5]
     units = get_units_available_for_user(course, request.user, True)
     
-    # Rating is dummy right now
-    rating = {}
-    if course.user_score:
-        rating['rating_loop'] = range(1,course.user_score+1)
-        rating['empty_loop'] = range(course.user_score+1,6)
+    rating = course.get_rating()
+    rating_obj = {}
+    rating_obj['rating_loop'] = range(1,rating+1)
+    rating_obj['empty_loop'] = range(rating+1,6)
 
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
 
     return render_to_response('courses/overview.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
+        'rating': get_course_rating_for_user(course, request.user),
         'task_list': task_list,
         'tasks_done': tasks_done,
         'relatedcourses': relatedcourses,
         'organizers': organizers,
-        'rating': rating,
+        'rating': rating_obj,
         'units': units,
         'is_enrolled': is_enrolled,
         'is_teacher': is_teacher,
@@ -323,6 +343,7 @@ def course_classroom(request, course_slug):
         'task_list': task_list,
         'tasks_done': tasks_done,
         'unit_list': units,
+        'is_ready' : is_ready,
         'is_enrolled': is_enrolled,
         'is_teacher': is_teacher_test(request.user, course),
         'peer_review': peer_review
@@ -365,6 +386,42 @@ def course_dashboard(request, course_slug):
 
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
 
+    CourseRatingFormSet = formset_factory(CourseRatingForm, extra=0, max_num=1)
+    if request.method == "POST":
+        rating_form = CourseRatingForm(request.POST)
+        rating_formset = EvalutionCriteriaResponseFormSet(request.POST)
+        if criteria_formset.is_valid() and submission_form.is_valid():
+            # criteria_values = [(int(form.cleaned_data['evaluation_criterion_id']), int(form.cleaned_data['value'])) for form in criteria_formset]
+            # try:
+            #     review = save_review(assignment.kq, request.user, submitter, criteria_values, submission_form.cleaned_data['comments'])
+
+            #     reviews = get_db().get_collection('peer_review_reviews')
+            #     reviewed_count = reviews.find({
+            #         'reviewer': user_id,
+            #         'kq': assignment.kq.id
+            #     }).count()
+            #     on_peerreviewreview_created_task.apply_async(
+            #         args=[review, reviewed_count],
+            #         queue='stats',
+            #     )
+
+            #     current_site_name = get_current_site(request).name
+            #     send_mail_to_submission_owner(current_site_name, assignment, review, submitter)
+            # except IntegrityError:
+            #     messages.error(request, _('Your can\'t submit two times the same review.'))
+            #     return HttpResponseRedirect(reverse('course_reviews', args=[course_slug]))
+
+            # pending = assignment.minimum_reviewers - reviewed_count
+            # if pending > 0:
+            #     messages.success(request, _('Your review has been submitted. You have to review at least %d exercises more.') % pending)
+            # else:
+            #     messages.success(request, _('Your review has been submitted.'))
+            # return HttpResponseRedirect(reverse('course_reviews', args=[course_slug]))
+            print 'ok'
+    else:
+        rating_form = CourseRatingForm()
+        rating_formset = CourseRatingFormSet()
+
     return render_to_response('courses/dashboard.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
@@ -374,6 +431,8 @@ def course_dashboard(request, course_slug):
         'is_enrolled': is_enrolled,
         'is_teacher': is_teacher,
         'is_ready' : is_ready,
+        'rating_form': rating_form,
+        'rating_formset': rating_formset,
     }, context_instance=RequestContext(request))
 
 @login_required

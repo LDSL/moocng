@@ -109,10 +109,6 @@ class Course(Sortable):
                                 default='Hashtag',
                                 max_length=128)
 
-    user_score = models.PositiveSmallIntegerField(verbose_name=_(u'User score'),
-                                            null=True,
-                                            blank = True)
-
     promotion_media_content_type = models.CharField(verbose_name=_(u'Content type'),
                                                     max_length=20,
                                                     null=True,
@@ -122,6 +118,11 @@ class Course(Sortable):
                                                   null=True,
                                                   blank=True,
                                                   max_length=200)
+
+    forum_slug = models.CharField(verbose_name=_(u'Forum slug'),
+                                    null=True,
+                                    blank=True,
+                                    max_length=350)
 
     threshold = models.DecimalField(
         verbose_name=_(u'Pass threshold'),
@@ -220,6 +221,17 @@ class Course(Sortable):
             return KnowledgeQuantum.objects.get(pk=mark["kq_id"])
         else:
             return None
+
+    def get_rating(self):
+        course_student_set = CourseStudent.objects.filter(course=self)
+        rating = 0
+        for course_student in course_student_set:
+            if course_student.rate is not None:
+                rating += course_student.rate
+        rating = rating/len(course_student_set)
+        print 'Course rating = ' + str(rating)
+        return rating
+
 
     def save(self, *args, **kwargs):
         if self.promotion_media_content_type and self.promotion_media_content_id:
@@ -388,6 +400,8 @@ class CourseStudent(models.Model):
                                          max_length=1)
     progress = models.IntegerField(verbose_name=_(u'Progress'),
                                         default=0)
+    rate = models.PositiveSmallIntegerField(verbose_name=_(u'Rate'),
+                                            null=True)
 
     class Meta:
         verbose_name = _(u'course student')
