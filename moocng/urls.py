@@ -27,6 +27,8 @@ handler500 = 'django.views.defaults.server_error'
 
 urlpatterns = patterns('',
 
+    url(r'^', include('moocng.eco_api.urls')),
+
     url(r'^', include('moocng.courses.urls')),
 
     url(r'^', include('moocng.peerreview.urls')),

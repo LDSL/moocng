@@ -52,6 +52,7 @@ logger = logging.getLogger(__name__)
 
 class Language(models.Model):
     name = models.CharField(verbose_name=_(u'Name'), max_length=200)
+    abbr = models.CharField(verbose_name=_(u'Abbr'), max_length=2, null=True)
     
     def __unicode__(self):
         return self.name
