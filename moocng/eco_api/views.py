@@ -5,6 +5,7 @@ import re
 from xml.etree.ElementTree import Element, SubElement, Comment, tostring
 from moocng.courses.models import Course, CourseTeacher
 from moocng.courses.security import (get_course_progress_for_user)
+from moocng.portal.templatetags.gravatar import (gravatar_for_email)
 from moocng.users.models import User
 from django.conf import settings
 from django.utils.translation import ugettext as _
@@ -189,7 +190,7 @@ def courses_by_users(request,id):
 def teacher(request,id):
 	teacher = CourseTeacher.objects.filter(teacher_id=id)[0].teacher
 
-	return HttpResponse(simplejson.dumps([{"name":teacher.first_name + " " + teacher.last_name}]), mimetype='application/json')
+	return HttpResponse(simplejson.dumps([{"name":teacher.first_name + " " + teacher.last_name, "imageUrl":"http:" + gravatar_for_email(teacher.email)}]), mimetype='application/json')
 	
 
 def heartbeat(request):
