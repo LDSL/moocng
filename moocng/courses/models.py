@@ -108,10 +108,6 @@ class Course(Sortable):
                                 default='Hashtag',
                                 max_length=128)
 
-    user_score = models.PositiveSmallIntegerField(verbose_name=_(u'User score'),
-                                            null=True,
-                                            blank = True)
-
     promotion_media_content_type = models.CharField(verbose_name=_(u'Content type'),
                                                     max_length=20,
                                                     null=True,
@@ -224,6 +220,17 @@ class Course(Sortable):
             return KnowledgeQuantum.objects.get(pk=mark["kq_id"])
         else:
             return None
+
+    def get_rating(self):
+        course_student_set = CourseStudent.objects.filter(course=self)
+        rating = 0
+        for course_student in course_student_set:
+            if course_student.rate is not None:
+                rating += course_student.rate
+        rating = rating/len(course_student_set)
+        print 'Course rating = ' + str(rating)
+        return rating
+
 
     def save(self, *args, **kwargs):
         if self.promotion_media_content_type and self.promotion_media_content_id:

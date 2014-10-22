@@ -447,7 +447,7 @@ ASSET_SLOT_GRANULARITY = 5  # Slot time of assets should be a multiple of this v
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 FORUM_URL = "http://forum.devopenmooc.com"
-
+FORUM_API_SECRET = 'password'
 LOGINFORUM_URL = FORUM_URL + "/auth/saml"
 LOGOUTFORUM_URL = FORUM_URL + "/auth/saml/logout"
 
@@ -601,3 +601,11 @@ FEATURE_SEC_FAQ = False
 FEATURE_SEC_CONTACT = False
 FEATURE_SEC_TEACHERS = False
 FEATURE_SOCIAL = False
+
+INSTITUTIONS = (
+    ('UNED','logo_uned.png','http://www.uned.es'),
+    ('Universidad de Cantabria','logo_uc.png','http://www.unican.es'),
+    ('Universidad de Oviedo','logo_uo.png','http://www.uniovi.es'),
+    ('Universidad de Zaragoza','logo_uz.png','http://www.unizar.es'),
+    ('Universidad de Valladolid','logo_uva.png','http://www.uva.es'),
+)

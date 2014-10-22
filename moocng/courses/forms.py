@@ -23,6 +23,13 @@ from django.utils.translation import ugettext_lazy as _
 
 from moocng.courses.models import Unit, Attachment, Course
 
+COURSE_RATING_CHOICES = [
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+]
 
 class CourseForm(forms.ModelForm):
 
@@ -70,3 +77,6 @@ class ActivityForm(forms.Form):
     course_id = forms.IntegerField(required=True)
     unit_id = forms.IntegerField(required=True)
     kq_id = forms.IntegerField(required=True)
+
+class CourseRatingForm(forms.Form):
+    value = forms.ChoiceField(choices=COURSE_RATING_CHOICES, widget=forms.widgets.RadioSelect)

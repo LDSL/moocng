@@ -65,20 +65,20 @@
         {% endif %}
       </ul>
       {% if user.is_authenticated %}
-		{% if is_enrolled and not is_overview%}
-			<h2 class="course-title pull-left">{{ course.name }}</h2>
-		{% endif %}
+    		{% if is_enrolled and not is_overview%}
+    			<h2 class="course-title pull-left">{{ course.name }}</h2>
+    		{% endif %}
 		
         {% block useractions %}
             {% include "courses/include.useractions.html" %}
         {% endblock %}
-    </div>
+        </div>
 
         {% block courseactions %}
-			{% if is_enrolled and not is_overview %}
-				{% include "courses/include.courseactions.html" %}
-			{% endif %}
-		{% endblock %}
+			     {% if is_enrolled and not is_overview %}
+				      {% include "courses/include.courseactions.html" %}
+			     {% endif %}
+		    {% endblock %}
       {% else %}
         <a class="btn-link pull-right" href="{% url login %}">{% trans "Log in" %}</a>
       {% endif %}

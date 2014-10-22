@@ -35,7 +35,7 @@ from moocng.api.mongodb import get_db
 from moocng.api.tasks import on_peerreviewreview_created_task
 from moocng.courses.models import KnowledgeQuantum
 from moocng.courses.utils import send_mail_wrapper, is_course_ready
-from moocng.courses.security import get_course_if_user_can_view_or_404
+from moocng.courses.security import get_course_if_user_can_view_or_404, get_tasks_available_for_user, get_course_progress_for_user
 from moocng.peerreview.forms import ReviewSubmissionForm, EvalutionCriteriaResponseForm
 from moocng.peerreview.models import PeerReviewAssignment, EvaluationCriterion
 from moocng.peerreview.utils import course_get_visible_peer_review_assignments, save_review, insert_p2p_if_does_not_exists_or_raise
@@ -140,12 +140,17 @@ def course_reviews(request, course_slug):
     submissions = [s['kq'] for s in submissions]
 
     user_submissions = [a.id for a in assignments if a.kq.id in submissions]
+    task_list, tasks_done = get_tasks_available_for_user(course, request.user)
 
     return render_to_response('peerreview/reviews.html', {
         'course': course,
         'assignments': assignments,
         'user_submissions': user_submissions,
         'is_enrolled': is_enrolled,
+        'is_ready': is_ready,
+        'task_list': task_list,
+        'tasks_done': tasks_done,
+        'progress': get_course_progress_for_user(course, request.user),
     }, context_instance=RequestContext(request))
 
 
