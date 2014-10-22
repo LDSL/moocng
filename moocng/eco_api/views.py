@@ -2,7 +2,6 @@ from django.utils import simplejson
 from django.http import HttpResponse
 import datetime
 import re
-import dicttoxml
 from xml.etree.ElementTree import Element, SubElement, Comment, tostring
 from moocng.courses.models import Course, CourseTeacher
 from moocng.courses.security import (get_course_progress_for_user)
