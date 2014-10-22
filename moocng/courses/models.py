@@ -224,11 +224,14 @@ class Course(Sortable):
     def get_rating(self):
         course_student_set = CourseStudent.objects.filter(course=self)
         rating = 0
-        for course_student in course_student_set:
-            if course_student.rate is not None:
-                rating += course_student.rate
-        rating = rating/len(course_student_set)
-        print 'Course rating = ' + str(rating)
+        num_students = len(course_student_set)
+        if num_students > 0:
+            for course_student in course_student_set:
+                if course_student.rate is not None:
+                    rating += course_student.rate
+
+            rating = rating/num_students
+            print 'Course rating = ' + str(rating)
         return rating
 
 
