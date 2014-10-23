@@ -216,8 +216,8 @@ class Course(Sortable):
             "current" : True
         })
 
+        kq = None
         if mark:
-            kq = None
             try:
                 kq = KnowledgeQuantum.objects.get(pk=mark["kq_id"])
             except KnowledgeQuantum.DoesNotExist:
