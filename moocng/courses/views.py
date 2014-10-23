@@ -192,12 +192,12 @@ def course_add(request):
         
         if settings.FEATURE_FORUM:
             try:
-                r = requests.post(settings.FORUM_URL + 'api2/categories', data=json.dumps(data), headers=headers)
+                r = requests.post(settings.FORUM_URL + '/api2/categories', data=json.dumps(data), headers=headers)
                 slug = r.json()['slug']
 
             except:
                 print "Error creating course forum category"
-                #print "Unexpected error:", sys.exc_info()[0]
+                print "Unexpected error:", sys.exc_info()[0]
 
         if slug is not None:
             course = Course(name=name, owner=owner, description=_('To fill'), forum_slug=slug)

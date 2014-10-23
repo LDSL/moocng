@@ -179,6 +179,11 @@ def extra_settings(request):
         feature_social = False
 
     try:
+        feature_ects = settings.FEATURE_ECTS
+    except AttributeError:
+        feature_ects = False
+
+    try:
         forum_url = settings.FORUM_URL
     except AttributeError:
         forum_url = '#'
@@ -202,6 +207,7 @@ def extra_settings(request):
         'feature_sec_contact': feature_sec_contact,
         'feature_sec_teachers': feature_sec_teachers,
         'feature_social': feature_social,
+        'feature_ects': feature_ects,
         'forum_url': forum_url
     }
 
