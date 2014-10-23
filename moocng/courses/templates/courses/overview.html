@@ -9,15 +9,6 @@
 {% endblock %}
 
 {% block content %}
-{% if messages %}{% for message in messages %}
-	<div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
-		<div class="container">
-			<object type="image/svg+xml" class="ok" data="{{ STATIC_URL }}img/ECO_icon_check.svg?#008833"></object>
-			<!--<button class="close" data-dismiss="alert">×</button>-->
-			{{ message }}
-		</div>
-	</div>
-{% endfor %}{% endif %}
 <div class="course">
 	{% if not is_enrolled or not course_has_started %}
 		{% if course.background %}
@@ -102,6 +93,7 @@
 					{% endif %}
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-2 col-mob-4">
+					{% if permission %}
 					{% if is_enrolled %}
 						<a class="button" href="{% url course_dashboard course.slug %}">
 							{% trans "Go to course" %}
@@ -109,7 +101,6 @@
 								<path d="M2,1L1,2l12,12L1,26l1,1l13-13L2,1z"/>
 							</svg>
 						</a>
-						{% clone_activity course user %}
 					{% else %}
 						{% if user.is_authenticated %}
 							{% enroll_button course %}
@@ -118,6 +109,7 @@
 							<a href="{% url register %}" class="button">{% blocktrans with site_name=site.name %}Register in {{ site_name }} to enroll in this course{% endblocktrans %}</a>
 						</div>
 						{% endif %}
+					{% endif %}
 					{% endif %}
 				</div>
 			</div>
@@ -197,6 +189,7 @@
 			</div>
 			
 			<div class="col-lg-4 col-md-4 col-sm-2 col-mob-4">
+				{% if rating > 0 %}
 				<div class="box">
 					<h2 class="inline">{% trans "Rating" %}</h2>
 					<ul class="rating inline">
@@ -208,6 +201,7 @@
 						{% endfor %}
 					</ul>
 				</div>
+				{% endif %}
 			
 				{% if organizers %}
 					<div class="box">
