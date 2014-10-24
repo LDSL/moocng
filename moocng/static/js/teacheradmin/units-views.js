@@ -569,7 +569,7 @@ if (_.isUndefined(window.MOOC)) {
 
                 modal_template = _.template($("#modal-video-player-tpl").html());
                 iframe_template = _.template(this.model.get("iframe_code"));
-                iframe = iframe_template({ width: '620px', height: '372px', allowfullscreen: false, controls: false, origin: MOOC.host });
+                iframe = iframe_template({ width: '620px', height: '372px', allowfullscreen: false, controls: true, origin: MOOC.host });
 
                 context = {
                     title: this.model.get("title"),

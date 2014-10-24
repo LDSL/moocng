@@ -54,6 +54,8 @@ MOOC.views.Unit = Backbone.View.extend({
             var content_type = kq.get("media_content_type");
             if (content_type == "youtube" || content_type == "vimeo"){
 				html += ' <span class="video label" title="' + MOOC.trans.classroom.videoTooltip + '">' + MOOC.trans.classroom.video + '</span>';
+            } else if (content_type == "accesiblevideo") {
+                html += ' <span class="video label" title="' + MOOC.trans.classroom.videoTooltip + '">' + MOOC.trans.classroom.video + '</span>';
             } else if (content_type == "prezi" || content_type == "scribd") {
 				html += ' <span class="presentation label" title="' + MOOC.trans.classroom.presentationTooltip + '">' + MOOC.trans.classroom.presentation + '</span>';
             }
