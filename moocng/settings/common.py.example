@@ -499,6 +499,13 @@ MEDIA_CONTENT_TYPES = [
         'can_get_last_frame': False,
         'type' : 'presentation'
     },
+    {
+        'id': 'ytaccesible',
+        'name': 'YouTube Accesible',
+        'handlers': 'moocng.media_contents.handlers.ytaccesible.YoutubeAccesibleMediaContentHandler',
+        'can_get_last_frame': True,
+        'type': 'video'
+    },
 ]
 
 CACHES = {

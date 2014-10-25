@@ -99,6 +99,15 @@ if (_.isUndefined(window.MOOC)) {
                     /gdata\.youtube\.com\/feeds\/api\/videos\/([\w\-]+)/,
                     /^([\w\-]+)$/
                 ],
+                'ytaccesible': [
+                    /youtube\.com\/watch\?v=([\w\-]+).*/,
+                    /youtube\.com\/embed\/([\w\-]+)/,
+                    /youtube\.com\/v\/([\w\-]+)/,
+                    /youtube\.com\/\?v=([\w\-]+)/,
+                    /youtu\.be\/([\w\-]+)/,
+                    /gdata\.youtube\.com\/feeds\/api\/videos\/([\w\-]+)/,
+                    /^([\w\-]+)$/
+                ],
                 'vimeo': [
                     /vimeo\.com\/(\d+)/,
                     /vimeo\.com\/video\/(\d+)/,

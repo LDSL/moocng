@@ -23,7 +23,8 @@
 "use strict";
 
 (function () {
-  $(document).ready(function () {
+  
+  $(window).on('renderfinished', function () {
     $('video, audio').each(function (index, element) {
       if ($(element).data('able-player') !== undefined) {
         var includeTranscript = $(element).data('include-transcript');
@@ -256,7 +257,7 @@
     this.langOverride = true;
     
     // translationDir - specify path to translation files 
-    this.translationDir = '../translations/';
+    this.translationDir = '/static/js/libs/translations/';
 
     this.setButtonImages();
   };
