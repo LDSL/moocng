@@ -13,6 +13,7 @@ class YoutubeAccesibleMediaContentHandler(MediaContentHandlerBase):
         template = get_template("media_contents/handlers/ytaccesible_template.html")
         context = Context({
             'content_id': content_id,
+            'transcriptions': kwargs.get('transcriptions', [])
         })
         return template.render(context)
 
@@ -20,11 +21,12 @@ class YoutubeAccesibleMediaContentHandler(MediaContentHandlerBase):
         template = get_template("media_contents/handlers/ytaccesible.html")
         context = Context({
             'content_id': content_id,
+            'transcriptions': kwargs.get('transcriptions', []),
             'origin': kwargs.get('host', ''),
             'height': kwargs.get('height', '349px'),
             'width': kwargs.get('width', '620px'),
             'allowfullscreen': kwargs.get('allowfullscreen', ''),
-            'controls': kwargs.get('controls', ''),
+            'controls': kwargs.get('controls', '')
         })
         return template.render(context)
 

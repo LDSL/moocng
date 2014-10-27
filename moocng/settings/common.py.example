@@ -459,7 +459,7 @@ FREE_ENROLLMENT_CONSISTENT = False
 
 AUTH_HANDLER = "moocng.auth_handlers.handlers.SAML2"
 INSTALLED_APPS.append('djangosaml2')
-REGISTRY_URL = 'https://idp.devopenmooc.com/simplesaml/module.php/userregistration/newUser.php'
+REGISTRY_URL = 'https://idp.devopenmooc.com/simplesaml/module.php/userregistration/newUser.php?goto=http://dev.hubX.ecolearning.eu'
 PROFILE_URL = 'https://idp.devopenmooc.com/simplesaml/module.php/userregistration/reviewUser.php'
 CHANGEPW_URL = 'https://idp.devopenmooc.com/simplesaml/module.php/userregistration/changePassword.php'
 

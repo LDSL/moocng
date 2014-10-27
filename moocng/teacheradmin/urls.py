@@ -36,6 +36,9 @@ urlpatterns = patterns('moocng.teacheradmin.views',
     url(r'^units/attachment/$', 'teacheradmin_units_attachment',
         name='teacheradmin_units_attachment'),
 
+    url(r'^units/transcription/$', 'teacheradmin_units_transcription',
+        name='teacheradmin_units_transcription'),
+
     url(r'^units/question/(?P<kq_id>\d+)/$', 'teacheradmin_units_question',
         name='teacheradmin_units_question'),
 

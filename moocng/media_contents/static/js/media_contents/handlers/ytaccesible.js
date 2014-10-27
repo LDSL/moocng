@@ -17,6 +17,7 @@ MOOC.views.players.YoutubeAccesible = Backbone.View.extend({
     initialize: function (options) {
         "use strict";
         this.kq = options.kq;
+        this.transcripts = options.transcripts;
         _.bindAll(this, "onPlayerStateChange", "onPlayerReady", "destroyPlayer");
         this.player = new YT.Player("ytplayer", {
             events: {

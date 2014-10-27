@@ -5,7 +5,7 @@
     width='{{ width }}'
     height='{{ height }}'
     data-youtube-id="{{content_id}}">
-    <track kind="captions" src="/static/Presentacion_Curso_Con.vtt" srclang="en" label="English"/>
-	<track kind="descriptions" src="/static/Presentacion_Curso_Sin.vtt" srclang="en"/>
+    {% for transcription in transcriptions %}
+  	<track kind="{{transcription.transcription_type}}" src="/media/{{ transcription.filename }}" srclang="es" {% if transcription.transcription_type == "captions" %}label="Espanol"{% endif %}/>
+  	{% endfor %}
 </video>
-

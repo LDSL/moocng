@@ -124,7 +124,8 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
             _.each(MOOC.views.players, function (Player) {
                 if (Player.test("#kq-video")) {
                     MOOC.views.lastPlayerView = new Player({
-                        kq: this.model.get("id")
+                        kq: this.model.get("id"),
+                        transcripts: this.model.get("transcriptionList")
                     });
                 }
             }, this);

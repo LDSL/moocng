@@ -201,6 +201,7 @@
     // Can be overwritten with height and width attributes on HTML <video> element
     this.playerWidth = 480;
     this.playerHeight = 360; 
+    this.transcriptWidth = 440;
 
     // Button color 
     // Media controller background color can be customized in able.css 
@@ -1196,7 +1197,7 @@
       if (nextLine.indexOf('-->') !== -1) {
         return;
       }
-      else if (nextLine.length === 0) {
+      else if (nextLine.length === 0 || nextLine.length === 1) {
         return;
       }
       else {
@@ -2032,7 +2033,7 @@ console.log('number of matching parent elements: ' + prevHeading.length);
       this.$ableColumnLeft.width(this.playerWidth);
       this.$transcriptArea.insertAfter(this.$ableColumnLeft);
       this.$ableColumnRight = this.$transcriptArea.wrap('<div class="able-column-right">').parent();
-      this.$ableColumnRight.width(this.playerWidth);
+      this.$ableColumnRight.width(this.transcriptWidth);
     }
     
     if (!this.prefTranscript) { 

@@ -84,6 +84,10 @@ class KnowledgeQuantumManager(models.Manager):
     def get_by_natural_key(self, course_slug, unit_title, title):
         return self.get(title=title, unit__title=unit_title, unit__course__slug=course_slug)
 
+class TranscriptionManager(models.Manager):
+
+    def get_by_natural_key(self, course_slug, unit_title, kq_title, filename_name):
+        return self.get(kq__title=kq_title, kq__unit__title=unit_title, kq__unit__course__slug=course_slug, filename=filename_name)
 
 class AttachmentManager(models.Manager):
 
