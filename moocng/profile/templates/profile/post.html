@@ -1,0 +1,46 @@
+{% load i18n enrollment_tags %}
+
+{% for post in posts %}
+
+	
+	<div class="post">
+		<div class="cell">
+			<img class="gravatar" src={{ post.gravatar}}>
+		</div>
+		<div class="cell" style="padding-top: 15px; ">
+				{% if post.id_original_post %}
+				<img class="sharedImage" src="/static/img/ECO_icon_republicar.svg">
+				<span class="shared">{% trans "Shared by"%} {{post.shared_by}}</span>
+				<div class="clearfix"></div>
+				{% endif %}
+				<span class="namePost">{{post.first_name}} {{post.last_name}}</span>
+				<span class="emailPost">{{post.email}}</span>
+				
+				<span class="datePost">
+					{% if post.original_date %}
+						{{post.original_date}}
+					{% else %}
+						{{post.date}}
+					{% endif %}
+
+				</span>
+				
+				<p class="postText">{{post.text}}</p>
+				{% if post.id_original_post %}
+				<div class="tools" id={{post.id_original_post}}>
+				{% else %}
+				<div class="tools" id={{post.id}}>
+				{% endif %}
+				<!-- <span class="reply">{% trans "Reply" %}</span>  -->
+				{% if case == 1 %}
+						<span title="Retweet" class="retweet">{{post.shared}}</span>
+				{% else %}
+					<span title="Retweet" class="noRetweet" style="cursor: inherit;">{{post.shared}}</span>
+				{% endif %}
+					
+					<!-- <span class="favourite">0</span> -->
+				</div>
+			</div>
+	</div>
+<div class="clearfix"></div>
+{% endfor %}

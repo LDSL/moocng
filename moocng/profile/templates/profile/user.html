@@ -29,12 +29,12 @@
 						</div>
 					</div>
 					{% endif %}-->
-					{% if user.get_profile.gender %}
+					{% if user_view_profile.get_profile.gender %}
 					<div class="row separator_h">
 						<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 element">
-							<img class="icon" src="{{ STATIC_URL }}img/ECO_icon_info_sexo-{{user.get_profile.gender}}.svg">
+							<img class="icon" src="{{ STATIC_URL }}img/ECO_icon_info_sexo-{{user_view_profile.get_profile.gender}}.svg">
 							<dt>{% trans "Gender" %}</dt>
-							{% if user.get_profile.gender == 'm' %}
+							{% if user_view_profile.get_profile.gender == 'm' %}
 							<dd>{% trans "Male" %}</dd>
 							{% else %}
 							<dd>{% trans "Female" %}</dd>
@@ -42,12 +42,12 @@
 						</div>
 					</div>
 					{% endif %}
-					{% if user.get_profile.birthdate %}
+					{% if user_view_profile.get_profile.birthdate %}
 					<div class="row separator_h">
 						<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 element">
 							<img class="icon" src="{{ STATIC_URL }}img/ECO_icon_info_edad.svg">
 							<dt>{% trans "Age" %}</dt>
-							<dd>{{ user.get_profile.birthdate|timesince }}</dd>
+							<dd>{{ user_view_profile.get_profile.birthdate|timesince }}</dd>
 						</div>
 					</div>
 					{% endif %}
@@ -56,16 +56,16 @@
 			<div class="col-lg-12 col-md-8 col-sm-8 col-mob-4">
 				<div class="profile">
 					<div class="links-bar">
-						{% if user.get_profile.personalweb %}
+						{% if user_view_profile.get_profile.personalweb %}
 						<a class="pull-left" href="{{ profile.personalweb }}">
 							<img src="{{ STATIC_URL }}img/ECO_icon_info_enlace.svg">
-							<span>{{ user.get_profile.personalweb }}</span>
+							<span>{{ user_view_profile.get_profile.personalweb }}</span>
 						</a>
 						{% endif %}
-						{% if user.email %}
-						<a class="pull-left" href="mailto:{{ user.email }}">
+						{% if user_view_profile.email %}
+						<a class="pull-left" href="mailto:{{ user_view_profile.email }}">
 							<img src="{{ STATIC_URL }}img/ECO_icon_info_email.svg">
-							<span>{{ user.email }}</span>
+							<span>{{ user_view_profile.email }}</span>
 						</a>
 						{% endif %}
 						{% if is_user %}
@@ -74,8 +74,8 @@
 						</a>-->
 						{% endif %}
 					</div>
-					{% if user.get_profile.bio %}
-					<div class="bio">{{ user.get_profile.bio|safe }}</div>
+					{% if user_view_profile.get_profile.bio %}
+					<div class="bio">{{ user_view_profile.get_profile.bio|safe }}</div>
 					{% endif %}
 					<!--{% if profile.socialmedia|length > 0 %}
 					<div class="social separator_h">
