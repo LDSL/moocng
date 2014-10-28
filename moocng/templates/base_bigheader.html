@@ -43,7 +43,7 @@
 			<ul class="btn-link pull-left" id="meta-buttons">
 				<li><a href="{% url home %}" class="btn btn-link">{% trans "Catalogue"%}</a></li>
 				{% if feature_groups %}
-		        	<li><a href="#" class="btn btn-link">Groups</a></li>
+		        	<li><a href="#" class="btn btn-link">{% trans "Groups" %}</a></li>
 		        {% endif %}
 		        {% if feature_sec_about %}
 		        	<li><a href="#" class="btn btn-link">{% trans "About" %}</a></li>
@@ -82,7 +82,7 @@
     	{% if feature_social %}
       <div class="social_links">
 		<div class="container">
-		  Follow us
+		  {% trans "Follow us" %}
 		  <ul class="icons">
 		    <li class="facebook"><a target="_blank" href="#">
 				<svg>
@@ -145,44 +145,44 @@
 	      	{% spaceless %}
 	      	{% for institution in institutions %}
 	      	{% if forloop.first %}
-	      	La <a href="{{institution.url}}" target="_blank">{{institution.name}}</a>
+	      	{% trans "The" %} <a href="{{institution.url}}" target="_blank">{{institution.name}}</a>
 	      	{% elif forloop.last %}
-	      	y la <a href="{{institution.url}}" target="_blank">{{institution.name}}</a>
+	      	{% trans "and the" %} <a href="{{institution.url}}" target="_blank">{{institution.name}}</a>
 	      	{% else %}
-	      	, la <a href="{{institution.url}}" target="_blank">{{institution.name}}</a>
+	      	, {% trans "the" %} <a href="{{institution.url}}" target="_blank">{{institution.name}}</a>
 	      	{% endif %}
 	      	{% endfor %}
 	      	{% endspaceless %}
-	      	{% if institutions|length == 1 %}colabora{% else %}colaboran{% endif %} en <strong>ECO</strong> para fomentar la participación gratuita en los Cursos Online Masivos de Acceso Libre.
+	      	{% if institutions|length == 1 %}{% trans "cooperates" %}{% else %}{% trans "cooperate" %}{% endif %} {% trans "on the <strong>ECO</strong> platform to encourage the free participation on Open Access Massive Online Courses" %}.
 	      </p>
 	    </div>
 	    {% endif %}
 	    <div class="col-lg-3 col-md-3 col-sm-2 col-mob-1 col-lg-push-1 col-md-push-1">
 	      <ul class="nobullet">
 			{% if feature_sec_catalogue %}
-				<li><a href="#">Catalogue of courses</a></li>
+				<li><a href="#">{% trans "Catalogue of courses" %}</a></li>
 			{% endif %}
 			{% if feature_groups %}
-				<li><a href="#">Groups</a></li>
+				<li><a href="#">{% trans "Groups" %}</a></li>
 			{% endif %}
 			{% if feature_sec_about %}
-				<li><a href="#">About</a></li>
+				<li><a href="#">{% trans "About" %}</a></li>
 			{% endif %}
 			{% if feature_sec_howitworks %}
-				<li><a href="#">How it works</a></li>
+				<li><a href="#">{% trans "How it works" %}</a></li>
 			{% endif %}
 	      </ul>
 	    </div>
 	    <div class="col-lg-2 col-md-2 col-sm-2 col-mob-1 col-lg-push-1 col-md-push-1">
 	      <ul class="nobullet">
 			{% if feature_sec_staff %}
-				<li><a href="#">Staff</a></li>
+				<li><a href="#">{% trans "Staff" %}</a></li>
 			{% endif %}
 			{% if feature_sec_faq %}
-				<li><a href="#">FAQ</a></li>
+				<li><a href="#">{% trans "FAQ" %}</a></li>
 			{% endif %}
 			{% if feature_sec_contact %}
-				<li><a href="#">Contact</a></li>
+				<li><a href="#">{% trans "Contact" %}</a></li>
 			{% endif %}
 	      </ul>
 	    </div>
@@ -207,7 +207,7 @@
 	  </div>
 	  <div class="row mt-20">
 	    <div class="col-lg-7 col-md-5 col-sm-4 col-mob-2">
-	      <p class="text-small">Plataforma integrada en el Proyecto<br><a href="http://ecolearning.eu/our-project/" target="_blank"><strong>ECO: Elearning, Communication and Open-data</strong></a></p>
+	      <p class="text-small">{% trans "Platform integrated into the" %} <br><a href="http://ecolearning.eu/our-project/" target="_blank"><strong>{% trans "ECO: Elearning, Communication and Open-data" %}</strong></a> {% trans "project" %}</p>
 	    </div>
 	    <div class="col-lg-7 col-md-5 col-sm-4 col-mob-2 col-lg-push-1 col-md-push-1">
 	      <p class="text-tiny">Project funded from the European Community's CIP (Programme under grant agreement nº 21127)</p>
@@ -226,7 +226,7 @@
 	      {% if show_tos %}
 	      <li><a href="{% url tos %}">{% trans "Terms of Service" %}</a></li>
 	      {% endif %}
-	      <li>Powered by <a>{% trans "Open" %}{% trans "MOOC" %}</a></li>
+	      <li>{% trans "Powered by" %} <a>OpenMOOC</a></li>
 	    </ul>
 	  </div>
 	</div>

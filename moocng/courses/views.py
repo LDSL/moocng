@@ -48,7 +48,8 @@ from moocng.courses.security import (get_course_if_user_can_view_or_404,
                                      get_related_courses_available_for_user,
                                      get_tasks_available_for_user,
                                      get_course_progress_for_user,
-                                     get_course_rating_for_user)
+                                     get_course_rating_for_user,
+                                     get_course_if_user_can_view_and_permission)
 from moocng.courses.tasks import clone_activity_user_course_task
 from moocng.courses.forms import CourseRatingForm
 from moocng.slug import unique_slugify
@@ -188,14 +189,15 @@ def course_add(request):
             'auth-timestamp': timestamp
         }
         slug = None
-        try:
-            r = requests.post(settings.FORUM_URL + 'api2/categories', data=json.dumps(data), headers=headers)
-            slug = r.json()['slug']
-            print slug
+        
+        if settings.FEATURE_FORUM:
+            try:
+                r = requests.post(settings.FORUM_URL + '/api2/categories', data=json.dumps(data), headers=headers)
+                slug = r.json()['slug']
 
-        except:
-            print "Error creating course forum category"
-            #print "Unexpected error:", sys.exc_info()[0]
+            except:
+                print "Error creating course forum category"
+                print "Unexpected error:", sys.exc_info()[0]
 
         if slug is not None:
             course = Course(name=name, owner=owner, description=_('To fill'), forum_slug=slug)
@@ -240,7 +242,7 @@ def course_overview(request, course_slug):
 
     .. versionadded:: 0.1
     """
-    course = get_course_if_user_can_view_or_404(course_slug, request)
+    course, permission = get_course_if_user_can_view_and_permission(course_slug, request)
     
     relatedcourses = get_related_courses_available_for_user(course, request.user)
 
@@ -266,14 +268,19 @@ def course_overview(request, course_slug):
     units = get_units_available_for_user(course, request.user, True)
     
     rating = course.get_rating()
-    rating_obj = {}
-    rating_obj['rating_loop'] = range(1,rating+1)
-    rating_obj['empty_loop'] = range(rating+1,6)
+    rating_obj = None
+    if rating > 0:
+        rating_obj = {}
+        rating_obj['rating_loop'] = range(1,rating+1)
+        rating_obj['empty_loop'] = range(rating+1,6)
+    else:
+        rating_obj = 0
 
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
 
     return render_to_response('courses/overview.html', {
         'course': course,
+        'permission': permission,
         'progress': get_course_progress_for_user(course, request.user),
         'rating': get_course_rating_for_user(course, request.user),
         'task_list': task_list,
