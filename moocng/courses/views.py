@@ -40,7 +40,8 @@ from moocng.badges.models import Award
 from moocng.courses.models import Course, CourseTeacher, Announcement,KnowledgeQuantum
 from moocng.courses.utils import (get_unit_badge_class, is_course_ready,
                                   is_teacher as is_teacher_test,
-                                  send_mail_wrapper,get_sillabus_tree)
+                                  send_mail_wrapper,get_sillabus_tree, create_groups)
+
 from moocng.courses.marks import get_course_mark, get_course_intermediate_calculations, normalize_unit_weight
 from moocng.courses.security import (get_course_if_user_can_view_or_404,
                                      get_courses_available_for_user,
@@ -842,3 +843,10 @@ def clone_activity(request, course_slug):
     messages.success(request,
                      message % {'course': unicode(course)})
     return HttpResponseRedirect(course.get_absolute_url())
+
+
+
+def create_course_groups(request,id):
+    create_groups(id)
+    return HttpResponse("true")
+

@@ -9,6 +9,20 @@
 {% block nav-teacheradmin-groups %}active{% endblock %}
 
 {% block section %}
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$("#createGroups").click(function(){
+			$.ajax({
+				url : "/createCourse/" + {{course.id}},
+			   	success: function(response) {
+			   		alert()
+			   	}
+			});
+		});
+	});
+</script>
+
 <form method="POST">{% csrf_token %}
 	<div class="row nomargin">
 		<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
@@ -29,6 +43,7 @@
 
 	<p class="form-actions">
       <input type="submit" class="btn btn-primary" value="{% trans "Save" %}" />
+      <input type="button" id="createGroups" class="btn btn-primary" value="{% trans "Create groups" %}" />
     </p>
 </form>
 {% endblock %}
