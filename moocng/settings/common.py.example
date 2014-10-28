@@ -508,6 +508,17 @@ MEDIA_CONTENT_TYPES = [
     },
 ]
 
+TRANSCRIPTION_TYPES = [
+    {
+        'id': 'captions',
+        'name': 'Captions'
+    },
+    {
+        'id': 'descriptions',
+        'name': 'Descriptions'
+    }
+]
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
