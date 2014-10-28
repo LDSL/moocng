@@ -484,7 +484,7 @@ def course_syllabus(request, course_slug):
     }, context_instance=RequestContext(request))
 
 @login_required
-def course_team(request, course_slug):
+def course_group(request, course_slug):
     course = get_course_if_user_can_view_or_404(course_slug, request)
     is_enrolled = course.students.filter(id=request.user.id).exists()
     if not is_enrolled:
@@ -504,7 +504,28 @@ def course_team(request, course_slug):
 
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
 
-    return render_to_response('courses/team.html', {
+    members = [
+        { 'get_full_name': u'Héctor García',
+          'username': 'hector.garcia',
+          'country': 'España',
+          'languages': ['Castellano, Inglés'],
+          'email': 'hector.garcia@geographica.gs',
+          'karma': 100},
+        { 'get_full_name': u'Raúl Yeguas',
+          'username': 'raul.yeguas',
+          'country': 'España',
+          'languages': ['Castellano, Inglés'],
+          'email': 'raul.yeguas@geographica.gs',
+          'karma': 75},
+        { 'get_full_name': u'Manuel Fernandez',
+          'username': 'manuel.fernandez',
+          'country': 'Estados Unidos',
+          'languages': ['Castellano'],
+          'email': 'manuel.fernandez@geographica.gs',
+          'karma': 50},
+    ]
+
+    return render_to_response('courses/group.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
         'task_list': task_list,
@@ -512,7 +533,8 @@ def course_team(request, course_slug):
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
-
+        'members': members,
+        'groupname': 'The A Team',
     }, context_instance=RequestContext(request))
 
 @login_required

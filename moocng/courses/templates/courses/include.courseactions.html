@@ -64,11 +64,11 @@
 						</a>
 					</li>
 					{% endif %}
-					{% if feature_teams %}
+					{% if feature_groups %}
 					<li class="noLowRes">
-						{% url course_team course.slug as url_team %}
-						<a href="{{ url_team }}" {% if request.path == url_team %} class="selected"{% endif %}>
-							{% trans "Team" %}
+						{% url course_group course.slug as url_group %}
+						<a href="{{ url_group }}" {% if request.path == url_group %} class="selected"{% endif %}>
+							{% trans "Group" %}
 						</a>
 					</li>
 					{% endif %}

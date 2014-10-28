@@ -99,9 +99,9 @@ def extra_settings(request):
         mathjax_enabled = False
 
     try:
-        feature_groups = settings.FEATURE_GROUPS
+        feature_teams = settings.FEATURE_TEAMS
     except AttributeError:
-        feature_groups = False
+        feature_teams = False
 
     try:
         feature_calendar = settings.FEATURE_CALENDAR
@@ -114,14 +114,14 @@ def extra_settings(request):
         feature_wiki = False
 
     try:
-        feature_teams = settings.FEATURE_TEAMS
+        feature_groups = settings.FEATURE_GROUPS
     except AttributeError:
-        feature_teams = False
+        feature_groups = False
 
     try:
-        feature_teams_video = settings.FEATURE_TEAMS_VIDEO
+        feature_groups_video = settings.FEATURE_GROUPS_VIDEO
     except AttributeError:
-        feature_teams_video = False
+        feature_groups_video = False
 
     try:
         feature_forum = settings.FEATURE_FORUM
@@ -191,11 +191,11 @@ def extra_settings(request):
     context = {
         'sandbox': sandbox,
         'mathjax_enabled': mathjax_enabled,
-        'feature_groups': feature_groups,
+        'feature_teams': feature_teams,
         'feature_calendar': feature_calendar,
         'feature_wiki': feature_wiki,
-        'feature_teams': feature_teams,
-        'feature_teams_video': feature_teams_video,
+        'feature_groups': feature_groups,
+        'feature_groups_video': feature_groups_video,
         'feature_forum': feature_forum,
         'feature_blog': feature_blog,
         'feature_notifications': feature_notifications,
