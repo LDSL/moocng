@@ -82,6 +82,7 @@ EMAIL_HOST_PASSWORD = ''
 EMAIL_SUBJECT_PREFIX = '[OpenMOOC] | '
 
 DEFAULT_MAX_EMAILS_PER_MONTH = 3
+DEFAULT_GROUP_MAX_SIZE = 8
 
 SUBJECT_CLONE_ACTIVITY = gettext('Cloned course activity')
 
@@ -461,7 +462,7 @@ FREE_ENROLLMENT_CONSISTENT = False
 
 AUTH_HANDLER = "moocng.auth_handlers.handlers.SAML2"
 INSTALLED_APPS.append('djangosaml2')
-REGISTRY_URL = 'https://idp.devopenmooc.com/simplesaml/module.php/userregistration/newUser.php'
+REGISTRY_URL = 'https://idp.devopenmooc.com/simplesaml/module.php/userregistration/newUser.php?goto=http://dev.hubX.ecolearning.eu'
 PROFILE_URL = 'https://idp.devopenmooc.com/simplesaml/module.php/userregistration/reviewUser.php'
 CHANGEPW_URL = 'https://idp.devopenmooc.com/simplesaml/module.php/userregistration/changePassword.php'
 
@@ -501,6 +502,24 @@ MEDIA_CONTENT_TYPES = [
         'can_get_last_frame': False,
         'type' : 'presentation'
     },
+    {
+        'id': 'ytaccesible',
+        'name': 'YouTube Accesible',
+        'handlers': 'moocng.media_contents.handlers.ytaccesible.YoutubeAccesibleMediaContentHandler',
+        'can_get_last_frame': True,
+        'type': 'video'
+    },
+]
+
+TRANSCRIPTION_TYPES = [
+    {
+        'id': 'captions',
+        'name': 'Captions'
+    },
+    {
+        'id': 'descriptions',
+        'name': 'Descriptions'
+    }
 ]
 
 CACHES = {

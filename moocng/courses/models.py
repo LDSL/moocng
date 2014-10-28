@@ -40,8 +40,8 @@ from moocng.badges.models import Badge
 from moocng.courses.cache import invalidate_template_fragment_i18n
 from moocng.courses.managers import (CourseManager, UnitManager,
                                      KnowledgeQuantumManager, QuestionManager,
-                                     OptionManager, AttachmentManager,
-                                     AnnouncementManager)
+                                     OptionManager, TranscriptionManager, 
+                                     AttachmentManager, AnnouncementManager)
 from moocng.enrollment import enrollment_methods
 from moocng.mongodb import get_db
 from moocng.videos.tasks import process_video_task
@@ -193,6 +193,12 @@ class Course(Sortable):
 
 
     highlight = models.BooleanField(default=False)
+
+    has_groups = models.BooleanField(verbose_name=_('Has this course groups?'),
+                                    default=False)
+
+    group_max_size = models.PositiveSmallIntegerField(verbose_name=_('Maximum number of members allowed for each group'),
+        default=settings.DEFAULT_GROUP_MAX_SIZE)
 
     objects = CourseManager()
 
@@ -700,6 +706,37 @@ def kq_stats(sender, instance, created, **kwargs):
 signals.post_save.connect(handle_kq_post_save, sender=KnowledgeQuantum)
 signals.post_save.connect(kq_stats, sender=KnowledgeQuantum)
 
+def get_transcription_types_choices():
+    choices = []
+    for handler_dict in settings.TRANSCRIPTION_TYPES:
+        choices.append((handler_dict['id'], handler_dict.get('name', handler_dict['id'])))
+    return choices
+    
+class Transcription(models.Model):
+    kq = models.ForeignKey(KnowledgeQuantum,
+                           verbose_name=_(u'Nugget'))
+
+    filename = models.FileField(verbose_name=_(u'VTT file'),
+                                upload_to='transcriptions')
+    transcription_type = models.CharField(verbose_name=_(u'Transcription type'),
+                                          max_length=20,
+                                          null=True,
+                                          blank=False,
+                                          choices=get_transcription_types_choices())
+    language = models.ForeignKey(Language,
+                                   verbose_name=_(u'Language'))
+
+    objects = TranscriptionManager()
+
+    class Meta:
+        verbose_name = _(u'transcription')
+        verbose_name_plural = _(u'transcriptions')
+
+    def __unicode__(self):
+        return self.filename.name
+
+    def natural_key(self):
+        return self.kq.natural_key() + (self.filename.name,)
 
 class Attachment(models.Model):
 

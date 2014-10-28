@@ -13,6 +13,7 @@
             <li class="{% block nav-teacheradmin-info %}{% endblock %}"><a href="{% url teacheradmin_info course.slug %}">{% trans "Information" %}</a></li>
             <li class="{% block nav-teacheradmin-teachers %}{% endblock %}"><a href="{% url teacheradmin_teachers course.slug %}">{% trans "Teachers" %}</a></li>
             <li class="{% block nav-teacheradmin-units %}{% endblock %}"><a href="{% url teacheradmin_units course.slug %}">{% trans "Units" %}</a></li>
+            <li class="{% block nav-teacheradmin-groups %}{% endblock %}"><a href="{% url teacheradmin_groups course.slug %}">{% trans "Groups" %}
             <li class="{% block nav-teacheradmin-categories %}{% endblock %}"><a href="{% url teacheradmin_categories course.slug %}">{% trans "Categories" %}</a></li>
             <!--<li class="{% block nav-teacheradmin-externalapps %}{% endblock %}"><a href="{% url externalapps_list course.slug %}">{% trans "External applications" %}</a></li>-->
 

@@ -1,0 +1,34 @@
+{% extends "teacheradmin/base_teacheradmin.html" %}
+
+{% load i18n %}
+
+{% block extraheader %}
+{{ form.media }}
+{% endblock %}
+
+{% block nav-teacheradmin-groups %}active{% endblock %}
+
+{% block section %}
+<form method="POST">{% csrf_token %}
+	<div class="row nomargin">
+		<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
+			<p>
+				{{ form.has_groups.errors }}
+				{{ form.has_groups }}
+				{{ form.has_groups.label_tag }}
+				{% if form.has_groups.help_text %}<span class="help-inline">{{ form.has_groups.help_text }}</span>{% endif %}
+			</p>
+			<p>
+				{{ form.group_max_size.errors }}
+				{{ form.group_max_size.label_tag }}
+				{{ form.group_max_size }}
+				{% if form.group_max_size.help_text %}<span class="help-inline">{{ form.group_max_size.help_text }}</span>{% endif %}
+			</p>
+		</div>
+	</div>
+
+	<p class="form-actions">
+      <input type="submit" class="btn btn-primary" value="{% trans "Save" %}" />
+    </p>
+</form>
+{% endblock %}
