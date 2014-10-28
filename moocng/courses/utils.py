@@ -430,54 +430,68 @@ def get_unit_tree(unit, user, current_mark_kq, minversion=True):
 
 
 def create_groups(id_course):
-    size_group = 10
-    id_course  = 3
+
+    id_course  = int(id_course)
+
+    mongodb.get_db().get_collection('groups').remove({"id_course": {"$eq": id_course}})
 
     course = Course.objects.filter(id=id_course)[:1].get()
+    size_group = course.group_max_size
     students = course.students.all()
 
     num_groups = len(students) / size_group
-    if (num_groups == 0):
-        print("a")
-        # TODO todos los alumnos a un grupo, no hago nada
 
-    cont = 0
-    groups = []
-    for i in range(1, num_groups+1):
-        group = {"id_course": id_course, "name": "Group" + str(i), "members": []}
-        for y in range(cont, i*size_group):
-            student =  students[y]
+    if (num_groups == 0):
+        group = {"id_course": id_course, "name": "Group", "members": []}
+        for student in students:
             group["members"].append({"id_user": student.id, "username": student.username, 
                                     "first_name":student.first_name, "last_name":student.last_name, 
                                     "email": student.email, "karma": student.get_profile().karma, "countries": "", 
                                     "languages": ""})
-            cont += 1
 
-        groups.append(group)
-         
-    if(cont < len(students)):
-        if((len(students) - cont) < (size_group * (settings.GROUPS_UMBRAL/100.0))):
-            cont2 = 0
-            for i in range(cont, len(students)):
-                student =  students[cont]
-                groups[cont2]["members"].append({"id_user": student.id, "username": student.username, 
-                                    "first_name":student.first_name, "last_name":student.last_name, 
-                                    "email": student.email, "karma": student.get_profile().karma, "countries": "", 
-                                    "languages": ""})
-                cont += 1
-                cont2 += 1
-        else:
+        mongodb.get_db().get_collection('groups').insert(group)
+
+    else:
+        cont = 0
+        groups = []
+        for i in range(1, num_groups+1):
             group = {"id_course": id_course, "name": "Group" + str(i), "members": []}
-            for i in range(cont, len(students)):
-                student =  students[cont]
+            for y in range(cont, i*size_group):
+                student =  students[y]
                 group["members"].append({"id_user": student.id, "username": student.username, 
-                                    "first_name":student.first_name, "last_name":student.last_name, 
-                                    "email": student.email, "karma": student.get_profile().karma, "countries": "", 
-                                    "languages": ""})
+                                        "first_name":student.first_name, "last_name":student.last_name, 
+                                        "email": student.email, "karma": student.get_profile().karma, "countries": "", 
+                                        "languages": ""})
+                cont += 1
+
             groups.append(group)
+        
+        
+        if(cont < len(students)):
+            if((len(students) - cont) < (size_group * (settings.GROUPS_UMBRAL/100.0))):
+                cont2 = 0
+                for i in range(cont, len(students)):
+                    if(cont2 >= len(groups)):
+                        cont2 = 0
+                    student =  students[cont]
+                    groups[cont2]["members"].append({"id_user": student.id, "username": student.username, 
+                                        "first_name":student.first_name, "last_name":student.last_name, 
+                                        "email": student.email, "karma": student.get_profile().karma, "countries": "", 
+                                        "languages": ""})
+                    cont += 1
+                    cont2 += 1
+            else:
+                group = {"id_course": id_course, "name": "Group" + str(i), "members": []}
+                for i in range(cont, len(students)):
+                    student =  students[cont]
+                    group["members"].append({"id_user": student.id, "username": student.username, 
+                                        "first_name":student.first_name, "last_name":student.last_name, 
+                                        "email": student.email, "karma": student.get_profile().karma, "countries": "", 
+                                        "languages": ""})
+                groups.append(group)
 
 
-    mongodb.get_db().get_collection('groups').insert(groups)
+        mongodb.get_db().get_collection('groups').insert(groups)
 
             
 

@@ -75,6 +75,6 @@ urlpatterns = patterns(
 
 
 
-     url(r'^coursee/prueba/$', 'prueba',
-        name='prueba'),
+     url(r'^createCourse/(?P<id>[-\w]+)$', 'create_course_groups',
+        name='create_course_groups'),
 )

@@ -824,7 +824,7 @@ def clone_activity(request, course_slug):
 
 
 
-def prueba(request):
-    create_groups(1)
+def create_course_groups(request,id):
+    create_groups(id)
     return HttpResponse("true")
 
