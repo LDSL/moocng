@@ -174,12 +174,20 @@ def course_add(request):
             messages.error(request, _('The name can\'t be an empty string'))
             return HttpResponseRedirect(reverse('course_add'))
 
+        slug = None
+        if slug is not None:
+            course = Course(name=name, owner=owner, description=_('To fill'), forum_slug=slug)
+        else:
+            course = Course(name=name, owner=owner, description=_('To fill'))
+        course_slug = unique_slugify(course, name)
+
         # Create forum categories
         data = {
             "name": name,
-            "description": "No description by now",
+            "description": "",
             "bgColor": "#DDD",
-            "color": "#F00"
+            "color": "#F00",
+            "course_slug": course_slug
         }
         timestamp = int(round(time.time() * 1000))
         authhash = hashlib.md5(settings.FORUM_API_SECRET + str(timestamp)).hexdigest()
@@ -188,22 +196,17 @@ def course_add(request):
             'auth-hash': authhash,
             'auth-timestamp': timestamp
         }
-        slug = None
         
         if settings.FEATURE_FORUM:
             try:
                 r = requests.post(settings.FORUM_URL + '/api2/categories', data=json.dumps(data), headers=headers)
                 slug = r.json()['slug']
+                course = Course(name=name, owner=owner, description=_('To fill'), forum_slug=slug)
 
             except:
                 print "Error creating course forum category"
                 print "Unexpected error:", sys.exc_info()[0]
 
-        if slug is not None:
-            course = Course(name=name, owner=owner, description=_('To fill'), forum_slug=slug)
-        else:
-            course = Course(name=name, owner=owner, description=_('To fill'))
-        unique_slugify(course, name)
         course.save()
 
         CourseTeacher.objects.create(course=course, teacher=owner)

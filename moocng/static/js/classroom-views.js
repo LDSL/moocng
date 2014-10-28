@@ -54,6 +54,8 @@ MOOC.views.Unit = Backbone.View.extend({
             var content_type = kq.get("media_content_type");
             if (content_type == "youtube" || content_type == "vimeo"){
 				html += ' <span class="video label" title="' + MOOC.trans.classroom.videoTooltip + '">' + MOOC.trans.classroom.video + '</span>';
+            } else if (content_type == "ytaccesible") {
+                html += ' <span class="video label" title="' + MOOC.trans.classroom.videoTooltip + '">' + MOOC.trans.classroom.video + '</span>';
             } else if (content_type == "prezi" || content_type == "scribd") {
 				html += ' <span class="presentation label" title="' + MOOC.trans.classroom.presentationTooltip + '">' + MOOC.trans.classroom.presentation + '</span>';
             }
@@ -122,7 +124,8 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
             _.each(MOOC.views.players, function (Player) {
                 if (Player.test("#kq-video")) {
                     MOOC.views.lastPlayerView = new Player({
-                        kq: this.model.get("id")
+                        kq: this.model.get("id"),
+                        transcripts: this.model.get("transcriptionList")
                     });
                 }
             }, this);
@@ -182,6 +185,9 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
         } else {
             callback();
         }
+
+        //Emit render finish event
+        $(window).trigger('renderfinished');
 
         return this;
     },

@@ -149,6 +149,23 @@ if (_.isUndefined(window.MOOC)) {
                 }));
             }
 
+            if (!kq.has("transcriptionList")) {
+                promises.push($.ajax(MOOC.ajax.host + "transcription/?format=json&kq=" + kq.get("id"), {
+                    success: function (data, textStatus, jqXHR) {
+                        var transcriptionList = new MOOC.models.TranscriptionList(
+                            _.map(data.objects, function (transcription) {
+                                return {
+                                    id: parseInt(transcription.id, 10),
+                                    url: transcription.filename,
+                                    type: transcription.transcription_type
+                                };
+                            })
+                        );
+                        kq.set("transcriptionList", transcriptionList);
+                    }
+                }));
+            }
+
             $.when.apply(null, promises).done(callback).fail(errorHandler);
         };
 

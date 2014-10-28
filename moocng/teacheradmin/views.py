@@ -28,7 +28,8 @@ from django.utils import simplejson
 from django.utils.translation import ugettext as _
 
 from moocng.courses.models import (Course, CourseTeacher, KnowledgeQuantum,
-                                   Option, Announcement, Unit, Attachment)
+                                   Option, Announcement, Unit, Attachment, Language,
+                                   Transcription, get_transcription_types_choices)
 from moocng.courses.utils import UNIT_BADGE_CLASSES
 from moocng.categories.models import Category
 from moocng.media_contents import get_media_content_types_choices
@@ -158,6 +159,7 @@ def teacheradmin_units(request, course_slug):
         'is_enrolled': is_enrolled,
         'unit_badge_classes': simplejson.dumps(UNIT_BADGE_CLASSES),
         'media_content_type_choices': get_media_content_types_choices(),
+        'transcription_type_choices': get_transcription_types_choices(),
     }, context_instance=RequestContext(request))
 
 
@@ -202,6 +204,38 @@ def teacheradmin_units_attachment(request, course_slug):
     else:
         return HttpResponse(status=400)
 
+@is_teacher_or_staff
+def teacheradmin_units_transcription(request, course_slug):
+    if request.method == 'POST':
+        if not 'kq' in request.GET:
+            print 'no hay kq'
+            return HttpResponse(status=400)
+        kq = get_object_or_404(KnowledgeQuantum, id=request.GET['kq'])
+
+        if not('transcription' in request.FILES.keys()):
+            print 'no hay filename'
+            return HttpResponse(status=400)
+
+        uploaded_file = request.FILES['transcription']
+        language = Language.objects.get(id=request.POST['language'])
+        transcription_type = request.POST['type']
+        transcription = Transcription(filename=uploaded_file, kq=kq, transcription_type=transcription_type, language=language)
+        transcription.save()
+
+        return HttpResponse()
+
+    elif request.method == 'DELETE':
+        if not 'transcription' in request.GET:
+            return HttpResponse(status=400)
+
+        transcription = get_object_or_404(Transcription,
+                                       id=request.GET['transcription'])
+        transcription.delete()
+
+        return HttpResponse()
+
+    else:
+        return HttpResponse(status=400)
 
 @is_teacher_or_staff
 def teacheradmin_units_question(request, course_slug, kq_id):
