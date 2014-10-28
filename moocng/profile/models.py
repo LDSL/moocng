@@ -122,8 +122,8 @@ def _processPost(posts):
     from_zone = tz.tzutc()
     to_zone = tz.tzlocal()
     for post in posts:
-        post["text"] = post["text"]
-        post["email"] = "@" + post["email"].split("@")[0]
+        # post["text"] = post["text"]
+        # post["email"] = "@" + post["email"].split("@")[0]
         post["date"] = datetime.strptime(post.get("date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
         if("original_date" in post):
             post["original_date"] = datetime.strptime(post.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
@@ -143,7 +143,7 @@ def save_retweet(request, id):
         post["id_original_post"] = post["_id"]
         post["original_date"] = post["date"]
         post["date"] = datetime.utcnow().isoformat()
-        post["shared_by"] = "@" + request.user.email.split("@")[0]
+        post["shared_by"] = "@" + request.user.username
         del post["_id"]
         insert_post(post)
         return True

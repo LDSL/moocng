@@ -178,7 +178,7 @@ def profile_posts(request, id):
 							"id_user": request.user.id, 
 							"first_name": request.user.first_name,
 							"last_name":request.user.last_name,
-							"email":request.user.email,
+							"username": "@" + request.user.username,
 							"gravatar": "http:" + gravatar_for_email(request.user.email),
 							"date": datetime.utcnow().isoformat(),
 							"text": escape(form.cleaned_data['postText']),
