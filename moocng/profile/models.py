@@ -99,8 +99,6 @@ def insert_blog_user(user):
     get_micro_blog_db().get_collection('user').insert(user)
 
 def get_posts(case, id, user, page):
-    print("ENTRO")
-    print(id)
     postCollection = get_micro_blog_db().get_collection('post')
     idsUsers=[{"id_user": id}]
     if(case == 0 and user):

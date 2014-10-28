@@ -612,3 +612,5 @@ INSTITUTIONS = (
     ('Universidad de Zaragoza','logo_uz.png','http://www.unizar.es'),
     ('Universidad de Valladolid','logo_uva.png','http://www.uva.es'),
 )
+
+GROUPS_UMBRAL = 70
