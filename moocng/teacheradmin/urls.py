@@ -61,6 +61,8 @@ urlpatterns = patterns('moocng.teacheradmin.views',
 
     url(r'^info/$', 'teacheradmin_info', name='teacheradmin_info'),
 
+    url(r'^groups/$', 'teacheradmin_groups', name='teacheradmin_groups'),
+
     url(r'^categories/$', 'teacheradmin_categories',
         name='teacheradmin_categories'),
 

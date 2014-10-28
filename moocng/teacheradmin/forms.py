@@ -93,6 +93,11 @@ class CourseForm(forms.ModelForm):
                 raise forms.ValidationError(self.error_messages['invalid_image'])
         return thumbnail
 
+class GroupsForm(forms.ModelForm):
+    class Meta:
+        model = Course
+        fields = ['has_groups', 'group_max_size']
+
 
 class BaseAnnouncementForm(forms.ModelForm):
 

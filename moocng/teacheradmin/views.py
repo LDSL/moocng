@@ -38,7 +38,7 @@ from moocng.portal.templatetags.gravatar import gravatar_img_for_email
 from moocng.teacheradmin.decorators import is_teacher_or_staff
 from moocng.teacheradmin.forms import (CourseForm, AnnouncementForm,
                                        MassiveEmailForm, AssetTeacherForm,
-                                       StaticPageForm)
+                                       StaticPageForm, GroupsForm)
 from moocng.teacheradmin.models import Invitation, MassiveEmail
 from moocng.teacheradmin.tasks import send_massive_email_task
 from moocng.teacheradmin.utils import (send_invitation,
@@ -499,6 +499,29 @@ def teacheradmin_info(request, course_slug):
         'external_apps': external_apps,
     }, context_instance=RequestContext(request))
 
+
+@is_teacher_or_staff
+def teacheradmin_groups(request, course_slug):
+    course = get_object_or_404(Course, slug=course_slug)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+    
+    if request.method == 'POST':
+        form = GroupsForm(data=request.POST, instance=course)
+        if form.is_valid():
+            course = form.save()
+
+            messages.success(request, _(u"Your changes were saved."))
+
+            return HttpResponseRedirect(reverse('teacheradmin_groups',
+                                                args=[course_slug]))
+    else:
+        form = GroupsForm(instance=course)
+
+    return render_to_response('teacheradmin/groups.html', {
+        'course': course,
+        'is_enrolled': is_enrolled,
+        'form': form,
+    }, context_instance=RequestContext(request))
 
 @is_teacher_or_staff
 def teacheradmin_categories(request, course_slug):

@@ -194,6 +194,12 @@ class Course(Sortable):
 
     highlight = models.BooleanField(default=False)
 
+    has_groups = models.BooleanField(verbose_name=_('Has this course groups?'),
+                                    default=False)
+
+    group_max_size = models.PositiveSmallIntegerField(verbose_name=_('Maximum number of members allowed for each group'),
+        default=settings.DEFAULT_GROUP_MAX_SIZE)
+
     objects = CourseManager()
 
     class Meta(Sortable.Meta):
