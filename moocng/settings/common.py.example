@@ -603,6 +603,7 @@ FEATURE_SEC_FAQ = False
 FEATURE_SEC_CONTACT = False
 FEATURE_SEC_TEACHERS = False
 FEATURE_SOCIAL = False
+FEATURE_ECTS = False
 
 INSTITUTIONS = (
     ('UNED','logo_uned.png','http://www.uned.es'),

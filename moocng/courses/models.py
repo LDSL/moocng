@@ -217,19 +217,25 @@ class Course(Sortable):
             "current" : True
         })
 
+        kq = None
         if mark:
-            return KnowledgeQuantum.objects.get(pk=mark["kq_id"])
+            try:
+                kq = KnowledgeQuantum.objects.get(pk=mark["kq_id"])
+            except KnowledgeQuantum.DoesNotExist:
+                pass
         else:
-            return None
+            return kq
 
     def get_rating(self):
         course_student_set = CourseStudent.objects.filter(course=self)
         rating = 0
-        for course_student in course_student_set:
-            if course_student.rate is not None:
-                rating += course_student.rate
-        rating = rating/len(course_student_set)
-        print 'Course rating = ' + str(rating)
+        num_students = len(course_student_set)
+        if num_students > 0:
+            for course_student in course_student_set:
+                if course_student.rate is not None:
+                    rating += course_student.rate
+
+            rating = rating/num_students
         return rating
 
 
@@ -269,6 +275,13 @@ class Course(Sortable):
                 (not self.end_date or
                  not self.start_date and self.end_date >= today or
                  self.start_date and self.start_date <= today and self.end_date >= today))
+
+    @property
+    def is_outdated(self):
+        today = datetime.date.today()
+        return (self.is_public and
+                (self.end_date < today)
+                )
 
     def _resize_image(self, filename, size):
         """

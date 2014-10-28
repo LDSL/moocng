@@ -350,28 +350,28 @@ def get_sillabus_tree(course,user,minversion=True,incontext=False):
 
     course_units = get_units_available_for_user(course, user)
 
-    if not incontext:
+    if len(course_units) > 0:
+        if not incontext:
 
-        for u in course_units:
-            unit, current_mark_kq = get_unit_tree(u, user, current_mark_kq, minversion)            
-            units.append(unit)
-
-    else:
-        if current_mark_kq is not None:
-            unit, current_mark_kq = get_unit_tree(current_mark_kq.unit, user, current_mark_kq, minversion)
-            units.append(unit)
-        else:
-            prev = None
             for u in course_units:
-                unit, current_mark_kq = get_unit_tree(u, user, current_mark_kq, minversion)
-                
-                if not unit['complete']:
-                    units.append(unit)
-                    return units
-                else:
-                    prev = unit
-                    print prev
-            units.append(prev)
+                unit, current_mark_kq = get_unit_tree(u, user, current_mark_kq, minversion)            
+                units.append(unit)
+
+        else:
+            if current_mark_kq is not None:
+                unit, current_mark_kq = get_unit_tree(current_mark_kq.unit, user, current_mark_kq, minversion)
+                units.append(unit)
+            else:
+                prev = None
+                for u in course_units:
+                    unit, current_mark_kq = get_unit_tree(u, user, current_mark_kq, minversion)
+                    
+                    if not unit['complete']:
+                        units.append(unit)
+                        return units
+                    else:
+                        prev = unit
+                units.append(prev)
 
     return units
 
@@ -380,7 +380,7 @@ def get_unit_tree(unit, user, current_mark_kq, minversion=True):
     unitcomplete = True
     current_marked = False
 
-    for q in  KnowledgeQuantum.objects.filter(unit_id=unit.id):
+    for q in KnowledgeQuantum.objects.filter(unit_id=unit.id):
 
         completed = q.is_completed(user)
 
