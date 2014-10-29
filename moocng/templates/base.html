@@ -52,8 +52,8 @@
       <img class="logo-mini" src="{{ STATIC_URL }}img/logo_mini.png" alt="logo {{ site.name }}" />
       <ul class="btn-link pull-left" id="meta-buttons">
         <li><a href="{% url home %}" class="btn btn-link">{% trans "Catalogue"%}</a></li>
-        {% if feature_groups %}
-        	<li><a href="#" class="btn btn-link">Groups</a></li>
+        {% if feature_teams %}
+        	<li><a href="#" class="btn btn-link">{% trans "Teams" %}</a></li>
         {% endif %}
         {% if feature_sec_about %}
         	<li><a href="#" class="btn btn-link">{% trans "About" %}</a></li>

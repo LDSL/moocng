@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="course">
+<div class="course_overview">
 	{% if not is_enrolled or not course_has_started %}
 		{% if course.background %}
 		<div class="course-header" style="background-image: url('{{ MEDIA_URL }}{{ course.background }}');">
