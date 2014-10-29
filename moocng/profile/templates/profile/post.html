@@ -30,8 +30,9 @@
 					{% endif %}
 
 				</span>
-				
+				{% autoescape off %}
 				<p class="postText">{{post.text}}</p>
+				{% endautoescape %}
 				{% if post.id_original_post %}
 				<div class="tools" id={{post.id_original_post}}>
 				{% else %}

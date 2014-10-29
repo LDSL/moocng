@@ -122,6 +122,7 @@ def _processPost(posts):
     for post in posts:
         # post["text"] = post["text"]
         # post["email"] = "@" + post["email"].split("@")[0]
+        print(post["text"])
         post["date"] = datetime.strptime(post.get("date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
         if("original_date" in post):
             post["original_date"] = datetime.strptime(post.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
