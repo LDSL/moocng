@@ -16,6 +16,10 @@
 import logging
 import json
 import os
+import requests
+import time
+import hashlib
+import sys
 
 from datetime import date
 from deep_serializer import serializer, deserializer
@@ -427,8 +431,6 @@ def get_unit_tree(unit, user, current_mark_kq, minversion=True):
 
     return unit, current_mark_kq
 
-
-
 def create_groups(id_course):
 
     id_course  = int(id_course)
@@ -490,11 +492,37 @@ def create_groups(id_course):
                                         "languages": ""})
                 groups.append(group)
 
+        # Create topics for each group
+        cid = 6
+        for group in groups:
+            content = _(u"This is the topic for ") + group["name"] + _(u" where you can comment and help other team members")
+            data = {
+                "uid": 1,
+                "title": group["name"],
+                "content": content,
+                "cid": cid
+            }
+            timestamp = int(round(time.time() * 1000))
+            authhash = hashlib.md5(settings.FORUM_API_SECRET + str(timestamp)).hexdigest()
+            headers = {
+                "Content-Type": "application/json",
+                "auth-hash": authhash,
+                "auth-timestamp": timestamp
+            }
+            
+            if settings.FEATURE_FORUM:
+                try:
+                    r = requests.post(settings.FORUM_URL + "/api2/topics", data=json.dumps(data), headers=headers)
+                    group["forum_slug"] = r.json()["slug"]
+
+                except:
+                    print "Error creating course forum topic"
+                    print "Unexpected error:", sys.exc_info()[0]
 
         mongodb.get_db().get_collection('groups').insert(groups)
 
-            
+def get_group_by_user_and_course(id_user, id_course):
 
-
-
-
+    db = mongodb.get_db().get_collection('groups')
+    group = db.find_one( { 'id_course': id_course, 'members.id_user':id_user } )
+    return group
