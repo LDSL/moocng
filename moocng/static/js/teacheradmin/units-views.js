@@ -552,9 +552,9 @@ if (_.isUndefined(window.MOOC)) {
                 }
 
                 data = "<p class='noLowRes'>" + MOOC.trans.kq.teacher_comments + ": " +
-                    truncate(_.escape(stripTags(this.model.get("teacher_comments")))) + "</p>" +
+                    truncate(stripTags(this.model.get("teacher_comments"))) + "</p>" +
                     "<p class='noLowRes'>" + MOOC.trans.kq.supplementary_material + ": " +
-                    truncate(_.escape(stripTags(this.model.get("supplementary_material")))) + "<p/>";
+                    truncate(stripTags(this.model.get("supplementary_material"))) + "<p/>";
 
 
                 html = inlineb({ classes: "drag-handle" }) +

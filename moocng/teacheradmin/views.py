@@ -473,6 +473,7 @@ def teacheradmin_info(request, course_slug):
     if request.method == 'POST':
         form = CourseForm(data=request.POST, files=request.FILES, instance=course)
         static_page_form = StaticPageForm(data=request.POST, instance=course.static_page)
+        print "Al guardar, Course tiene el forum_slug: " + str(course.forum_slug)
         if form.is_valid() and static_page_form.is_valid():
             static_page = static_page_form.save(commit=False)
             static_page.save()
@@ -486,8 +487,10 @@ def teacheradmin_info(request, course_slug):
             return HttpResponseRedirect(reverse('teacheradmin_info',
                                                 args=[course_slug]))
         else:
+            print form.errors
             messages.error(request, _(u"There were problems with some data you introduced, please fix them and try again."))
     else:
+        print "Al cargar, Course tiene el forum_slug: " + str(course.forum_slug)
         form = CourseForm(instance=course)
         static_page_form = StaticPageForm(instance=course.static_page)
 

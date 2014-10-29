@@ -201,6 +201,7 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
         $("#comments").html(comments);
 
         supplementary = this.model.get("supplementary_material") || '';
+        $("#supplementary").html(supplementary);
         $("#attachments ul").empty();
 
         this.setupListernerFor(this.model, "attachmentList", _.bind(function () {
