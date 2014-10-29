@@ -10,10 +10,16 @@
 		<div class="cell" style="padding-top: 15px; ">
 				{% if post.id_original_post %}
 				<img class="sharedImage" src="/static/img/ECO_icon_republicar.svg">
-				<span class="shared">{% trans "Shared by"%} {{post.shared_by}}</span>
+				<a href="{{post.id_user}}"><span class="shared">{% trans "Shared by"%} {{post.shared_by}}</span></a>
 				<div class="clearfix"></div>
 				{% endif %}
-				<span class="namePost">{{post.first_name}} {{post.last_name}}</span>
+				<a href=
+				{% if post.id_author %}
+					{{post.id_author}}
+				{% else %}
+					{{post.id_user}}
+				{% endif %}
+				><span class="namePost">{{post.first_name}} {{post.last_name}}</span></a>
 				<span class="emailPost">{{post.username}}</span>
 				
 				<span class="datePost">

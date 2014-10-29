@@ -137,6 +137,7 @@ def save_retweet(request, id):
     if(not post):
         postCollection.update({"$or": [{"_id": ObjectId(id)}, {"id_original_post": ObjectId(id)}]}, {"$inc": {"shared":  1}}, multi=True)
         post = postCollection.find_one({"_id": ObjectId(id)})
+        post["id_author"] = post["id_user"]
         post["id_user"] = request.user.id
         post["id_original_post"] = post["_id"]
         post["original_date"] = post["date"]
