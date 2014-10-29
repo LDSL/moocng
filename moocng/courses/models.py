@@ -662,6 +662,7 @@ class KnowledgeQuantum(Sortable):
 
     def save(self, *args, **kwargs):
         if self.media_content_type and self.media_content_id:
+            print "extracted media_id: " + str(media_content_extract_id(self.media_content_type, self.media_content_id))
             self.media_content_id = media_content_extract_id(self.media_content_type, self.media_content_id)
         return super(KnowledgeQuantum, self).save(*args, **kwargs)
 

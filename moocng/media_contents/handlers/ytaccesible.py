@@ -55,5 +55,6 @@ class YoutubeAccesibleMediaContentHandler(MediaContentHandlerBase):
         for pattern in patterns:
             result = re.search(pattern, url, re.IGNORECASE)
             if result:
+                print result.group(1)
                 return result.group(1)
         return ''
