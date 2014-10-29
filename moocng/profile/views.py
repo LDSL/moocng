@@ -96,6 +96,8 @@ def profile_courses(request, id):
 		user = get_user(id)
 		id = int(id)
 
+	case = _getCase(request,id)
+
 	courses = get_courses_user_is_enrolled(user)
 	courses_completed = 0
 	for course in courses:
@@ -111,6 +113,7 @@ def profile_courses(request, id):
 
 	return render_to_response('profile/courses.html', {
 		"id":id,
+		"case":case,
 		'request': request,
 		'courses': courses,
 		'courses_completed': courses_completed,
