@@ -7,25 +7,27 @@
         {% if theme.top_banner %}
             <div class="main_banner" style="background-image: url('{{ theme.top_banner }}');">
             	<div class="color_back">
-					<h2><strong>UNED</strong> + Open<em>MOOC</em></h2>
-					<h1>Una plataforma creada para facilitar la búsqueda de contenidos educativos abiertos</h1>
-					<a class="button" href="{% url register %}">Register now</a>
+					<h2><strong>ECO</strong> + Open<em>MOOC</em></h2>
+					<h1>{% trans "A platform created to facilitate the search for open educational resources" %}</h1>
+					<a class="button" href="{% url register %}">{% trans "Register now" %}</a>
 				</div>
             </div>
         {% endif %}
     </div>
-    <!--<div class="container filter_bar">
+    {% if feature_sec_catalogue %}
+    <div class="container filter_bar">
       <div class="row">
 		<div class="filter pull-left col-lg-6 col-md-6 col-sm-4 col-mob-2">
-		    <span class="col-lg-6 col-md-4 col-sm-2 col-mob-1">Filter<span class="noLowRes"> courses by</span>:</span>
+		    <span class="col-lg-6 col-md-4 col-sm-2 col-mob-1">{% trans 'Filter <span class="noLowRes"> courses by' %}</span>:</span>
 		    <div class="col-lg-10 col-md-8 col-sm-6 col-mob-2">
-		      <a href="#" class="selected col-lg-8 col-md-6 col-sm-4 col-mob-2">Featured</a>
-		      <a href="#" class="col-lg-8 col-md-6 col-sm-4 col-mob-2">Oncoming</a>
+		      <a href="#" class="selected col-lg-8 col-md-6 col-sm-4 col-mob-2">{% trans "Featured" %}</a>
+		      <a href="#" class="col-lg-8 col-md-6 col-sm-4 col-mob-2">{% trans "Oncoming" %}</a>
 		    </div>
 		</div>
-		<a class="pull-right grey_squared col-lg-4 col-md-4 col-sm-4 col-mob-2" href="#"><span><span class="noLowRes">Explore the full </span>catalogue</span> <img src="{{ STATIC_URL }}img/ECO_icon_flecha-xl.svg"></a> 
+		<a class="pull-right grey_squared col-lg-4 col-md-4 col-sm-4 col-mob-2" href="#"><span><span class="noLowRes">{% trans "Explore the full " %}</span>{% trans "catalogue" %}</span> <img src="{{ STATIC_URL }}img/ECO_icon_flecha-xl.svg"></a> 
       </div>
-    </div>-->
+    </div>
+    {% endif %}
     <div class="content">
       <div class="container course_list">
 	  <section class="row">
@@ -79,9 +81,11 @@
 		  {% endfor %}
 	      {% endconditionalcache %}
 	  </section>
-	  <!--<div class="row">
-	    <a class="pull-right grey_squared col-lg-4 col-md-4 col-sm-4 col-mob-4" href="#"><span>Explore the full catalogue</span> <img src="{{ STATIC_URL }}img/ECO_icon_flecha-xl.svg"></a> 
-	   </div>-->
+	  {% if feature_sec_catalogue %}
+	  <div class="row">
+	    <a class="pull-right grey_squared col-lg-8 col-md-8 col-sm-8 col-mob-4" href="#"><span>{% trans "Explore the full catalogue" %}</span> <img src="{{ STATIC_URL }}img/ECO_icon_flecha-xl.svg"></a> 
+	   </div>
+	   {% endif %}
       </div>
     </div>
 {% endblock %}

@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-	<div class="container pb-100">
+	<div class="container pb-100 pt-20">
 		<div class="row">
 			<div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
 				<div class="dash-box">
@@ -18,20 +18,12 @@
 					</div>
 					<div class="content">
 						<ol start="2">
-							<!-- <li class="done"><span>Conceptos básicos</span></li>
-							<li class="done"><span>Principios básicos</span>
-								<ol>
-									<li class="current"><span>Base del mapa geológico: mapa topográfico</span></li>
-									<li><span>Intersección de capas geológicas planas para topografía</span></li>
-									<li><span>Capas plegadas. Intersección de los pliegues con la topografía</span></li>
-								</ol>
-							</li> -->
 							{% for unit in unit_list %}
-								<li class="{% if unit.complete %}done{% endif %}"><span>{{unit.title}}</span>
+								<li class="{% if unit.complete %}done{% endif %}"><a href="{{ unit.url }}">{{unit.title}}</a>
 								{% if unit.questions %}
 									<ol>
 										{% for q in unit.questions %}
-										<li class="{% if q.current %} current {% endif %}"><span>{{q.title}}</span></li>
+										<li class="{% if q.completed %}done{% endif %} {% if q.current %} current {% endif %}"><a href="{{ q.url }}">{{q.title}}</a></li>
 										{% endfor %}
 									</ol>
 								{% endif %}
@@ -39,7 +31,7 @@
 							{% endfor %}
 						</ol>
 						<div class="bottom-bar">
-							<a href="{% url course_syllabus course.slug %}" class="button pull-right"><img src="{{ STATIC_URL }}/img/ECO_icon_toc.svg">{% trans "Syllabus" %}</a>
+							<a href="{% url course_syllabus course.slug %}" class="button pull-right"><img src="{{ STATIC_URL }}/img/ECO_icon_toc.svg">{% trans "View full syllabus" %}</a>
 						</div>
 					</div>
 				</div>
@@ -247,13 +239,29 @@
 			</div>-->
 		</div>		
 	</div>
+	<!--<div class="popup">
+		{% if progress > 60 and not rating %}
+			<p>Rate me!</p>
+			{{ rating_form }}
+		{% endif %}
+	</div>-->
 {% endblock %}
 
 {% block extrajs %}
 	<script>
 		function resizeDashboard(){
-			var width = $('.dash-box .content').outerWidth();
-			$('.dash-box .content .tabs .content').width(width);
+			$('.dash-box').each(function(index, value){
+				var $dash = $(value);
+				var width = $dash.children('.content').first().outerWidth();
+				$dash.find('.content .tabs .content').width(width);
+				var height = $dash.find('.content ol')[0].scrollHeight;
+				var bottombar = $dash.find('.bottom-bar');
+				if (bottombar.length > 0){
+					height += bottombar.outerHeight() + 5;
+				}
+				$dash.children('.content').first().height(height);
+				$dash.find('.content .tabs .content').first().height(height);
+			});
 		}
 		
 		$(function(){

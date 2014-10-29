@@ -49,7 +49,7 @@ class CourseForm(forms.ModelForm):
         model = Course
         exclude = ('slug', 'teachers', 'owner', 'students',
                    'max_mass_emails_month', 'created_from',
-                   'is_activity_clonable')
+                   'is_activity_clonable','group_max_size', 'has_groups', 'forum_slug')
         widgets = {
             'start_date': HTML5DateInput(),
             'end_date': HTML5DateInput(),
@@ -92,6 +92,11 @@ class CourseForm(forms.ModelForm):
             if w < Course.THUMBNAIL_WIDTH or h < Course.THUMBNAIL_HEIGHT:
                 raise forms.ValidationError(self.error_messages['invalid_image'])
         return thumbnail
+
+class GroupsForm(forms.ModelForm):
+    class Meta:
+        model = Course
+        fields = ['has_groups', 'group_max_size']
 
 
 class BaseAnnouncementForm(forms.ModelForm):
@@ -279,3 +284,4 @@ class StaticPageForm(forms.ModelForm, BootstrapMixin):
                 widget.attrs['class'] = 'input-xxlarge'
             elif isinstance(widget, forms.widgets.Textarea):
                 widget.mce_attrs['width'] = '780'  # bootstrap span10
+

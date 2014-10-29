@@ -14,12 +14,14 @@
                     {% regroup assignments by kq.unit as unit_list %}
                     {% for unit in unit_list %}
                         <h4 id="unit{{ unit.grouper.id }}">{{ unit.grouper.title }}</h4>
-                        {% for pra in unit.list %}
-                        <div class="well">
-                            <h5 id="kq{{ pra.kq.id }}">{{ pra.kq.title }}</h5>
-                            {% pending_reviews pra user course user_submissions %}
+                        <div class="kq-list">
+                            {% for pra in unit.list %}
+                            <div class="well">
+                                <h5 id="kq{{ pra.kq.id }}">{{ pra.kq.title }}</h5>
+                                {% pending_reviews pra user course user_submissions %}
+                            </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
                     {% endfor %}
                 {% else %}
                     <p>{% trans "This course does not have any Peer Review Assignment" %}.</p>

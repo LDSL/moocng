@@ -59,8 +59,11 @@ def can_user_view_course(course, user):
 
     # at this point you don't have permissions to see a course
     if course.is_public:
-        return False, 'not_active_outdated'
-    return False, 'not_active_yet'
+        if(course.is_outdated):
+            return False, 'not_active_outdated'
+        else:
+            return False, 'not_active_yet'
+    return False, 'not_active'
 
 
 def check_user_can_view_course(course, request):
@@ -100,6 +103,30 @@ def get_course_if_user_can_view_or_404(course_slug, request):
     course = get_object_or_404(Course, slug=course_slug)
     check_user_can_view_course(course, request)
     return course
+
+def get_course_if_user_can_view_and_permission(course_slug, request):
+    course = get_object_or_404(Course, slug=course_slug)
+    permission, reason = can_user_view_course(course, request.user)
+    if permission:
+        if reason != 'active':
+            msg_table = {
+                'is_staff': _(u'This course is not public. Your have access to it because you are staff member'),
+                'is_superuser': _(u'This course is not public. Your have access to it because you are a super user'),
+                'is_teacher': _(u'This course is not public. Your have access to it because you are a teacher of the course'),
+            }
+            messages.warning(request, msg_table[reason])
+    else:
+        if reason == 'not_active_yet':
+            if course.students.filter(id=request.user.id).exists():
+                messages.warning(request, _(u'This course has not started yet'))
+            else:
+                messages.warning(request, _(u'This course has not started yet, but you can enroll into it'))
+                permission = True
+        elif reason == 'not_active_outdated':
+            messages.warning(request, _(u'This course has finished'))
+        else:
+            messages.warning(request, _(u'This course is not public'))
+    return course, permission
 
 
 def get_courses_available_for_user(user):
@@ -238,3 +265,7 @@ def get_course_progress_for_user(course, user):
         return kq_passed*100/kq_total
     else:
         return 0
+
+def get_course_rating_for_user(course, user):
+    user_course = CourseStudent.objects.filter(student_id=user.id)
+    return user_course

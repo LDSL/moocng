@@ -58,7 +58,7 @@ from moocng.api.validation import (AnswerValidation, answer_validate_date,
 from moocng.assets.models import Asset, Reservation, AssetAvailability
 from moocng.assets.utils import get_occupation_for_month
 from moocng.courses.models import (Unit, KnowledgeQuantum, Question, Option,
-                                   Attachment, Course)
+                                   Attachment, Transcription, Course, Language)
 from moocng.courses.marks import normalize_kq_weight, calculate_course_mark
 from moocng.media_contents import (media_content_get_iframe_template,
                                    media_content_get_thumbnail_url)
@@ -202,7 +202,11 @@ class KnowledgeQuantumResource(BaseModelResource):
     peer_review_score = fields.IntegerField(readonly=True)
     correct = fields.BooleanField(readonly=True)
     completed = fields.BooleanField(readonly=True)
+    marked = fields.BooleanField(readonly=True)
     normalized_weight = fields.IntegerField(readonly=True)
+    transcriptions = fields.ToManyField('moocng.api.resources.TranscriptionResource',
+                                            'transcription_set', related_name='kq',
+                                            readonly=True, null=True)
 
     class Meta:
         queryset = KnowledgeQuantum.objects.all()
@@ -242,7 +246,8 @@ class KnowledgeQuantumResource(BaseModelResource):
 
     def dehydrate_iframe_code(self, bundle):
         return media_content_get_iframe_template(bundle.obj.media_content_type,
-                                                 bundle.obj.media_content_id)
+                                                 bundle.obj.media_content_id,
+                                                 **{'transcriptions': bundle.obj.transcription_set.all()})
 
     def dehydrate_thumbnail_url(self, bundle):
         return media_content_get_thumbnail_url(bundle.obj.media_content_type,
@@ -273,6 +278,13 @@ class KnowledgeQuantumResource(BaseModelResource):
 
     def dehydrate_completed(self, bundle):
         return bundle.obj.is_completed(bundle.request.user)
+
+    def dehydrate_marked(self, bundle):
+        current_mark = bundle.obj.unit.course.get_user_mark(bundle.request.user)
+        if current_mark is None:
+            return False
+        else:
+            return current_mark.id == bundle.obj.id
 
     def dehydrate_course(self, bundle):
         return bundle.obj.unit.course.id
@@ -317,6 +329,9 @@ class PrivateKnowledgeQuantumResource(BaseModelResource):
         related_name='asset_availability',
         readonly=True, null=True)
     normalized_weight = fields.IntegerField()
+    transcriptions = fields.ToManyField('moocng.api.resources.TranscriptionResource',
+                                            'transcription_set', related_name='kq',
+                                            readonly=True, null=True)
 
     class Meta:
         queryset = KnowledgeQuantum.objects.all()
@@ -349,6 +364,15 @@ class PrivateKnowledgeQuantumResource(BaseModelResource):
     def dehydrate_thumbnail_url(self, bundle):
         return media_content_get_thumbnail_url(bundle.obj.media_content_type, bundle.obj.media_content_id)
 
+class LanguageResource(BaseModelResource):
+    class Meta:
+        queryset = Language.objects.all()
+        resource_name = 'language'
+        authentication = DjangoAuthentication()
+        authorization = PublicReadTeachersModifyAuthorization()
+        filtering = {
+            "name": ('exact'),
+        }
 
 class AttachmentResource(BaseModelResource):
     kq = fields.ToOneField(KnowledgeQuantumResource, 'kq')
@@ -364,6 +388,22 @@ class AttachmentResource(BaseModelResource):
 
     def dehydrate_attachment(self, bundle):
         return bundle.obj.attachment.url
+
+class TranscriptionResource(BaseModelResource):
+    kq = fields.ToOneField(KnowledgeQuantumResource, 'kq')
+    language = fields.ToOneField(LanguageResource, 'language')
+
+    class Meta:
+        queryset = Transcription.objects.all()
+        resource_name = 'transcription'
+        authentication = DjangoAuthentication()
+        authorization = PublicReadTeachersModifyAuthorization()
+        filtering = {
+            "kq": ('exact'),
+        }
+
+    def dehydrate_transcription(self, bundle):
+        return bundle.obj.transcription.url
 
 
 class PeerReviewAssignmentResource(BaseModelResource):

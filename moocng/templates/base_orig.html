@@ -39,9 +39,6 @@
         </a></li>-->
       </ul>
       {% if user.is_authenticated %}
-    {% if is_enrolled and not is_overview%}
-      <h2 class="course-title pull-left">{{ course.name }}</h2>
-    {% endif %}
     
         {% block useractions %}
             {% include "courses/include.useractions.html" %}

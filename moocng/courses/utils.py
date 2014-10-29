@@ -16,6 +16,10 @@
 import logging
 import json
 import os
+import requests
+import time
+import hashlib
+import sys
 
 from datetime import date
 from deep_serializer import serializer, deserializer
@@ -24,7 +28,7 @@ from deep_serializer import serializer, deserializer
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
-from django.core.mail import EmailMessage, EmailMultiAlternatives, get_connection
+from django.core.mail import get_connection, send_mass_mail, EmailMultiAlternatives, EmailMessage
 from django.template import loader
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
@@ -132,14 +136,15 @@ def send_mass_mail_wrapper(subject, message, recipients, html_message=None):
 
     .. versionadded: 0.1
     """
-    mails = []
-    content = message
-    for to in recipients:
-        email = EmailMultiAlternatives(subject, content, settings.DEFAULT_FROM_EMAIL, [to])
-        if html_message:
-            email.attach_alternative(html_message, "text/html")
-        mails.append(email)
     try:
+        mails = []
+        content = message
+        for to in recipients:
+            email = EmailMultiAlternatives(subject, content, settings.DEFAULT_FROM_EMAIL, [to])
+            if html_message:
+                email.attach_alternative(html_message, "text/html")
+            mails.append(email)
+    
         get_connection().send_messages(mails)
     except IOError as ex:
         logger.error('The massive email "%s" to %s could not be sent because of %s' % (subject, recipients, str(ex)))
@@ -342,52 +347,182 @@ def update_course_mark_by_user(course, user):
     updated_course, passed_course_now = update_course_mark(db, course, user)
     update_passed(db, 'stats_course', passed_course_now, {'course_id': course.pk})
 
-def get_sillabus_tree(course,user,minversion=True):
+def get_sillabus_tree(course,user,minversion=True,incontext=False):
     units = []
 
     current_mark_kq = course.get_user_mark(user)
 
-    for u in get_units_available_for_user(course, user):
+    course_units = get_units_available_for_user(course, user)
 
-        questions = []
+    if len(course_units) > 0:
+        if not incontext:
 
-        unitcomplete = True
+            for u in course_units:
+                unit, current_mark_kq = get_unit_tree(u, user, current_mark_kq, minversion)            
+                units.append(unit)
 
-        for q in  KnowledgeQuantum.objects.filter(unit_id=u.id):
-
-            completed = q.is_completed(user)
-
-            # If one question is not completed unit is not completed
-            if unitcomplete and not completed:
-                unitcomplete = False
-
-            qa = {
-                "completed" : completed,
-                "pk" : q.pk,
-                "title": q.title,
-                "url": "/course/"+course.slug+"/classroom/#!unit"+str(u.pk)+"/kq"+str(q.pk),
-                "current" : q == current_mark_kq
-            }
-
-            if not minversion:
-                qa["has_video"] = get_media_type(q.media_content_type) == "video"
-                qa["has_presentation"] = get_media_type(q.media_content_type) == "presentation"
-                qa["has_attachments"] = len(q.attachment_set.filter()) > 0
-                qa["has_test"] = len(q.question_set.filter()) > 0
-
-            questions.append(qa)
-
-        unit = {
-            'id': u.id,
-            'title': u.title,
-            'url': "/course/"+course.slug+"/classroom/#!unit"+str(u.pk),
-            'unittype': u.unittype,
-            'badge_class': get_unit_badge_class(u),
-            'badge_tooltip': u.get_unit_type_name(),
-            'complete' : unitcomplete,
-            'questions' : questions
-        }
-        units.append(unit)
-
+        else:
+            if current_mark_kq is not None:
+                unit, current_mark_kq = get_unit_tree(current_mark_kq.unit, user, current_mark_kq, minversion)
+                units.append(unit)
+            else:
+                prev = None
+                for u in course_units:
+                    unit, current_mark_kq = get_unit_tree(u, user, current_mark_kq, minversion)
+                    
+                    if not unit['complete']:
+                        units.append(unit)
+                        return units
+                    else:
+                        prev = unit
+                units.append(prev)
 
     return units
+
+def get_unit_tree(unit, user, current_mark_kq, minversion=True):
+    questions = []
+    unitcomplete = True
+    current_marked = False
+
+    for q in KnowledgeQuantum.objects.filter(unit_id=unit.id):
+
+        completed = q.is_completed(user)
+
+        # If one question is not completed unit is not completed
+        if unitcomplete and not completed:
+            unitcomplete = False
+
+        current = False
+        if not current_marked and current_mark_kq is not None:
+            current = q == current_mark_kq
+        elif not current_marked:
+            current = not completed
+
+        if current == True:
+            current_marked = True
+            current_mark_kq = q
+
+        qa = {
+            "completed" : completed,
+            "pk" : q.pk,
+            "title": q.title,
+            "url": "/course/"+unit.course.slug+"/classroom/#!unit"+str(unit.pk)+"/kq"+str(q.pk),
+            "current" : current
+        }
+
+        if not minversion:
+            qa["has_video"] = get_media_type(q.media_content_type) == "video"
+            qa["has_presentation"] = get_media_type(q.media_content_type) == "presentation"
+            qa["has_attachments"] = len(q.attachment_set.filter()) > 0
+            qa["has_test"] = len(q.question_set.filter()) > 0
+
+        questions.append(qa)
+
+    unit = {
+        'id': unit.id,
+        'title': unit.title,
+        'url': "/course/"+unit.course.slug+"/classroom/#!unit"+str(unit.pk),
+        'unittype': unit.unittype,
+        'badge_class': get_unit_badge_class(unit),
+        'badge_tooltip': unit.get_unit_type_name(),
+        'complete' : unitcomplete,
+        'questions' : questions
+    }
+
+    return unit, current_mark_kq
+
+def create_groups(id_course):
+
+    id_course  = int(id_course)
+
+    mongodb.get_db().get_collection('groups').remove({"id_course": {"$eq": id_course}})
+
+    course = Course.objects.filter(id=id_course)[:1].get()
+    size_group = course.group_max_size
+    students = course.students.all()
+
+    num_groups = len(students) / size_group
+
+    if (num_groups == 0):
+        group = {"id_course": id_course, "name": "Group", "members": []}
+        for student in students:
+            group["members"].append({"id_user": student.id, "username": student.username, 
+                                    "first_name":student.first_name, "last_name":student.last_name, 
+                                    "email": student.email, "karma": student.get_profile().karma, "countries": "", 
+                                    "languages": ""})
+
+        mongodb.get_db().get_collection('groups').insert(group)
+
+    else:
+        cont = 0
+        groups = []
+        for i in range(1, num_groups+1):
+            group = {"id_course": id_course, "name": "Group" + str(i), "members": []}
+            for y in range(cont, i*size_group):
+                student =  students[y]
+                group["members"].append({"id_user": student.id, "username": student.username, 
+                                        "first_name":student.first_name, "last_name":student.last_name, 
+                                        "email": student.email, "karma": student.get_profile().karma, "countries": "", 
+                                        "languages": ""})
+                cont += 1
+
+            groups.append(group)
+        
+        
+        if(cont < len(students)):
+            if((len(students) - cont) < (size_group * (settings.GROUPS_UMBRAL/100.0))):
+                cont2 = 0
+                for i in range(cont, len(students)):
+                    if(cont2 >= len(groups)):
+                        cont2 = 0
+                    student =  students[cont]
+                    groups[cont2]["members"].append({"id_user": student.id, "username": student.username, 
+                                        "first_name":student.first_name, "last_name":student.last_name, 
+                                        "email": student.email, "karma": student.get_profile().karma, "countries": "", 
+                                        "languages": ""})
+                    cont += 1
+                    cont2 += 1
+            else:
+                group = {"id_course": id_course, "name": "Group" + str(i), "members": []}
+                for i in range(cont, len(students)):
+                    student =  students[cont]
+                    group["members"].append({"id_user": student.id, "username": student.username, 
+                                        "first_name":student.first_name, "last_name":student.last_name, 
+                                        "email": student.email, "karma": student.get_profile().karma, "countries": "", 
+                                        "languages": ""})
+                groups.append(group)
+
+        # Create topics for each group
+        cid = 6
+        for group in groups:
+            content = _(u"This is the topic for ") + group["name"] + _(u" where you can comment and help other team members")
+            data = {
+                "uid": 1,
+                "title": group["name"],
+                "content": content,
+                "cid": cid
+            }
+            timestamp = int(round(time.time() * 1000))
+            authhash = hashlib.md5(settings.FORUM_API_SECRET + str(timestamp)).hexdigest()
+            headers = {
+                "Content-Type": "application/json",
+                "auth-hash": authhash,
+                "auth-timestamp": timestamp
+            }
+            
+            if settings.FEATURE_FORUM:
+                try:
+                    r = requests.post(settings.FORUM_URL + "/api2/topics", data=json.dumps(data), headers=headers)
+                    group["forum_slug"] = r.json()["slug"]
+
+                except:
+                    print "Error creating course forum topic"
+                    print "Unexpected error:", sys.exc_info()[0]
+
+        mongodb.get_db().get_collection('groups').insert(groups)
+
+def get_group_by_user_and_course(id_user, id_course):
+
+    db = mongodb.get_db().get_collection('groups')
+    group = db.find_one( { 'id_course': id_course, 'members.id_user':id_user } )
+    return group

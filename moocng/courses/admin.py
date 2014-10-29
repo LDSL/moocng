@@ -49,7 +49,7 @@ from moocng.courses.forms import UnitForm, AttachmentForm
 from moocng.courses.models import (Course, Announcement, Unit, KnowledgeQuantum,
                                    StaticPage)
 from moocng.courses.models import Question, Option, Attachment, Language
-from moocng.courses.models import CourseTeacher,CourseLanguage
+from moocng.courses.models import CourseTeacher
 from moocng.courses.utils import clone_course
 from moocng.courses.widgets import ImageReadOnlyWidget
 from moocng.teacheradmin.forms import MassiveGlobalAnnouncementAdminForm
@@ -409,4 +409,3 @@ admin.site.register(Question, QuestionAdmin)
 admin.site.register(Option, OptionAdmin)
 admin.site.register(Attachment, AttachmentAdmin)
 admin.site.register(Language)
-admin.site.register(CourseLanguage)

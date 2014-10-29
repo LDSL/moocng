@@ -556,8 +556,20 @@ MOOC.models.Attachment = Backbone.Model.extend({
     }
 });
 
+MOOC.models.Transcription = Backbone.Model.extend({
+    defaults: {
+        id: -1,
+        url: null,
+        type: null
+    }
+});
+
 MOOC.models.AttachmentList = MOOC.models.TastyPieCollection.extend({
     model: MOOC.models.Attachment
+});
+
+MOOC.models.TranscriptionList = MOOC.models.TastyPieCollection.extend({
+    model: MOOC.models.Transcription
 });
 
 MOOC.models.PeerReviewReview  = Backbone.Model.extend({
@@ -605,8 +617,9 @@ MOOC.models.KnowledgeQuantum = Backbone.Model.extend({
         peer_review_assignment: null, // Optional
         asset_availability: null,
         peer_review_score: null,
-
+        marked: false,
         attachmentList: null,
+        transcriptionList: null,
         questionInstance: null,
         assetAvailabilityInstance: null,
         peerReviewAssignmentInstance: null,
@@ -636,8 +649,10 @@ MOOC.models.KnowledgeQuantum = Backbone.Model.extend({
         model2send.unset("normalized_weight");
         model2send.unset("completed");
         model2send.unset("correct");
+        model2send.unset("marked");
         model2send.unset("questionInstance");
         model2send.unset("attachmentList");
+        model2send.unset("transcriptionList");
         model2send.unset("peerReviewAssignmentInstance");
         model2send.unset("assetAvailabilityInstance");
         if (model.get("order") < 0) {

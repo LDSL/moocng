@@ -21,8 +21,15 @@ from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 
 
-from moocng.courses.models import Unit, Attachment, Course
+from moocng.courses.models import Unit, Attachment, Course, Transcription, get_transcription_types_choices
 
+COURSE_RATING_CHOICES = [
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+]
 
 class CourseForm(forms.ModelForm):
 
@@ -65,8 +72,22 @@ class AttachmentForm(forms.ModelForm):
         self.cleaned_data["attachment"].name = "%s%s" % (file_name, file_ext)
         return self.cleaned_data["attachment"]
 
+class TranscriptionForm(forms.ModelForm):
+    transcription_type = forms.ChoiceField(choices=get_transcription_types_choices(), widget=forms.widgets.Select)
+    #language = forms.ChoiceField(choices=,widget=forms.widgets.Select)
+    class Meta:
+        model = Transcription
+
+    def clean_attachment(self):
+        file_name, file_ext = os.path.splitext(self.cleaned_data["filename"].name)
+        file_name = slugify(file_name)
+        self.cleaned_data["filename"].name = "%s%s" % (file_name, file_ext)
+        return self.cleaned_data["filename"]
 
 class ActivityForm(forms.Form):
     course_id = forms.IntegerField(required=True)
     unit_id = forms.IntegerField(required=True)
     kq_id = forms.IntegerField(required=True)
+
+class CourseRatingForm(forms.Form):
+    value = forms.ChoiceField(choices=COURSE_RATING_CHOICES, widget=forms.widgets.RadioSelect)

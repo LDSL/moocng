@@ -99,6 +99,15 @@ if (_.isUndefined(window.MOOC)) {
                     /gdata\.youtube\.com\/feeds\/api\/videos\/([\w\-]+)/,
                     /^([\w\-]+)$/
                 ],
+                'ytaccesible': [
+                    /youtube\.com\/watch\?v=([\w\-]+).*/,
+                    /youtube\.com\/embed\/([\w\-]+)/,
+                    /youtube\.com\/v\/([\w\-]+)/,
+                    /youtube\.com\/\?v=([\w\-]+)/,
+                    /youtu\.be\/([\w\-]+)/,
+                    /gdata\.youtube\.com\/feeds\/api\/videos\/([\w\-]+)/,
+                    /^([\w\-]+)$/
+                ],
                 'vimeo': [
                     /vimeo\.com\/(\d+)/,
                     /vimeo\.com\/video\/(\d+)/,
@@ -543,9 +552,9 @@ if (_.isUndefined(window.MOOC)) {
                 }
 
                 data = "<p class='noLowRes'>" + MOOC.trans.kq.teacher_comments + ": " +
-                    truncate(_.escape(stripTags(this.model.get("teacher_comments")))) + "</p>" +
+                    truncate(stripTags(this.model.get("teacher_comments"))) + "</p>" +
                     "<p class='noLowRes'>" + MOOC.trans.kq.supplementary_material + ": " +
-                    truncate(_.escape(stripTags(this.model.get("supplementary_material")))) + "<p/>";
+                    truncate(stripTags(this.model.get("supplementary_material"))) + "<p/>";
 
 
                 html = inlineb({ classes: "drag-handle" }) +
@@ -569,7 +578,7 @@ if (_.isUndefined(window.MOOC)) {
 
                 modal_template = _.template($("#modal-video-player-tpl").html());
                 iframe_template = _.template(this.model.get("iframe_code"));
-                iframe = iframe_template({ width: '620px', height: '372px', allowfullscreen: false, controls: false, origin: MOOC.host });
+                iframe = iframe_template({ width: '620px', height: '372px', allowfullscreen: false, controls: true, origin: MOOC.host });
 
                 context = {
                     title: this.model.get("title"),
@@ -753,6 +762,7 @@ if (_.isUndefined(window.MOOC)) {
 
             render: function () {
                 var $attachments,
+                    $transcriptions,
                     question,
                     options,
                     assignment,
@@ -943,6 +953,20 @@ if (_.isUndefined(window.MOOC)) {
                 } else {
                     $attachments.remove();
                     this.$el.find("#attachment-empty").removeClass("hide");
+                }
+
+                $transcriptions = this.$el.find("#transcription-list");
+                if (this.model.get("transcriptionList").length > 0) {
+                    this.model.get("transcriptionList").each(function (transcription) {
+                        var view = new MOOC.views.Transcription({
+                            model: transcription,
+                            el: $transcriptions.find("tbody")[0]
+                        });
+                        view.render();
+                    });
+                } else {
+                    $transcriptions.remove();
+                    this.$el.find("#transcription-empty").removeClass("hide");
                 }
 
                 this.$el.find("textarea#kqsupplementary").val(this.model.get("supplementary_material"));
@@ -1203,6 +1227,59 @@ if (_.isUndefined(window.MOOC)) {
                     attachCB = function () {
                         self.render();
                         self.$el.find("#attachments-tab a").trigger("click");
+                    };
+                }
+
+                // Look for transcriptions
+                if (this.$el.find("#transcriptions input[type='file']").val() !== "") {
+                    steps.push(function (asyncCB) {
+                        var input = self.$el.find("#transcriptions input[type='file']")[0],
+                            type = self.$el.find("#transcriptions #id_type").val(),
+                            language = self.$el.find("#transcriptions #id_language").val(),
+                            fakeForm;
+                        if (input.files) {
+                            fakeForm = new FormData();
+                            fakeForm.append("transcription", input.files[0]);
+                            fakeForm.append("type", type);
+                            fakeForm.append("language", language);
+                            $.ajax(window.location.pathname + "transcription/?kq=" + self.model.get("id"), {
+                                type: "POST",
+                                headers: {
+                                    "X-CSRFToken": csrftoken
+                                },
+                                data: fakeForm,
+                                processData: false,
+                                contentType: false,
+                                success: function () { asyncCB(); },
+                                error: function () { asyncCB("Error saving transcription"); }
+                            });
+                        } else {
+                            asyncCB("Error with transcription, FileAPI not supported");
+                        }
+                    });
+
+                    steps.push(function (asyncCB) {
+                        $.ajax(MOOC.ajax.host + "transcription/?format=json&kq=" + self.model.get("id"), {
+                            success: function (data, textStatus, jqXHR) {
+                                var transcriptionList = new MOOC.models.TranscriptionList(
+                                    _.map(data.objects, function (transcription) {
+                                        return {
+                                            id: parseInt(transcription.id, 10),
+                                            url: transcription.filename,
+                                            type: transcription.transcription_type
+                                        };
+                                    })
+                                );
+                                self.model.set("transcriptionList", transcriptionList);
+                                asyncCB();
+                            },
+                            error: function () { asyncCB("Error saving transcription"); }
+                        });
+                    });
+
+                    attachCB = function () {
+                        self.render();
+                        self.$el.find("#transcriptions-tab a").trigger("click");
                     };
                 }
 
@@ -1857,6 +1934,55 @@ if (_.isUndefined(window.MOOC)) {
                                 MOOC.ajax.showAlert("saved");
                                 if (rows === 1) {
                                     $table.parent().find("#attachment-empty").show();
+                                    $table.remove();
+                                }
+                            },
+                            error: function () {
+                                MOOC.ajax.hideLoading();
+                                MOOC.ajax.showAlert("generic");
+                            }
+                        });
+                    };
+                showConfirmationModal(cb);
+            }
+        }),
+
+        Transcription: Backbone.View.extend({
+            events: {
+                "click span.icon-remove": "remove"
+            },
+
+            initialize: function () {
+                _.bindAll(this, "render", "remove");
+            },
+
+            render: function () {
+                var html = "<tr id='transcription-" + this.model.get("id") + "'><td><a href='" + this.model.get("url") + "' target='_blank'>",
+                    parts = this.model.get("url").split('/');
+                html += parts[parts.length - 1];
+                html += "</a></td><td class='center'><span class='icon-remove pointer'></span></td></tr>";
+                this.$el.append(html);
+                return this;
+            },
+
+            remove: function (evt) {
+                var $el = $(evt.target).parent().parent(),
+                    cb = function () {
+                        var id = $el.attr("id").split('-')[1],
+                            rows = $el.parent().find("tr").length;
+                        MOOC.ajax.showLoading();
+                        $.ajax(window.location.pathname + "transcription/?transcription=" + id, {
+                            type: "DELETE",
+                            headers: {
+                                "X-CSRFToken": csrftoken
+                            },
+                            success: function () {
+                                var $table = $el.parent().parent();
+                                $el.fadeOut().remove();
+                                MOOC.ajax.hideLoading();
+                                MOOC.ajax.showAlert("saved");
+                                if (rows === 1) {
+                                    $table.parent().find("#transcription-empty").show();
                                     $table.remove();
                                 }
                             },

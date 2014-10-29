@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui-1.9.2.custom.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-datepicker.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-fileupload.2.3.1-j6.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/ableplayer.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/ableplayer-transcript.css">
     {% if mathjax_enabled %}
       {% mathjax_scripts %}
     {% endif %}
@@ -124,15 +126,17 @@
 	<div class="row kq-header">
 		<div class="col-lg-12 col-md-8 col-sm-5 col-mob-4">
 			<h2 id="kq-title" class="pull-left">{{ course.title }}</h2>
-			<!--<a class="bookmark pull-right" href="#"><img src="{{ STATIC_URL }}img/icon_bookmark.png" alt="{% trans 'Bookmark' %}"></a>-->
+			<a class="bookmark pull-right" id="bookmark_btn" href="#"><img src="{{ STATIC_URL }}img/ECO_icon_marcador_0.svg" alt="{% trans 'Bookmark' %}"></a>
 		</div>
-		<!--<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4">
+        {% if feature_social %}
+		<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4">
 			<a class="hide-text social_like facebook selected" href="#">{% trans 'Like this on Facebook' %} <span>10</span></a>
 			<a class="hide-text social_like gplus" href="#">{% trans '+1 on Google+' %} <span>10</span></a>
-		</div>-->
+		</div>
+        {% endif %}
 	</div>
 	<div class="row kq">
-		<div class="col-lg-12 col-md-8 col-sm-8 col-mob-4">
+		<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
 			<div id="kq-video"></div>
 			<div class="row">
 				<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">

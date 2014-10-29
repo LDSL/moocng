@@ -55,8 +55,8 @@ urlpatterns = patterns(
         name='course_calendar'),
     url(r'^course/(?P<course_slug>[-\w]+)/wiki/$', 'course_wiki',
         name='course_wiki'),
-    url(r'^course/(?P<course_slug>[-\w]+)/team/$', 'course_team',
-        name='course_team'),
+    url(r'^course/(?P<course_slug>[-\w]+)/group/$', 'course_group',
+        name='course_group'),
     url(r'^course/(?P<course_slug>[-\w]+)/teachers/$', 'course_teachers',
         name='course_teachers'),
     url(r'^course/(?P<course_slug>[-\w]+)/extra_info/$', 'course_extra_info',
@@ -72,4 +72,9 @@ urlpatterns = patterns(
     # Teacher's course administration
     url(r'^course/(?P<course_slug>[-\w]+)/teacheradmin/',
         include('moocng.teacheradmin.urls')),
+
+
+
+     url(r'^createCourse/(?P<id>[-\w]+)$', 'create_course_groups',
+        name='create_course_groups'),
 )

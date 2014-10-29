@@ -40,8 +40,8 @@ from moocng.badges.models import Badge
 from moocng.courses.cache import invalidate_template_fragment_i18n
 from moocng.courses.managers import (CourseManager, UnitManager,
                                      KnowledgeQuantumManager, QuestionManager,
-                                     OptionManager, AttachmentManager,
-                                     AnnouncementManager)
+                                     OptionManager, TranscriptionManager, 
+                                     AttachmentManager, AnnouncementManager)
 from moocng.enrollment import enrollment_methods
 from moocng.mongodb import get_db
 from moocng.videos.tasks import process_video_task
@@ -52,6 +52,7 @@ logger = logging.getLogger(__name__)
 
 class Language(models.Model):
     name = models.CharField(verbose_name=_(u'Name'), max_length=200)
+    abbr = models.CharField(verbose_name=_(u'Abbr'), max_length=2, null=True)
     
     def __unicode__(self):
         return self.name
@@ -95,9 +96,9 @@ class Course(Sortable):
                                       related_name='courses_as_student',
                                       blank=True)
 
-    languages = models.ManyToManyField(Language, verbose_name=_(u'Languages'),
-                                      through='CourseLanguage',
-                                      related_name='courses_as_language')
+    languages = models.ManyToManyField(Language,
+                                       verbose_name=_(u'Language')
+                                       )
 
     estimated_effort = models.CharField(verbose_name=_(u'Estimated effort'),
                                  null = True,
@@ -107,10 +108,6 @@ class Course(Sortable):
     hashtag = models.CharField(verbose_name=_(u'Hashtag'),
                                 default='Hashtag',
                                 max_length=128)
-
-    user_score = models.PositiveSmallIntegerField(verbose_name=_(u'User score'),
-                                            null=True,
-                                            blank = True)
 
     promotion_media_content_type = models.CharField(verbose_name=_(u'Content type'),
                                                     max_length=20,
@@ -122,6 +119,11 @@ class Course(Sortable):
                                                   blank=True,
                                                   max_length=200)
 
+    forum_slug = models.CharField(verbose_name=_(u'Forum slug'),
+                                    null=True,
+                                    blank=True,
+                                    max_length=350)
+
     threshold = models.DecimalField(
         verbose_name=_(u'Pass threshold'),
         max_digits=4, decimal_places=2,
@@ -129,14 +131,6 @@ class Course(Sortable):
     certification_available = models.BooleanField(
         default=False,
         verbose_name=_(u'Certification available'))
-    certification_banner = models.ImageField(
-        verbose_name=_(u'Certification banner'),
-        upload_to='certification_banners', blank=True, null=True)
-    certification_alt = models.CharField(verbose_name=_('Certification image alternative text'), max_length=200,
-                                                 null=True, blank=True,
-                                                 help_text=_('This text is used to describe the certification image. '
-                                                             'It is necessary for accessibility ')
-                                                 )
     completion_badge = models.ForeignKey(
         Badge, blank=True, null=True, verbose_name=_(u'Completion badge'),
         related_name='course')
@@ -200,6 +194,12 @@ class Course(Sortable):
 
     highlight = models.BooleanField(default=False)
 
+    has_groups = models.BooleanField(verbose_name=_('Has this course groups?'),
+                                    default=False)
+
+    group_max_size = models.PositiveSmallIntegerField(verbose_name=_('Maximum number of members allowed for each group'),
+        default=settings.DEFAULT_GROUP_MAX_SIZE)
+
     objects = CourseManager()
 
     class Meta(Sortable.Meta):
@@ -223,10 +223,27 @@ class Course(Sortable):
             "current" : True
         })
 
+        kq = None
         if mark:
-            return KnowledgeQuantum.objects.get(pk=mark["kq_id"])
+            try:
+                kq = KnowledgeQuantum.objects.get(pk=mark["kq_id"])
+            except KnowledgeQuantum.DoesNotExist:
+                pass
         else:
-            return None
+            return kq
+
+    def get_rating(self):
+        course_student_set = CourseStudent.objects.filter(course=self)
+        rating = 0
+        num_students = len(course_student_set)
+        if num_students > 0:
+            for course_student in course_student_set:
+                if course_student.rate is not None:
+                    rating += course_student.rate
+
+            rating = rating/num_students
+        return rating
+
 
     def save(self, *args, **kwargs):
         if self.promotion_media_content_type and self.promotion_media_content_id:
@@ -264,6 +281,13 @@ class Course(Sortable):
                 (not self.end_date or
                  not self.start_date and self.end_date >= today or
                  self.start_date and self.start_date <= today and self.end_date >= today))
+
+    @property
+    def is_outdated(self):
+        today = datetime.date.today()
+        return (self.is_public and
+                (self.end_date < today)
+                )
 
     def _resize_image(self, filename, size):
         """
@@ -395,6 +419,8 @@ class CourseStudent(models.Model):
                                          max_length=1)
     progress = models.IntegerField(verbose_name=_(u'Progress'),
                                         default=0)
+    rate = models.PositiveSmallIntegerField(verbose_name=_(u'Rate'),
+                                            null=True)
 
     class Meta:
         verbose_name = _(u'course student')
@@ -402,12 +428,6 @@ class CourseStudent(models.Model):
 
     def can_clone_activity(self):
         return self.course.can_clone_activity() and self.old_course_status == 'n'
-
-
-
-class CourseLanguage(models.Model):
-    course = models.ForeignKey(Course, verbose_name=_(u'Course'))
-    language = models.ForeignKey(Language, verbose_name=_(u'Language'))
 
 
 class Announcement(models.Model):
@@ -686,6 +706,37 @@ def kq_stats(sender, instance, created, **kwargs):
 signals.post_save.connect(handle_kq_post_save, sender=KnowledgeQuantum)
 signals.post_save.connect(kq_stats, sender=KnowledgeQuantum)
 
+def get_transcription_types_choices():
+    choices = []
+    for handler_dict in settings.TRANSCRIPTION_TYPES:
+        choices.append((handler_dict['id'], handler_dict.get('name', handler_dict['id'])))
+    return choices
+    
+class Transcription(models.Model):
+    kq = models.ForeignKey(KnowledgeQuantum,
+                           verbose_name=_(u'Nugget'))
+
+    filename = models.FileField(verbose_name=_(u'VTT file'),
+                                upload_to='transcriptions')
+    transcription_type = models.CharField(verbose_name=_(u'Transcription type'),
+                                          max_length=20,
+                                          null=True,
+                                          blank=False,
+                                          choices=get_transcription_types_choices())
+    language = models.ForeignKey(Language,
+                                   verbose_name=_(u'Language'))
+
+    objects = TranscriptionManager()
+
+    class Meta:
+        verbose_name = _(u'transcription')
+        verbose_name_plural = _(u'transcriptions')
+
+    def __unicode__(self):
+        return self.filename.name
+
+    def natural_key(self):
+        return self.kq.natural_key() + (self.filename.name,)
 
 class Attachment(models.Model):
 

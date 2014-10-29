@@ -80,6 +80,14 @@ MOOC.ajax.getAttachmentsByKQ = function (kq, callback) {
     });
 };
 
+MOOC.ajax.getTranscriptionsByKQ = function (kq, callback) {
+    "use strict";
+    $.ajax(MOOC.ajax.host + "transcription/?format=json&kq=" + kq, {
+        success: callback,
+        error: MOOC.ajax.genericError
+    });
+};
+
 MOOC.ajax.getOptionsByQuestion = function (question, callback) {
     "use strict";
     $.ajax(MOOC.ajax.host + "option/?format=json&question=" + question, {
