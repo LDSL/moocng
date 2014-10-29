@@ -36,6 +36,7 @@ from dateutil import tz
 from datetime import date, datetime
 from moocng.profile.utils import (get_user)
 from cgi import escape
+from django.utils.html import urlize
 
 def profile_timeline(request):
 	profile = {
@@ -95,6 +96,8 @@ def profile_courses(request, id):
 		user = get_user(id)
 		id = int(id)
 
+	case = _getCase(request,id)
+
 	courses = get_courses_user_is_enrolled(user)
 	courses_completed = 0
 	for course in courses:
@@ -110,6 +113,7 @@ def profile_courses(request, id):
 
 	return render_to_response('profile/courses.html', {
 		"id":id,
+		"case":case,
 		'request': request,
 		'courses': courses,
 		'courses_completed': courses_completed,
@@ -181,7 +185,7 @@ def profile_posts(request, id):
 							"username": "@" + request.user.username,
 							"gravatar": "http:" + gravatar_for_email(request.user.email),
 							"date": datetime.utcnow().isoformat(),
-							"text": escape(form.cleaned_data['postText']),
+							"text": urlize(escape(form.cleaned_data['postText'])),
 							"children": [],
 							"favourite": [],
 							"shared": 0
