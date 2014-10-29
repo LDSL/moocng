@@ -52,9 +52,10 @@ class YoutubeAccesibleMediaContentHandler(MediaContentHandlerBase):
             'gdata\.youtube\.com/feeds/api/videos/([\w\-]+)',
             '^([\w\-]+)$',
         ]
+        print "La URL es: " + str(url)
         for pattern in patterns:
             result = re.search(pattern, url, re.IGNORECASE)
             if result:
-                print result.group(1)
+                print "El resultado es: " + str(result.group(1))
                 return result.group(1)
         return ''
