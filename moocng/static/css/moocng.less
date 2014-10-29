@@ -99,6 +99,10 @@
 	padding-bottom: 100px;
 }
 
+.pt-20 {
+	padding-top: 20px;
+}
+
 ul.unstyled {
 	list-style: none;
 }
@@ -111,6 +115,11 @@ ul.unstyled {
 	border-bottom: 1px solid @neutral_light_1;
 	padding: 19px 0 0 0;
 	margin-bottom: 19px;
+}
+
+.smallandversal {
+	text-transform: uppercase;
+	font-size: 0.8em;
 }
 
 a {
@@ -1573,12 +1582,28 @@ ul.rating {
 }
 
 .course {
-	margin-bottom: 60px;
+	//margin-bottom: 60px;
 
 	h3 {
 		font-size: 36px;
 		font-weight: 300;
 		float: left;
+	}
+
+	.members-tag {
+		padding-bottom: 20px;
+		img {
+			.img_v_middle;
+		}
+
+		span {
+			display: block;
+			.smallandversal;
+		}
+
+		&.bottom-line {
+			margin-bottom: 10px;
+		}
 	}
 
 	.userlist {
@@ -1626,6 +1651,8 @@ ul.rating {
 
 					&:last-child {
 						margin-right: 0;
+						min-width: 65px;
+						text-align: left;
 					}
 					img {
 						display: inline-block;

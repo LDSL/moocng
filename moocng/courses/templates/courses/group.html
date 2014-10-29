@@ -5,29 +5,42 @@
 <div class="course container">
 	<div class="row">
 		<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 bottom-line">
-			<h3>{{ groupname }}</h3>
+			<h3 class="pull-left">{{ group.name }}</h3>
+			<a class="pull-right" href="{{ forum_url }}/topic/{{group.forum_slug}}" target="_blank">
+				<img class="img_v_middle" src="{{ STATIC_URL }}img/ECO_icon_cab_foro.svg">
+				{% trans "Go to group's forum" %}
+				<img src="{{ STATIC_URL }}img/ECO_icon_flecha_enlace.svg">
+			</a>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
-			<p class="bottom-line"><img src="{{STATIC_URL}}img/ECO_icon_tarea_equipo.svg">{{ members|length }} {% trans "members" %}</p>
+			<p class="members-tag bottom-line">
+				<img src="{{STATIC_URL}}img/ECO_icon_tarea_equipo.svg">
+				{{ group.members|length }}
+				<span>{% trans "members" %}</span>
+			</p>
 			{% if feature_groups_video %}<a href="#" class="button squared">{% trans "Videoconference" %}</a>
 			{% endif %}
 			<ul class="userlist">
-				{% for member in members %}
+				{% for member in group.members %}
 				<li class="bottom-line">
-					<img class="avatar" src="{% gravatar_for_email member.email %}?s=64" alt="{% firstof mem.get_full_name member.username %}">
+					<img class="avatar" src="{% gravatar_for_email member.email %}?s=64" alt="{% firstof member.first_name member.username %}">
 					<div>
-						<h4 class="bottom-line">{{ member.get_full_name }}<span>@{{ member.username }}</h4>
-						<p class="tag pull-left"><img src="{{ STATIC_URL }}img/ECO_icon_info_localizacion.svg" alt="{% trans "Location"%}">{{ member.country }}</p>
+						<h4 class="bottom-line"><a href="/user/profile/{{member.id_user}}">{{ member.first_name }} {{ member.last_name }}<span>@{{ member.username }}</a></h4>
+						{% if member.countries %}
+						<p class="tag pull-left"><img src="{{ STATIC_URL }}img/ECO_icon_info_localizacion.svg" alt="{% trans "Location"%}">{{ member.countries }}</p>
+						{% endif %}
+						{% if member.languages %}
 						<p class="tag pull-left"><img src="{{ STATIC_URL }}img/ECO_icon_info_idioma.svg" alt="{% trans "Languages"%}">{% for language in member.languages %}{{ language }}{% endfor %}</p>
-						<p class="tag pull-right"><img src="{{ STATIC_URL }}img/ECO_icon_info_karma.svg" alt="{% trans "Karma"%}">{{ member.karma }}</p>
+						{% endif %}
+						<p class="tag pull-right"><img src="{{ STATIC_URL }}img/ECO_icon_info_karma.svg" alt="{% trans "Karma"%}">{% if member.karma %}{{ member.karma }}{% else %}0{% endif %}</p>
 					</div>
 				</li>
 				{% endfor %}
 			</ul>
 		</div>
-		<div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
+		<!--<div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
 			<div class="dash-box">
 				<div class="title">
 					<h3>{% trans "Tasks" %}</h3>
@@ -100,7 +113,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div>-->
 	</div>
 </div>
 

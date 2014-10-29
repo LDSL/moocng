@@ -40,7 +40,8 @@ from moocng.badges.models import Award
 from moocng.courses.models import Course, CourseTeacher, Announcement,KnowledgeQuantum
 from moocng.courses.utils import (get_unit_badge_class, is_course_ready,
                                   is_teacher as is_teacher_test,
-                                  send_mail_wrapper,get_sillabus_tree, create_groups)
+                                  send_mail_wrapper,get_sillabus_tree, create_groups,
+                                  get_group_by_user_and_course)
 
 from moocng.courses.marks import get_course_mark, get_course_intermediate_calculations, normalize_unit_weight
 from moocng.courses.security import (get_course_if_user_can_view_or_404,
@@ -504,27 +505,7 @@ def course_group(request, course_slug):
         }, context_instance=RequestContext(request))
 
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
-
-    members = [
-        { 'get_full_name': u'Héctor García',
-          'username': 'hector.garcia',
-          'country': 'España',
-          'languages': ['Castellano, Inglés'],
-          'email': 'hector.garcia@geographica.gs',
-          'karma': 100},
-        { 'get_full_name': u'Raúl Yeguas',
-          'username': 'raul.yeguas',
-          'country': 'España',
-          'languages': ['Castellano, Inglés'],
-          'email': 'raul.yeguas@geographica.gs',
-          'karma': 75},
-        { 'get_full_name': u'Manuel Fernandez',
-          'username': 'manuel.fernandez',
-          'country': 'Estados Unidos',
-          'languages': ['Castellano'],
-          'email': 'manuel.fernandez@geographica.gs',
-          'karma': 50},
-    ]
+    group = get_group_by_user_and_course(request.user.id, course.id)
 
     return render_to_response('courses/group.html', {
         'course': course,
@@ -534,8 +515,7 @@ def course_group(request, course_slug):
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
-        'members': members,
-        'groupname': 'The A Team',
+        'group': group,
     }, context_instance=RequestContext(request))
 
 @login_required
