@@ -15,16 +15,16 @@
 						<h2>@{{ user_view_profile.username }}</h2>
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4 data-bar">
-						<!--<div class="profile-data">
+						<div class="profile-data">
 							<h4 class="noLowRes">{% trans "Badges" %}</h4>
 							<img src="{{ STATIC_URL }}img/ECO_icon_medallas_white.svg">
 							<p>{{ profile.badges|length }}</p>
-						</div>-->
-						<!--<div class="profile-data">
+						</div>
+						<div class="profile-data">
 							<h4 class="noLowRes">{% trans "Karma" %}</h4>
 							<img src="{{ STATIC_URL }}img/ECO_icon_karma_white.svg">
 							<p>{{ user_view_profile.get_profile.karma }}</p>
-						</div>-->
+						</div>
 					</div>
 				</div>
 			</div>
@@ -82,3 +82,11 @@
 		</div>
 	</div>
 </div>
+
+<script>
+$(function(){
+	$.get('{{ forum_url }}/api/user/{{ user_view_profile.username }}', function(result){
+		$('#user-karma').html(result.reputation);
+	});
+});
+</script>

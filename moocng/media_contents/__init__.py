@@ -32,7 +32,6 @@ def media_content_get_last_frame(handler, content_id, tmpdir, **kwargs):
 
 def media_content_extract_id(handler, url, **kwargs):
     handler = handlers.get_handler(handler)
-    print "El handler es: " + str(handlers)
     return handler.extract_id(url, **kwargs)
 
 
