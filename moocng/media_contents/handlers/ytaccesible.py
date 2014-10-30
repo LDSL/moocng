@@ -32,7 +32,6 @@ class YoutubeAccesibleMediaContentHandler(MediaContentHandlerBase):
 
     def get_javascript_code(self, **kwargs):
         template = get_template("media_contents/handlers/ytaccesible_js.html")
-        print 'template: ' + str(template)
         context = Context(kwargs)
         return template.render(context)
 
@@ -52,10 +51,8 @@ class YoutubeAccesibleMediaContentHandler(MediaContentHandlerBase):
             'gdata\.youtube\.com/feeds/api/videos/([\w\-]+)',
             '^([\w\-]+)$',
         ]
-        print "La URL es: " + str(url)
         for pattern in patterns:
             result = re.search(pattern, url, re.IGNORECASE)
             if result:
-                print "El resultado es: " + str(result.group(1))
                 return result.group(1)
         return ''

@@ -208,12 +208,10 @@ def teacheradmin_units_attachment(request, course_slug):
 def teacheradmin_units_transcription(request, course_slug):
     if request.method == 'POST':
         if not 'kq' in request.GET:
-            print 'no hay kq'
             return HttpResponse(status=400)
         kq = get_object_or_404(KnowledgeQuantum, id=request.GET['kq'])
 
         if not('transcription' in request.FILES.keys()):
-            print 'no hay filename'
             return HttpResponse(status=400)
 
         uploaded_file = request.FILES['transcription']
@@ -473,7 +471,6 @@ def teacheradmin_info(request, course_slug):
     if request.method == 'POST':
         form = CourseForm(data=request.POST, files=request.FILES, instance=course)
         static_page_form = StaticPageForm(data=request.POST, instance=course.static_page)
-        print "Al guardar, Course tiene el forum_slug: " + str(course.forum_slug)
         if form.is_valid() and static_page_form.is_valid():
             static_page = static_page_form.save(commit=False)
             static_page.save()
@@ -490,7 +487,6 @@ def teacheradmin_info(request, course_slug):
             print form.errors
             messages.error(request, _(u"There were problems with some data you introduced, please fix them and try again."))
     else:
-        print "Al cargar, Course tiene el forum_slug: " + str(course.forum_slug)
         form = CourseForm(instance=course)
         static_page_form = StaticPageForm(instance=course.static_page)
 
