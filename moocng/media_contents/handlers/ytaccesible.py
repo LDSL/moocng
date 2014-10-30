@@ -32,7 +32,6 @@ class YoutubeAccesibleMediaContentHandler(MediaContentHandlerBase):
 
     def get_javascript_code(self, **kwargs):
         template = get_template("media_contents/handlers/ytaccesible_js.html")
-        print 'template: ' + str(template)
         context = Context(kwargs)
         return template.render(context)
 
