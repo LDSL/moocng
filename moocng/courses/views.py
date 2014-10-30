@@ -825,7 +825,7 @@ def clone_activity(request, course_slug):
     return HttpResponseRedirect(course.get_absolute_url())
 
 
-
+@login_required
 def create_course_groups(request,id):
     create_groups(id)
     return HttpResponse("true")

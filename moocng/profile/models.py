@@ -122,6 +122,7 @@ def _processPost(posts):
     for post in posts:
         # post["text"] = post["text"]
         # post["email"] = "@" + post["email"].split("@")[0]
+        print(post["text"])
         post["date"] = datetime.strptime(post.get("date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
         if("original_date" in post):
             post["original_date"] = datetime.strptime(post.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
@@ -137,6 +138,7 @@ def save_retweet(request, id):
     if(not post):
         postCollection.update({"$or": [{"_id": ObjectId(id)}, {"id_original_post": ObjectId(id)}]}, {"$inc": {"shared":  1}}, multi=True)
         post = postCollection.find_one({"_id": ObjectId(id)})
+        post["id_author"] = post["id_user"]
         post["id_user"] = request.user.id
         post["id_original_post"] = post["_id"]
         post["original_date"] = post["date"]
