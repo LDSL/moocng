@@ -23,7 +23,7 @@
 						<div class="profile-data">
 							<h4 class="noLowRes">{% trans "Karma" %}</h4>
 							<img src="{{ STATIC_URL }}img/ECO_icon_karma_white.svg">
-							<p>{{ user_view_profile.get_profile.karma }}</p>
+							<p id="user-karma">{{ user_view_profile.get_profile.karma }}</p>
 						</div>
 					</div>
 				</div>
@@ -85,8 +85,15 @@
 
 <script>
 $(function(){
-	$.get('{{ forum_url }}/api/user/{{ user_view_profile.username }}', function(result){
-		$('#user-karma').html(result.reputation);
+	var user = '{{ user_view_profile.username }}';
+	user = user.replace('.','-');
+	$.ajax({
+	    url: '{{ forum_url }}/api2/users/'+user,
+	    type: 'GET',
+	    //dataType: 'jsonp',
+	    //jsonpCallback: 'callback',
+	    success: function(result) { $('#user-karma').html(result.reputation); },
+	    error: function() { alert('Failed!'); },
 	});
 });
 </script>
