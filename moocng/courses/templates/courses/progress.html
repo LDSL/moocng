@@ -7,73 +7,88 @@
 {% block mainclass %}courseprogress{% endblock %}
 
 {% block content %}
-<div class="row"><div class="span9">
-    <h2 id="unit-title"></h2>
-</div></div>
-<div class="row">
-    <section class="span9">
-        <div class="row">
-            <div class="span6" id="unit-progress-bar"></div>
-            <div class="span3"><div id="unit-progress-text"></div></div>
+<section class="course_progress">
+<div class="container">
+    <div class="row">
+        <div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 bottom-line">
+            <h3>{% trans "Progress" %}</h3>
         </div>
-        <div class="row"><div class="span6">
-            <ol id="unit-kqs"></ol>
-        </div></div>
-        <div class="row alerts"><div class="span6">
-                <div class="alert alert-block alert-error hide">
-                    <h4 class="alert-heading">title</h4>
-                    <p>message</p>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-mob-4" id="unit-list">
+            <ol class="nav nav-pills nav-stacked">
+                {% for unit in unit_list %}
+                <li id="unit{{ unit.id }}-container" class="unit"><a href="#unit{{ unit.id }}"> {{ unit.title }}</a></li>
+                {% endfor %}
+            </ol>
+        </div>
+        <section class="col-lg-11 col-md-7 col-sm-3 col-mob-4 col-lg-push-1 col-md-push-1 col-sm-push-1">
+            <div class="row mb-20">
+                <div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
+                    <h4 id="unit-title"></h4>
                 </div>
-                <div class="alert alert-block alert-success hide">
-                    <h4 class="alert-heading">title</h4>
-                    <p>message</p>
+                <div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
+                    <!--<div id="unit-progress-bar"></div>-->
+                    <div>
+                        <div id="unit-progress-text" class="pull-right"></div>
+                    </div>
                 </div>
-                <div class="alert alert-block alert-info hide">
-                    <h4 class="alert-heading">title</h4>
-                    <p>message</p>
+            </div>
+            <div>
+                <ol id="unit-kqs"></ol>
+            </div>
+            <div class="alerts">
+                <div class="span6">
+                    <div class="alert alert-block alert-error hide">
+                        <h5 class="alert-heading">title</h5>
+                        <p>message</p>
+                    </div>
+                    <div class="alert alert-block alert-success hide">
+                        <h5 class="alert-heading">title</h5>
+                        <p>message</p>
+                    </div>
+                    <div class="alert alert-block alert-info hide">
+                        <h5 class="alert-heading">title</h5>
+                        <p>message</p>
+                    </div>
                 </div>
-        </div></div>
-    </section>
-    <div class="span3" id="unit-list">
-        <ul class="nav nav-pills nav-stacked">
-            {% for unit in unit_list %}
-            <li id="unit{{ unit.id }}-container" class="unit-{{ unit.unittype }}"><a href="#unit{{ unit.id }}"><span class="badge {{ unit.badge_class }}">{{ unit.unittype|capfirst }}</span> - {{ unit.title }}</a></li>
-            {% endfor %}
-        </ul>
+            </div>
+        </section>
+    </div>
+    <div id="review-details-modal" class="modal hide fade">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4>{% trans "Review details" %}</h4>
+        </div>
+        <div class="modal-body">
+            <p>{% trans "Review date" %}: <time datetime=""></time></p>
+            <table class="table table-stripped table-bordered">
+                <caption style="text-align: left">{% trans "Evaluation criteria" %}:</caption>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>{% trans "Description" %}</th>
+                        <th>{% trans "Score" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                    <tr>
+                      <td colspan="2">{% trans "Final score" %}</td>
+                      <td class="final-score"></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <p>{% trans "Comment" %}:</p>
+            <blockquote><pre></pre></blockquote>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+        </div>
     </div>
 </div>
-<div id="review-details-modal" class="modal hide fade">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3>{% trans "Review details" %}</h3>
-  </div>
-  <div class="modal-body">
-    <p>{% trans "Review date" %}: <time datetime=""></time></p>
-    <table class="table table-stripped table-bordered">
-      <caption style="text-align: left">{% trans "Evaluation criteria" %}:</caption>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>{% trans "Description" %}</th>
-          <th>{% trans "Score" %}</th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="2">{% trans "Final score" %}</td>
-          <td class="final-score"></td>
-        </tr>
-      </tfoot>
-    </table>
-    <p>{% trans "Comment" %}:</p>
-    <blockquote><pre></pre></blockquote>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
-  </div>
-</div>
+</section>
 {% endblock %}
 
 {% block extrajs %}

@@ -66,9 +66,7 @@
         opacity: 0;
         display: block;
         position: absolute;
-        top: 48px;
         left: auto;
-        right: 5px;
         margin: 0;
         background: @neutral_light_3;
         border: none;
@@ -78,6 +76,11 @@
         padding: 20px;
         z-index: 2;
         transition: visibility 0s linear, opacity .1s ease;
+
+        &.usermenu {
+            top: 48px;
+            right: 5px;
+        }
         
         & > li {
             display: block;

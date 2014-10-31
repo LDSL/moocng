@@ -195,23 +195,36 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
     renderExtraTabs: function () {
         "use strict";
         var comments,
-            supplementary;
+            supplementary,
+            attachments;
 
         comments = this.model.get("teacher_comments") || '';
-        $("#comments").html(comments);
+        if(comments){
+            $("#comments").html(comments);
+        }else{
+            $("#comments").parent().remove();
+        }
 
         supplementary = this.model.get("supplementary_material") || '';
-        $("#supplementary").html(supplementary);
-        $("#attachments ul").empty();
-
+        if(supplementary){
+            $("#supplementary").html(supplementary);
+        }else{
+            $("#supplementary").parent().remove();            
+        }
         this.setupListernerFor(this.model, "attachmentList", _.bind(function () {
-            this.model.get("attachmentList").each(function (attachment) {
-                var view = new MOOC.views.Attachment({
-                    model: attachment,
-                    el: $("#attachments ul")[0]
+            attachments = this.model.get("attachmentList") || [];
+            if(attachments.length > 0){
+                $("#attachments ul").empty();
+                attachments.each(function (attachment) {
+                    var view = new MOOC.views.Attachment({
+                        model: attachment,
+                        el: $("#attachments ul")[0]
+                    });
+                    view.render();
                 });
-                view.render();
-            });
+            }else{
+                $("#attachments").parent().remove();
+            }
         }, this));
     },
 

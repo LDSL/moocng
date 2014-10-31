@@ -67,6 +67,12 @@
 	vertical-align: middle;
 }
 
+.cleaner {
+	content: "";
+	display: block;
+	clear: both;
+}
+
 .text-normal {
   font-size: 18px;
 }
@@ -89,6 +95,10 @@
 
 .mt-20 {
   margin-top: 20px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
 }
 
 .mb-60 {
@@ -201,6 +211,106 @@ button, input {
 	&:hover > .dropdown-menu {
 		visibility: visible;
 		opacity: 1;
+	}
+}
+
+div.button, a.button {
+	color: @highlight;
+	text-transform: uppercase;
+
+	&.squared {
+		display: inline-block;
+		color: @highlight;
+		border: 2px solid @highlight;
+		background-color: @white;
+		padding: 10px 15px;
+		text-transform: uppercase;
+		cursor: pointer;
+		
+		transition: background-color .1s ease-in-out, color .1s ease-in-out;
+		
+		&:hover {
+			background-color: @highlight;
+			color: @white;
+			
+			path, polygon {
+				fill: @white;
+			}
+		}
+		
+		svg {
+			margin-left: 15px;
+			position: relative;
+			top: -2px;
+			vertical-align: middle;
+			
+			path, polygon {
+				fill: @black;
+				transition: fill .1s ease-in-out;
+			}
+		}
+		
+		img,object {
+			float: right;
+		}
+
+		input {
+			background: none;
+			border: none;
+			font-size: 18px;
+			text-transform: uppercase;
+			font-weight: 400;
+			float: left;
+			padding-top: 3px;
+			color: inherit;
+			cursor: inherit;
+		}
+
+		&.alert {
+			color: @alerts;
+			border-color: @alerts;
+
+			&:hover {
+				background-color: @alerts;
+				color: @white;
+			}
+
+			svg {
+				float: right;
+			}
+		}
+	}
+
+	&.action, &.info {
+		color: @highlight;
+		border-bottom: none;
+		
+		img, svg, object{
+			vertical-align: middle;
+			position: relative;
+			top: -2px;
+
+			path, polygon, circle {
+				fill: @neutral_medium_2;
+				transition: fill .1s ease-in-out;
+			}
+		}
+
+		&:hover {
+			path, polygon, circle {
+				fill: @neutral_intense;
+			}
+		}
+
+		&.done {
+			path, polygon, circle {
+				fill: @highlight;
+			}
+		}
+	}
+
+	&.info {
+		color: @black;
 	}
 }
 
@@ -2514,22 +2624,147 @@ ul.rating {
 	}
 }
 
-/** SYLLABUS **/
-.syllabus {
+/** SYLLABUS AND COURSE_PROGRESS **/
+.syllabus, .course_progress {
+	position: relative;
+
 	h3 {
 		font-size: 22px;
 		font-weight: 300;
 		color: @neutral_medium_1;
 		padding: 25px 0;
+		float: none;
 	}
-	
-	& > ol {
+
+	h4 {
+		font-size: 22px;
+		font-weight: 600;
+		line-height: 24px;
+		color: @highlight;
+	}
+
+	.progress {
+		span {
+			background-color: rgba(255,255,255,.6);
+		}
+	}
+
+	#unit-list {
+		width: 310px;
+		height: 100%;
+		background-color: @neutral_light_3;
+		border-right: 1px solid @neutral_light_2;
+		box-shadow: 0 3px 10px 0 rgba(0,0,0,.25);
+		
+		& > ol {
+			list-style: none;
+			counter-reset: item;
+			border-bottom: 1px solid @neutral_light_1;
+			
+			li {
+				margin-right: 18px;
+				border-top: 1px solid @neutral_light_1;
+				font-size: 13px;
+				font-weight: 700;
+				color: @neutral_medium_1;
+				
+				.badge {
+					display: none;
+				}
+				
+				& > a {
+					padding: 10px 10px 10px 50px;
+					display: block;
+					
+					&:before {
+						content: counters(item, ".") ". ";
+						counter-increment: item;
+					}
+				}
+			}
+		
+			.kqContainer {
+				ol {
+					list-style: none;
+					counter-reset: item;
+					
+					li {
+						margin-right: 18px;
+						position: relative;
+						padding: 10px 10px 10px 50px;
+						display: block;
+						border-top: 1px solid @neutral_light_1;
+						font-size: 13px;
+						font-weight: 400;
+						color: @highlight;
+						background: fade(@comp,10%);
+						cursor: pointer;
+						
+						&.done {
+							background: @neutral_light_3;
+							
+							&:before {
+								content: url('/static/img/ECO_icon_check.svg');
+								position: absolute;
+								left: 0;
+								top: 0;
+								background: fade(@neutral_medium_1, 10%);
+								padding: 10px 4px;
+							}
+						}
+						
+						& > span.kq:before{
+							content: counters(item, ".") ". ";
+							counter-increment: item;
+						}
+						
+						
+						& > span.video, & > span.presentation, & > span.q, & > span.pr {
+							font-size: 0;
+							
+							&:after {
+								float: right;
+								margin-left: 5px;
+							}
+						}
+						& > span.video:after{
+							content: url('/static/img/ECO_icon_contenido_video.svg');
+						}
+						
+						& > span.presentation:after{
+							content: url('/static/img/ECO_icon_contenido_presentacion.svg');
+						}
+						
+						& > span.q:after{
+							content: url('/static/img/ECO_icon_contenido_tarea-test.svg');
+						}
+						
+						& > span.pr:after{
+							content: url('/static/img/ECO_icon_contenido_tarea-desarrollo.svg');
+						}
+						
+						& > span.a, & > span.as {
+							display: none;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	& > ol, ol#unit-kqs {
 		list-style: none;
 		counter-reset: item;
 		border-bottom: 1px solid @neutral_light_1;
 
 		& > li{
 			border-top: 1px solid @neutral_light_1;
+
+			&:after {
+				content: "";
+				display: block;
+				clear: both;
+			}
 
 			& > .row {
 				border-bottom: 1px solid @neutral_light_1;
@@ -2563,6 +2798,18 @@ ul.rating {
 						content: counters(item, ".") ". ";
 						counter-increment: item;
 					}
+				}
+			}
+
+			.kq {
+				display: block;
+				font-size: 22px;
+				color: @highlight;
+				margin-bottom: 12px;
+
+				&:before {
+					content: counters(item, ".") ". ";
+					counter-increment: item;
 				}
 			}
 
@@ -2658,6 +2905,51 @@ ul.rating {
 						}
 					}
 				}
+			}
+		}
+	}
+
+	ol#unit-kqs {
+		color: @neutral_intense;
+	}
+
+	.tag {
+
+		&.correct {
+			color: @ok;
+		}
+
+		&.incorrect {
+			color: @alerts;
+		}
+	}
+
+	.note {
+		font-size: 0.85em;
+		color: @neutral_medium_1;
+
+		&:before {
+			.cleaner;
+		}
+	}
+
+	table {
+		width: 100%;
+		padding: 10px;
+		margin: 16px auto;
+		background-color: @neutral_light_3;
+		font-size: 0.9em;
+	}
+}
+
+.course_progress {
+	#unit-kqs {
+		li {
+			padding: 16px 5px 16px 40px;
+
+			.button {
+				margin-top: 16px;
+				font-size: 0.8em;
 			}
 		}
 	}

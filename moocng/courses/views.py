@@ -675,6 +675,7 @@ def course_progress(request, course_slug):
             'task_list': task_list,
             'tasks_done': tasks_done,
             'is_enrolled': is_enrolled,
+            'is_ready' : is_ready,
             'ask_admin': ask_admin,
         }, context_instance=RequestContext(request))
 
@@ -698,6 +699,7 @@ def course_progress(request, course_slug):
         'tasks_done': tasks_done,
         'unit_list': units,
         'is_enrolled': is_enrolled,  # required due course nav templatetag
+        'is_ready' : is_ready,
         'is_teacher': is_teacher_test(request.user, course),
     }, context_instance=RequestContext(request))
 
