@@ -864,3 +864,95 @@ input[type="checkbox"] {
         background-color: @highlight;
     }
 }
+
+
+.teacheradmin-badges{
+    font-size: 14px;
+    .unit{
+        float: left;
+        margin-right: 10px;
+    }
+    .divPills{
+        display: none;
+    }
+    .addPill{
+        position: relative;
+        bottom: 4px;
+        left: 5px;
+        cursor:pointer;
+    }
+
+    input[name='badgeTitle']{
+        margin-bottom: 20px;
+    }
+
+    input[type='radio']{
+        display: block;
+        float: left;
+        margin-right: 10px;
+    }
+
+    input[name='noteBadge']{
+        width: 35px;
+        float:left;
+        margin-right: 20px;
+    }
+
+    input[name='colorBadge']{
+        width: 25px;
+        margin-left: 10px;
+    }
+
+    .imageBadge{
+        position: relative;
+        top: 3px;
+    }
+
+    input[type='submit']{
+        margin-top: 20px;
+        margin-bottom: 20px;;
+    }
+
+    .pillAdded{
+        margin-left: 10px;
+        line-height: 25px;
+        font-size: 13px;
+    }
+    
+    
+
+    /*.unit{
+        margin-top: 20px;
+    }*/
+
+    table{
+        /*width: 100%;*/
+        margin-bottom: 20px;
+        tr{
+            border-top: 1px solid gray;
+
+            td{
+                svg{
+                    fill: #000000;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                    float: left;
+                }
+                span{
+                    padding-top: 14px;
+                    display: block;
+                    padding-left: 30px;
+                }
+
+                .delteBadge{
+                    -ms-transform: rotate(45deg);
+                    -webkit-transform: rotate(45deg);
+                    transform: rotate(45deg);
+                    padding-top: 3px;
+                    margin-left: 100px;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}

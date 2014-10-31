@@ -46,10 +46,12 @@ from moocng.peerreview.models import PeerReviewAssignment, EvaluationCriterion
 from moocng.courses.security import get_units_available_for_user
 
 from moocng.media_contents import get_media_type
+from bson.objectid import ObjectId
 
 logger = logging.getLogger(__name__)
 
 TRACE_CLONE_COURSE_DIR = 'trace_clone_course'
+import pymongo
 
 
 def is_teacher(user, courses):
@@ -435,94 +437,121 @@ def create_groups(id_course):
 
     id_course  = int(id_course)
 
-    mongodb.get_db().get_collection('groups').remove({"id_course": {"$eq": id_course}})
+    # mongodb.get_db().get_collection('groups').remove({"id_course": {"$eq": id_course}})
+    if(mongodb.get_db().get_collection('groups').find({"id_course":id_course}).count() == 0):
 
-    course = Course.objects.filter(id=id_course)[:1].get()
-    size_group = course.group_max_size
-    students = course.students.all()
+        course = Course.objects.filter(id=id_course)[:1].get()
+        size_group = course.group_max_size
+        students = course.students.all()
 
-    num_groups = len(students) / size_group
+        num_groups = len(students) / size_group
 
-    if (num_groups == 0):
-        group = {"id_course": id_course, "name": "Group", "members": []}
-        for student in students:
-            group["members"].append({"id_user": student.id, "username": student.username, 
-                                    "first_name":student.first_name, "last_name":student.last_name, 
-                                    "email": student.email, "karma": student.get_profile().karma, "countries": "", 
-                                    "languages": ""})
-
-        mongodb.get_db().get_collection('groups').insert(group)
-
-    else:
-        cont = 0
-        groups = []
-        for i in range(1, num_groups+1):
-            group = {"id_course": id_course, "name": "Group" + str(i), "members": []}
-            for y in range(cont, i*size_group):
-                student =  students[y]
+        if (num_groups == 0):
+            group = {"id_course": id_course, "name": "Group", "size": 0, "members": []}
+            for student in students:
                 group["members"].append({"id_user": student.id, "username": student.username, 
                                         "first_name":student.first_name, "last_name":student.last_name, 
                                         "email": student.email, "karma": student.get_profile().karma, "countries": "", 
                                         "languages": ""})
-                cont += 1
 
-            groups.append(group)
-        
-        
-        if(cont < len(students)):
-            if((len(students) - cont) < (size_group * (settings.GROUPS_UMBRAL/100.0))):
-                cont2 = 0
-                for i in range(cont, len(students)):
-                    if(cont2 >= len(groups)):
-                        cont2 = 0
-                    student =  students[cont]
-                    groups[cont2]["members"].append({"id_user": student.id, "username": student.username, 
-                                        "first_name":student.first_name, "last_name":student.last_name, 
-                                        "email": student.email, "karma": student.get_profile().karma, "countries": "", 
-                                        "languages": ""})
-                    cont += 1
-                    cont2 += 1
-            else:
-                group = {"id_course": id_course, "name": "Group" + str(i), "members": []}
-                for i in range(cont, len(students)):
-                    student =  students[cont]
+            group["size"] = len(group["members"])
+            mongodb.get_db().get_collection('groups').insert(group)
+
+        else:
+            cont = 0
+            groups = []
+            for i in range(1, num_groups+1):
+                group = {"id_course": id_course, "name": "Group" + str(i), "size": 0, "members": []}
+                for y in range(cont, i*size_group):
+                    student =  students[y]
                     group["members"].append({"id_user": student.id, "username": student.username, 
-                                        "first_name":student.first_name, "last_name":student.last_name, 
-                                        "email": student.email, "karma": student.get_profile().karma, "countries": "", 
-                                        "languages": ""})
+                                            "first_name":student.first_name, "last_name":student.last_name, 
+                                            "email": student.email, "karma": student.get_profile().karma, "countries": "", 
+                                            "languages": ""})
+                    cont += 1
+
+                group["size"] = len(group["members"])
                 groups.append(group)
-
-        # Create topics for each group
-        cid = 6
-        for group in groups:
-            content = _(u"This is the topic for ") + group["name"] + _(u" where you can comment and help other team members")
-            data = {
-                "uid": 1,
-                "title": group["name"],
-                "content": content,
-                "cid": cid
-            }
-            timestamp = int(round(time.time() * 1000))
-            authhash = hashlib.md5(settings.FORUM_API_SECRET + str(timestamp)).hexdigest()
-            headers = {
-                "Content-Type": "application/json",
-                "auth-hash": authhash,
-                "auth-timestamp": timestamp
-            }
             
-            if settings.FEATURE_FORUM:
-                try:
-                    r = requests.post(settings.FORUM_URL + "/api2/topics", data=json.dumps(data), headers=headers)
-                    group["forum_slug"] = r.json()["slug"]
+            
+            if(cont < len(students)):
+                if((len(students) - cont) < (size_group * (settings.GROUPS_UMBRAL/100.0))):
+                    cont2 = 0
+                    for i in range(cont, len(students)):
+                        if(cont2 >= len(groups)):
+                            cont2 = 0
+                        student =  students[cont]
+                        groups[cont2]["members"].append({"id_user": student.id, "username": student.username, 
+                                            "first_name":student.first_name, "last_name":student.last_name, 
+                                            "email": student.email, "karma": student.get_profile().karma, "countries": "", 
+                                            "languages": ""})
 
-                except:
-                    print "Error creating course forum topic"
-                    print "Unexpected error:", sys.exc_info()[0]
+                        groups[cont2]["size"] += 1
+                        cont += 1
+                        cont2 += 1
+                else:
+                    group = {"id_course": id_course, "name": "Group " + str(i), "members": []}
+                    for i in range(cont, len(students)):
+                        student =  students[cont]
+                        group["members"].append({"id_user": student.id, "username": student.username, 
+                                            "first_name":student.first_name, "last_name":student.last_name, 
+                                            "email": student.email, "karma": student.get_profile().karma, "countries": "", 
+                                            "languages": ""})
+                    
+                    group["size"] = len(group["members"])
+                    groups.append(group)
 
-        mongodb.get_db().get_collection('groups').insert(groups)
+            # Create topics for each group
+            cid = 6
+            for group in groups:
+                content = _(u"This is the topic for ") + group["name"] + _(u" where you can comment and help other team members")
+                data = {
+                    "uid": 1,
+                    "title": group["name"],
+                    "content": content,
+                    "cid": cid
+                }
+                timestamp = int(round(time.time() * 1000))
+                authhash = hashlib.md5(settings.FORUM_API_SECRET + str(timestamp)).hexdigest()
+                headers = {
+                    "Content-Type": "application/json",
+                    "auth-hash": authhash,
+                    "auth-timestamp": timestamp
+                }
+                
+                if settings.FEATURE_FORUM:
+                    try:
+                        r = requests.post(settings.FORUM_URL + "/api2/topics", data=json.dumps(data), headers=headers)
+                        group["forum_slug"] = r.json()["slug"]
+
+                    except:
+                        print "Error creating course forum topic"
+                        print "Unexpected error:", sys.exc_info()[0]
+
+            mongodb.get_db().get_collection('groups').insert(groups)
 
 def get_group_by_user_and_course(id_user, id_course):
 
     db = mongodb.get_db().get_collection('groups')
     group = db.find_one( { 'id_course': id_course, 'members.id_user':id_user } )
     return group
+
+def get_groups_by_course(id_course, my_group):
+    return mongodb.get_db().get_collection('groups').find({"$and":[{'id_course':id_course},{"_id": {'$ne': ObjectId(my_group)}}]}).sort("_id",pymongo.ASCENDING)
+
+def change_user_group(id_user, id_group, new_id_group):
+    groupCollection = mongodb.get_db().get_collection('groups')
+    group = groupCollection.find_one({'_id': ObjectId(id_group)})
+    
+    for m in group["members"]:
+        if m["id_user"] == id_user:
+            member = m
+            group["members"].remove(m)
+            group["size"] -= 1
+    
+    groupCollection.update({'_id': ObjectId(id_group)}, {"$set": {"members": group["members"], "size": group["size"]}})
+    group = groupCollection.find_one({'_id': ObjectId(new_id_group)})
+    group["members"].append(member)
+    group["size"] += 1
+    groupCollection.update({'_id': ObjectId(new_id_group)}, {"$set": {"members": group["members"], "size": group["size"]}})
+

@@ -134,6 +134,40 @@ class Badge(models.Model):
         }
 
 
+class BadgeByCourse(models.Model):
+    from moocng.courses.models import Course
+    title = models.CharField(verbose_name=_(u'Name'),
+                             blank=False, null=False, unique=False,
+                             max_length=255)
+
+    criteria = models.TextField(verbose_name=_(u'Criteria'),
+                               blank=False, null=False)
+    
+    criteria_type = models.IntegerField(verbose_name=_(u'Criteria_type'),
+                               blank=False, null=False)
+
+    note = models.IntegerField(verbose_name=_(u'Note'),
+                               blank=False, null=False)
+
+    color = models.TextField(verbose_name=_('Color'),
+                                   blank=False, null=False)
+
+    course = models.ForeignKey(Course, verbose_name=_(u'Course'))
+
+
+    @classmethod
+    def create(cls, title, criteria, criteria_type, note, color, course):
+        badgeByCourse = cls(title=title,criteria=criteria,criteria_type=criteria_type,note=note,color=color,course=course)
+        return badgeByCourse
+
+    class Meta:
+        verbose_name = _(u'badgeByCurse')
+        verbose_name_plural = _(u'badgeByCurses')
+
+    def __unicode__(self):
+        return self.name
+
+
 class Award(models.Model):
     """
     Only available verification type 'hosted' by design decision.

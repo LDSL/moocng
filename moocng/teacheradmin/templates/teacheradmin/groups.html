@@ -13,17 +13,27 @@
 <script type="text/javascript">
 	$(document).ready(function () {
 		$("#createGroups").click(function(){
+			
 			$.ajax({
-				url : "/createCourse/" + {{course.id}},
-			   	success: function(response) {
-			   		alert()
-			   	}
-			});
+		           type: "POST",
+		           url: "{% url teacheradmin_groups course.slug %}",
+		           data: $("#createGroupForm").serialize(),
+		           success: function(data)
+		           {
+		               $.ajax({
+							url : "/createCourse/" + {{course.id}},
+						   	success: function(response) {
+						   		window.location="{% url teacheradmin_groups course.slug %}";
+						   	}
+						});
+		           }
+	         });
 		});
+		
 	});
 </script>
 
-<form method="POST">{% csrf_token %}
+<form id="createGroupForm" method="POST">{% csrf_token %}
 	<div class="row nomargin">
 		<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
 			<p>
@@ -42,8 +52,12 @@
 	</div>
 
 	<p class="form-actions">
-      <input type="submit" class="btn btn-primary" value="{% trans "Save" %}" />
+      <!-- <input type="submit" class="btn btn-primary" value="{% trans "Save" %}" /> -->
+      {% if disabled %}
       <input type="button" id="createGroups" class="btn btn-primary" value="{% trans "Create groups" %}" />
+      {%else%}
+      <span id="groupExist">{%trans 'Groups already exist for this course'%}</span>
+      {% endif %}
     </p>
 </form>
 {% endblock %}

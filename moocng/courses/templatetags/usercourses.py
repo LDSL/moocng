@@ -29,3 +29,8 @@ def clone_activity(course, user):
     course_student_relation = user.coursestudent_set.get(course=course)
     return {'course': course,
             'course_student_relation': course_student_relation}
+
+@register.filter("mongo_id")
+def mongo_id(value):
+	if(value):
+		return str(value['_id'])
