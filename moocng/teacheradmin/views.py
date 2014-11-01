@@ -588,13 +588,6 @@ def teacheradmin_badges(request, course_slug):
     course = get_object_or_404(Course, slug=course_slug)
 
     if request.method == 'POST':
-        print("ENTRO")
-        # print(request.POST['badgeTitle'])
-        # print(request.POST['noteBadge'])
-        # print(request.POST['unitBadge'])
-        # print(request.POST['colorBadge'])
-        # print(request.POST['criteriaBadge'])
-        # print(request.POST.getlist('pillsBadge'))
 
         criteria_type = int(request.POST["criteriaType"])
         if(criteria_type == 0):
@@ -602,7 +595,7 @@ def teacheradmin_badges(request, course_slug):
         else:
             citeria = ','.join(request.POST.getlist('pillsBadge'))
 
-        badge = BadgeByCourse.create(request.POST['badgeTitle'], citeria, criteria_type, request.POST['noteBadge'], request.POST['colorBadge'], course)
+        badge = BadgeByCourse.create(request.POST['badgeTitle'], request.POST["badgeDescription"], citeria, criteria_type, request.POST['noteBadge'], request.POST['colorBadge'], course)
         badge.save()
 
         return HttpResponseRedirect("/course/" + course_slug + "/teacheradmin/badges/")

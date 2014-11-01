@@ -71,7 +71,10 @@
     <div class="row nomargin">
         <div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">        
             <label>{% trans 'Badge title' %}</label>
-            <input type="text" name="badgeTitle" required="required">
+            <input type="text" name="badgeTitle" required="required" maxlength="200">
+
+            <label>{% trans 'Description' %}</label>
+            <textarea name="badgeDescription"></textarea>
 
              <label>{% trans 'Criteria' %}</label>
             

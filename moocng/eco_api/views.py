@@ -57,12 +57,12 @@ def ListRecords(request, num="1"):
 		
 		if(len(course.languages.all()) == 0):
 			lstring = SubElement(ltitle, 'lom:string')  
-			lstring.set('language', language.abbr)
+			lstring.set('language', 'null')
 			lstring.text=course.name
 		else:
 			for language in course.languages.all():
 				lstring = SubElement(ltitle, 'lom:string')  
-				lstring.set('language', 'null')
+				lstring.set('language', language.abbr)
 				lstring.text=course.name
 		
 		if(len(course.languages.all()) == 0):
@@ -103,7 +103,7 @@ def ListRecords(request, num="1"):
 			endDate.text = datetime.datetime.strptime(str(course.end_date), '%Y-%m-%d').isoformat()
 		technical = SubElement(lom, 'lom:technical')
 		location = SubElement(technical, 'lom:location')
-		location.text = settings.API_URI + course.get_absolute_url()
+		location.text = "http://" + settings.API_URI + course.get_absolute_url()
 		educational = SubElement(lom, 'lom:educational')
 		typicalLearningTime = SubElement(educational, 'lom:typicalLearningTime')
 		duration = SubElement(typicalLearningTime, 'lom:duration')#TODO
@@ -142,7 +142,7 @@ def ListRecords(request, num="1"):
 			lvalue = SubElement(lrole, 'lom:value')
 			lvalue.text = "author"
 			lentity = SubElement(lcontribute, 'lom:entity')
-			lentity.text="<![CDATA[BEGIN:VCARD FN:" + teacher.first_name + " " + teacher.last_name + " UID:urn:uuid:" + str(teacher.id) + " EMAIL;TYPE=INTERNET:" + teacher.email + " ORG:ReimerIT N:" + teacher.last_name +";" + teacher.first_name + " VERSION:3.0 END:VCARD]]>"
+			lentity.text="<![CDATA[BEGIN:VCARD CRLF FN:" + teacher.first_name + " " + teacher.last_name + " CRLF UID:urn:uuid:" + str(teacher.id) + " CRLF EMAIL;TYPE=INTERNET:" + teacher.email + " CRLF ORG:ReimerIT N:" + teacher.last_name +";" + teacher.first_name + " CRLF VERSION:3.0 CRLF END:VCARD CRLF]]>"
 		
 		lclassification = SubElement(lom, 'lom:classification')
 		lpurpose = SubElement(lclassification, 'lom:purpose')

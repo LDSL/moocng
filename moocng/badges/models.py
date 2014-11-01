@@ -140,6 +140,9 @@ class BadgeByCourse(models.Model):
                              blank=False, null=False, unique=False,
                              max_length=255)
 
+    description = models.TextField(verbose_name=_(u'Description'),
+                             blank=False, null=True)
+
     criteria = models.TextField(verbose_name=_(u'Criteria'),
                                blank=False, null=False)
     
@@ -156,13 +159,13 @@ class BadgeByCourse(models.Model):
 
 
     @classmethod
-    def create(cls, title, criteria, criteria_type, note, color, course):
-        badgeByCourse = cls(title=title,criteria=criteria,criteria_type=criteria_type,note=note,color=color,course=course)
+    def create(cls, title, description, criteria, criteria_type, note, color, course):
+        badgeByCourse = cls(title=title, description=description, criteria=criteria,criteria_type=criteria_type,note=note,color=color,course=course)
         return badgeByCourse
 
     class Meta:
-        verbose_name = _(u'badgeByCurse')
-        verbose_name_plural = _(u'badgeByCurses')
+        verbose_name = _(u'badges_badgebycourse')
+        verbose_name_plural = _(u'badges_badgebycourse')
 
     def __unicode__(self):
         return self.name

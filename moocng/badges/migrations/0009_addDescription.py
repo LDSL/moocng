@@ -8,21 +8,13 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'BadgeByCurse'
-        db.create_table('badges_badgebycourse', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255)),
-            ('criteria', self.gf('django.db.models.fields.TextField')()),
-            ('criteria_type', self.gf('django.db.models.fields.IntegerField')()),
-            ('note', self.gf('django.db.models.fields.IntegerField')()),
-            ('color', self.gf('django.db.models.fields.TextField')()),
-            ('course', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['courses.Course'])),
-        ))
-        db.send_create_signal('badges', ['BadgeByCurse'])
+        db.add_column('badges_badgebycourse', 'description',
+                      self.gf('django.db.models.fields.TextField')(default='', blank=True, null=True))
+
 
 
     def backwards(self, orm):
-        db.delete_table('badges_badgebycourse')
+        "Write your backwards methods here."
 
 
     models = {
@@ -75,7 +67,7 @@ class Migration(SchemaMigration):
             'identity_type': ('django.db.models.fields.CharField', [], {'default': "'email'", 'max_length': '255', 'blank': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'user_awards'", 'to': "orm['auth.User']"}),
-            'uuid': ('django.db.models.fields.CharField', [], {'default': "'a21ec4d0-610d-11e4-a589-08002759738a'", 'max_length': '255', 'db_index': 'True'})
+            'uuid': ('django.db.models.fields.CharField', [], {'default': "'4d31c55c-61ae-11e4-a589-08002759738a'", 'max_length': '255', 'db_index': 'True'})
         },
         'badges.badge': {
             'Meta': {'ordering': "['-modified', '-created']", 'object_name': 'Badge'},
@@ -90,15 +82,16 @@ class Migration(SchemaMigration):
             'tags': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "u'tags'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['badges.Tag']"}),
             'title': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'})
         },
-        'badges.badgebycurse': {
-            'Meta': {'object_name': 'BadgeByCurse'},
+        'badges.badgebycourse': {
+            'Meta': {'object_name': 'BadgeByCourse'},
             'color': ('django.db.models.fields.TextField', [], {}),
             'course': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['courses.Course']"}),
             'criteria': ('django.db.models.fields.TextField', [], {}),
             'criteria_type': ('django.db.models.fields.IntegerField', [], {}),
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'note': ('django.db.models.fields.IntegerField', [], {}),
-            'title': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'})
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '255'})
         },
         'badges.identity': {
             'Meta': {'object_name': 'Identity'},
