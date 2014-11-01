@@ -186,6 +186,10 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
             callback();
         }
 
+        // Update height to show the full sidemenu
+        var menu_height = $('.unit-menu ol').outerHeight() + $('.unit-menu .heading').outerHeight();
+        $('.nugget-view').css('min-height', menu_height+'px');
+
         //Emit render finish event
         $(window).trigger('renderfinished');
 
@@ -318,19 +322,22 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
 				case "next":
 				case "prev":
 					$(selector).removeClass("disabled");
-					$(selector).click(function (evt) {
-						MOOC.router.navigate(urltext, { trigger: true });
+					$(selector).attr('href', urltext).click(function (e) {
+                        e.preventDefault();
+						MOOC.router.navigate($(this).attr('href'), { trigger: true });
 					});
 					break;
 				case "exercise":
-					$("#kq-q-showq").click(function(){
-						MOOC.router.navigate(urltext, { trigger: true });
+					$("#kq-q-showq").attr('href', urltext).click(function(e){
+                        e.preventDefault();
+						MOOC.router.navigate($(this).attr('href'), { trigger: true });
 					}).removeClass('hide');
 					$(selector).addClass("disabled");
 					break;
 				case "answer":
-                    $("#kq-q-showa").click(function(){
-                        MOOC.router.navigate(urltext, { trigger: true });
+                    $("#kq-q-showa").attr('href', urltext).click(function(e){
+                        e.preventDefault();
+                        MOOC.router.navigate($(this).attr('href'), { trigger: true });
                     }).removeClass('hide');
                     $(selector).addClass("disabled");
                     break;

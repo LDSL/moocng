@@ -93,7 +93,7 @@ $(function(){
 	    //dataType: 'jsonp',
 	    //jsonpCallback: 'callback',
 	    success: function(result) { $('#user-karma').html(result.reputation); },
-	    error: function() { alert('Failed!'); },
+	    error: function() { console.log('Unable to request Karma.') },
 	});
 });
 </script>

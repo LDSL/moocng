@@ -152,10 +152,14 @@
 			{% if is_ready %}
 			<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4 alt-column bottom">
 				<div class="progress-bar">
-					<h4>{% trans "Your progress" %}</h4>
-					<p>{{ progress }}%</p>
-					<div class="clearfix"></div>
-					<div class="progress"><span style="width: {{ progress }}%;"></span></div>
+					<div>
+						<h4>{% trans "Your progress" %}</h4>
+						<p>{{ progress }}%</p>
+						<div class="clearfix"></div>
+						<div class="progress"><span style="width: {{ progress }}%;"></span></div>
+					</div>
+					{% url course_progress course.slug as url_course_progress %}
+					<a href="{{ url_course_progress }}"><img src="{{ STATIC_URL }}img/ECO_icon_info_progreso.svg" alt="Mi progreso"></a>
 				</div>
 			</div>
 			{% endif %}

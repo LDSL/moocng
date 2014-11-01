@@ -290,20 +290,27 @@ MOOC.views.PeerReviewReview = Backbone.View.extend({
             criterionObj = this.peerReviewAssignment.get('_criterionList').at(index);
             description = MOOC.models.truncateText(criterionObj.get('description'), MOOC.views.PRR_DESCRIPTION_MAX_LENGTH);
 
-            html.push("<td>" + (index + 1) + "</td>");
-            html.push("<td><p>" + criterionObj.get('title') + "</p>");
+            html.push("<td>" + (index + 1) + ". " + criterionObj.get('title'));
             html.push("<p><small>" + description + "</small></p></td>");
-            html.push("<td>" + criterion[1] + "</td>");
+            html.push("<td>" + criterion[1] + "/5</td>");
             html.push("</tr>");
             return html.join("");
         }, this);
 
-        $("#review-details-modal")
+        var $details = $("#review-details-modal");
+        var comment = this.model.get('comment');
+        $details
             .find("time").text(this.model.get('created').format('LLLL')).end()
             .find("tbody").html(criteria.join("")).end()
-            .find(".final-score").text(this.model.get('score')).end()
-            .find("blockquote pre").text(this.model.get('comment')).end()
-            .modal('show');
+            .find(".final-score").text(this.model.get('score') + '/5').end();
+
+        console.log('Comment = ' + comment);
+        if(comment){
+            $details.find("blockquote pre").text().end();
+        }else{
+            $('#comments').remove();
+        }
+            $details.modal('show');
     }
 });
 

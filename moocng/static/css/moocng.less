@@ -201,6 +201,19 @@ button, input {
 				background: @neutral_light_1;
 				margin: 10px 0;
 			}
+
+			.btn-link {
+				padding: 0;
+				font-size: inherit;
+				border: none;
+				background: transparent;
+				cursor: pointer;
+
+				&.disabled {
+					cursor: default;
+					color: @neutral_medium_1;
+				}
+			}
 		}
 	}
 	
@@ -216,7 +229,6 @@ button, input {
 
 div.button, a.button {
 	color: @highlight;
-	text-transform: uppercase;
 
 	&.squared {
 		display: inline-block;
@@ -446,7 +458,9 @@ body {
   font-family: 'Open Sans', sans-serif;
   font-size: 16px;
   
-  padding-top: 88px;
+  padding: 88px 0 56px;
+  position: relative;
+  min-height: 100vh;
   
   transition: padding .2s ease;
 	
@@ -743,6 +757,8 @@ body {
 		}
 		
 		.progress-bar {
+			display: table;
+			width: 100%;
 			
 			h4 {
 				color: @neutral_light_2;
@@ -761,6 +777,15 @@ body {
 					display: block;
 					clear: both;
 				}
+			}
+
+			& > div {
+				display: table-cell;
+			}
+
+			a {
+				display: table-cell;
+				padding-left: 20px;
 			}
 		}
 	}
@@ -1700,7 +1725,6 @@ ul.rating {
 	h3 {
 		font-size: 36px;
 		font-weight: 300;
-		float: left;
 	}
 
 	.members-tag {
@@ -2087,8 +2111,8 @@ ul.rating {
 
 #unit-selector {	
 	.handle {
-		position: absolute;
-		top: 20px;
+		position: fixed;
+		top: 256px;
 		left: 0;
 		display: inline-block;
 		padding: 5px 5px 0 5px;
@@ -2652,14 +2676,13 @@ ul.rating {
 	#unit-list {
 		width: 310px;
 		height: 100%;
+		padding: 0;
 		background-color: @neutral_light_3;
 		border-right: 1px solid @neutral_light_2;
-		box-shadow: 0 3px 10px 0 rgba(0,0,0,.25);
 		
 		& > ol {
 			list-style: none;
 			counter-reset: item;
-			border-bottom: 1px solid @neutral_light_1;
 			
 			li {
 				margin-right: 18px;
@@ -2667,13 +2690,17 @@ ul.rating {
 				font-size: 13px;
 				font-weight: 700;
 				color: @neutral_medium_1;
+
+				&:first-child {
+					border-top: none;
+				}
 				
 				.badge {
 					display: none;
 				}
 				
 				& > a {
-					padding: 10px 10px 10px 50px;
+					padding: 10px;
 					display: block;
 					
 					&:before {
@@ -2939,6 +2966,40 @@ ul.rating {
 		margin: 16px auto;
 		background-color: @neutral_light_3;
 		font-size: 0.9em;
+		text-align: left;
+
+		a {
+			border-bottom: 1px solid @comp;
+			transition: border-color .2s ease-in-out;
+
+			&:hover {
+				border-bottom-color: @highlight;
+			}
+		}
+		thead {
+
+		}
+
+		tbody {
+			vertical-align: top;
+
+			tr:last-child {
+				td {
+					padding-bottom: 5px;
+				}
+			}
+		}
+
+		tfoot tr {
+			td{
+				padding-top: 5px;
+				border-top: 1px solid @neutral_medium_1;
+
+				&.final-score {
+					font-weight: 600;
+				}
+			}
+		}
 	}
 }
 
@@ -4243,6 +4304,9 @@ footer {
 	}
 
 	.footer {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
 		padding: 18px 20px;
 		background: @neutral_light_2;
 		border-top: 1px solid @neutral_medium_2;

@@ -22,7 +22,7 @@
                 {% endfor %}
             </ol>
         </div>
-        <section class="col-lg-11 col-md-7 col-sm-3 col-mob-4 col-lg-push-1 col-md-push-1 col-sm-push-1">
+        <section class="col-lg-11 col-md-7 col-sm-5 col-mob-4 col-lg-push-1 col-md-push-1">
             <div class="row mb-20">
                 <div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
                     <h4 id="unit-title"></h4>
@@ -57,7 +57,6 @@
     </div>
     <div id="review-details-modal" class="modal hide fade">
         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4>{% trans "Review details" %}</h4>
         </div>
         <div class="modal-body">
@@ -66,8 +65,7 @@
                 <caption style="text-align: left">{% trans "Evaluation criteria" %}:</caption>
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>{% trans "Description" %}</th>
+                        <th>{% trans "Criteria" %}</th>
                         <th>{% trans "Score" %}</th>
                     </tr>
                 </thead>
@@ -75,16 +73,18 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                      <td colspan="2">{% trans "Final score" %}</td>
+                      <td>{% trans "Final score" %}</td>
                       <td class="final-score"></td>
                     </tr>
                 </tfoot>
             </table>
-            <p>{% trans "Comment" %}:</p>
-            <blockquote><pre></pre></blockquote>
+            <div id="comments">
+                <p>{% trans "Comment" %}:</p>
+                <blockquote><pre></pre></blockquote>
+            </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+            <button type="button" class="btn squared" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
         </div>
     </div>
 </div>
@@ -110,7 +110,7 @@
             MOOC.models.course.add(new MOOC.models.Unit({
                 order: idx,
                 id: parseInt(id, 10),
-                title: $(node).find("a").text().split('- ')[1],
+                title: $(node).find("a").text().trim(),
                 type: node.className.split('-')[1]
             }));
         });
