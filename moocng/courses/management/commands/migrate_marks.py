@@ -88,6 +88,7 @@ class Command(BaseCommand):
                           email_list.split(','))
         courses_pks = options["courses_pks"]
         courses_actives = options["courses_actives"]
+        print("ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ")
         for user in users:
             for course in self.get_courses(user, courses_pks, courses_actives):
                 update_course_mark_by_user(course, user)

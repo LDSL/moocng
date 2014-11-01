@@ -41,7 +41,7 @@ from moocng.courses.models import Course, CourseTeacher, Announcement,KnowledgeQ
 from moocng.courses.utils import (get_unit_badge_class, is_course_ready,
                                   is_teacher as is_teacher_test,
                                   send_mail_wrapper,get_sillabus_tree, create_groups,
-                                  get_group_by_user_and_course)
+                                  get_group_by_user_and_course, get_groups_by_course, change_user_group)
 
 from moocng.courses.marks import get_course_mark, get_course_intermediate_calculations, normalize_unit_weight
 from moocng.courses.security import (get_course_if_user_can_view_or_404,
@@ -505,7 +505,18 @@ def course_group(request, course_slug):
         }, context_instance=RequestContext(request))
 
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    
+    groups = []
+    group = {}
     group = get_group_by_user_and_course(request.user.id, course.id)
+
+    if(group):
+        groupsAux = get_groups_by_course(course.id, group["_id"])
+
+        for g in groupsAux:
+            if(len(g["members"]) <= course.group_max_size + (course.group_max_size * 0.5)):
+                groups.append(g)
+
 
     return render_to_response('courses/group.html', {
         'course': course,
@@ -516,6 +527,7 @@ def course_group(request, course_slug):
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
+        'groups':groups
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -830,5 +842,10 @@ def clone_activity(request, course_slug):
 @login_required
 def create_course_groups(request,id):
     create_groups(id)
+    return HttpResponse("true")
+
+@login_required
+def change_group(request, id_group, id_new_group):
+    change_user_group(request.user.id, id_group, id_new_group)
     return HttpResponse("true")
 

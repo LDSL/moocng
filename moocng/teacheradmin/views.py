@@ -49,7 +49,11 @@ from moocng.assets.utils import course_get_assets
 from moocng.assets.models import Asset
 from moocng.externalapps.models import externalapps
 
+from moocng.badges.models import BadgeByCourse
+
 import pprint
+
+from django.core import serializers
 
 
 @is_teacher_or_staff
@@ -516,9 +520,16 @@ def teacheradmin_groups(request, course_slug):
     else:
         form = GroupsForm(instance=course)
 
+        if(get_db().get_collection('groups').find({"id_course":course.id}).count() > 0):
+            print("entro1")
+            disabled = None
+        else:
+            disabled =True
+
     return render_to_response('teacheradmin/groups.html', {
         'course': course,
         'is_enrolled': is_enrolled,
+        'disabled': disabled,
         'form': form,
     }, context_instance=RequestContext(request))
 
@@ -570,6 +581,50 @@ def teacheradmin_categories(request, course_slug):
         'categories': categories,
     }, context_instance=RequestContext(request))
 
+@is_teacher_or_staff
+def teacheradmin_badges(request, course_slug):
+
+    course = get_object_or_404(Course, slug=course_slug)
+
+    if request.method == 'POST':
+
+        criteria_type = int(request.POST["criteriaType"])
+        if(criteria_type == 0):
+            citeria = request.POST["unitBadge"]
+        else:
+            citeria = ','.join(request.POST.getlist('pillsBadge'))
+
+        badge = BadgeByCourse.create(request.POST['badgeTitle'], request.POST["badgeDescription"], citeria, criteria_type, request.POST['noteBadge'], request.POST['colorBadge'], course)
+        badge.save()
+
+        return HttpResponseRedirect("/course/" + course_slug + "/teacheradmin/badges/")
+        
+
+
+    
+    units = course.unit_set.all().order_by('order')
+    
+    knowledgequantum = []
+    if(units and len(units) > 0):
+        pills = units[0].knowledgequantum_set.all().order_by("order")
+
+    return render_to_response('teacheradmin/badges.html', {
+        'course': course,
+        'units': units,
+        'pills':pills,
+        "badges":BadgeByCourse.objects.filter(course_id = course.id).order_by("title")
+    }, context_instance=RequestContext(request))
+
+@is_teacher_or_staff
+def reload_pills(request,course_slug,id):
+    
+    result = {"result":[]};
+    pills = KnowledgeQuantum.objects.filter(unit_id = id).all().order_by("order")
+    for pill in pills:
+        result["result"].append({"id":pill.id, "title":pill.title})
+
+    return HttpResponse(simplejson.dumps(result), content_type="application/json")
+
 
 @is_teacher_or_staff
 def teacheradmin_assets(request, course_slug):
@@ -582,6 +637,11 @@ def teacheradmin_assets(request, course_slug):
         'is_enrolled': is_enrolled,
         'assets': assets,
     }, context_instance=RequestContext(request))
+
+@is_teacher_or_staff
+def delte_badge(request, course_slug, id):
+    BadgeByCourse.objects.filter(id=id).delete()
+    return HttpResponse("true")
 
 
 @is_teacher_or_staff

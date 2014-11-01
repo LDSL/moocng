@@ -73,8 +73,9 @@ urlpatterns = patterns(
     url(r'^course/(?P<course_slug>[-\w]+)/teacheradmin/',
         include('moocng.teacheradmin.urls')),
 
-
-
      url(r'^createCourse/(?P<id>[-\w]+)$', 'create_course_groups',
         name='create_course_groups'),
+
+     url(r'^changeGroup/(?P<id_group>[-\w]+)/(?P<id_new_group>[-\w]+)$', 'change_group',
+        name='change_group'),
 )

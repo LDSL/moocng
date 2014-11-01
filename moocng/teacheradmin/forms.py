@@ -285,3 +285,10 @@ class StaticPageForm(forms.ModelForm, BootstrapMixin):
             elif isinstance(widget, forms.widgets.Textarea):
                 widget.mce_attrs['width'] = '780'  # bootstrap span10
 
+
+
+# class BadgesForm(forms.Form):
+#     badgeTitle = forms.CharField(required=True)
+#     noteBadge = forms.CharField(required=True)
+#     unitBadge = forms.ChoiceField(widget=forms.Select, required=False, choices=[])
+

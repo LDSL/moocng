@@ -2,6 +2,8 @@
 {% load i18n gravatar %}
 {% block content %}
 
+{% load usercourses %}
+
 <div class="course container">
 	<div class="row">
 		<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 bottom-line">
@@ -14,20 +16,34 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
+		<div style="position:relative" class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
 			<p class="members-tag bottom-line">
-				<img src="{{STATIC_URL}}img/ECO_icon_tarea_equipo.svg">
-				{{ group.members|length }}
-				<span>{% trans "members" %}</span>
+				<!-- <img src="{{STATIC_URL}}img/ECO_icon_tarea_equipo.svg"> -->
+				<span class="userCount">{{ group.members|length }}</span>
+
+				<span class="pull-left">{% trans "members" %}</span>
+
+				<span class="movGroup">{% trans "Change group" %}</span>
+				<div class="groups hide">
+					{% for group in groups %}
+					<p id_group="{{ group|mongo_id }}">{{group.name}}</p>
+					{% endfor %}
+				</div>
 			</p>
+				
+			
+
+			
+
+
 			{% if feature_groups_video %}<a href="#" class="button squared">{% trans "Videoconference" %}</a>
 			{% endif %}
 			<ul class="userlist">
 				{% for member in group.members %}
-				<li class="bottom-line">
-					<img class="avatar" src="{% gravatar_for_email member.email %}?s=64" alt="{% firstof member.first_name member.username %}">
+				<li class="bottom-line" id_user="{{member.id_user}}">
+					<a href="{%url profile_user%}{{member.id_user}}"><img class="avatar" src="{% gravatar_for_email member.email %}?s=64" alt="{% firstof member.first_name member.username %}"><a/>
 					<div>
-						<h4 class="bottom-line"><a href="/user/profile/{{member.id_user}}">{{ member.first_name }} {{ member.last_name }}<span>@{{ member.username }}</a></h4>
+						<h4 class="bottom-line"><a href="{%url profile_user%}{{member.id_user}}">{{ member.first_name }} {{ member.last_name }}<span>@{{ member.username }}</a></h4>
 						{% if member.countries %}
 						<p class="tag pull-left"><img src="{{ STATIC_URL }}img/ECO_icon_info_localizacion.svg" alt="{% trans "Location"%}">{{ member.countries }}</p>
 						{% endif %}
@@ -146,5 +162,21 @@
 			$(this).parent().find('.selected').removeClass('selected');
 			$(this).addClass('selected');
 		});
+
+		$(".movGroup").click(function(){
+			$(".userlist").toggleClass('opacity');
+			$(".groups").toggleClass("hide");
+		})
+
+		$(".groups").find("p").click(function(){
+
+			var id_group = $(this).attr("id_group")
+			$.ajax({
+				url : "/changeGroup/{{ group|mongo_id }}" + "/" + id_group,
+			   	success: function(response) {
+			   		location.reload();
+			   	}
+			});
+		})
 	</script>
 {% endblock %}

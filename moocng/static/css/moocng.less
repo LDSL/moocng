@@ -1726,6 +1726,50 @@ ul.rating {
 		font-size: 36px;
 		font-weight: 300;
 	}
+	
+
+	.movGroup{
+		float: right;
+		margin-top: -20px;
+		text-transform: none !important;
+		font-size: 16px !important;
+		color: @highlight;
+		cursor: pointer;
+
+		&:before{
+			content: url('/static/img/ECO_icon_mover.svg');
+			position: relative;
+			right: 10px;
+			top: 6px;
+		}
+	}
+
+	.groups{
+		position: absolute;
+		right: 0px;
+		min-width: 145px;
+		/*border: 1px solid @highlight;*/
+		text-align: right;
+
+		color: @highlight;
+		box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+		border-top: 1px solid @neutral_light_1;
+		background-color: @neutral_light_3;
+		
+		p{
+			/*border-top: 1px solid @neutral_light_1;*/
+			line-height: 30px;
+			text-align: center;
+			cursor: pointer;
+			border-bottom: 1px solid @neutral_light_1;
+
+			&:hover{
+				/*background-color: @highlight;
+				color: @white;*/
+				border-bottom: 2px solid @comp;
+			}
+		}
+	}
 
 	.members-tag {
 		padding-bottom: 20px;
@@ -1740,6 +1784,17 @@ ul.rating {
 
 		&.bottom-line {
 			margin-bottom: 10px;
+		}
+
+		.userCount{
+			font-size: 16px;
+
+			&:before{
+				content: url('/static/img/ECO_icon_tarea_equipo.svg');
+				position: relative;
+				top: 6px;
+				margin-right: 10px;
+			}
 		}
 	}
 
@@ -1799,6 +1854,11 @@ ul.rating {
 				}
 			}
 		}
+	}
+
+	.opacity{
+		opacity: 0.2;
+		pointer-events: none;
 	}
 
 	.dash-box {
@@ -3409,12 +3469,13 @@ ul.rating {
 						display: inline-block;
 					}
 
-					img {
+					img, svg {
 						display: inline-block;
 						margin: 0 10px;
 						vertical-align: middle;
 						position: relative;
 						top: -2px;
+						fill: @white;
 					}
 
 					p {
@@ -4137,7 +4198,6 @@ ul.rating {
 				}
 
 				.sharedImage{
-					width: 17px;
 					display: block;
 					float: left;
 					margin-top: 3px;
