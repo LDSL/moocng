@@ -49,7 +49,7 @@ class CourseForm(forms.ModelForm):
         model = Course
         exclude = ('slug', 'teachers', 'owner', 'students',
                    'max_mass_emails_month', 'created_from',
-                   'is_activity_clonable')
+                   'is_activity_clonable','group_max_size', 'has_groups', 'forum_slug')
         widgets = {
             'start_date': HTML5DateInput(),
             'end_date': HTML5DateInput(),
