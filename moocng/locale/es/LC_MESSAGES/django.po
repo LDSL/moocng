@@ -639,7 +639,7 @@ msgstr ""
 
 #: badges/templates/badges/my_badges.html:16
 msgid "Open Mozilla Backpack"
-msgstr "Abrir Mozilla Backpack"
+msgstr "Open Mozilla Backpack"
 
 #: badges/templates/badges/my_badges.html:21
 #, python-format
@@ -3842,7 +3842,7 @@ msgstr "Términos de uso"
 
 #: templates/base.html:113
 msgid "Open"
-msgstr "Abrir"
+msgstr "Open"
 
 #: templates/base.html:113
 msgid "MOOC"
