@@ -135,7 +135,7 @@ class Badge(models.Model):
 
 
 class BadgeByCourse(models.Model):
-    #from moocng.courses.models import Course
+    from moocng.courses.models import Course
     title = models.CharField(verbose_name=_(u'Name'),
                              blank=False, null=False, unique=False,
                              max_length=255)
