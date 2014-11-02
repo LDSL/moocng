@@ -20,11 +20,10 @@ from django.contrib.auth.models import User
 
 from celery import task
 
+from moocng.badges.models import BadgeByCourse
 from moocng.courses.models import KnowledgeQuantum
 from moocng.mongodb import get_db
 
-
-from moocng.badges.models import BadgeByCourse
 from moocng.courses.models import Unit
 
 
