@@ -605,6 +605,7 @@ def teacheradmin_badges(request, course_slug):
     units = course.unit_set.all().order_by('order')
     
     knowledgequantum = []
+    pills = []
     if(units and len(units) > 0):
         pills = units[0].knowledgequantum_set.all().order_by("order")
 
