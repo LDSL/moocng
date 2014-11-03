@@ -61,6 +61,8 @@ class Language(models.Model):
 class Course(Sortable):
     THUMBNAIL_WIDTH = 300
     THUMBNAIL_HEIGHT = 185
+    BACKGROUND_WIDTH = 1920
+    BACKGROUND_HEIGHT = 150
 
     name = models.CharField(verbose_name=_(u'Name'), max_length=200)
     slug = models.SlugField(verbose_name=_(u'Slug'), unique=True, db_index=True)
@@ -258,6 +260,15 @@ class Course(Sortable):
             image_path = self.thumbnail.path
             self._resize_image(image_path, metadata)
 
+        if self.background:
+            metadata = {
+                'width': self.BACKGROUND_WIDTH,
+                'height': self.BACKGROUND_HEIGHT,
+                'force': True
+            }
+            image_path = self.background.path
+            self._resize_image(image_path, metadata)
+
     def __unicode__(self):
         return self.name
 
@@ -330,7 +341,7 @@ class Course(Sortable):
             else:
                 img.thumbnail((size['width'], size['height']), Image.ANTIALIAS)
             try:
-                img.save(filename, optimize=1)
+                img.save(filename, optimize=1, queality=60)
             except IOError:
                 img.save(filename)
 
