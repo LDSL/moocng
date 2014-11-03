@@ -181,6 +181,12 @@
         {{ form.thumbnail_alt }}
         {% if form.thumbnail_alt.help_text %}<span class="help-inline">{{ form.thumbnail_alt.help_text }}</span>{% endif %}
     </p>
+    <p>
+        {{ form.background.errors }}
+        {{ form.background.label_tag }}
+        {{ form.background }}
+        {% if form.background.help_text %}<span class="help-inline">{{ form.background.help_text }}</span>{% endif %}
+    </p>
     <p class="form-actions">
       <input type="submit" class="btn btn-primary" value="{% trans "Save" %}" />
     </p>
