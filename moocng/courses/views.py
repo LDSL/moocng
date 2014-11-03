@@ -349,6 +349,8 @@ def course_classroom(request, course_slug):
 
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
 
+    group = get_group_by_user_and_course(request.user.id, course.id)
+
     return render_to_response('courses/classroom.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
@@ -358,7 +360,8 @@ def course_classroom(request, course_slug):
         'is_ready' : is_ready,
         'is_enrolled': is_enrolled,
         'is_teacher': is_teacher_test(request.user, course),
-        'peer_review': peer_review
+        'peer_review': peer_review,
+        'group': group,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -434,6 +437,8 @@ def course_dashboard(request, course_slug):
         rating_form = CourseRatingForm()
         rating_formset = CourseRatingFormSet()
 
+    group = get_group_by_user_and_course(request.user.id, course.id)
+
     return render_to_response('courses/dashboard.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
@@ -445,6 +450,7 @@ def course_dashboard(request, course_slug):
         'is_ready' : is_ready,
         'rating_form': rating_form,
         'rating_formset': rating_formset,
+        'group': group,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -473,6 +479,7 @@ def course_syllabus(request, course_slug):
         }, context_instance=RequestContext(request))
 
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    group = get_group_by_user_and_course(request.user.id, course.id)
 
     return render_to_response('courses/syllabus.html', {
         'course': course,
@@ -482,7 +489,8 @@ def course_syllabus(request, course_slug):
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
-        'unit_list': get_sillabus_tree(course,request.user,minversion=False)
+        'unit_list': get_sillabus_tree(course,request.user,minversion=False),
+        'group': group,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -550,6 +558,7 @@ def course_forum(request, course_slug):
         }, context_instance=RequestContext(request))
 
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    group = get_group_by_user_and_course(request.user.id, course.id)
 
     return render_to_response('courses/forum.html', {
         'course': course,
@@ -559,6 +568,7 @@ def course_forum(request, course_slug):
         'is_enrolled' : is_enrolled,  
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
+        'group': group,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -581,6 +591,7 @@ def course_calendar(request, course_slug):
         }, context_instance=RequestContext(request))
 
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    group = get_group_by_user_and_course(request.user.id, course.id)
 
     return render_to_response('courses/calendar.html', {
         'course': course,
@@ -590,6 +601,7 @@ def course_calendar(request, course_slug):
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
+        'group': group,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -612,6 +624,7 @@ def course_wiki(request, course_slug):
         }, context_instance=RequestContext(request))
 
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    group = get_group_by_user_and_course(request.user.id, course.id)
 
     return render_to_response('courses/wiki.html', {
         'course': course,
@@ -621,6 +634,7 @@ def course_wiki(request, course_slug):
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
+        'group': group,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -635,6 +649,7 @@ def course_teachers(request, course_slug):
     is_teacher = is_teacher_test(request.user, course)
 
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    group = get_group_by_user_and_course(request.user.id, course.id)
 
     # if not is_ready and not request.user.is_superuser:
     if not is_ready and not is_teacher:
@@ -654,7 +669,8 @@ def course_teachers(request, course_slug):
         'tasks_done': tasks_done,
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
-        'is_teacher': is_teacher
+        'is_teacher': is_teacher,
+        'group': group,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -703,6 +719,7 @@ def course_progress(request, course_slug):
         units.append(unit)
 
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    group = get_group_by_user_and_course(request.user.id, course.id)
 
     return render_to_response('courses/progress.html', {
         'course': course,
@@ -713,6 +730,7 @@ def course_progress(request, course_slug):
         'is_enrolled': is_enrolled,  # required due course nav templatetag
         'is_ready' : is_ready,
         'is_teacher': is_teacher_test(request.user, course),
+        'group': group,
     }, context_instance=RequestContext(request))
 
 
@@ -721,6 +739,7 @@ def course_extra_info(request, course_slug):
     course = get_course_if_user_can_view_or_404(course_slug, request)
     is_enrolled = course.students.filter(id=request.user.id).exists()
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    group = get_group_by_user_and_course(request.user.id, course.id)
 
     return render_to_response('courses/static_page.html', {
         'course': course,
@@ -730,6 +749,7 @@ def course_extra_info(request, course_slug):
         'is_enrolled': is_enrolled,  # required due course nav templatetag
         'is_teacher': is_teacher_test(request.user, course),
         'static_page': course.static_page,
+        'group': group,
     }, context_instance=RequestContext(request))
 
 
@@ -745,6 +765,7 @@ def announcement_detail(request, course_slug, announcement_id, announcement_slug
     course = get_course_if_user_can_view_or_404(course_slug, request)
     announcement = get_object_or_404(Announcement, id=announcement_id)
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    group = get_group_by_user_and_course(request.user.id, course.id)
 
     return render_to_response('courses/announcement.html', {
         'course': course,
@@ -752,7 +773,8 @@ def announcement_detail(request, course_slug, announcement_id, announcement_slug
         'task_list': task_list,
         'tasks_done': tasks_done,
         'announcement': announcement,
-        'template_base': 'courses/base_course.html'
+        'template_base': 'courses/base_course.html',
+        'group': group,
     }, context_instance=RequestContext(request))
 
 
@@ -801,6 +823,7 @@ def transcript(request, course_slug=None):
             uinfo['badge_class'] = unit_class
             units_info_ordered.append(uinfo)
         task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+        group = get_group_by_user_and_course(request.user.id, course.id)
         
         courses_info.append({
             'course': course,
@@ -813,6 +836,7 @@ def transcript(request, course_slug=None):
             'passed': passed,
             'cert_url': cert_url,
             'use_old_calculus': use_old_calculus,
+            'group': group,
         })
     return render_to_response(template_name, {
         'courses_info': courses_info,
