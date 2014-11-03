@@ -164,7 +164,7 @@ def ListRecords(request, num="1"):
 		categories = course.categories.all()
 		if(len(categories) > 0):
 			lid = SubElement(ltaxon, 'lom:id')
-			lid.text = "ECO: " + categories[0].slug
+			lid.text = "ECO:" + categories[0].slug
 			lentry = SubElement(ltaxon, 'lom:entry')
 			lstring = SubElement(lentry, 'lom:string')
 			lstring.text = categories[0].name
