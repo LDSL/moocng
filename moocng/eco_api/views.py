@@ -107,8 +107,13 @@ def ListRecords(request, num="1"):
 		educational = SubElement(lom, 'lom:educational')
 		typicalLearningTime = SubElement(educational, 'lom:typicalLearningTime')
 		duration = SubElement(typicalLearningTime, 'lom:duration')#TODO
-		if(course.start_date and course.end_date and course.estimated_effort):
-			diff = ((course.end_date - course.start_date).days / 7) * int(course.estimated_effort)
+		estimated_effort = 1
+		try:
+			estimated_effort = int(course.estimated_effort)
+		except:
+			pass
+		if(course.start_date and course.end_date and estimated_effort):
+			diff = ((course.end_date - course.start_date).days / 7) * int(estimated_effort)
 			duration.text = "P"
 			years = 0
 			months = 0
