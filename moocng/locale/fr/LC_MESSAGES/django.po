@@ -1478,7 +1478,7 @@ msgstr "Les cours"
 #: courses/templates/courses/include.courseactions.html:46
 #: peerreview/templates/peerreview/reviews.html:12
 msgid "Reviews"
-msgstr "Avis"
+msgstr "Évaluation"
 
 #: courses/templates/courses/base_course.html:24
 #: courses/templates/courses/base_course_oldcss.html:24
@@ -2060,7 +2060,7 @@ msgstr "Crédits certifiés"
 
 #: courses/templates/courses/overview.html:182
 msgid "Recommended requirements"
-msgstr "Configuration recommandée"
+msgstr "Pré-requis recommandés"
 
 #: courses/templates/courses/overview.html:202
 msgid "Rating"
@@ -2384,7 +2384,7 @@ msgstr "Cette page n'est pas disponible"
 
 #: peerreview/forms.py:16
 msgid "Type here your comments about this review"
-msgstr "Tapez ici vos commentaires à propos de cet avis"
+msgstr "Tapez ici vos commentaires à propos de cet évaluation"
 
 #: peerreview/models.py:34
 msgid "Minimum reviewers"
@@ -2435,7 +2435,7 @@ msgstr "Ce travail ne vous a pas été attribué."
 
 #: peerreview/views.py:206
 msgid "Your can't submit two times the same review."
-msgstr "Vous ne pouvez pas soumettre deux fois le même avis."
+msgstr "Vous ne pouvez pas soumettre deux fois le même évaluation."
 
 #: peerreview/views.py:211
 #, python-format
@@ -2543,7 +2543,7 @@ msgstr[1] "Vous avez encore besoin d'examiner <strong>%(pending)s</strong> d'aut
 msgid ""
 "Are you completely sure you want to submit your review? You can't change it "
 "later, this will be your final review of this student's assignment."
-msgstr "Êtes-vous tout à fait certain de vouloir soumettre votre avis ? Vous ne pourrez pas le changer plus tard, ce sera votre dernier examen du devoir de l'élève."
+msgstr "Êtes-vous tout à fait certain de vouloir soumettre votre évaluation ? Vous ne pourrez pas le changer plus tard, ce sera votre dernier examen du devoir de l'élève."
 
 #: peerreview/templates/peerreview/review_review.html:69
 msgid ""

@@ -162,8 +162,8 @@
 			{% if feature_sec_catalogue %}
 				<li><a href="#">{% trans "Catalogue of courses" %}</a></li>
 			{% endif %}
-			{% if feature_groups %}
-				<li><a href="#">{% trans "Groups" %}</a></li>
+			{% if feature_teams %}
+				<li><a href="#">{% trans "Teams" %}</a></li>
 			{% endif %}
 			{% if feature_sec_about %}
 				<li><a href="#">{% trans "About" %}</a></li>
@@ -222,9 +222,9 @@
 	  </p>
 	  <div class="pull-right">
 	    <ul class="inline">
-	      <li><a href="{% url legal %}">{% trans "Privacy Policy" %}</a></li>
+	      <li><a href="http://ecolearning.eu/privacy-policy/">{% trans "Privacy Policy" %}</a></li>
 	      {% if show_tos %}
-	      <li><a href="{% url tos %}">{% trans "Terms of Service" %}</a></li>
+	      <li><a href="http://ecolearning.eu/terms-of-use/">{% trans "Terms of Service" %}</a></li>
 	      {% endif %}
 	      <li>{% trans "Powered by" %} <a>OpenMOOC</a></li>
 	    </ul>

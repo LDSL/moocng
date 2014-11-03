@@ -147,7 +147,12 @@ def ListRecords(request, num="1"):
 			lvalue = SubElement(lrole, 'lom:value')
 			lvalue.text = "author"
 			lentity = SubElement(lcontribute, 'lom:entity')
-			lentity.text="<![CDATA[BEGIN:VCARD CRLF FN:" + teacher.first_name + " " + teacher.last_name + " CRLF UID:urn:uuid:" + str(teacher.id) + " CRLF EMAIL;TYPE=INTERNET:" + teacher.email + " CRLF ORG:ReimerIT N:" + teacher.last_name +";" + teacher.first_name + " CRLF VERSION:3.0 CRLF END:VCARD CRLF]]>"
+			organization = "ECO"
+			try:
+				organization = teacher.get_profile().organization.all()[0].name
+			except:
+				pass
+			lentity.text="<![CDATA[BEGIN:VCARD \nFN:" + teacher.first_name + " " + teacher.last_name + " \nUID:urn:uuid:" + str(teacher.id) + " \nEMAIL;TYPE=INTERNET:" + teacher.email + " \nORG:" + organization + " N:" + teacher.last_name +";" + teacher.first_name + " \nVERSION:3.0 \nEND:VCARD \n]]>"
 		
 		lclassification = SubElement(lom, 'lom:classification')
 		lpurpose = SubElement(lclassification, 'lom:purpose')

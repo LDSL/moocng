@@ -63,10 +63,10 @@
     </div>
     <footer>
       <ul>
-        <li><a href="{% url legal %}">{% trans "Legal" %}</a></li>
+        <li><a href="http://ecolearning.eu/privacy-policy/">{% trans "Legal" %}</a></li>
         <li><a href="{% url copyright %}">&copy; {% now "Y" %} {{ site.name }}. {% trans "All rights reserved" %}</a></li>
         {% if show_tos %}
-        <li><a href="{% url tos %}">{% trans "Terms of Use" %}</a></li>
+        <li><a href="http://ecolearning.eu/terms-of-use/">{% trans "Terms of Use" %}</a></li>
         {% endif %}
         <li><a href="{% url contact %}">{% trans "Contact" %}</a></li>
       </ul>
