@@ -890,6 +890,9 @@ if (_.isUndefined(window.MOOC)) {
                         criterionListDiv.append(criterionDiv);
                         criterionListDiv.find("#" + titleInputId).val(criterion.get("title"));
                         criterionListDiv.find("#" + descriptionInputId).val(criterion.get("description"));
+                        for(var i=0;i<5;i++){
+                            criterionListDiv.find("#" + scoreInputs[i].scoreId).val(criterion.get("description_score_"+(i+1)));
+                        }
                     });
                 }
 
@@ -1147,6 +1150,10 @@ if (_.isUndefined(window.MOOC)) {
                         descriptionInputId = "criteriondescription-" + criterion.get("id");
                         criterion.set("title", $.trim(self.$el.find("#" + titleInputId).val()));
                         criterion.set("description", $.trim(self.$el.find("#" + descriptionInputId).val()));
+                        // Save rubric
+                        for(var i=1;i<=5;i++){
+                            criterion.set("description_score_"+i, $.trim(self.$el.find("#criterionscore"+i+"-"+criterion.get("id")).val()));    
+                        }                        
 
                         criterionListSaveTasks.push(function (asyncCB) {
                             criterion.save(null, {

@@ -87,13 +87,18 @@ MOOC.models.EvaluationCriterion = Backbone.Model.extend({
     defaults: {
         title: "",
         description: "",
+        description_score_1: "",
+        description_score_2: "",
+        description_score_3: "",
+        description_score_4: "",
+        description_score_5: "",
         assignment: null
     },
 
     parse: function (resp, xhr) {
         "use strict";
         if (resp !== null) {
-            return _.pick(resp, "id", "order", "description", "assignment", "title");
+            return _.pick(resp, "id", "order", "description", "assignment", "title","description_score_1","description_score_2","description_score_3","description_score_4","description_score_5");
         }
         return resp;
     },
