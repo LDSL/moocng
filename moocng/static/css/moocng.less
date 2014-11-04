@@ -3130,7 +3130,7 @@ ul.rating {
 			margin-bottom: 20px;
 		}
 
-		ul {
+		ul, ol {
 			padding-left: 40px;
 			margin-bottom: 20px;
 
@@ -3347,6 +3347,15 @@ ul.rating {
 						border: none;
 					}
 
+					h5 {
+						font-size: 12px;
+						font-weight: 600;
+						line-height: 16px;
+						color: @neutral_intense;
+						text-transform: uppercase;
+						margin-top: 20px;
+					}
+
 					p {
 						font-size: 14px;
 						line-height: 18px;
@@ -3369,6 +3378,18 @@ ul.rating {
 						background-color: @neutral_light_3;
 						border: 1px solid @neutral_light_1;
 						outline: none;
+					}
+
+					ol {
+						padding-left: 40px;
+						color: @neutral_medium_1;
+						font-size: 13px;
+						line-height: 16px;
+
+						li.selected {
+							font-weight: 600;
+							color: @highlight;
+						}
 					}
 				}
 			}

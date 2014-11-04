@@ -64,7 +64,7 @@
 						</a>
 					</li>
 					{% endif %}
-					{% if feature_groups %}
+					{% if feature_groups and group %}
 					<li class="noLowRes">
 						{% url course_group course.slug as url_group %}
 						<a href="{{ url_group }}" {% if request.path == url_group %} class="selected"{% endif %}>

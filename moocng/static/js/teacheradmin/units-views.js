@@ -851,6 +851,7 @@ if (_.isUndefined(window.MOOC)) {
                         var criterionDivId,
                             titleInputId,
                             descriptionInputId,
+                            scoreInputs,
                             removeBtnId,
                             titleInput,
                             titleLabel,
@@ -864,6 +865,15 @@ if (_.isUndefined(window.MOOC)) {
                         descriptionInputId = "criteriondescription-" + criterion.get("id");
                         removeBtnId = "criterionremove-" + criterion.get("id");
 
+                        scoreInputs = [];
+                        for(var i=1; i<=5; i++){
+                            var scoreId = "criterionscore" + i + "-" + criterion.get("id");
+                            var model = {'scoreId': scoreId,
+                                        'scoreLabel': '<label for="' + scoreId + '">' + MOOC.trans.evaluationCriterion.scoreDescription + ' ' + i + '</label>',
+                                        'scoreInput': '<input type="text" name="' + scoreId + '" id="' + scoreId + '" maxlength="200" class="input" />'}
+                            scoreInputs.push(model);
+                        }
+
                         titleInput = "<input type=\"text\" name=\"" + titleInputId + "\" id=\"" + titleInputId + "\" maxlength=\"100\" class=\"input-large\" required=\"required\" />";
                         titleLabel = "<label for=\"" + titleInputId + "\" class=\"required\">" + MOOC.trans.evaluationCriterion.title + "</label>";
                         descriptionInput = "<input type=\"text\" name=\"" + descriptionInputId + "\" id=\"" + descriptionInputId + "\" maxlength=\"200\" class=\"input\" required=\"required\" />";
@@ -872,11 +882,17 @@ if (_.isUndefined(window.MOOC)) {
                         criterionDiv = "<div id=\"" + criterionDivId + "\">"
                                        + "<div class=\"\"> <div>" + titleLabel + titleInput + "</div>"
                                        + "<div class=\"\">" + descriptionLabel + descriptionInput + "</div></div>"
-                                       + "<div class=\"\"><div class=\"align-right\">" + removeBtn + "</div></div></divZ";
+                        for(var i=0;i<5;i++){
+                            criterionDiv += '<div class="">' + scoreInputs[i].scoreLabel + scoreInputs[i].scoreInput + '</div></div>';
+                        }
+                        criterionDiv += "<div class=\"\"><div class=\"align-right\">" + removeBtn + "</div></div></div>";
 
                         criterionListDiv.append(criterionDiv);
                         criterionListDiv.find("#" + titleInputId).val(criterion.get("title"));
                         criterionListDiv.find("#" + descriptionInputId).val(criterion.get("description"));
+                        for(var i=0;i<5;i++){
+                            criterionListDiv.find("#" + scoreInputs[i].scoreId).val(criterion.get("description_score_"+(i+1)));
+                        }
                     });
                 }
 
@@ -1134,6 +1150,10 @@ if (_.isUndefined(window.MOOC)) {
                         descriptionInputId = "criteriondescription-" + criterion.get("id");
                         criterion.set("title", $.trim(self.$el.find("#" + titleInputId).val()));
                         criterion.set("description", $.trim(self.$el.find("#" + descriptionInputId).val()));
+                        // Save rubric
+                        for(var i=1;i<=5;i++){
+                            criterion.set("description_score_"+i, $.trim(self.$el.find("#criterionscore"+i+"-"+criterion.get("id")).val()));    
+                        }                        
 
                         criterionListSaveTasks.push(function (asyncCB) {
                             criterion.save(null, {

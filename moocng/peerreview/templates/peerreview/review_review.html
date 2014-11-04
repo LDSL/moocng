@@ -22,6 +22,9 @@
                 }
                 input = $('input[name=' + target.attr('data-name') + ']');
                 input.val(target.attr('data-value'));
+                var li = $('.'+target.attr('data-name'));
+                $('.'+target.attr('data-name')+'.selected').removeClass('selected');
+                li.eq(input.val()-1).addClass('selected');
                 target.parent().find('.selected').removeClass('selected');
                 target.addClass('selected');
             });
@@ -128,6 +131,16 @@
                                             {{ criterion.evaluation_criterion_id }}
                                             <h4>{{ criterion.evaluation_criterion_id.value|get_criterion_title }}</h4>
                                             <p class="criterion">{{ criterion.evaluation_criterion_id.value|get_criterion_description|escape }}</p>
+                                            {% with criterion.evaluation_criterion_id.value|get_criterion_score_descriptions as score_descriptions %}
+                                            {% if score_descriptions|length > 0 %}
+                                            <h5>{% trans "How I should score?" %}</h5>
+                                            <ol>
+                                                {% for score_desc in score_descriptions %}
+                                                <li class="{{ criterion.value.html_name }}">{{ score_desc|escape }}</li>
+                                                {% endfor %}
+                                            </ol>
+                                            {% endif %}
+                                            {% endwith %}
                                             <div class="btn-group pull-right" data-toggle="buttons-radio">
                                                 <span>{% trans "My score: " %}</span>
                                                 {% for choice in criterion.value %}
