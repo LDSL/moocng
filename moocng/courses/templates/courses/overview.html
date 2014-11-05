@@ -106,7 +106,12 @@
 							{% enroll_button course %}
 						{% else %}
 						<div class="box action-box">
-							<a href="{% url register %}" class="button">{% blocktrans with site_name=site.name %}Register in {{ site_name }} to enroll in this course{% endblocktrans %}</a>
+							<a href="{% url login %}" class="button">
+								{% trans "Enroll me" %}
+								<svg width="26px" height="26px">
+									<path fill="#000000" d="M25,14H14v11h-2V14H1v-2h11V1h2v11h11V14z"></path>
+    							</svg>
+							</a>
 						</div>
 						{% endif %}
 					{% endif %}
