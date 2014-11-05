@@ -51,7 +51,7 @@
       <h1 class="logo"><a href="{% url home %}" class="hide-text"><img src="{{ theme.logo }}" alt="logo {{ site.name }}" />{{ site.name }}</a></h1>
       <img class="logo-mini" src="{{ STATIC_URL }}img/logo_mini.png" alt="logo {{ site.name }}" />
       <ul class="btn-link pull-left" id="meta-buttons">
-        <li><a href="{% url home %}" class="btn btn-link">{% trans "Catalogue"%}</a></li>
+        <li><a href="{% url home %}#catalogue" class="btn btn-link">{% trans "Catalogue"%}</a></li>
         {% if feature_teams %}
         	<li><a href="#" class="btn btn-link">{% trans "Teams" %}</a></li>
         {% endif %}
