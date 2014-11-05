@@ -48,7 +48,8 @@ class UserProfile(models.Model):
                                           blank=True)
 
     organization = models.ManyToManyField(Organization, verbose_name=_(u'Organization'),
-                                                        null=True)
+                                                        null=True,
+                                                        blank=True)
     GENDER_CHOICES = (
         ('m', _(u'Male')),
         ('f', _(u'Female'))
@@ -63,7 +64,8 @@ class UserProfile(models.Model):
                                     null=True,
                                     blank=True)
     birthdate = models.DateField(verbose_name=_(u"Birthdate"),
-                                    null=True)
+                                    null=True,
+                                    blank=True)
     bio = models.TextField(verbose_name=_(u"Biography"),
                                     null=True,
                                     blank=True)
