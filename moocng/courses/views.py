@@ -522,7 +522,7 @@ def course_group(request, course_slug):
         groupsAux = get_groups_by_course(course.id, group["_id"])
 
         for g in groupsAux:
-            if(len(g["members"]) <= course.group_max_size + (course.group_max_size * 0.5)):
+            if(len(g["members"]) <= course.group_max_size + (course.group_max_size * settings.GROUPS_UPPER_THRESHOLD / 100)):
                 groups.append(g)
 
 
