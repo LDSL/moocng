@@ -25,9 +25,12 @@ def free_enrollment(request, course_slug):
                                 "email": request.user.email, "karma": request.user.get_profile().karma, "countries": "", 
                                 "languages": ""}
 
-                if(len(group["members"]) <= course.group_max_size + (course.group_max_size * 0.5)):
-                    group["size"] += 1
+                if(len(group["members"]) <= course.group_max_size + (course.group_max_size * settings.GROUPS_UPPER_THRESHOLD / 100)):
                     group["members"].append(new_member)
+                    if "size" in group:
+                        group["size"] += 1
+                    else:
+                        group["size"] = len(group["members"])
 
                     groupCollection.update({'_id': ObjectId(group["_id"])}, {"$set": {"members": group["members"], "size": group["size"]}})
 
@@ -64,7 +67,10 @@ def free_unenrollment(request, course_slug):
             for m in group["members"]:
                 if(m["id_user"] == request.user.id):
                     group["members"].remove(m)
-                    group["size"] -= 1
+                    if "size" in group:
+                        group["size"] -= 1
+                    else:
+                        group["size"] = len(group["members"])
 
             groupCollection.update({'_id': ObjectId(group["_id"])}, {"$set": {"members": group["members"], "size": group["size"]}})
 

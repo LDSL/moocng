@@ -547,11 +547,17 @@ def change_user_group(id_user, id_group, new_id_group):
         if m["id_user"] == id_user:
             member = m
             group["members"].remove(m)
-            group["size"] -= 1
+            if "size" in group:
+                group["size"] -= 1
+            else:
+                group["size"] = len(group["members"])
     
     groupCollection.update({'_id': ObjectId(id_group)}, {"$set": {"members": group["members"], "size": group["size"]}})
     group = groupCollection.find_one({'_id': ObjectId(new_id_group)})
     group["members"].append(member)
-    group["size"] += 1
+    if "size" in group:
+        group["size"] += 1
+    else:
+        group["size"] = len(group["members"])
     groupCollection.update({'_id': ObjectId(new_id_group)}, {"$set": {"members": group["members"], "size": group["size"]}})
 
