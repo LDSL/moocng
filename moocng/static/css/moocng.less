@@ -2,7 +2,7 @@
       position: relative;
       overflow: hidden;
       line-height: @line-height;
-      max-height: @line-height * @numlines + 1px; /* number of lines */
+      max-height: @line-height * @numlines + @numlines; /* number of lines */
       padding-bottom: 1px;
       
       display: block;
@@ -1285,6 +1285,10 @@ div.course_overview {
 					margin-left: -310px;
 					margin-top: -177px;
 					cursor: pointer;
+
+					.close_btn {
+						text-align: right;
+					}
 				}
 
 				.background {
@@ -1709,7 +1713,7 @@ div.course_overview {
 			margin-bottom: 18px;
 		}
 
-		ul {
+		ul, ol {
 			padding-left: 40px;
 		}
 	}

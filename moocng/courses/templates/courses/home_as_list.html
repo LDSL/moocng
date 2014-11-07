@@ -61,7 +61,9 @@
 					{% endif %}
 					</div>
 					<div class="content">
-					  <h3><a href="#">{{ course.owner }}</a></h3>
+					  {% with course.teachers.all|first as main_teacher %}
+					  <h3><a href="#">{{ main_teacher.get_profile.organization.all|first }}</a></h3>
+					  {% endwith %}
 					  <h2 class="line-clamp">{{ course.name }}</h2>
 					  {% if course.start_date %}
 					  <span class="date">{{ course.start_date }}</span>
@@ -70,7 +72,9 @@
 			      </div>
 			      <div class="back_face">
 					<div class="content">
-					  <h3><a href="#">{{ course.owner }}</a></h3>
+					  {% with course.teachers.all|first as main_teacher %}
+					  <h3><a href="#">{{ main_teacher.get_profile.organization.all|first }}</a></h3>
+					  {% endwith %}
 					  <h2><a href="{{ course.get_absolute_url }}">{{ course.name }}</a></h2>
 					  {% if course.start_date %}
 					  	<span class="date">{{ course.start_date }}</span>

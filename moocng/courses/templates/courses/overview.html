@@ -26,6 +26,7 @@
 							<a class="play" href="#"><img src="{{ STATIC_URL }}img/ECO_icon_play_xl_white.svg">Video</a>
 							<div class="background"></div>
 							<div class="iframe">
+								<div class="close_btn"><img src="{{ STATIC_URL }}img/ECO_icon_abandonar_xl.svg"></div>
 								{% media_content_iframe_code course.promotion_media_content_type course.promotion_media_content_id height="349px" width="620px" allowfullscreen="1" controls="1" %}
 							</div>
 						</div>
@@ -105,14 +106,12 @@
 						{% if user.is_authenticated %}
 							{% enroll_button course %}
 						{% else %}
-						<div class="box action-box">
-							<a href="{% url login %}" class="button">
-								{% trans "Enroll me" %}
-								<svg width="26px" height="26px">
-									<path fill="#000000" d="M25,14H14v11h-2V14H1v-2h11V1h2v11h11V14z"></path>
-    							</svg>
-							</a>
-						</div>
+						<a href="{% url login %}" class="button">
+							{% trans "Enroll me" %}
+							<svg width="26px" height="26px">
+								<path fill="#000000" d="M25,14H14v11h-2V14H1v-2h11V1h2v11h11V14z"></path>
+							</svg>
+						</a>
 						{% endif %}
 					{% endif %}
 					{% endif %}
@@ -235,7 +234,7 @@
 					<ul class="unstyled clearfix">
 					{% for course_teacher in course_teachers %}
 						<li class="teacher">
-						<img src="{% gravatar_for_email course_teacher.teacher.email %}?s=48" alt="{% trans 'Profile image of' %} {% firstof course_teacher.teacher.get_full_name course_teacher.teacher.username %" />
+						<img src="{% gravatar_for_email course_teacher.teacher.email %}&s=48" alt="{% trans 'Profile image of' %} {% firstof course_teacher.teacher.get_full_name course_teacher.teacher.username %" />
 						<p>{% firstof course_teacher.teacher.get_full_name course_teacher.teacher.username %}</p>
 						{% if course_teacher.teacher.get_profile.organization %}
 							{% for org in course_teacher.teacher.get_profile.organization.all%}
@@ -278,14 +277,18 @@
 									{% endif %}
 									</div>
 									<div class="content">
-										<h3><a href="#">{{ ncourse.owner }}</a></h3>
+										{% with ncourse.teachers.all|first as main_teacher %}
+										<h3><a href="#">{{ main_teacher.get_profile.organization.all|first }}</a></h3>
+										{% endwith %}
 										<h2 class="line-clamp">{{ ncourse.name }}</h2>
 										<span class="date">{{ ncourse.start_date }}</span>
 									</div>
 								</div>
 								<div class="back_face">
 									<div class="content">
-										<h3><a href="#">{{ ncourse.owner }}</a></h3>
+										{% with ncourse.teachers.all|first as main_teacher %}
+										<h3><a href="#">{{ main_teacher.get_profile.organization.all|first }}</a></h3>
+										{% endwith %}
 										<h2><a href="{{ ncourse.get_absolute_url }}">{{ ncourse.name }}</a></h2>
 										<span class="date">{{ ncourse.start_date }}</span>
 										{% if ncourse.ects > 0 %}
@@ -359,10 +362,12 @@
 <script>
 	$('.course-header .title .media-box a.play').click(function(){
 		$(this).parent().toggleClass('show');
+		$('.media-box iframe')[0].contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
 	});
 
-	$('.course-header .title .media-box .background').click(function(){
-		$(this).parent().toggleClass('show');
+	$('.course-header .title .media-box .background, .course-header .title .media-box .close_btn').click(function(){
+		$('.media-box').toggleClass('show');
+		$('.media-box iframe')[0].contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
 	});
 	$('.course .back_face').click(function(e){
 		e.preventDefault();
