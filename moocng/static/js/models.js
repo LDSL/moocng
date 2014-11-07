@@ -301,8 +301,13 @@ MOOC.models.ActivityCollection = MOOC.models.TastyPieCollection.extend({
                 activity = new MOOC.models.Activity({
                     course_id: MOOC.models.course.courseId,
                     unit_id: unit,
-                    kq_id: kq
+                    kq_id: kq,
+                    timestamp: new Date().getTime(),
                 });
+            if(MOOC.App.position){
+                activity.set({  'lon': MOOC.App.position.coords.longitude,
+                                'lat': MOOC.App.position.coords.latitude    });
+            }
             this.add(activity);
             if (_.isUndefined(callback)) {
                 activity.save();
