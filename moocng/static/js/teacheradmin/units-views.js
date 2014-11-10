@@ -882,9 +882,9 @@ if (_.isUndefined(window.MOOC)) {
                         removeBtn = "<button id=\"" + removeBtnId + "\" class=\"removecriterion btn btn-danger\">" + MOOC.trans.evaluationCriterion.remove + "</button>";
                         criterionDiv = "<div id=\"" + criterionDivId + "\">"
                                        + "<div class=\"\"> <div>" + titleLabel + titleInput + "</div>"
-                                       + "<div class=\"\">" + descriptionLabel + descriptionInput + "</div></div>"
+                                       + "<div class=\"\">" + descriptionLabel + descriptionInput + "</div>"
                         for(var i=0;i<5;i++){
-                            criterionDiv += '<div class="">' + scoreInputs[i].scoreLabel + scoreInputs[i].scoreInput + '</div></div>';
+                            criterionDiv += '<div class="">' + scoreInputs[i].scoreLabel + scoreInputs[i].scoreInput + '</div>';
                         }
                         criterionDiv += "<div class=\"\"><div class=\"align-right\">" + removeBtn + "</div></div></div>";
 

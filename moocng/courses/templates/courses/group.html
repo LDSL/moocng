@@ -137,6 +137,32 @@
 
 {% block extrajs %}
 	<script>
+		var geoposition = {"coords": {"latitude": 0.0, "longitude": 0.0}};
+
+		function getCookie(name) {
+		    var cookieValue = null;
+		    if (document.cookie && document.cookie != '') {
+		        var cookies = document.cookie.split(';');
+		        for (var i = 0; i < cookies.length; i++) {
+		            var cookie = jQuery.trim(cookies[i]);
+		            // Does this cookie string begin with the name we want?
+		            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+		                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+		                break;
+		            }
+		        }
+		    }
+		    return cookieValue;
+		}
+
+		$(function(){
+			if(navigator.geolocation){
+		        navigator.geolocation.getCurrentPosition(function(position){
+		            geoposition = position;
+		        });
+		    }
+		});
+
 		function resizeDashboard(){
 			$('.dash-box').each(function(index, value){
 				var $dash = $(value);
@@ -172,6 +198,14 @@
 
 			var id_group = $(this).attr("id_group")
 			$.ajax({
+				type: "POST",
+				data: {
+					"latitude": geoposition.coords.latitude,
+					"longitude": geoposition.coords.longitude
+				},
+				beforeSend: function(xhr, settings) {
+			        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+			    },
 				url : "/changeGroup/{{ group|mongo_id }}" + "/" + id_group,
 			   	success: function(response) {
 			   		location.reload();
