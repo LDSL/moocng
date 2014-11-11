@@ -60,7 +60,6 @@ MOOC.io = {
 
 MOOC.App = Backbone.Router.extend({
     lastUnitView: null,
-    position: null,
     unitSteps: function (unit, loadFirstKQ) {
         "use strict";
         var unitObj = MOOC.models.course.get(unit),
@@ -369,14 +368,6 @@ MOOC.init = function (course_id, KQRoute) {
     var path = window.location.pathname,
         unit,
         last_kq = null;
-
-    // Update geolocation
-    if(navigator.geolocation){
-        var self = this;
-        navigator.geolocation.getCurrentPosition(function(position){
-            MOOC.App.position = position;
-        });
-    }
 
     MOOC.models.course.courseId = course_id;
 

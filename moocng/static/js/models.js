@@ -304,9 +304,9 @@ MOOC.models.ActivityCollection = MOOC.models.TastyPieCollection.extend({
                     kq_id: kq,
                     timestamp: new Date().getTime(),
                 });
-            if(MOOC.App.position){
-                activity.set({  'lon': MOOC.App.position.coords.longitude,
-                                'lat': MOOC.App.position.coords.latitude    });
+            if(geolocation){
+                activity.set({  'lon': geolocation.coords.longitude,
+                                'lat': geolocation.coords.latitude    });
             }
             this.add(activity);
             if (_.isUndefined(callback)) {
