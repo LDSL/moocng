@@ -120,8 +120,9 @@ def ListRecords(request, num="1"):
 			days = 0
 			if(diff >= 8760):
 				years = iff/8760
-				duration.text += str(years) + "Y"
-				diff -= years * 8760
+				if(years > 0):
+					duration.text += str(years) + "Y"
+					diff -= years * 8760
 			
 			if(diff >= 720):
 				months = diff/720
@@ -133,6 +134,7 @@ def ListRecords(request, num="1"):
 				duration.text += str(days) + "D"
 				diff -= (days * 24)
 
+			duration.text += "T"
 			if(diff != 0):
 				duration.text += str(diff) + "H"
 
