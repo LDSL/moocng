@@ -45,13 +45,15 @@
 </div>
 
 <form action="{{ form_url }}" method="post">{% csrf_token %}{% block form_top %}{% endblock %}
-<fieldset>
 {%if original.use_last_frame %}
+<fieldset class="use-last-frame">
     {% if original.last_frame %}
         <img class="last-frame" src="{{ original.last_frame.url }}" />
     {% else %}
-        <img class="last-frame" src="{{ STATIC_URL }}img/no-image.png" />
+        <div class="last-frame" src="{{ STATIC_URL }}img/no-image.png" />
     {% endif %}
+{% else %}
+<fieldset>
 {% endif %}
 </fieldset>
 </form>

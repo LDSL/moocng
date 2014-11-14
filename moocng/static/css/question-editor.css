@@ -33,14 +33,19 @@ fieldset {
     background-size: 540px 324px;
 }
 
-fieldset,
-fieldset img {
+fieldset.use-last-frame,
+fieldset.use-last-frame img {
     border: 1px solid black;
     width: 540px;
     height: 324px;
 }
 
 fieldset .option {
+    position: static;
+    display: block;
+}
+
+fieldset.use-last-frame .option {
     position: absolute;
     background-color: #888888;
     opacity: 0.7;
@@ -48,15 +53,20 @@ fieldset .option {
     cursor: pointer;
 }
 
-fieldset .option input {
+fieldset.use-last-frame .option input {
     margin: 0;
 }
 
-fieldset .selected {
+fieldset .option label {
+    display: inline;
+    margin: 0 5px;
+}
+
+fieldset.use-last-frame .selected {
     background-color: #8888ff;
 }
 
-fieldset .out {
+fieldset.use-last-frame .out {
     background-color: #ff8888;
 }
 

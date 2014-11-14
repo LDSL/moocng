@@ -98,7 +98,8 @@
                         "height: " + this.model.get("height") + "px;"
                     ].join(" ")
                 },
-                size = {};
+                size = {},
+                label = this.model.get('text');
 
             if (optiontype === 'c' || optiontype === 'r') {
                 attributes.style = [
@@ -125,23 +126,42 @@
                 attributes.style.push('line-height: 20px;');
             }
 
-            this.$el.empty().append(this.make(tag, attributes, content));
+            var domelem = '';
+            if(optiontype !== 'l' && label){
+                domelem += '<div>';
+            }
+            domelem += '<'+tag;
+            for (var attribute in attributes){
+                if(attributes.hasOwnProperty(attribute)){
+                    domelem += ' ' + attribute + '="' + attributes[attribute]+'"';
+                }
+            }
+            domelem += '>'
+            if(optiontype !== 'l' && label){
+                domelem += '<label>' + label + '</label></div>';
+            }
+
+            //this.$el.empty().append(this.make(tag, attributes, content));
+            this.$el.empty().append(domelem);
             size = this.calculate_size();
             this.$el
                 .width(size.width + this.padding * 2 + this.handlePadding)
                 .height(size.height + this.padding * 2)
-                .css({
-                    left: (this.model.get('x') - this.padding) + "px",
-                    top: (this.model.get('y') - this.padding) + "px",
-                    padding: this.padding + "px",
-                    position: 'absolute'
-                })
                 .draggable({
                     drag: this.drag,
                     start: this.start,
                     stop: this.stop
-                })
-                .find(tag).change(this.change);
+                });
+            if($("fieldset.use-last-frame").length > 0){
+                this.$el.css({
+                    left: (this.model.get('x') - this.padding) + "px",
+                    top: (this.model.get('y') - this.padding) + "px",
+                    padding: this.padding + "px",
+                    position: 'absolute'
+                });
+            }
+            
+            this.$el.find(tag).change(this.change);
 
             return this;
         },
@@ -379,6 +399,13 @@
             // internal state
             this._rendered = false;
 
+            // last item inserted position
+            if(!this.$fieldset.hasClass('use-last-frame')){
+                this._last_ypos = this.collection.last()? this.collection.last().get('y') + 10 : 0;
+            }else{
+                this._last_ypos = 0;
+            }
+
             // create an array of option views to keep track of children
             this._optionViews = [];
 
@@ -434,10 +461,14 @@
             if (settings.optiontype === 'l') {
                 settings.width = 50;
                 settings.height = 3;
+            }else{
+                settings.text = 'label'
             }
+            settings.y = this._last_ypos;
             option = new MOOC.models.Option(settings);
             this.collection.add(option);
             option.save();
+            this._last_ypos += 10;
         },
 
         select_option: function (option_element) {
