@@ -432,6 +432,12 @@ class CourseStudent(models.Model):
                                         default=0)
     rate = models.PositiveSmallIntegerField(verbose_name=_(u'Rate'),
                                             null=True)
+    timestamp = models.BigIntegerField(verbose_name=_(u'Enrollment timestamp'),
+                                    null=True)
+    pos_lat = models.FloatField(verbose_name=_(u'Latitude'),
+                                default=0.0)
+    pos_lon = models.FloatField(verbose_name=_(u'Longitude'),
+                                default=0.0)
 
     class Meta:
         verbose_name = _(u'course student')

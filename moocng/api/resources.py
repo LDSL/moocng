@@ -879,6 +879,9 @@ class ActivityResource(BaseMongoUserResource):
     course_id = fields.IntegerField(null=False)
     unit_id = fields.IntegerField(null=False)
     kq_id = fields.IntegerField(null=False)
+    timestamp = fields.IntegerField(null=False)
+    lat = fields.FloatField()
+    lon = fields.FloatField()
 
     class Meta:
         resource_name = 'activity'
@@ -897,7 +900,10 @@ class ActivityResource(BaseMongoUserResource):
             "course_id": 1,
             "unit_id": 1,
             "kq_id": 1,
-            "user_id": 1
+            "user_id": 1,
+            "timestamp": 1,
+            "lat": 0.0,
+            "lon": 0.0
         }
 
     def _initial(self, request, **kwargs):
@@ -907,6 +913,58 @@ class ActivityResource(BaseMongoUserResource):
             "unit_id": -1,
             "kq_id": -1,
             "user_id": -1,
+            "timestamp": -1,
+            "lat": 0.0,
+            "lon": 0.0
+        }
+
+class HistoryResource(BaseMongoUserResource):
+
+    url = fields.CharField(null=False)
+    timestamp = fields.IntegerField(null=False)
+    lat = fields.FloatField()
+    lon = fields.FloatField()
+    dev_type = fields.CharField(null=False)
+    dev_os = fields.CharField(null=False)
+    dev_orientation = fields.CharField(null=False)
+
+    class Meta:
+        resource_name = 'history'
+        collection = 'history'
+        datakey = '_id'
+        object_class = MongoObj
+        authentication = DjangoAuthentication()
+        authorization = DjangoAuthorization()
+        allowed_methods = ['get', 'post']
+        filtering = {
+            "user_id": ('exact'),
+            "url": ('exact'),
+            "dev_type": ('exact'),
+            "dev_os": ('exact'),
+            "dev_orientation": ('exact'),
+        }
+        input_schema = {
+            "user_id": 1,
+            "url": "",
+            "timestamp": 1,
+            "lat": 1.0,
+            "lon": 1.0,
+            "dev_type": "",
+            "dev_os": "",
+            "dev_orientation": ""
+        }
+
+    def _initial(self, request, **kwargs):
+        user_id = kwargs['pk']
+        return {
+            "user_id": -1,
+            "url": "",
+            "timestamp": -1,
+            "lat": 0.0,
+            "lon": 0.0,
+            "dev_type": "",
+            "dev_os": "",
+            "dev_orientation": ""
         }
 
 

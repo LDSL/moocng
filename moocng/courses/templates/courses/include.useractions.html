@@ -27,7 +27,7 @@
 	<div class="vruler"></div>-->
 	<div class="btn-group">
 		<a class="dropdown-toggle usermenu" data-toggle="dropdown">
-			<img src="{% gravatar_for_email user.email %}?s=48" alt="{% firstof user.get_full_name user.username %}">      
+			<img src="{% gravatar_for_email user.email %}&s=48" alt="{% firstof user.get_full_name user.username %}">      
 		</a>
 		<ul class="dropdown-menu usermenu">
 			<li><a href="{% url profile_user %}">{% trans "Profile" %}</a></li>

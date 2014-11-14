@@ -2,7 +2,7 @@
       position: relative;
       overflow: hidden;
       line-height: @line-height;
-      max-height: @line-height * @numlines + 1px; /* number of lines */
+      max-height: @line-height * @numlines + @numlines; /* number of lines */
       padding-bottom: 1px;
       
       display: block;
@@ -190,7 +190,7 @@ button, input {
 		right: 5px;
 		background: @neutral_light_3;
 		border-bottom: 1px solid @neutral_light_1;
-		min-width: 200px;
+		min-width: 220px;
 		padding: 20px;
 		z-index: 2;
 		transition: visibility 0s linear, opacity .1s ease;
@@ -1121,6 +1121,7 @@ body {
 			line-height: 1em;
 			color: @white;
 			margin: 8px 0 0 0;
+			text-transform: none;
 		}
 		
 		.date {
@@ -1284,6 +1285,10 @@ div.course_overview {
 					margin-left: -310px;
 					margin-top: -177px;
 					cursor: pointer;
+
+					.close_btn {
+						text-align: right;
+					}
 				}
 
 				.background {
@@ -1599,6 +1604,7 @@ div.course_overview {
 						line-height: 1em;
 						color: @white;
 						margin: 8px 0 0 0;
+						text-transform: none;
 					}
 					
 					.date {
@@ -1707,7 +1713,7 @@ div.course_overview {
 			margin-bottom: 18px;
 		}
 
-		ul {
+		ul, ol {
 			padding-left: 40px;
 		}
 	}

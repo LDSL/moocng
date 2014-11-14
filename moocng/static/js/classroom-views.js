@@ -193,6 +193,10 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
         //Emit render finish event
         $(window).trigger('renderfinished');
 
+        if (sendHistoryEntry){
+            sendHistoryEntry();
+        }
+
         return this;
     },
 
@@ -741,6 +745,10 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
 
         async.series(toExecute);
 
+        if (sendHistoryEntry){
+            sendHistoryEntry();
+        }
+
         return this;
     },
 
@@ -807,6 +815,10 @@ MOOC.views.Question = Backbone.View.extend({
             }
             view.render();
         });
+
+        if (sendHistoryEntry){
+            sendHistoryEntry();
+        }
 
         return this;
     },
@@ -1148,6 +1160,10 @@ MOOC.views.PeerReviewAssignment = Backbone.View.extend({
             _.each(this.$el.find('.mathjax'), function (item) {
                 MathJax.Hub.Queue(["Typeset", MathJax.Hub, item]);
             });
+        }
+
+        if (sendHistoryEntry){
+            sendHistoryEntry();
         }
 
         return this;

@@ -539,7 +539,7 @@ def get_group_by_user_and_course(id_user, id_course):
 def get_groups_by_course(id_course, my_group):
     return mongodb.get_db().get_collection('groups').find({"$and":[{'id_course':id_course},{"_id": {'$ne': ObjectId(my_group)}}]}).sort("_id",pymongo.ASCENDING)
 
-def change_user_group(id_user, id_group, new_id_group):
+def change_user_group(id_user, id_group, new_id_group, pos_lat=0.0, pos_lon=0.0):
     groupCollection = mongodb.get_db().get_collection('groups')
     group = groupCollection.find_one({'_id': ObjectId(id_group)})
     
@@ -560,4 +560,9 @@ def change_user_group(id_user, id_group, new_id_group):
     else:
         group["size"] = len(group["members"])
     groupCollection.update({'_id': ObjectId(new_id_group)}, {"$set": {"members": group["members"], "size": group["size"]}})
+
+    groupsActivityCollection = mongodb.get_db().get_collection('groups_activity')
+    timestamp = int(round(time.time() * 1000))
+    activity_entry = {"id_course": group["id_course"], "id_user": id_user, "former_id_group": ObjectId(id_group), "new_id_group": ObjectId(new_id_group), "timestamp": timestamp, "lat": pos_lat, "lon": pos_lon}
+    groupsActivityCollection.insert(activity_entry)
 
