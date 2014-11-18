@@ -31,10 +31,11 @@
                 x: 0,
                 y: 0,
                 width: 100,
-                height: 12,
+                height: 28,
                 solution: '',
                 text: "",
-                feedback: ""
+                feedback: "",
+                order: 0
             };
         },
 
@@ -73,6 +74,10 @@
             't': 'text',
             'c': 'checkbox',
             'r': 'radio'
+        },
+
+        events: {
+            'drop' : 'change_order'
         },
 
         initialize: function () {
@@ -127,9 +132,6 @@
             }
 
             var domelem = '';
-            if(optiontype !== 'l' && label){
-                domelem += '<div>';
-            }
             domelem += '<'+tag;
             for (var attribute in attributes){
                 if(attributes.hasOwnProperty(attribute)){
@@ -138,30 +140,33 @@
             }
             domelem += '>'
             if(optiontype !== 'l' && label){
-                domelem += '<label>' + label + '</label></div>';
+                domelem += '<input type="text" class="label" value="' + label + '" />';
             }
 
             //this.$el.empty().append(this.make(tag, attributes, content));
             this.$el.empty().append(domelem);
-            size = this.calculate_size();
-            this.$el
-                .width(size.width + this.padding * 2 + this.handlePadding)
-                .height(size.height + this.padding * 2)
-                .draggable({
-                    drag: this.drag,
-                    start: this.start,
-                    stop: this.stop
-                });
+            
             if($("fieldset.use-last-frame").length > 0){
-                this.$el.css({
-                    left: (this.model.get('x') - this.padding) + "px",
-                    top: (this.model.get('y') - this.padding) + "px",
-                    padding: this.padding + "px",
-                    position: 'absolute'
-                });
+                size = this.calculate_size();
+                this.$el.width(size.width + this.padding * 2 + this.handlePadding)
+                    .height(size.height + this.padding * 2)
+                    .draggable({
+                        drag: this.drag,
+                        start: this.start,
+                        stop: this.stop
+                    })
+                    .css({
+                        left: (this.model.get('x') - this.padding) + "px",
+                        top: (this.model.get('y') - this.padding) + "px",
+                        padding: this.padding + "px",
+                        position: 'absolute'
+                    });
             }
             
             this.$el.find(tag).change(this.change);
+            if (optiontype !== 'l' || label){
+                this.$el.find('.label').change(this.change);
+            }
 
             return this;
         },
@@ -227,7 +232,39 @@
         },
 
         change: function () {
-            var $input = this.$el.find('input'),
+            var optiontype = this.model.get('optiontype');
+            this.start();
+            switch(optiontype){
+                case 'l':   var $input = this.$el.find("textarea");
+                            var value = $input.val();
+                            this.model.set('text', value);
+                            break;
+                case 'c':
+                case 'r':   var $input = this.$el.find('input');
+                            var value = _.isUndefined($input.attr('checked')) ? false : true;
+                            if (value && optiontype === 'r') {
+                                // Update the solution stored in the other radio models
+                                this.$el.parent().find("input[type=radio]").filter(function (idx, radio) {
+                                    return radio !== $input[0];
+                                }).trigger("change");
+                            }
+                            var $label = this.$el.find(".label");
+                            var label = $label.val();
+                            this.model.set({'solution': value,
+                                            'text': label});
+                            break;
+                case 't':   var $input = this.$el.find("input");
+                            var $label = this.$el.find(".label");
+                            var value = $input.val();
+                            var label = $label.val();
+                            this.model.set({'solution': value,
+                                            'text': label});
+                            break;
+            }
+            this.model.save();
+
+
+            /*var $input = this.$el.find('input'),
                 optiontype = this.model.get('optiontype'),
                 value = "",
                 prop = "solution";
@@ -248,6 +285,11 @@
             }
             this.start();
             this.model.set(prop, value);
+            this.model.save();*/
+        },
+
+        change_order: function(event){
+            this.model.set("order", this.$el.index());
             this.model.save();
         }
 
@@ -544,6 +586,12 @@
             $fieldset.css({ "background-image": "url(" + $img.attr("src") + ")" });
             $img.remove();
         }
+
+        $fieldset.sortable({
+            update: function( event, ui ) {
+                $(this.children).trigger('drop');
+            }
+        });
 
         MOOC.router = new MOOC.App();
         MOOC.router.route("", "index");

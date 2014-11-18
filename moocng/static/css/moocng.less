@@ -2432,14 +2432,35 @@ ul.rating {
 		}
 		
 		&.question {
-			position: relative;
-			
-			& > input, & > textarea {
-				position: absolute;
+			& > div {
+				display: block;
+				vertical-align: top;
+
+				label {
+					margin: 0 5px;
+				}
 			}
 
-			& > input[type="text"] {
-				height: 1.5em !important;
+			&.use_last_frame {
+				position: relative;
+			
+				& > div, & > input, & > textarea {
+					position: absolute;
+				}
+
+				& > input[type="text"] {
+					height: 1.5em !important;
+				}
+			}
+
+			input {
+				&.correct {
+					outline: 2px solid @ok;
+				}
+
+				&.incorrect {
+					outline: 2px solid @alerts;
+				}
 			}
 		}
 	}

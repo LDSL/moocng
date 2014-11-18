@@ -43,6 +43,7 @@ fieldset.use-last-frame img {
 fieldset .option {
     position: static;
     display: block;
+    margin: 5px 0;
 }
 
 fieldset.use-last-frame .option {
@@ -57,8 +58,12 @@ fieldset.use-last-frame .option input {
     margin: 0;
 }
 
-fieldset .option label {
-    display: inline;
+fieldset .option input {
+    vertical-align: top;
+}
+
+fieldset .option .label {
+    display: inline-block;
     margin: 0 5px;
 }
 

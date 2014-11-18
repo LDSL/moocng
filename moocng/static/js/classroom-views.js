@@ -386,7 +386,7 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
                 // Load Options for Question
                 MOOC.ajax.getOptionsByQuestion(question.get("id"), function (data, textStatus, jqXHR) {
                     var options = _.map(data.objects, function (opt) {
-                        return new MOOC.models.Option(_.pick(opt, "id", "optiontype", "x", "y", "width", "height", "solution", "text", "feedback"));
+                        return new MOOC.models.Option(_.pick(opt, "id", "optiontype", "x", "y", "width", "height", "solution", "text", "feedback", "order"));
                     });
                     question.set("optionList", new MOOC.models.OptionList(options));
                 });
@@ -777,10 +777,10 @@ MOOC.views.Question = Backbone.View.extend({
             html = '<img src="' + this.model.get("lastFrame") + '" ' +
                 'alt="' + this.model.get("title") +
                 '" style="width: 620px; height: 372px;" />';
-        } else {
-            html = "<div class='white' style='width: 620px; height: 372px;'></div>";
+            this.$el.html(html);
+            this.$el.addClass("use_last_frame");
         }
-        this.$el.html(html);
+        
         this.$el.addClass("question");
 
         //$("#kq-q-buttons").removeClass("hide");
@@ -946,7 +946,8 @@ MOOC.views.Option = Backbone.View.extend({
             content = "",
             attributes = {
                 type: this.types[optiontype],
-                id: 'option' + this.model.get('id')
+                id: 'option' + this.model.get('id'),
+                style: []
             },
             // The scale is required because the question editor is smaller
             // than the classroom question
@@ -954,7 +955,8 @@ MOOC.views.Option = Backbone.View.extend({
             left = Math.floor(this.model.get('x') * scale),
             top = Math.floor(this.model.get('y') * scale),
             feedbackBtn,
-            correct;
+            correct,
+            label = this.model.get('text');
 
         if (optiontype === 't') {
             width = Math.floor(this.model.get('width') * scale) + 'px;';
@@ -964,24 +966,13 @@ MOOC.views.Option = Backbone.View.extend({
             }
             height = height + 'px;';
         }
-
-        attributes.style = [
-            'top: ' + top + 'px;',
-            'left: ' + left + 'px;'
-        ];
-        if (optiontype === 'l') {
-            attributes.cols = this.model.get("width");
-            attributes.rows = this.model.get("height");
-            attributes.disabled = "disabled";
-            attributes["class"] = "text";
-            tag = attributes.type;
-            delete attributes.type;
-            content = this.model.get("text");
-            attributes.style.push('resize: none;');
-            attributes.style.push('cursor: default;');
-        } else {
+        
+        var domelem = '<div style="top:'+top+'px; left:'+left+'px">';
+        if (optiontype !== 'l') {
             attributes.style.push('width: ' + width + 'px;');
             attributes.style.push('height: ' + height + 'px;');
+        }else{
+            content = this.model.get('text');
         }
         attributes.style = attributes.style.join(' ');
         if (optiontype === 'r') {
@@ -1022,7 +1013,27 @@ MOOC.views.Option = Backbone.View.extend({
             }
         }
 
-        this.$el.append(this.make(tag, attributes, content));
+        //this.$el.append(this.make(tag, attributes, content));
+        if(optiontype !== 'l'){
+            if(optiontype === 't' && label){
+                domelem += '<label for="' + attributes.id + '">' + label + '</label>';
+            }
+            domelem += '<'+tag;
+            for (var attribute in attributes){
+                if(attributes.hasOwnProperty(attribute)){
+                    domelem += ' ' + attribute + '="' + attributes[attribute]+'"';
+                }
+            }
+            domelem += '>'
+            if(optiontype !==  't' && label){
+                domelem += '<label for="' + attributes.id + '">' + label + '</label>';
+            }
+        }else{
+            domelem += '<h5>' + content + '</h5>';
+        }
+        domelem += '</div>';
+
+        this.$el.append(domelem);
 
         return this;
     }

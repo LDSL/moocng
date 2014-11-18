@@ -886,6 +886,8 @@ class Option(models.Model):
     feedback = models.CharField(
         verbose_name=_(u'Solution feedback for the student'), max_length=200,
         blank=True, null=False)
+    order = models.PositiveSmallIntegerField(verbose_name=_(u'Order'),
+                                            null=True)
     objects = OptionManager()
 
     class Meta:
