@@ -55,7 +55,7 @@ class UserProfile(models.Model):
         ('f', _(u'Female'))
     )
     gender = models.CharField(verbose_name=_(u"Gender"),
-                                    max_length=1,
+                                    max_length=6,
                                     choices=GENDER_CHOICES,
                                     null=True,
                                     blank=True)
@@ -71,6 +71,34 @@ class UserProfile(models.Model):
                                     blank=True)
     karma = models.IntegerField(verbose_name=_(u"Karma"),
                                     default=0)
+    postal_code = models.CharField(verbose_name=_(u"Postal code"),
+                                    max_length=10,
+                                    null=True,
+                                    blank=True)
+    city = models.CharField(verbose_name=_(u"City"),
+                            max_length=100,
+                            null=True,
+                            blank=True)
+    country = models.CharField(verbose_name=_(u"Country"),
+                            max_length=100,
+                            null=True,
+                            blank=True)
+    language = models.CharField(verbose_name=_(u"Language"),
+                            max_length=2,
+                            null=True,
+                            blank=True)
+    middle_name = models.CharField(verbose_name=_(u"Middle name"),
+                            max_length=100,
+                            null=True,
+                            blank=True)
+    interests = models.CharField(verbose_name=_(u"Interests"),
+                            max_length=30,
+                            null=True,
+                            blank=True)
+    sub = models.CharField(verbose_name=_(u"Global ID"),
+                            max_length=24,
+                            null=True,
+                            blank=True)
     
 
     class Meta:
