@@ -8,14 +8,64 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding field 'UserProfile.postal_code'
+        db.add_column('profile_userprofile', 'postal_code',
+                      self.gf('django.db.models.fields.CharField')(max_length=10, null=True, blank=True),
+                      keep_default=False)
 
-        # Changing field 'UserProfile.gender'
-        db.alter_column('profile_userprofile', 'gender', self.gf('django.db.models.fields.CharField')(max_length=6, null=True))
+        # Adding field 'UserProfile.city'
+        db.add_column('profile_userprofile', 'city',
+                      self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True),
+                      keep_default=False)
+
+        # Adding field 'UserProfile.country'
+        db.add_column('profile_userprofile', 'country',
+                      self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True),
+                      keep_default=False)
+
+        # Adding field 'UserProfile.language'
+        db.add_column('profile_userprofile', 'language',
+                      self.gf('django.db.models.fields.CharField')(max_length=2, null=True, blank=True),
+                      keep_default=False)
+
+        # Adding field 'UserProfile.middle_name'
+        db.add_column('profile_userprofile', 'middle_name',
+                      self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True),
+                      keep_default=False)
+
+        # Adding field 'UserProfile.interests'
+        db.add_column('profile_userprofile', 'interests',
+                      self.gf('django.db.models.fields.CharField')(max_length=30, null=True, blank=True),
+                      keep_default=False)
+
+        # Adding field 'UserProfile.sub'
+        db.add_column('profile_userprofile', 'sub',
+                      self.gf('django.db.models.fields.CharField')(max_length=24, null=True, blank=True),
+                      keep_default=False)
+
 
     def backwards(self, orm):
+        # Deleting field 'UserProfile.postal_code'
+        db.delete_column('profile_userprofile', 'postal_code')
 
-        # Changing field 'UserProfile.gender'
-        db.alter_column('profile_userprofile', 'gender', self.gf('django.db.models.fields.CharField')(max_length=1, null=True))
+        # Deleting field 'UserProfile.city'
+        db.delete_column('profile_userprofile', 'city')
+
+        # Deleting field 'UserProfile.country'
+        db.delete_column('profile_userprofile', 'country')
+
+        # Deleting field 'UserProfile.language'
+        db.delete_column('profile_userprofile', 'language')
+
+        # Deleting field 'UserProfile.middle_name'
+        db.delete_column('profile_userprofile', 'middle_name')
+
+        # Deleting field 'UserProfile.interests'
+        db.delete_column('profile_userprofile', 'interests')
+
+        # Deleting field 'UserProfile.sub'
+        db.delete_column('profile_userprofile', 'sub')
+
 
     models = {
         'auth.group': {
