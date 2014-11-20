@@ -43,6 +43,10 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.CharField')(max_length=24, null=True, blank=True),
                       keep_default=False)
 
+        # Adding field 'UserProfile.gender'
+        db.alter_column('profile_userprofile', 'gender',
+                      self.gf('django.db.models.fields.CharField')(max_length=6, null=True, blank=True))
+
 
     def backwards(self, orm):
         # Deleting field 'UserProfile.postal_code'
@@ -65,6 +69,9 @@ class Migration(SchemaMigration):
 
         # Deleting field 'UserProfile.sub'
         db.delete_column('profile_userprofile', 'sub')
+
+        # Deleting field 'UserProfile.gender'
+        db.delete_column('profile_userprofile', 'gender')
 
 
     models = {
