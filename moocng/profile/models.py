@@ -51,8 +51,8 @@ class UserProfile(models.Model):
                                                         null=True,
                                                         blank=True)
     GENDER_CHOICES = (
-        ('m', _(u'Male')),
-        ('f', _(u'Female'))
+        ('male', _(u'Male')),
+        ('female', _(u'Female'))
     )
     gender = models.CharField(verbose_name=_(u"Gender"),
                                     max_length=6,
