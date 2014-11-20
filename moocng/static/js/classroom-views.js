@@ -967,7 +967,7 @@ MOOC.views.Option = Backbone.View.extend({
             height = height + 'px;';
         }
         
-        var domelem = '<div style="top:'+top+'px; left:'+left+'px">';
+        var domelem = '<div style="top:'+top+'px; left:'+left+'px"';
         if (optiontype !== 'l') {
             attributes.style.push('width: ' + width + 'px;');
             attributes.style.push('height: ' + height + 'px;');
@@ -989,6 +989,8 @@ MOOC.views.Option = Backbone.View.extend({
                 if (!(_.isUndefined(solution) || _.isNull(solution))) {
                     correct = this.model.isCorrect(this.reply);
                     attributes['class'] = correct ? 'correct' : 'incorrect';
+                    var correctclass = correct ? 'correct' : 'incorrect';
+                    domelem += ' class="'+ correctclass +'"';
                 }
             } else {
                 if (this.reply.get('value')) {
@@ -997,6 +999,8 @@ MOOC.views.Option = Backbone.View.extend({
                 if (!(_.isUndefined(solution) || _.isNull(solution))) {
                     correct = this.model.isCorrect(this.reply);
                     attributes['class'] = correct ? 'correct' : 'incorrect';
+                    var correctclass = correct ? 'correct' : 'incorrect';
+                    domelem += ' class="'+ correctclass +'"';
                 }
             }
 
@@ -1004,16 +1008,17 @@ MOOC.views.Option = Backbone.View.extend({
                 feedbackBtn = $("<button class='btn btn-warning' id='" + attributes.id + "-fb'><span class='icon-info-sign'></span></button>");
                 feedbackBtn.css("top", (top - 4) + "px");
                 feedbackBtn.css("left", (left - 32) + "px");
-                feedbackBtn.popover({
+                /*feedbackBtn.popover({
                     trigger: "click",
                     placement: "top",
                     content: this.model.get("feedback")
-                });
+                });*/
                 this.$el.append(feedbackBtn);
             }
         }
 
         //this.$el.append(this.make(tag, attributes, content));
+        domelem += '>';
         if(optiontype !== 'l'){
             if(optiontype === 't' && label){
                 domelem += '<label for="' + attributes.id + '">' + label + '</label>';

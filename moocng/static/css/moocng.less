@@ -2440,6 +2440,16 @@ ul.rating {
 				label {
 					margin: 0 5px;
 				}
+
+				&.correct {
+					color: @ok;
+					background: fade(@ok, 20%);
+				}
+
+				&.incorrect {
+					color: @alerts;
+					background: fade(@alerts, 20%);
+				}
 			}
 
 			&.use_last_frame {
@@ -2451,16 +2461,6 @@ ul.rating {
 
 				& > input[type="text"] {
 					height: 1.5em !important;
-				}
-			}
-
-			input {
-				&:has(.correct) {
-					color: @ok;
-				}
-
-				&:has(.incorrect) {
-					color: @alerts;
 				}
 			}
 		}
