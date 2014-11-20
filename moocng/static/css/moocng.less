@@ -2435,6 +2435,7 @@ ul.rating {
 			& > div {
 				display: block;
 				vertical-align: top;
+				padding: 5px;
 
 				label {
 					margin: 0 5px;
@@ -2454,12 +2455,12 @@ ul.rating {
 			}
 
 			input {
-				&.correct {
-					outline: 2px solid @ok;
+				&:has(.correct) {
+					color: @ok;
 				}
 
-				&.incorrect {
-					outline: 2px solid @alerts;
+				&:has(.incorrect) {
+					color: @alerts;
 				}
 			}
 		}
