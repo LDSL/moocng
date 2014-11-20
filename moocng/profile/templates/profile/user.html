@@ -34,11 +34,7 @@
 						<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 element">
 							<img class="icon" src="{{ STATIC_URL }}img/ECO_icon_info_sexo-{{user_view_profile.get_profile.gender}}.svg">
 							<dt>{% trans "Gender" %}</dt>
-							{% if user_view_profile.get_profile.gender == 'm' %}
-							<dd>{% trans "Male" %}</dd>
-							{% else %}
-							<dd>{% trans "Female" %}</dd>
-							{% endif %}
+							<dd>{% trans user_view_profile.get_profile.gender|title %}</dd>
 						</div>
 					</div>
 					{% endif %}
