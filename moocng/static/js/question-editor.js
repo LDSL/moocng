@@ -35,7 +35,8 @@
                 solution: '',
                 text: "",
                 feedback: "",
-                order: 0
+                order: 0,
+                name: ""
             };
         },
 
@@ -51,12 +52,18 @@
     MOOC.models.OptionList  = Backbone.Collection.extend({
         model: MOOC.models.Option,
 
+        initialize: function() {
+            this.sort({reset: true});
+        },
         url: function () {
             var url = MOOC.models.OptionList.__super__.url.call(this);
             if (url.charAt(url.length - 1) !== '/') {
                 url += '/';
             }
             return url;
+        },
+        comparator: function(model){
+            return model.get('order');
         }
     });
 
@@ -113,7 +120,7 @@
                 ].join(" ");
 
                 if (optiontype === 'r') {
-                    attributes.name = "radio";
+                    attributes.name = this.model.get("name");
                 }
 
                 if ((_.isString(sol) && sol.toLowerCase() === 'true') || (_.isBoolean(sol) && sol)) {
@@ -331,8 +338,8 @@
                 .find('#option-solution').change(this.change_property_handler(['solution', false])).val(solution).end()
                 .find('#option-feedback').change(this.change_property_handler(['feedback', false])).val(this.model.get("feedback")).end()
                 .find('#option-x').change(this.change_property_handler(['x', true])).val(this.model.get('x')).end()
-                .find('#option-y').change(this.change_property_handler(['y', true])).val(this.model.get('y'));
-
+                .find('#option-y').change(this.change_property_handler(['y', true])).val(this.model.get('y'))
+                
             if (optiontype === 'c' || optiontype === 'r') {
                 this.$el
                     .find('#option-width').attr("disabled", "disabled").val(this.model.get('width')).end()
@@ -341,6 +348,12 @@
                 this.$el
                     .find('#option-width').attr("disabled", false).change(this.change_property_handler(['width', true])).val(this.model.get('width')).end()
                     .find('#option-height').attr("disabled", false).change(this.change_property_handler(['height', true])).val(this.model.get('height'));
+            }
+
+            if (optiontype === 'r') {
+                this.$el.find("#option-name").attr("disabled", false).change(this.change_property_handler(['name', false])).val(this.model.get('name'));
+            }else{
+                this.$el.find("#option-name").attr("disabled", "disabled").val(this.model.get('name'));
             }
 
             if (optiontype === 'l') {
@@ -365,6 +378,7 @@
             this.$el.find("#option-y").unbind('change');
             this.$el.find("#option-width").unbind('change');
             this.$el.find("#option-height").unbind('change');
+            this.$el.find("#option-name").unbind('change');
         },
 
         change_property_handler: function (args) {
@@ -387,7 +401,8 @@
                 .find('#option-x').val('').end()
                 .find('#option-y').val('').end()
                 .find('#option-width').val('').end()
-                .find('#option-height').val('');
+                .find('#option-height').val('')
+                .find('#option-name').val('');
         },
 
         change_property: function (prop, numerical) {

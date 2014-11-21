@@ -335,7 +335,8 @@ MOOC.models.Option = Backbone.Model.extend({
         solution: null,
         text: "",
         feedback: null,
-        order: 0
+        order: 0,
+        name: ""
     },
 
     /**

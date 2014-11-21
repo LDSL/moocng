@@ -888,6 +888,8 @@ class Option(models.Model):
         blank=True, null=False)
     order = models.PositiveSmallIntegerField(verbose_name=_(u'Order'),
                                             null=True)
+    name = models.CharField(verbose_name=_(u'Group name'), max_length=100,
+        blank=True, null=True)
     objects = OptionManager()
 
     class Meta:

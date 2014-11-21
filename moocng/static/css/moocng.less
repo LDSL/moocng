@@ -2432,23 +2432,45 @@ ul.rating {
 		}
 		
 		&.question {
+			white-space: pre-line;
+			margin-bottom: 40px;
 			& > div {
-				display: block;
+				display: inline-block;
 				vertical-align: top;
-				padding: 5px;
+				padding: 5px 10px;
+				background: fade(@white, 50%);
 
 				label {
 					margin: 0 5px;
 				}
 
+				label:first-child, input:first-child {
+					margin-left: 10px;
+				}
+
 				&.correct {
-					color: @ok;
-					background: fade(@ok, 20%);
+					/*color: @ok;
+					background: fade(@ok, 20%);*/
 				}
 
 				&.incorrect {
 					color: @alerts;
-					background: fade(@alerts, 20%);
+					background: fade(lighten(@alerts, 35%),80%);
+				}
+
+				.btn {
+					&.transparent {
+						background-color: transparent;
+						border: none;
+						outline: none;
+					}
+					img {
+						height: 14px;
+					}
+				}
+
+				p {
+					margin-top: 10px;
 				}
 			}
 

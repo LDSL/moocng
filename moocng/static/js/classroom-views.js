@@ -386,7 +386,7 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
                 // Load Options for Question
                 MOOC.ajax.getOptionsByQuestion(question.get("id"), function (data, textStatus, jqXHR) {
                     var options = _.map(data.objects, function (opt) {
-                        return new MOOC.models.Option(_.pick(opt, "id", "optiontype", "x", "y", "width", "height", "solution", "text", "feedback", "order"));
+                        return new MOOC.models.Option(_.pick(opt, "id", "optiontype", "x", "y", "width", "height", "solution", "text", "feedback", "order", "name"));
                     });
                     question.set("optionList", new MOOC.models.OptionList(options));
                 });
@@ -779,6 +779,8 @@ MOOC.views.Question = Backbone.View.extend({
                 '" style="width: 620px; height: 372px;" />';
             this.$el.html(html);
             this.$el.addClass("use_last_frame");
+        }else{
+            this.$el.append($('fieldset'));
         }
         
         this.$el.addClass("question");
@@ -916,7 +918,7 @@ MOOC.views.Question = Backbone.View.extend({
 MOOC.views.questionViews = {};
 
 MOOC.views.Option = Backbone.View.extend({
-    MIN_TEXT_HEIGHT: 14,
+    MIN_TEXT_HEIGHT: 20,
 
     types: {
         l: "textarea",
@@ -976,11 +978,13 @@ MOOC.views.Option = Backbone.View.extend({
         }
         attributes.style = attributes.style.join(' ');
         if (optiontype === 'r') {
-            attributes.name = 'radio';
+            attributes.name = this.model.get('name');
         }
 
-        this.$el.find("#" + attributes.id).remove();
+        this.$el.find("#" + attributes.id).parent().next("br").remove();
+        this.$el.find("#" + attributes.id).parent().remove();
         this.$el.find("#" + attributes.id + "-fb").remove();
+
 
         if (this.reply && this.reply.get('option') === parseInt(this.model.get('id'), 10) && optiontype !== 'l') {
             correct = false;
@@ -1005,19 +1009,19 @@ MOOC.views.Option = Backbone.View.extend({
             }
 
             if (!correct && this.model.has("feedback") && this.model.get("feedback") !== "") {
-                feedbackBtn = $("<button class='btn btn-warning' id='" + attributes.id + "-fb'><span class='icon-info-sign'></span></button>");
+                feedbackBtn = $("<button class='btn transparent' id='" + attributes.id + "-fb'><img src='/static/img/ECO_icon_info_ayuda.svg'></button>");
                 feedbackBtn.css("top", (top - 4) + "px");
                 feedbackBtn.css("left", (left - 32) + "px");
-                /*feedbackBtn.popover({
+                feedbackBtn.popover({
                     trigger: "click",
-                    placement: "top",
+                    placement: "right",
+                    title: MOOC.trans.classroom.clue,
                     content: this.model.get("feedback")
-                });*/
+                });
                 this.$el.append(feedbackBtn);
             }
         }
 
-        //this.$el.append(this.make(tag, attributes, content));
         domelem += '>';
         if(optiontype !== 'l'){
             if(optiontype === 't' && label){
@@ -1034,11 +1038,16 @@ MOOC.views.Option = Backbone.View.extend({
                 domelem += '<label for="' + attributes.id + '">' + label + '</label>';
             }
         }else{
-            domelem += '<h5>' + content + '</h5>';
+            domelem += '<p id="'+ attributes.id +'">' + content + '</p>';
         }
         domelem += '</div>';
-
-        this.$el.append(domelem);
+        
+        var $domelem = $(domelem);
+        if(feedbackBtn){
+             $domelem.append(feedbackBtn);
+        }        
+        this.$el.append($domelem);
+        this.$el.append($('<br/>'));
 
         return this;
     }
