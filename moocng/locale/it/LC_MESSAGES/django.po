@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -555,7 +554,6 @@ msgid "badges"
 msgstr "badge"
 
 #: badges/models.py:149
-#, fuzzy
 msgid "Criteria_type"
 msgstr "Criteri"
 
@@ -967,7 +965,6 @@ msgid "Content id"
 msgstr " ID del contenuto"
 
 #: courses/models.py:124
-#, fuzzy
 msgid "Forum slug"
 msgstr "Forum"
 
@@ -1048,7 +1045,6 @@ msgid "Maximum of massive emails that a course can send per month"
 msgstr "Numero massimo di annunci che è possibile inviare al mese da un corso"
 
 #: courses/models.py:199
-#, fuzzy
 msgid "Has this course groups?"
 msgstr "Può elencare i corsi di un utente"
 
@@ -1249,22 +1245,18 @@ msgid "Nugget"
 msgstr "Unità"
 
 #: courses/models.py:730
-#, fuzzy
 msgid "VTT file"
 msgstr "Da completare"
 
 #: courses/models.py:732
-#, fuzzy
 msgid "Transcription type"
 msgstr "Descrizione"
 
 #: courses/models.py:743
-#, fuzzy
 msgid "transcription"
 msgstr "I miei sottotitoli"
 
 #: courses/models.py:744
-#, fuzzy
 msgid "transcriptions"
 msgstr "I miei sottotitoli"
 
@@ -1379,7 +1371,6 @@ msgid "You could see your transcript <a href=\"%s\">here</a>"
 msgstr "Puoi vedere la tua trascrizione <a href = \" %s \"> qui </a>"
 
 #: courses/security.py:121
-#, fuzzy
 msgid "This course has not started yet"
 msgstr "Questo corso non è ancora pronto"
 
@@ -1388,12 +1379,10 @@ msgid "This course has not started yet, but you can enroll into it"
 msgstr "Questo corso non è ancora iniziata, ma è possibile iscriversi in esso"
 
 #: courses/security.py:126
-#, fuzzy
 msgid "This course has finished"
 msgstr "Questo corso è vuoto"
 
 #: courses/security.py:128
-#, fuzzy
 msgid "This course is not public"
 msgstr "Questo corso non è ancora pronto"
 
@@ -2091,12 +2080,10 @@ msgid "Go to group's forum"
 msgstr "Vai al forum del gruppo"
 
 #: courses/templates/courses/group.html:24
-#, fuzzy
 msgid "members"
 msgstr "Ricorda!"
 
 #: courses/templates/courses/group.html:26
-#, fuzzy
 msgid "Change group"
 msgstr "Cambia"
 
@@ -2161,12 +2148,10 @@ msgid "Explore the full "
 msgstr "Esplora la piena "
 
 #: courses/templates/courses/home_as_list.html:29
-#, fuzzy
 msgid "catalogue"
 msgstr "Catalogo"
 
 #: courses/templates/courses/home_as_list.html:36
-#, fuzzy
 msgid "Courses catalogue"
 msgstr "Catalogo"
 
@@ -2669,27 +2654,22 @@ msgid "peer review assignments"
 msgstr "attività di peer review"
 
 #: peerreview/models.py:94
-#, fuzzy
 msgid "Description for score 1"
 msgstr "Descrizione"
 
 #: peerreview/models.py:96
-#, fuzzy
 msgid "Description for score 2"
 msgstr "Descrizione"
 
 #: peerreview/models.py:98
-#, fuzzy
 msgid "Description for score 3"
 msgstr "Descrizione"
 
 #: peerreview/models.py:100
-#, fuzzy
 msgid "Description for score 4"
 msgstr "Descrizione"
 
 #: peerreview/models.py:102
-#, fuzzy
 msgid "Description for score 5"
 msgstr "Descrizione"
 
@@ -3467,7 +3447,6 @@ msgid "There are not assets yet"
 msgstr "Non ci sono ancora risorse attive"
 
 #: teacheradmin/templates/teacheradmin/badges.html:73
-#, fuzzy
 msgid "Badge title"
 msgstr "Immagine Badge"
 
@@ -3483,17 +3462,14 @@ msgid "Peer review"
 msgstr "Peer review"
 
 #: teacheradmin/templates/teacheradmin/badges.html:92
-#, fuzzy
 msgid "Select unit"
 msgstr "Seleziona file"
 
 #: teacheradmin/templates/teacheradmin/badges.html:101
-#, fuzzy
 msgid "Select peer review"
 msgstr "Peer review"
 
 #: teacheradmin/templates/teacheradmin/badges.html:108
-#, fuzzy
 msgid "Add peer review"
 msgstr "Peer review"
 
@@ -3515,7 +3491,6 @@ msgid "Save"
 msgstr "Salvare"
 
 #: teacheradmin/templates/teacheradmin/badges.html:168
-#, fuzzy
 msgid "Delete badge"
 msgstr "Cancella"
 
@@ -3639,7 +3614,6 @@ msgid "Sent at"
 msgstr "Inviati a"
 
 #: teacheradmin/templates/teacheradmin/groups.html:56
-#, fuzzy
 msgid "Warning"
 msgstr "Attenzione!"
 
@@ -3665,12 +3639,10 @@ msgid "Accept"
 msgstr "Accettare"
 
 #: teacheradmin/templates/teacheradmin/groups.html:83
-#, fuzzy
 msgid "Create groups"
 msgstr "Crea corso"
 
 #: teacheradmin/templates/teacheradmin/groups.html:85
-#, fuzzy
 msgid "Groups already exist for this course"
 msgstr "Non ci sono statistiche per questo corso."
 
@@ -3904,7 +3876,6 @@ msgid "Title:"
 msgstr "Titolo:"
 
 #: teacheradmin/templates/teacheradmin/units.html:60
-#, fuzzy
 msgid "Score description"
 msgstr "Descrizione Badge"
 
@@ -3926,7 +3897,6 @@ msgid "Delete"
 msgstr "Cancella"
 
 #: teacheradmin/templates/teacheradmin/units.html:140
-#, fuzzy
 msgid "Transcriptions"
 msgstr "Descrizione"
 
@@ -3954,12 +3924,10 @@ msgid "There are no attachments yet."
 msgstr "Non ci sono ancora allegati."
 
 #: teacheradmin/templates/teacheradmin/units.html:244
-#, fuzzy
 msgid "Transcription file name"
 msgstr "Nome organizzazione"
 
 #: teacheradmin/templates/teacheradmin/units.html:248
-#, fuzzy
 msgid "There are no transcriptions yet."
 msgstr "Non ci sono ancora allegati."
 
@@ -4099,7 +4067,6 @@ msgstr "Catalogo"
 
 #: templates/base.html:56 templates/base_bigheader.html:46
 #: templates/base_bigheader.html.py:166
-#, fuzzy
 msgid "Teams"
 msgstr "Team"
 
@@ -4145,7 +4112,6 @@ msgid "MOOC"
 msgstr "MOOC"
 
 #: templates/base_bigheader.html:85
-#, fuzzy
 msgid "Follow us"
 msgstr "Segui"
 
@@ -4178,7 +4144,6 @@ msgstr ""
 "MOOC"
 
 #: templates/base_bigheader.html:163
-#, fuzzy
 msgid "Catalogue of courses"
 msgstr "Catalogo corsi"
 
@@ -4203,7 +4168,6 @@ msgid "project"
 msgstr "progetto"
 
 #: templates/base_bigheader.html:230
-#, fuzzy
 msgid "Powered by"
 msgstr "Condiviso da"
 
@@ -4243,7 +4207,6 @@ msgstr "Test"
 msgid "Documentation"
 msgstr "Documentazione"
 
-#, fuzzy
 #~ msgid "Enrollment timestamp"
 #~ msgstr "Metodo di iscrizione"
 
@@ -4256,7 +4219,6 @@ msgstr "Documentazione"
 #~ msgid "Order"
 #~ msgstr "Ordini"
 
-#, fuzzy
 #~ msgid "Group name"
 #~ msgstr "Nome del corso"
 
