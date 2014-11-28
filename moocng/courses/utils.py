@@ -502,7 +502,10 @@ def create_groups(id_course):
                     groups.append(group)
 
             # Create topics for each group
-            cid = 6
+            course = Course.objects.filter(id=int(options["course_pk"]))[:1].get()
+            split_result = re.split(r'([0-9]+)', course.forum_slug)
+            cid = split_result[1]
+            
             for group in groups:
                 content = _(u"This is the topic for ") + group["name"] + _(u" where you can comment and help other team members")
                 data = {
@@ -536,8 +539,11 @@ def get_group_by_user_and_course(id_user, id_course):
     group = db.find_one( { 'id_course': id_course, 'members.id_user':id_user } )
     return group
 
-def get_groups_by_course(id_course, my_group):
-    return mongodb.get_db().get_collection('groups').find({"$and":[{'id_course':id_course},{"_id": {'$ne': ObjectId(my_group)}}]}).sort("_id",pymongo.ASCENDING)
+def get_groups_by_course(id_course, my_group=None):
+    if my_group is not None:
+        return mongodb.get_db().get_collection('groups').find({"$and":[{'id_course':int(id_course)},{"_id": {'$ne': ObjectId(my_group)}}]}).sort("_id",pymongo.ASCENDING)
+    else:
+        return mongodb.get_db().get_collection('groups').find({'id_course':int(id_course)}).sort("_id",pymongo.ASCENDING)
 
 def change_user_group(id_user, id_group, new_id_group):
     groupCollection = mongodb.get_db().get_collection('groups')
