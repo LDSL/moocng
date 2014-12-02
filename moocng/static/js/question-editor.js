@@ -247,11 +247,11 @@
                             this.model.set('text', value);
                             break;
                 case 'c':
-                case 'r':   var $input = this.$el.find('input');
+                case 'r':   var $input = this.$el.find('input[type=radio]');
                             var value = _.isUndefined($input.attr('checked')) ? false : true;
                             if (value && optiontype === 'r') {
                                 // Update the solution stored in the other radio models
-                                this.$el.parent().find("input[type=radio]").filter(function (idx, radio) {
+                                this.$el.parent().find("input[type=radio][name="+ $input.attr('name') +"]").filter(function (idx, radio) {
                                     return radio !== $input[0];
                                 }).trigger("change");
                             }
@@ -415,7 +415,7 @@
                     // Update the solution stored in the other radio models
                     _.each(
                         MOOC.views.current_index_view.collection.filter(function (model) {
-                            return model.get("optiontype") === 'r' && model.get("id") !== self.model.get("id");
+                            return model.get("optiontype") === 'r' && model.get("name") === self.model.get("name") && model.get("id") !== self.model.get("id");
                         }),
                         function (radio) {
                             radio.set(prop, false);
@@ -520,6 +520,9 @@
                 settings.height = 3;
             }else{
                 settings.text = 'label'
+                if(settings.optiontype === 'r') {
+                    settings.name = 'group1';
+                }
             }
             settings.y = this._last_ypos;
             option = new MOOC.models.Option(settings);
