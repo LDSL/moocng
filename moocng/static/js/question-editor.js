@@ -77,6 +77,7 @@
         padding: 5,
         handlePadding: 20,
         option_types: {
+            'q': 'fieldset',
             'l': 'textarea',
             't': 'text',
             'c': 'checkbox',
@@ -136,6 +137,9 @@
                 attributes.style = [];
                 attributes.style.push('resize:none;');
                 attributes.style.push('line-height: 20px;');
+            } else if(optiontype === 'q') {
+                tag = attributes.type;
+                attributes.name = this.model.get("name");
             }
 
             var domelem = '';
@@ -152,6 +156,8 @@
                 }else{
                     domelem += label + '</'+tag+'>';
                 }
+            }else if(optiontype === 'q'){
+                domelem += attributes.name + '</'+tag+'>';
             }
 
             //this.$el.empty().append(this.make(tag, attributes, content));
@@ -467,9 +473,36 @@
             // last item inserted position
             if(!this.$fieldset.hasClass('use-last-frame')){
                 this._last_ypos = this.collection.last()? this.collection.last().get('y') + 10 : 0;
+                var ypos_taken = true;
+                var self = this;
+                while(ypos_taken){
+                    var model = this.collection.find(function(model) { return model.get('y') == self._last_ypos; });
+                    if(model){
+                        ypos_taken = true;
+                        this._last_ypos += 10;
+                    }else{
+                        ypos_taken = false;
+                    }
+                }
             }else{
                 this._last_ypos = 0;
             }
+
+            // last question inserted position
+            var last_name = this.collection.last()? this.collection.last().get('name') : 0;
+            this._last_question = parseInt(last_name.match(/\d+/), 10) + 1;
+            var question_taken = true;
+            var self = this;
+            while(question_taken){
+                var model = this.collection.find(function(model) { return model.get('name') == 'q'+self._last_question; });
+                if(model){
+                    question_taken = true;
+                    this._last_question += 1;
+                }else{
+                    question_taken = false;
+                }
+            }
+            this._current_question = this._last_question;
 
             // create an array of option views to keep track of children
             this._optionViews = [];
@@ -523,19 +556,23 @@
             var settings = {},
                 option;
             settings.optiontype = this.$el.find("#option-optiontype-creation").val();
-            if (settings.optiontype === 'l') {
-                settings.width = 50;
-                settings.height = 3;
-            }else{
-                settings.text = 'label'
-                if(settings.optiontype === 'r') {
-                    settings.name = 'group1';
-                }
+            switch (settings.optiontype){
+                case 'l':   settings.width = 50;
+                            settings.height = 3;
+                            break;
+                case 'q':   settings.name = 'q'+ this._last_question;
+                            this._last_question++;
+                            this._current_question = this._last_question;
+                            break;
+                default:    settings.text = 'label'
             }
+            settings.name = 'q'+this._current_question;
             settings.y = this._last_ypos;
+            settings.order = this.collection.length;
             option = new MOOC.models.Option(settings);
             this.collection.add(option);
-            option.save();
+            // TODO: Improve this "safe save"
+            option.save({success: function(){ /* Do nothing */ }},{error: function(model, response){ model.set('y', model.get('y')+10); model.save(); }});
             this._last_ypos += 10;
         },
 
