@@ -145,9 +145,13 @@
                     domelem += ' ' + attribute + '="' + attributes[attribute]+'"';
                 }
             }
-            domelem += '>'
-            if(optiontype !== 'l' && label){
-                domelem += '<input type="text" class="label" value="' + label + '" />';
+            domelem += '>';
+            if(label){
+                if(optiontype !== 'l'){
+                   domelem += '<input type="text" class="label" value="' + label + '" />';
+                }else{
+                    domelem += label + '</'+tag+'>';
+                }
             }
 
             //this.$el.empty().append(this.make(tag, attributes, content));
@@ -247,7 +251,11 @@
                             this.model.set('text', value);
                             break;
                 case 'c':
-                case 'r':   var $input = this.$el.find('input[type=radio]');
+                case 'r':   var $input = null;
+                            if(optiontype === 'r')
+                                $input = this.$el.find('input[type=radio]');
+                            else
+                                $input = this.$el.find('input[type=checkbox]');
                             var value = _.isUndefined($input.attr('checked')) ? false : true;
                             if (value && optiontype === 'r') {
                                 // Update the solution stored in the other radio models
