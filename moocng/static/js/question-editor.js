@@ -489,7 +489,7 @@
             }
 
             // last question inserted position
-            var last_name = this.collection.last()? this.collection.last().get('name') : 0;
+            var last_name = this.collection.last()? this.collection.last().get('name') : "0";
             this._last_question = parseInt(last_name.match(/\d+/), 10) + 1;
             var question_taken = true;
             var self = this;
