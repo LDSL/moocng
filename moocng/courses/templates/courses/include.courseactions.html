@@ -75,7 +75,7 @@
 					{% if feature_forum and course.forum_slug %}
 					<li class="noLowRes">
 						{% url course_forum course.forum_slug as url_forum %}
-						<a href="{{ forum_url }}/category/{{course.forum_slug}}" {% if request.path == url_forum %} class="selected"{% endif %}>
+						<a href="{{ forum_url }}/category/{{course.forum_slug}}" target="_blank" {% if request.path == url_forum %} class="selected"{% endif %}>
 							{% trans "Forum" %}
 						</a>
 					</li>
@@ -166,3 +166,8 @@
 		</div>
 	</div>
 </div>
+<script>
+	$(function(){
+		sendHistoryEntry();
+	})
+</script>

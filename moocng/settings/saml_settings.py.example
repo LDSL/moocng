@@ -5,10 +5,10 @@ import saml2
 
 SAML_CREATE_UNKNOWN_USER = True
 SAML_ATTRIBUTE_MAPPING = {
-    'mail': ('username', 'email', ),
+    'mail': ('email', ),
     'cn': ('first_name', ),
     'sn': ('last_name', ),
-    'username' : ('eduPersonNickname', ),
+    'eduPersonNickname' : ('username', ),
     'eduPersonAffiliation': ('groups', ),
 }
 

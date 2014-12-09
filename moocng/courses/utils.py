@@ -502,7 +502,10 @@ def create_groups(id_course):
                     groups.append(group)
 
             # Create topics for each group
-            cid = 6
+            course = Course.objects.filter(id=int(options["course_pk"]))[:1].get()
+            split_result = re.split(r'([0-9]+)', course.forum_slug)
+            cid = split_result[1]
+            
             for group in groups:
                 content = _(u"This is the topic for ") + group["name"] + _(u" where you can comment and help other team members")
                 data = {
@@ -536,10 +539,13 @@ def get_group_by_user_and_course(id_user, id_course):
     group = db.find_one( { 'id_course': id_course, 'members.id_user':id_user } )
     return group
 
-def get_groups_by_course(id_course, my_group):
-    return mongodb.get_db().get_collection('groups').find({"$and":[{'id_course':id_course},{"_id": {'$ne': ObjectId(my_group)}}]}).sort("_id",pymongo.ASCENDING)
+def get_groups_by_course(id_course, my_group=None):
+    if my_group is not None:
+        return mongodb.get_db().get_collection('groups').find({"$and":[{'id_course':int(id_course)},{"_id": {'$ne': ObjectId(my_group)}}]}).sort("_id",pymongo.ASCENDING)
+    else:
+        return mongodb.get_db().get_collection('groups').find({'id_course':int(id_course)}).sort("_id",pymongo.ASCENDING)
 
-def change_user_group(id_user, id_group, new_id_group):
+def change_user_group(id_user, id_group, new_id_group, pos_lat=0.0, pos_lon=0.0):
     groupCollection = mongodb.get_db().get_collection('groups')
     group = groupCollection.find_one({'_id': ObjectId(id_group)})
     
@@ -547,11 +553,22 @@ def change_user_group(id_user, id_group, new_id_group):
         if m["id_user"] == id_user:
             member = m
             group["members"].remove(m)
-            group["size"] -= 1
+            if "size" in group:
+                group["size"] -= 1
+            else:
+                group["size"] = len(group["members"])
     
     groupCollection.update({'_id': ObjectId(id_group)}, {"$set": {"members": group["members"], "size": group["size"]}})
     group = groupCollection.find_one({'_id': ObjectId(new_id_group)})
     group["members"].append(member)
-    group["size"] += 1
+    if "size" in group:
+        group["size"] += 1
+    else:
+        group["size"] = len(group["members"])
     groupCollection.update({'_id': ObjectId(new_id_group)}, {"$set": {"members": group["members"], "size": group["size"]}})
+
+    groupsActivityCollection = mongodb.get_db().get_collection('groups_activity')
+    timestamp = int(round(time.time() * 1000))
+    activity_entry = {"id_course": group["id_course"], "id_user": id_user, "former_id_group": ObjectId(id_group), "new_id_group": ObjectId(new_id_group), "timestamp": timestamp, "lat": pos_lat, "lon": pos_lon}
+    groupsActivityCollection.insert(activity_entry)
 

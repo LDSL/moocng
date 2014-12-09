@@ -120,8 +120,9 @@ def ListRecords(request, num="1"):
 			days = 0
 			if(diff >= 8760):
 				years = iff/8760
-				duration.text += str(years) + "Y"
-				diff -= years * 8760
+				if(years > 0):
+					duration.text += str(years) + "Y"
+					diff -= years * 8760
 			
 			if(diff >= 720):
 				months = diff/720
@@ -133,6 +134,7 @@ def ListRecords(request, num="1"):
 				duration.text += str(days) + "D"
 				diff -= (days * 24)
 
+			duration.text += "T"
 			if(diff != 0):
 				duration.text += str(diff) + "H"
 
@@ -152,7 +154,7 @@ def ListRecords(request, num="1"):
 				organization = teacher.get_profile().organization.all()[0].name
 			except:
 				pass
-			lentity.text="<![CDATA[BEGIN:VCARD \nFN:" + teacher.first_name + " " + teacher.last_name + " \nUID:urn:uuid:" + str(teacher.id) + " \nEMAIL;TYPE=INTERNET:" + teacher.email + " \nORG:" + organization + " N:" + teacher.last_name +";" + teacher.first_name + " \nVERSION:3.0 \nEND:VCARD \n]]>"
+			lentity.text="<![CDATA[BEGIN:VCARD \r\nFN:" + teacher.first_name + " " + teacher.last_name + " \r\nUID:urn:uuid:" + str(teacher.id) + " \r\nEMAIL;TYPE=INTERNET:" + teacher.email + " \r\nORG:" + organization + " N:" + teacher.last_name +";" + teacher.first_name + " \r\nVERSION:3.0 \r\nEND:VCARD \r\n]]>"
 		
 		lclassification = SubElement(lom, 'lom:classification')
 		lpurpose = SubElement(lclassification, 'lom:purpose')

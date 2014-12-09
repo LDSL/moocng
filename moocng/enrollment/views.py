@@ -10,6 +10,7 @@ from moocng.enrollment.idp import enroll_course_at_idp
 from moocng import mongodb
 from bson.objectid import ObjectId
 import pymongo
+import time
 
 def free_enrollment(request, course_slug):
     course, permission = get_course_if_user_can_view_and_permission(course_slug, request)
@@ -25,9 +26,12 @@ def free_enrollment(request, course_slug):
                                 "email": request.user.email, "karma": request.user.get_profile().karma, "countries": "", 
                                 "languages": ""}
 
-                if(len(group["members"]) <= course.group_max_size + (course.group_max_size * 0.5)):
-                    group["size"] += 1
+                if(len(group["members"]) <= course.group_max_size + (course.group_max_size * settings.GROUPS_UPPER_THRESHOLD / 100)):
                     group["members"].append(new_member)
+                    if "size" in group:
+                        group["size"] += 1
+                    else:
+                        group["size"] = len(group["members"])
 
                     groupCollection.update({'_id': ObjectId(group["_id"])}, {"$set": {"members": group["members"], "size": group["size"]}})
 
@@ -37,13 +41,18 @@ def free_enrollment(request, course_slug):
                     groupCollection.insert(group)
            
             user = request.user
+            lat = request.POST["latitude"]
+            lon = request.POST["longitude"]
             old_course_status = 'f'
             if course.created_from:
                 if course.created_from.students.filter(pk=user.pk):
                     old_course_status = 'n'
             course.students.through.objects.create(student=user,
                                                    course=course,
-                                                   old_course_status=old_course_status)
+                                                   old_course_status=old_course_status,
+                                                   timestamp=int(round(time.time())),
+                                                   pos_lat=lat,
+                                                   pos_lon=lon)
             if getattr(settings, 'FREE_ENROLLMENT_CONSISTENT', False):
                 enroll_course_at_idp(request.user, course)
             success(request,
@@ -64,7 +73,10 @@ def free_unenrollment(request, course_slug):
             for m in group["members"]:
                 if(m["id_user"] == request.user.id):
                     group["members"].remove(m)
-                    group["size"] -= 1
+                    if "size" in group:
+                        group["size"] -= 1
+                    else:
+                        group["size"] = len(group["members"])
 
             groupCollection.update({'_id': ObjectId(group["_id"])}, {"$set": {"members": group["members"], "size": group["size"]}})
 

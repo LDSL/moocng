@@ -15,7 +15,7 @@
  */
 
 /* SWATCHES */
-@highlight: #55555d; /*002595;*/
+@highlight: #27272e; /*002595;*/
 @comp: #fedd00;
 @black: #000;
 @neutral_intense: #27272e;
@@ -131,6 +131,30 @@
     &:hover > .dropdown-menu {
         visibility: visible;
         opacity: 1;
+    }
+}
+
+.modal {
+    padding: 30px;
+
+    h3 {
+        font-size: 22px;
+        font-weight: 300;
+        color: @neutral_intense;
+        padding: 10px 0 25px;
+        float: none;
+    }
+
+    .modal-body {
+        margin-bottom: 25px;
+
+        p {
+            padding: 5px 0;
+        }
+    }
+
+    .modal-footer {
+        text-align: right;
     }
 }
 
@@ -983,6 +1007,100 @@ input[type="checkbox"] {
                     cursor: pointer;
                 }
             }
+        }
+    }
+}
+
+#help_button {
+    width: 48px;
+    height: 48px;
+    padding: 6px;
+    background-color: @highlight;
+    border-radius: 36px 0 0 36px;
+    position: fixed;
+    right: 0;
+    bottom: 110px;
+}
+
+footer {
+    color: @neutral_medium_1;
+
+    a {
+        color: @highlight;
+    }
+
+    .social_links {
+        background: @neutral_medium_1;
+        color: @neutral_light_3;
+        padding: 20px;
+        font-size: 22px;
+        font-weight: 300;
+        text-align: center;
+    }
+  
+    .prefoot {
+        padding: 30px 0 50px;
+        border-top: 10px solid @highlight;
+
+        p {
+            margin-bottom: 22px;
+
+            a {
+                border-bottom: 1px solid @comp;
+                transition: border .2s ease-in-out;
+
+                &:hover {
+                    border-bottom-color: @highlight;
+                }
+            }
+        }
+
+        strong {
+            font-weight: 800;
+        }
+
+        .logos {
+            li {
+                margin-right: 40px;
+
+                &:not(.noBorder) {
+                    padding-right: 40px;
+                    border-right: 1px solid @neutral_light_2;
+                }
+
+                &:last-child {
+                    border-right: none;
+                }
+            }
+
+            &.stretch {
+                li {
+                    margin-right: 14px;
+
+                &:not(.noBorder) {
+                    padding-right: 14px;
+                    border-right: 1px solid @neutral_light_2;
+                }
+
+                &:last-child {
+                    border-right: none;
+                }
+                }
+            }
+        }
+    }
+
+    .footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        padding: 18px 20px;
+        background: @neutral_light_2;
+        border-top: 1px solid @neutral_medium_2;
+        font-size: 14px;
+
+        ul li {
+            margin-left: 20px;
         }
     }
 }
