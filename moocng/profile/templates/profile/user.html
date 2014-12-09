@@ -90,9 +90,9 @@
 					<div class="interests">
 						<h5>{% trans "Interests areas" %}</h5>
 						<ul class="tags">
-							{% with profile.interests_as_list as arr_interests %}
+							{% with profile.interests_name_as_list as arr_interests %}
 							{% for interest in arr_interests %}
-							<li><a href="#">{{ interest }}</a></li>
+							<li><a href="#">{% trans interest %}</a></li>
 							{% endfor %}
 							{% endwith %}
 						</ul>

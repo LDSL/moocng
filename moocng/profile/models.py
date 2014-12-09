@@ -111,6 +111,21 @@ class UserProfile(models.Model):
     def interests_as_list(self):
         return self.interests.split(',')
 
+    def interests_name_as_list(self):
+        interests_name = {
+            'ES': 'Educational Sciences',
+            'SS': 'Social Sciences',
+            'H': 'Humanities',
+            'NSM': 'Natural Sciences and Mathematics',
+            'BS': 'Biomedical Sciences',
+            'TS': 'Technological Sciences'
+        }
+        interests_list = []
+        for interest in self.interests.split(','):
+            interests_list.append(interests_name[interest])
+        
+        return interests_list
+
 @receiver(signals.post_save, sender=User, dispatch_uid="create_user_profile")
 def create_user_profile(sender, instance, created, **kwargs):
     tables = connection.introspection.table_names()
