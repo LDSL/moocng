@@ -108,6 +108,9 @@ class UserProfile(models.Model):
     def __unicode__(self):
         return unicode(self.user)
 
+    def interests_as_list(self):
+        return self.interests.split(',')
+
 @receiver(signals.post_save, sender=User, dispatch_uid="create_user_profile")
 def create_user_profile(sender, instance, created, **kwargs):
     tables = connection.introspection.table_names()
