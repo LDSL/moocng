@@ -4,13 +4,24 @@ import os
 import saml2
 
 SAML_CREATE_UNKNOWN_USER = True
+
 SAML_ATTRIBUTE_MAPPING = {
     'mail': ('email', ),
-    'cn': ('first_name', ),
+    'givenName': ('first_name', ),
     'sn': ('last_name', ),
-    'eduPersonNickname' : ('username', ),
-    'eduPersonAffiliation': ('groups', ),
+    'eduPersonNickname': ('username', ),
+    #'mail': ('username', ),
+    #'eduPersonAffiliation': ('groups', ),
+    'schacdateofbirth': ('birthdate', ),
+    'schacgender': ('gender', ),
+    'postalCode': ('postal_code', ),
+    'schacpersonaluniquecode': ('interests', ),
+    'l': ('city', ),
+    'c': ('country', ),
+    'schacmothertongue': ('language', ),
+    'eduPersonPrincipalName': ('sub', ),
 }
+
 
 SAML_CONFIG = {
     # full path to the xmlsec1 binary programm
@@ -41,21 +52,21 @@ SAML_CONFIG = {
             },
 
             # in this section the list of IdPs we talk to are defined
-            'idp': {
+            #'idp': {
                 # we do not need a WAYF service since there is
                 # only an IdP defined here. This IdP should be
                 # present in our metadata
 
                 # the keys of this dictionary are entity ids
-                'https://idp.devopenmooc.com/simplesaml/saml2/idp/metadata.php': {
-                    'single_sign_on_service': {
-                        saml2.BINDING_HTTP_REDIRECT: 'https://idp.devopenmooc.com/simplesaml/saml2/idp/SSOService.php',
-                    },
-                    'single_logout_service': {
-                        saml2.BINDING_HTTP_REDIRECT: 'https://idp.devopenmooc.com/simplesaml/saml2/idp/SingleLogoutService.php',
-                    },
-                },
-            },
+            #    'https://idp.devopenmooc.com/simplesaml/saml2/idp/metadata.php': {
+            #        'single_sign_on_service': {
+            #            saml2.BINDING_HTTP_REDIRECT: 'https://idp.devopenmooc.com/simplesaml/saml2/idp/SSOService.php',
+            #        },
+            #        'single_logout_service': {
+            #            saml2.BINDING_HTTP_REDIRECT: 'https://idp.devopenmooc.com/simplesaml/saml2/idp/SingleLogoutService.php',
+            #        },
+            #    },
+            #},
         },
     },
 
