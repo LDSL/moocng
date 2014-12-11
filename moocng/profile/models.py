@@ -121,8 +121,9 @@ class UserProfile(models.Model):
             'TS': 'Technological Sciences'
         }
         interests_list = []
-        for interest in self.interests.split(','):
-            interests_list.append(interests_name[interest])
+	if self.interests is not None:
+	        for interest in self.interests.split(','):
+        	    interests_list.append(interests_name[interest])
         
         return interests_list
 
