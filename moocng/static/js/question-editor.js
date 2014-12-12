@@ -186,6 +186,7 @@
             }
 
             return this;
+            //$("fieldset.ui-sortable").find("fieldset['name'="+attributes.name+"]").append(this.$el);
         },
 
         is_out: function (position) {
@@ -520,8 +521,15 @@
             this._rendered = true;
 
             this.$fieldset.empty();
-            _(this._optionViews).each(function (ov) {
-                self.$fieldset.append(ov.render().el);
+            var questions = _.groupBy(this._optionViews, function(elem){ return elem.model.get('name'); });
+            _(questions).each(function(qset){
+                //var qfieldset = $('<fieldset>');
+                var qfieldset = qset.shift().render().$el;
+                self.$fieldset.append(qfieldset);
+                _(qset).each(function (ov) {
+                    console.log(qfieldset);
+                    qfieldset.append(ov.render().el);
+                });
             });
 
             return this;
@@ -653,6 +661,11 @@
         $fieldset.sortable({
             update: function( event, ui ) {
                 $(this.children).trigger('drop');
+            },
+            start: function( event, ui ) {
+                if(ui.item.prop('tagName').toLowerCase() === 'fieldset'){
+                    console.log(ui.item.attr('name'));
+                }
             }
         });
 
