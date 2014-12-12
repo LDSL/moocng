@@ -41,7 +41,7 @@
 			<ul class="userlist">
 				{% for member in group.members %}
 				<li class="bottom-line" id_user="{{member.id_user}}">
-					<a href="{%url profile_user%}{{member.id_user}}"><img class="avatar" src="{% gravatar_for_email member.email %}?s=64" alt="{% firstof member.first_name member.username %}"><a/>
+					<a href="{%url profile_user%}{{member.id_user}}"><img class="avatar" src="{% gravatar_for_email member.email %}&s=64" alt="{% firstof member.first_name member.username %}"><a/>
 					<div>
 						<h4 class="bottom-line"><a href="{%url profile_user%}{{member.id_user}}">{{ member.first_name }} {{ member.last_name }}<span>@{{ member.username }}</a></h4>
 						{% if member.countries %}
@@ -137,6 +137,22 @@
 
 {% block extrajs %}
 	<script>
+		function getCookie(name) {
+		    var cookieValue = null;
+		    if (document.cookie && document.cookie != '') {
+		        var cookies = document.cookie.split(';');
+		        for (var i = 0; i < cookies.length; i++) {
+		            var cookie = jQuery.trim(cookies[i]);
+		            // Does this cookie string begin with the name we want?
+		            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+		                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+		                break;
+		            }
+		        }
+		    }
+		    return cookieValue;
+		}
+
 		function resizeDashboard(){
 			$('.dash-box').each(function(index, value){
 				var $dash = $(value);
@@ -171,7 +187,21 @@
 		$(".groups").find("p").click(function(){
 
 			var id_group = $(this).attr("id_group")
+			var lat = 0.0;
+			var lon = 0.0;
+			if(geolocation){
+				lat = geolocation.coords.latitude;
+				lon = geolocation.coords.longitude;
+			}
 			$.ajax({
+				type: "POST",
+				data: {
+					"latitude": lat,
+					"longitude": lon
+				},
+				beforeSend: function(xhr, settings) {
+			        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+			    },
 				url : "/changeGroup/{{ group|mongo_id }}" + "/" + id_group,
 			   	success: function(response) {
 			   		location.reload();

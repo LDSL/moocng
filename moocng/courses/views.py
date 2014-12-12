@@ -870,6 +870,10 @@ def create_course_groups(request,id):
 
 @login_required
 def change_group(request, id_group, id_new_group):
-    change_user_group(request.user.id, id_group, id_new_group)
+    if request.method != 'POST':
+        raise HttpResponseBadRequest
+    latitude = request.POST['latitude']
+    longitude = request.POST['longitude']
+    change_user_group(request.user.id, id_group, id_new_group, latitude, longitude)
     return HttpResponse("true")
 

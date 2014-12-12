@@ -188,12 +188,13 @@ if (_.isUndefined(window.MOOC)) {
 
         tinyMCEOptions = {
             mode: "exact",
-            //plugins: "paste,searchreplace",
+            plugins: "link, paste, searchreplace",
+            paste_retain_style_properties: "color font-size"
             /*theme: "advanced",
             theme_advanced_resizing : true,
             theme_advanced_toolbar_location: "top",
             theme_advanced_buttons1: "bold,italic,underline,strikethrough,separator,link,unlink,separator,undo,redo,copy,paste,separator,cleanup,separator,bullist,numlist",
-            theme_advanced_buttons2: "",
+            theme_advanced_buttons2: "link",
             theme_advanced_buttons3: ""*/
         },
 
@@ -881,9 +882,9 @@ if (_.isUndefined(window.MOOC)) {
                         removeBtn = "<button id=\"" + removeBtnId + "\" class=\"removecriterion btn btn-danger\">" + MOOC.trans.evaluationCriterion.remove + "</button>";
                         criterionDiv = "<div id=\"" + criterionDivId + "\">"
                                        + "<div class=\"\"> <div>" + titleLabel + titleInput + "</div>"
-                                       + "<div class=\"\">" + descriptionLabel + descriptionInput + "</div></div>"
+                                       + "<div class=\"\">" + descriptionLabel + descriptionInput + "</div>"
                         for(var i=0;i<5;i++){
-                            criterionDiv += '<div class="">' + scoreInputs[i].scoreLabel + scoreInputs[i].scoreInput + '</div></div>';
+                            criterionDiv += '<div class="">' + scoreInputs[i].scoreLabel + scoreInputs[i].scoreInput + '</div>';
                         }
                         criterionDiv += "<div class=\"\"><div class=\"align-right\">" + removeBtn + "</div></div></div>";
 
