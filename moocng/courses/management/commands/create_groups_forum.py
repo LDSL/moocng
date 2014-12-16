@@ -78,7 +78,7 @@ class Command(BaseCommand):
                             group["forum_slug"] = r.json()["slug"]
                             mongodb.get_db().get_collection('groups').update({"_id": group["_id"]}, {"$set": {"forum_slug": group["forum_slug"]}})
                             print "  --> Topic for Group '" + group["name"] + "' created succesfully."
-                        else
+                        else:
                             print "  --> Could no create a topic for Group '" + group["name"] + "'. Server returns error code " + r.status_code + "."
                             print r.text
 
