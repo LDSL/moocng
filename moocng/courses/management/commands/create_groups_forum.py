@@ -55,8 +55,6 @@ class Command(BaseCommand):
                 course = Course.objects.filter(id=int(options["course_pk"]))[:1].get()
                 split_result = re.split(r'([0-9]+)', course.forum_slug)
                 cid = split_result[1]
-                print split_result
-                print cid
 
                 content = _(u"This is the topic for ") + group["name"] + _(u" where you can comment and help other team members")
                 data = {
@@ -82,6 +80,6 @@ class Command(BaseCommand):
 
                     except:
                         print "  !!! Error creating course forum topic"
-                        print "      Unexpected error:", sys.exc_info()[0]
+                        print "      Unexpected error:", sys.exc_info()[0].str()
 
 
