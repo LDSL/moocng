@@ -74,12 +74,16 @@ class Command(BaseCommand):
                 if settings.FEATURE_FORUM:
                     try:
                         r = requests.post(settings.FORUM_URL + "/api2/topics", data=json.dumps(data), headers=headers)
-                        group["forum_slug"] = r.json()["slug"]
-                        mongodb.get_db().get_collection('groups').update({"_id": group["_id"]}, {"$set": {"forum_slug": group["forum_slug"]}})
-                        print "  --> Topic for Group '" + group["name"] + "' created succesfully."
+                        if r.status_code == requests.codes.ok:
+                            group["forum_slug"] = r.json()["slug"]
+                            mongodb.get_db().get_collection('groups').update({"_id": group["_id"]}, {"$set": {"forum_slug": group["forum_slug"]}})
+                            print "  --> Topic for Group '" + group["name"] + "' created succesfully."
+                        else:
+                            print "  --> Could no create a topic for Group '" + group["name"] + "'. Server returns error code " + r.status_code + "."
+                            print r.text
 
                     except:
                         print "  !!! Error creating course forum topic"
-                        print "      Unexpected error:", sys.exc_info()[0]
+                        print "      Unexpected error:", sys.exc_info()
 
 
