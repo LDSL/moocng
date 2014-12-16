@@ -20,6 +20,7 @@ import requests
 import time
 import hashlib
 import sys
+import re
 
 from datetime import date
 from deep_serializer import serializer, deserializer
