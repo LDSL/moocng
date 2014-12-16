@@ -44,6 +44,7 @@ fieldset .option {
     position: static;
     display: block;
     margin: 5px 0;
+    background-color: #AAA;
 }
 
 fieldset.use-last-frame .option {
@@ -66,6 +67,10 @@ fieldset .option .label {
     display: inline-block;
     margin: 0 5px;
 }
+
+    fieldset .option fieldset {
+        background-color: #DDD;
+    }
 
 fieldset.use-last-frame .selected {
     background-color: #8888ff;

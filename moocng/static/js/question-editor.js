@@ -91,7 +91,7 @@
         initialize: function () {
             _.bindAll(this, 'render', 'drag', 'start', 'stop',
                       'select', 'unselect', 'is_out', 'change');
-            this.model.bind("change", this.render, this);
+            //this.model.bind("change", this.render, this);
 
             this.parent_view = this.options.parent_view;
             this.parent_width = this.options.parent_width;
@@ -140,6 +140,10 @@
             } else if(optiontype === 'q') {
                 tag = attributes.type;
                 attributes.name = this.model.get("name");
+                attributes.style = [
+                    "width: auto;",
+                    "height: auto;"
+                ].join(" ");
             }
 
             var domelem = '';
@@ -311,7 +315,8 @@
         },
 
         change_order: function(event){
-            this.model.set("order", this.$el.index());
+            var order = this.model.get("optiontype") !== "q"? (this.$el.parent().parent().index()+1)*10 + this.$el.index() + 1 : (this.$el.index() + 1) * 10;
+            this.model.set('order', order);
             this.model.save();
         }
 
@@ -524,12 +529,28 @@
             var questions = _.groupBy(this._optionViews, function(elem){ return elem.model.get('name'); });
             _(questions).each(function(qset){
                 //var qfieldset = $('<fieldset>');
-                var qfieldset = qset.shift().render().$el;
-                self.$fieldset.append(qfieldset);
-                _(qset).each(function (ov) {
-                    console.log(qfieldset);
-                    qfieldset.append(ov.render().el);
-                });
+                //var qfieldset = qset.shift().render().$el;
+                var qfieldset = qset.filter(function(el){return el.model.get('optiontype') === 'q'})[0];
+                var qindex = qset.indexOf(qfieldset); 
+                qfieldset = qfieldset.render().$el;
+                
+                if(qindex > -1){
+                    qset.splice(qindex, 1);
+                    self.$fieldset.append(qfieldset);
+                    _(qset).each(function (ov) {
+                        qfieldset.children('fieldset').eq(0).append(ov.render().el);
+                    });
+                    qfieldset.children().sortable({
+                        update: function( event, ui ) {
+                            $(this.children).trigger('drop');
+                        },
+                        start: function( event, ui ) {
+                            if(ui.item.prop('tagName').toLowerCase() === 'fieldset'){
+                                console.log(ui.item.attr('name'));
+                            }
+                        }
+                    });
+                }
             });
 
             return this;
@@ -660,7 +681,13 @@
 
         $fieldset.sortable({
             update: function( event, ui ) {
-                $(this.children).trigger('drop');
+                //$(this.children).trigger('drop');
+                _(this.children).each(function(qset){
+                    //$(qset.children).trigger('drop');
+                    _(qset.children).each(function(opset){
+                        $(opset.children).trigger('drop');
+                    });
+                });
             },
             start: function( event, ui ) {
                 if(ui.item.prop('tagName').toLowerCase() === 'fieldset'){
