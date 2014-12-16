@@ -91,7 +91,7 @@
         initialize: function () {
             _.bindAll(this, 'render', 'drag', 'start', 'stop',
                       'select', 'unselect', 'is_out', 'change');
-            //this.model.bind("change", this.render, this);
+            this.model.bind("change", this.render, this);
 
             this.parent_view = this.options.parent_view;
             this.parent_width = this.options.parent_width;
@@ -144,10 +144,69 @@
                     "width: auto;",
                     "height: auto;"
                 ].join(" ");
+            }else if(optiontype === 't'){
+                attributes.style = [
+                    "width: auto;",
+                    "height: auto;"
+                ].join(" ");
             }
 
             var domelem = '';
-            domelem += '<'+tag;
+            switch(optiontype){
+                case 'r':
+                case 'c':
+                    domelem += '<'+tag;
+                    for (var attribute in attributes){
+                        if(attributes.hasOwnProperty(attribute)){
+                            domelem += ' ' + attribute + '="' + attributes[attribute]+'"';
+                        }
+                    }
+                    domelem += '>';
+                    if(label){
+                        domelem += '<input type="text" class="label" value="' + label + '" />';
+                    }
+                    break;
+
+                case 't':
+                    if(label){
+                        domelem += '<input type="text" class="label" value="' + label + '" />';
+                    }
+                    domelem += '<'+tag;
+                    for (var attribute in attributes){
+                        if(attributes.hasOwnProperty(attribute)){
+                            domelem += ' ' + attribute + '="' + attributes[attribute]+'"';
+                        }
+                    }
+                    domelem += '>';
+                    break;
+
+                case 'l':
+                    domelem += '<'+tag;
+                    for (var attribute in attributes){
+                        if(attributes.hasOwnProperty(attribute)){
+                            domelem += ' ' + attribute + '="' + attributes[attribute]+'"';
+                        }
+                    }
+                    domelem += '>';
+                    if(label){
+                        domelem += label + '</'+tag+'>';
+                    }
+                    break;
+
+                case 'q':
+                    domelem += '<'+tag;
+                    for (var attribute in attributes){
+                        if(attributes.hasOwnProperty(attribute)){
+                            domelem += ' ' + attribute + '="' + attributes[attribute]+'"';
+                        }
+                    }
+                    domelem += '>';
+                    domelem += attributes.name + '</'+tag+'>';
+                    break;
+
+            }
+
+            /*domelem += '<'+tag;
             for (var attribute in attributes){
                 if(attributes.hasOwnProperty(attribute)){
                     domelem += ' ' + attribute + '="' + attributes[attribute]+'"';
@@ -162,7 +221,7 @@
                 }
             }else if(optiontype === 'q'){
                 domelem += attributes.name + '</'+tag+'>';
-            }
+            }*/
 
             //this.$el.empty().append(this.make(tag, attributes, content));
             this.$el.empty().append(domelem);
@@ -288,36 +347,14 @@
                             break;
             }
             this.model.save();
-
-
-            /*var $input = this.$el.find('input'),
-                optiontype = this.model.get('optiontype'),
-                value = "",
-                prop = "solution";
-            if (optiontype === 'l') {
-                $input = this.$el.find("textarea");
-                prop = "text";
-            }
-            if (optiontype === 'c' || optiontype === 'r') {
-                value = _.isUndefined($input.attr('checked')) ? false : true;
-                if (value && optiontype === 'r') {
-                    // Update the solution stored in the other radio models
-                    $("input[type=radio]").filter(function (idx, radio) {
-                        return radio !== $input[0];
-                    }).trigger("change");
-                }
-            } else {
-                value = $input.val();
-            }
-            this.start();
-            this.model.set(prop, value);
-            this.model.save();*/
         },
 
         change_order: function(event){
+            this.model.unbind("change", this.render, this);
             var order = this.model.get("optiontype") !== "q"? (this.$el.parent().parent().index()+1)*10 + this.$el.index() + 1 : (this.$el.index() + 1) * 10;
             this.model.set('order', order);
             this.model.save();
+            this.model.bind("change", this.render, this);
         }
 
     });
@@ -566,7 +603,12 @@
             this._optionViews.push(ov);
 
             if (this._rendered) {
-                this.$fieldset.append(ov.render().el);
+                if(ov.model.get('optiontype') !== 'q'){
+                    var qfieldset = this.$fieldset.find('fieldset[name=q'+this._current_question+']');
+                    qfieldset.append(ov.render().el);
+                }else{
+                    this.$fieldset.append(ov.render().el);
+                }
             }
         },
 
@@ -618,12 +660,13 @@
             if (selected !== null) {
                 MOOC.router.navigate("option" + selected.model.get('id'),
                                      {trigger: true});
+                this._current_question = parseInt(selected.model.get('name').match(/\d+/), 10);
             }
         },
 
         option_click: function (event) {
             var target = event.target;
-            if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+            if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'FIELDSET') {
                 target = target.parentNode;
             }
             this.select_option(target);

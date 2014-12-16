@@ -45,6 +45,11 @@ fieldset .option {
     display: block;
     margin: 5px 0;
     background-color: #AAA;
+    border: 2px solid #DDD;
+}
+
+fieldset .option.selected {
+    border: 2px solid #EAAF31;
 }
 
 fieldset.use-last-frame .option {
@@ -60,8 +65,12 @@ fieldset.use-last-frame .option input {
 }
 
 fieldset .option input {
-    vertical-align: top;
+    vertical-align: middle;
 }
+
+    fieldset .option input[type=text] + input[type=text] {
+        vertical-align: top;
+    }
 
 fieldset .option .label {
     display: inline-block;
@@ -70,7 +79,12 @@ fieldset .option .label {
 
     fieldset .option fieldset {
         background-color: #DDD;
+        padding: 5px;
     }
+
+        fieldset .option fieldset .option {
+            padding: 5px;
+        }
 
 fieldset.use-last-frame .selected {
     background-color: #8888ff;

@@ -924,7 +924,8 @@ MOOC.views.Option = Backbone.View.extend({
         l: "textarea",
         t: "text",
         c: "checkbox",
-        r: "radio"
+        r: "radio",
+        q: "fieldset"
     },
 
     initialize: function () {
@@ -944,7 +945,7 @@ MOOC.views.Option = Backbone.View.extend({
             solution = this.model.get('solution'),
             width = "auto;",
             height = "auto;",
-            tag = "input",
+            tag = optiontype !== 'q'? "input" : "span",
             content = "",
             attributes = {
                 type: this.types[optiontype],
