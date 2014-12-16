@@ -502,7 +502,7 @@ def create_groups(id_course):
                     groups.append(group)
 
             # Create topics for each group
-            course = Course.objects.filter(id=int(options["course_pk"]))[:1].get()
+            course = Course.objects.filter(id=id_course)[:1].get()
             split_result = re.split(r'([0-9]+)', course.forum_slug)
             cid = split_result[1]
             
