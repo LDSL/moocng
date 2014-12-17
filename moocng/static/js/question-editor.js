@@ -606,8 +606,10 @@
                 if(ov.model.get('optiontype') !== 'q'){
                     var qfieldset = this.$fieldset.find('fieldset[name=q'+this._current_question+']');
                     qfieldset.append(ov.render().el);
+                    qfieldset.children().trigger('drop');
                 }else{
                     this.$fieldset.append(ov.render().el);
+                    this.$fieldset.trigger('drop');
                 }
             }
         },
@@ -724,9 +726,7 @@
 
         $fieldset.sortable({
             update: function( event, ui ) {
-                //$(this.children).trigger('drop');
                 _(this.children).each(function(qset){
-                    //$(qset.children).trigger('drop');
                     _(qset.children).each(function(opset){
                         $(opset.children).trigger('drop');
                     });

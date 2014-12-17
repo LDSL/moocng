@@ -137,6 +137,9 @@ def has_passed_now(new_mark, mark_item, threshold):
 
 def update_kq_mark(db, kq, user, threshold, new_mark_kq=None, new_mark_normalized_kq=None):
     from moocng.courses.marks import calculate_kq_mark
+
+    print '  --> update_kq_mark'
+    
     if not new_mark_kq or not new_mark_normalized_kq:
         new_mark_kq, new_mark_normalized_kq = calculate_kq_mark(kq, user)
     data_kq = {}

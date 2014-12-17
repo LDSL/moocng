@@ -47,6 +47,8 @@ from moocng.mongodb import get_db
 from moocng.videos.tasks import process_video_task
 from moocng.media_contents import get_media_content_types_choices, media_content_extract_id
 
+from itertools import groupby
+
 logger = logging.getLogger(__name__)
 
 
@@ -821,21 +823,39 @@ class Question(models.Model):
         return ugettext(u'{0} - Question {1}').format(self.kq, self.id)
 
     def is_correct(self, answer):
-        correct = True
+        result = 0.0
         if answer['replyList'] is not None:
             replies = dict([(int(r['option']), r['value'])
                             for r in answer['replyList']])
         else:
             replies = {}
 
-        for option in self.option_set.all():
-            reply = replies.get(option.id, None)
-            if reply is None:
-                return False
+        options_dict = {}
+        results_dict = {}
+        for k, g in groupby(self.option_set.all(), lambda x: x.name):
+            opt_list = list(g)
+            if k in options_dict:
+                options_dict[k] = options_dict[k] + opt_list
+            else:
+                options_dict[k] = opt_list
+            results_dict[k] = 0.0
 
-            correct = correct and option.is_correct(reply)
+        for key, value in options_dict.iteritems():
+            correct_q = True
+            for option in value:
+                reply = replies.get(option.id, None)
+                if reply is None:
+                    return False
+                correct_q = correct_q and option.is_correct(reply)
 
-        return correct
+            result_q = 10.0/len(options_dict) if correct_q else 0.0
+            results_dict[key] = result_q
+            result += result_q
+
+        print '\nResults_dict : ' + str(results_dict)
+        print '\nResult : ' + str(result)
+
+        return result
 
     def is_completed(self, user, visited=None):
         db = get_db()
@@ -898,19 +918,20 @@ class Option(models.Model):
         unique_together = ('question', 'x', 'y')
 
     def __unicode__(self):
-        return ugettext(u'{0} at {1} x {2}').format(self.optiontype, self.x, self.y)
+        return ugettext(u'{0}.{1} ({2}: {3}) at {4} x {5}').format(self.id, self.optiontype, self.name, self.text, self.x, self.y)
 
     def natural_key(self):
         return self.question.natural_key() + (self.x, self.y)
 
     def is_correct(self, reply):
-        if self.optiontype == 'l':
+        if self.optiontype == 'l' or self.optiontype == 'q':
             return True
         elif self.optiontype == 't':
             if not hasattr(reply, 'lower'):
                 logger.error('Error at option %s - Value %s - Solution %s' % (str(self.id), str(reply), self.solution))
                 return True
             else:
+                print self.solution.lower() +' vs '+ reply.lower()
                 return reply.lower() == self.solution.lower()
         else:
             return bool(reply) == (self.solution.lower() == u'true')

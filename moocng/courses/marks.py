@@ -32,9 +32,11 @@ def calculate_question_mark(kq, question, user):
         'user_id': user.id,
         'question_id': question.id
     })
+    print '  --> calculate_question_mark'
     if user_answer:
-        if user_answer and question.is_correct(user_answer):
-            return 10.0
+        mark = question.is_correct(user_answer) 
+        print 'devuelvo nota! ' + str(mark)
+        return mark
     return 0.0
 
 
@@ -79,6 +81,9 @@ def calculate_kq_mark(kq, user):
     """
     from moocng.peerreview.models import PeerReviewAssignment
     mark = relative_mark = 0
+
+    print '  --> calculate_kq_mark'
+
     try:
         question = kq.question_set.get()
         # KQ has a question
