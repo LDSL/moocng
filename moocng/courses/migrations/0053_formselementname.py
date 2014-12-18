@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'Option.name'
         db.add_column('courses_option', 'name',
-                      self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True),
+                      self.gf('django.db.models.fields.CharField')(max_length=100, default=''),
                       keep_default=False)
 
 

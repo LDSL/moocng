@@ -909,7 +909,7 @@ class Option(models.Model):
     order = models.PositiveSmallIntegerField(verbose_name=_(u'Order'),
                                             null=True)
     name = models.CharField(verbose_name=_(u'Group name'), max_length=100,
-        blank=True, null=True)
+        blank=True, null=False)
     objects = OptionManager()
 
     class Meta:

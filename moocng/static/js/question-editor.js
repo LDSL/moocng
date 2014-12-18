@@ -532,8 +532,12 @@
             }
 
             // last question inserted position
-            var last_name = this.collection.last()? this.collection.last().get('name') : "0";
-            this._last_question = parseInt(last_name.match(/\d+/), 10) + 1;
+            if( this.collection.last() && this.collection.last().get('name') ){
+                var last_name = this.collection.last().get('name');
+                this._last_question = parseInt(last_name.match(/\d+/), 10);
+            }else{
+                this._last_question = 0;
+            }
             var question_taken = true;
             var self = this;
             while(question_taken){
@@ -568,26 +572,33 @@
                 //var qfieldset = $('<fieldset>');
                 //var qfieldset = qset.shift().render().$el;
                 var qfieldset = qset.filter(function(el){return el.model.get('optiontype') === 'q'})[0];
-                var qindex = qset.indexOf(qfieldset); 
-                qfieldset = qfieldset.render().$el;
-                
-                if(qindex > -1){
-                    qset.splice(qindex, 1);
-                    self.$fieldset.append(qfieldset);
+                if (qfieldset){
+                    var qindex = qset.indexOf(qfieldset); 
+                    qfieldset = qfieldset.render().$el;
+                    if(qindex > -1){
+                        qset.splice(qindex, 1);
+                        self.$fieldset.append(qfieldset);
+                    }
                     _(qset).each(function (ov) {
                         qfieldset.children('fieldset').eq(0).append(ov.render().el);
                     });
-                    qfieldset.children().sortable({
-                        update: function( event, ui ) {
-                            $(this.children).trigger('drop');
-                        },
-                        start: function( event, ui ) {
-                            if(ui.item.prop('tagName').toLowerCase() === 'fieldset'){
-                                console.log(ui.item.attr('name'));
-                            }
-                        }
+                }else{
+                    qfieldset = self.$fieldset;
+                    _(qset).each(function (ov) {
+                        qfieldset.append(ov.render().el);
                     });
                 }
+                
+                qfieldset.children().sortable({
+                    update: function( event, ui ) {
+                        $(this.children).trigger('drop');
+                    },
+                    start: function( event, ui ) {
+                        if(ui.item.prop('tagName').toLowerCase() === 'fieldset'){
+                            console.log(ui.item.attr('name'));
+                        }
+                    }
+                });
             });
 
             return this;
@@ -605,8 +616,13 @@
             if (this._rendered) {
                 if(ov.model.get('optiontype') !== 'q'){
                     var qfieldset = this.$fieldset.find('fieldset[name=q'+this._current_question+']');
-                    qfieldset.append(ov.render().el);
-                    qfieldset.children().trigger('drop');
+                    if(qfieldset.length > 0){
+                        qfieldset.append(ov.render().el);
+                        qfieldset.children().trigger('drop');
+                    }else{
+                        this.$fieldset.append(ov.render().el);
+                        this.$fieldset.trigger('drop');
+                    }
                 }else{
                     this.$fieldset.append(ov.render().el);
                     this.$fieldset.trigger('drop');
@@ -633,13 +649,14 @@
                 case 'l':   settings.width = 50;
                             settings.height = 3;
                             break;
-                case 'q':   settings.name = 'q'+ this._last_question;
-                            this._last_question++;
+                case 'q':   this._last_question++;
+                            settings.name = 'q'+ this._last_question;                            
                             this._current_question = this._last_question;
                             break;
                 default:    settings.text = 'label'
             }
-            settings.name = 'q'+this._current_question;
+            if(this._current_question > 0)
+                settings.name = 'q'+this._current_question;
             settings.y = this._last_ypos;
             settings.order = this.collection.length;
             option = new MOOC.models.Option(settings);
