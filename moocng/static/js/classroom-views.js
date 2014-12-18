@@ -901,7 +901,8 @@ MOOC.views.Question = Backbone.View.extend({
 
         if (fetch_solutions) {
             MOOC.ajax.getOptionsByQuestion(this.model.get("id"), function (data, textStatus, jqXHR) {
-                _.each(data.objects, function (opt) {
+                var sorted_options = _.sortBy(data.objects, function(item){return item.order;});
+                _.each(sorted_options, function (opt) {
                     load_reply(opt.id, opt.solution, opt.feedback);
                 });
                 show_result_msg();
