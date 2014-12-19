@@ -464,6 +464,75 @@ div.button, a.button {
 			}
 		}
 	}
+
+	&.geoadvise {
+		width: 650px;
+		left: 50%;
+		margin-left: -325px;
+		max-height: 90vh;
+		top: 5vh;
+		border-top: 4px solid @highlight;
+		padding-bottom: 118px;
+
+		a {
+			color: @highlight;
+			border-bottom: 1px solid @comp;
+		}
+
+		.modal-header {
+			text-align: right;
+			padding-top: 14px;
+		}
+
+		.modal-body {
+			height: auto;
+			text-align: center;
+
+			h1 {
+				font-weight: 900;
+				margin: 10px 0 32px;
+
+				span {
+					font-weight: 300;
+					display: block;
+				}
+			}
+
+			p {
+				color: @neutral_medium_1;
+				margin: 15px 0 20px;
+			}
+
+			.video {
+				width: 452px;
+				height: 224px;
+				overflow: hidden;
+				margin: 0 auto;
+				
+				video {
+					width: 452px;	
+				}
+
+				& + .label {
+					font-size: 12px;
+					margin: 0;
+				}
+			}
+		}
+
+		.modal-footer {
+			text-align: center;
+			color: @highlight;
+			padding: 20px 0 34px;
+			border-top: 1px solid @neutral_light_1;
+
+			p {
+				font-size: 22px;
+				font-weight: 300;
+				margin-bottom: 16px;
+			}
+		}
+	}
 }
 
 #modal_bck {
