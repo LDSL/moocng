@@ -77,19 +77,29 @@ function getBrowserName(){
 }
 
 function showGeolocationAdvise(){
-	console.log('Mostramos ventana');
 	var browser = getBrowserName().toLowerCase();
-	var browserName = browser !== 'msie' ? getBrowserName() : "Internet Explorer";
+	if(deviceInfo.type != "desktop"){
+		browser = browser+'-'+deviceInfo.os;
+	}
+
+	var browserName;
+	switch(browser){
+		case 'msie': 	browserName = "Internet Explorer";
+					 	break;
+		case 'safari-ios': 	browserName = "Safari";
+							break;
+		case 'chrome-ios':
+		case 'chrome-android': 	browserName = "Chrome";
+		default: 	browserName = getBrowserName();
+	}
+
+	var browser_guide = geoadvice_translate.browser_guide[browser];
 	var video_file = "geolocation_";
 	video_file += geolocation_allowed == undefined ? 'firsttime' : 'blocked';
 	video_file += '_' + browser;
 	video_file += '_en_640';
-	var browser_guide;
-	if(deviceInfo.type == "desktop"){
-		browser_guide = geoadvice_translate.browser_guide[browser];
-	}else{
-		browser_guide = geoadvice_translate.browser_guide[browser+'-'+deviceInfo.os];
-	}
+	video_file +=  browser != 'opera' ? '.mp4' : '.webm';
+
 	var confirmDiv = '<div id="geolocation_advise" class="modal geoadvise"> \
 		<div class="modal-header"><a href="#">'+ geoadvice_translate.ok +'</a></div> \
 		<div class="modal-body"> \
@@ -97,16 +107,16 @@ function showGeolocationAdvise(){
 			<h1>'+ geoadvice_translate.greeting +' <span>'+ geoadvice_translate.greeting_2 +'.</span></h1>';
 		if(browser_guide){
 			confirmDiv += '<div class="video '+ browser +'"><video autoplay loop> \
-					<source src="/static/video/'+ video_file +'.mp4"> \
-					<source src="/static/video/'+ video_file +'.webm"> \
+					<source src="/static/video/'+ video_file +'"> \
 				</video></div> \
 				<p class="label">'+ geoadvice_translate.video_label +' '+ browserName +'. <a href="#">'+ geoadvice_translate.more_info +'</a>.</p></video> \
 				<p>'+ geoadvice_translate.browser_details +' '+ browserName +'. '+ browser_guide +'.</p> \
 			</div>';
 		}
 		confirmDiv +='<div class="modal-footer"> \
-				<p>'+ geoadvice_translate.whylocation +'</p> \
-				<a href="#">'+ geoadvice_translate.readmore +'</a> \
+				<h2>'+ geoadvice_translate.whylocation +'</h2> \
+				<p>'+ geoadvice_translate.whylocation_explain +'.</p> \
+				<a href="#">' + geoadvice_translate.readmore + '</a> \
 			</div></div>';
 	var $confirmDiv = $(confirmDiv);
 	$('body').append($confirmDiv);
