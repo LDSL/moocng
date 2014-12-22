@@ -193,6 +193,11 @@ def extra_settings(request):
     except AttributeError:
         show_email = False
 
+    try:
+        max_file_size = settings.ATTACHMENTS_MAX_SIZE
+    except AttributeError:
+        max_file_size = 5
+
     context = {
         'sandbox': sandbox,
         'mathjax_enabled': mathjax_enabled,
@@ -214,7 +219,8 @@ def extra_settings(request):
         'feature_social': feature_social,
         'feature_ects': feature_ects,
         'forum_url': forum_url,
-        'show_email': show_email
+        'show_email': show_email,
+        'max_file_size': max_file_size
     }
 
     return context
