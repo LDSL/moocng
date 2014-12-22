@@ -64,11 +64,11 @@ function getBrowserName(){
     M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
     if(/trident/i.test(M[1])){
         tem=  /\brv[ :]+(\d+)/g.exec(ua) || [];
-        return 'ie '+(tem[1] || '');
+        return 'ie';
     }
     if(M[1]=== 'Chrome'){
         tem= ua.match(/\bOPR\/(\d+)/)
-        if(tem!= null) return 'opera '+tem[1];
+        if(tem!= null) return 'opera';
     }
     M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
     //if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1]);
@@ -78,33 +78,57 @@ function getBrowserName(){
 
 function showGeolocationAdvise(){
 	console.log('Mostramos ventana');
-	var browser = getBrowserName();
+	var browser = getBrowserName().toLowerCase();
+	var browserName = browser !== 'msie' ? getBrowserName() : "Internet Explorer";
 	var video_file = "geolocation_";
 	video_file += geolocation_allowed == undefined ? 'firsttime' : 'blocked';
-	video_file += '_' + browser.toLowerCase();
-	video_file += '_en_640.mp4';
-	var confirmDiv = $('<div id="geolocation_advise" class="modal geoadvise"> \
-		<div class="modal-header"><a href="#">Entendido</a></div> \
+	video_file += '_' + browser;
+	video_file += '_en_640';
+	var browser_guide;
+	if(deviceInfo.type == "desktop"){
+		browser_guide = geoadvice_translate.browser_guide[browser];
+	}else{
+		browser_guide = geoadvice_translate.browser_guide[browser+'-'+deviceInfo.os];
+	}
+	var confirmDiv = '<div id="geolocation_advise" class="modal geoadvise"> \
+		<div class="modal-header"><a href="#">'+ geoadvice_translate.ok +'</a></div> \
 		<div class="modal-body"> \
 			<img src="/static/img/geolocation.png"> \
-			<h1>¡Hola! Activa tu ubicación <span>para una mejor experiencia educativa.</span></h1> \
-			<div class="video"><video autoplay loop><source src="/static/video/'+ video_file +'"></video></div> \
-			<p class="label">Permiso de ubicación en '+ browser +'. <a href="#">Más información</a></p></video> \
-			<p>Su navegador es '+ browser +'. Activa el posicionamiento haciendo clic en Permitir en la barra que aparecerá arriba.</p> \
-		</div> \
-		<div class="modal-footer"> \
-			<p>¿Por qué es importante mi ubicación geográfica?</p> \
-			<a href="#">Leer más</a> \
-		</div></div>');
-	$('body').append(confirmDiv);
+			<h1>'+ geoadvice_translate.greeting +' <span>'+ geoadvice_translate.greeting_2 +'.</span></h1>';
+		if(browser_guide){
+			confirmDiv += '<div class="video '+ browser +'"><video autoplay loop> \
+					<source src="/static/video/'+ video_file +'.mp4"> \
+					<source src="/static/video/'+ video_file +'.webm"> \
+				</video></div> \
+				<p class="label">'+ geoadvice_translate.video_label +' '+ browserName +'. <a href="#">'+ geoadvice_translate.more_info +'</a>.</p></video> \
+				<p>'+ geoadvice_translate.browser_details +' '+ browserName +'. '+ browser_guide +'.</p> \
+			</div>';
+		}
+		confirmDiv +='<div class="modal-footer"> \
+				<p>'+ geoadvice_translate.whylocation +'</p> \
+				<a href="#">'+ geoadvice_translate.readmore +'</a> \
+			</div></div>';
+	var $confirmDiv = $(confirmDiv);
+	$('body').append($confirmDiv);
 
-    confirmModal = confirmDiv.modal({
+    confirmModal = $confirmDiv.modal({
         show: false,
         backdrop: "static",
         keyboard: false
     });
     confirmModal.modal("show");
 
+    $confirmDiv.find('.modal-header a').click(function(){
+    	confirmModal.modal("hide");
+    	navigator.geolocation.getCurrentPosition(function(position){
+        		localStorage.setItem('geolocation_allowed', true);
+            	geolocation = position;
+        	},function(error){
+        		if (error.code == error.PERMISSION_DENIED)
+        			localStorage.setItem('geolocation_allowed', false);
+        	},{timeout: 2000}
+        );
+    });
 	sessionStorage.setItem('geolocation_advised', true);
 }
 

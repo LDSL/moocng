@@ -466,13 +466,13 @@ div.button, a.button {
 	}
 
 	&.geoadvise {
-		width: 650px;
+		max-width: 650px;
 		left: 50%;
 		margin-left: -325px;
 		max-height: 90vh;
 		top: 5vh;
 		border-top: 4px solid @highlight;
-		padding-bottom: 118px;
+		padding: 20px 30px;
 
 		a {
 			color: @highlight;
@@ -481,7 +481,8 @@ div.button, a.button {
 
 		.modal-header {
 			text-align: right;
-			padding-top: 14px;
+			position: static;
+			width: auto;
 		}
 
 		.modal-body {
@@ -504,13 +505,21 @@ div.button, a.button {
 			}
 
 			.video {
-				width: 452px;
-				height: 224px;
+				max-width: 452px;
+				max-height: 224px;
 				overflow: hidden;
 				margin: 0 auto;
+
+				&.opera {
+					max-height: 290px;
+				}
+
+				&.msie {
+					max-height: 340px;
+				}
 				
 				video {
-					width: 452px;	
+					max-width: 452px;	
 				}
 
 				& + .label {
@@ -523,14 +532,32 @@ div.button, a.button {
 		.modal-footer {
 			text-align: center;
 			color: @highlight;
-			padding: 20px 0 34px;
+			padding: 20px 0;
 			border-top: 1px solid @neutral_light_1;
+			position: static;
+			width: auto;
 
 			p {
 				font-size: 22px;
 				font-weight: 300;
 				margin-bottom: 16px;
 			}
+		}
+	}
+
+	@media screen and (max-height: 1050px){
+		&.geoadvise {
+			max-height: 100vh;
+			top: 0;
+			overflow: auto;
+		}
+	}
+
+	@media screen and (max-width: 650px){
+		&.geoadvise {
+			width: 100%;
+			left: 0;
+			margin-left: 0;
 		}
 	}
 }
