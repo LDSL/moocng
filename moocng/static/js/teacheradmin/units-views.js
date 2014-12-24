@@ -687,7 +687,7 @@ if (_.isUndefined(window.MOOC)) {
                         MOOC.ajax.hideLoading();
                         MOOC.ajax.showAlert("saved");
                     },
-                    error: function () {
+                    error: function (err) {
                         MOOC.ajax.hideLoading();
                         MOOC.ajax.showAlert("generic");
                     }
@@ -1209,19 +1209,24 @@ if (_.isUndefined(window.MOOC)) {
                         var input = self.$el.find("div.fileupload input[type='file']")[0],
                             fakeForm;
                         if (input.files) {
-                            fakeForm = new FormData();
-                            fakeForm.append("attachment", input.files[0]);
-                            $.ajax(window.location.pathname + "attachment/?kq=" + self.model.get("id"), {
-                                type: "POST",
-                                headers: {
-                                    "X-CSRFToken": csrftoken
-                                },
-                                data: fakeForm,
-                                processData: false,
-                                contentType: false,
-                                success: function () { asyncCB(); },
-                                error: function () { asyncCB("Error saving attachment"); }
-                            });
+                            // Check file size
+                            if(input.files[0].size > MOOC.vars.max_file_size * 1024 * 1024){
+                                asyncCB({message: "File size must be less than " + MOOC.vars.max_file_size + "Mb", type: "FileTooBig", max_file_size: MOOC.vars.max_file_size});
+                            }else{
+                                fakeForm = new FormData();
+                                fakeForm.append("attachment", input.files[0]);
+                                $.ajax(window.location.pathname + "attachment/?kq=" + self.model.get("id"), {
+                                    type: "POST",
+                                    headers: {
+                                        "X-CSRFToken": csrftoken
+                                    },
+                                    data: fakeForm,
+                                    processData: false,
+                                    contentType: false,
+                                    success: function () { asyncCB(); },
+                                    error: function () { asyncCB("Error saving attachment"); }
+                                });
+                            }
                         } else {
                             asyncCB("Error with attachment, FileAPI not supported");
                         }
@@ -1259,21 +1264,26 @@ if (_.isUndefined(window.MOOC)) {
                             language = self.$el.find("#transcriptions #id_language").val(),
                             fakeForm;
                         if (input.files) {
-                            fakeForm = new FormData();
-                            fakeForm.append("transcription", input.files[0]);
-                            fakeForm.append("type", type);
-                            fakeForm.append("language", language);
-                            $.ajax(window.location.pathname + "transcription/?kq=" + self.model.get("id"), {
-                                type: "POST",
-                                headers: {
-                                    "X-CSRFToken": csrftoken
-                                },
-                                data: fakeForm,
-                                processData: false,
-                                contentType: false,
-                                success: function () { asyncCB(); },
-                                error: function () { asyncCB("Error saving transcription"); }
-                            });
+                            // Check file size
+                            if(input.files[0].size > MOOC.vars.max_file_size * 1024 * 1024){
+                                asyncCB({message: "File size must be less than " + MOOC.vars.max_file_size + "Mb", type: "FileTooBig", max_file_size: MOOC.vars.max_file_size});
+                            }else{
+                                fakeForm = new FormData();
+                                fakeForm.append("transcription", input.files[0]);
+                                fakeForm.append("type", type);
+                                fakeForm.append("language", language);
+                                $.ajax(window.location.pathname + "transcription/?kq=" + self.model.get("id"), {
+                                    type: "POST",
+                                    headers: {
+                                        "X-CSRFToken": csrftoken
+                                    },
+                                    data: fakeForm,
+                                    processData: false,
+                                    contentType: false,
+                                    success: function () { asyncCB(); },
+                                    error: function () { asyncCB("Error saving transcription"); }
+                                });
+                            }
                         } else {
                             asyncCB("Error with transcription, FileAPI not supported");
                         }
@@ -1311,7 +1321,11 @@ if (_.isUndefined(window.MOOC)) {
                             callback();
                         } else {
                             if (err) {
-                                MOOC.ajax.showAlert("generic");
+                                switch(err.type){
+                                    case "FileTooBig":  MOOC.ajax.showAlert("FileTooBig");
+                                                        break;
+                                    default: MOOC.ajax.showAlert("generic");
+                                }                                
                             } else {
                                 MOOC.ajax.showAlert("saved");
                             }
@@ -1958,7 +1972,7 @@ if (_.isUndefined(window.MOOC)) {
                                     $table.remove();
                                 }
                             },
-                            error: function () {
+                            error: function (err) {
                                 MOOC.ajax.hideLoading();
                                 MOOC.ajax.showAlert("generic");
                             }

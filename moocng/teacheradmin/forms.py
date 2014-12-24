@@ -14,6 +14,7 @@
 # limitations under the License.
 
 from django import forms
+from django.conf import settings
 from django.core.files.images import get_image_dimensions
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
@@ -43,6 +44,7 @@ class CourseForm(forms.ModelForm):
     """
     error_messages = {
         'invalid_image': _('Image must be {0}px x {1}px').format(Course.THUMBNAIL_WIDTH, Course.THUMBNAIL_HEIGHT),
+        'file_too_big': _('Image size must be less than {0}Mb').format(settings.ATTACHMENTS_MAX_SIZE),
     }
 
     class Meta:
@@ -87,11 +89,23 @@ class CourseForm(forms.ModelForm):
 
     def clean_thumbnail(self):
         thumbnail = self.cleaned_data.get("thumbnail")
-        if thumbnail:
+        if thumbnail and 'size' in thumbnail:
+            if thumbnail._size > settings.ATTACHMENTS_MAX_SIZE*1024*1024:
+                raise forms.ValidationError(self.error_messages['file_too_big'])
             w, h = get_image_dimensions(thumbnail)
             if w < Course.THUMBNAIL_WIDTH or h < Course.THUMBNAIL_HEIGHT:
                 raise forms.ValidationError(self.error_messages['invalid_image'])
         return thumbnail
+
+    def clean_background(self):
+        background = self.cleaned_data.get("background")
+        if background and 'size' in background:
+            if background._size > settings.ATTACHMENTS_MAX_SIZE*1024*1024:
+                raise forms.ValidationError(self.error_messages['file_too_big'])
+            w, h = get_image_dimensions(background)
+            if w < Course.THUMBNAIL_WIDTH or h < Course.THUMBNAIL_HEIGHT:
+                raise forms.ValidationError(self.error_messages['invalid_image'])
+        return background
 
 class GroupsForm(forms.ModelForm):
     class Meta:
