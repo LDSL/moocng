@@ -334,7 +334,9 @@ MOOC.models.Option = Backbone.Model.extend({
         height: 12,
         solution: null,
         text: "",
-        feedback: null
+        feedback: null,
+        order: 0,
+        name: ""
     },
 
     /**
@@ -376,7 +378,13 @@ MOOC.models.Option = Backbone.Model.extend({
 });
 
 MOOC.models.OptionList  = MOOC.models.TastyPieCollection.extend({
-    model: MOOC.models.Option
+    model: MOOC.models.Option,
+    initialize: function(){
+        this.sort({reset: true});
+    },
+    comparator: function(model){
+        return model.get('order');
+    }
 });
 
 MOOC.models.Question = Backbone.Model.extend({

@@ -31,10 +31,12 @@
                 x: 0,
                 y: 0,
                 width: 100,
-                height: 12,
+                height: 28,
                 solution: '',
                 text: "",
-                feedback: ""
+                feedback: "",
+                order: 0,
+                name: ""
             };
         },
 
@@ -50,12 +52,18 @@
     MOOC.models.OptionList  = Backbone.Collection.extend({
         model: MOOC.models.Option,
 
+        initialize: function() {
+            this.sort({reset: true});
+        },
         url: function () {
             var url = MOOC.models.OptionList.__super__.url.call(this);
             if (url.charAt(url.length - 1) !== '/') {
                 url += '/';
             }
             return url;
+        },
+        comparator: function(model){
+            return model.get('order');
         }
     });
 
@@ -69,10 +77,15 @@
         padding: 5,
         handlePadding: 20,
         option_types: {
+            'q': 'fieldset',
             'l': 'textarea',
             't': 'text',
             'c': 'checkbox',
             'r': 'radio'
+        },
+
+        events: {
+            'drop' : 'change_order'
         },
 
         initialize: function () {
@@ -98,7 +111,8 @@
                         "height: " + this.model.get("height") + "px;"
                     ].join(" ")
                 },
-                size = {};
+                size = {},
+                label = this.model.get('text');
 
             if (optiontype === 'c' || optiontype === 'r') {
                 attributes.style = [
@@ -107,7 +121,7 @@
                 ].join(" ");
 
                 if (optiontype === 'r') {
-                    attributes.name = "radio";
+                    attributes.name = this.model.get("name");
                 }
 
                 if ((_.isString(sol) && sol.toLowerCase() === 'true') || (_.isBoolean(sol) && sol)) {
@@ -123,27 +137,119 @@
                 attributes.style = [];
                 attributes.style.push('resize:none;');
                 attributes.style.push('line-height: 20px;');
+            } else if(optiontype === 'q') {
+                tag = attributes.type;
+                attributes.name = this.model.get("name");
+                attributes.style = [
+                    "width: auto;",
+                    "height: auto;"
+                ].join(" ");
+            }else if(optiontype === 't'){
+                attributes.style = [
+                    "width: auto;",
+                    "height: auto;"
+                ].join(" ");
             }
 
-            this.$el.empty().append(this.make(tag, attributes, content));
-            size = this.calculate_size();
-            this.$el
-                .width(size.width + this.padding * 2 + this.handlePadding)
-                .height(size.height + this.padding * 2)
-                .css({
-                    left: (this.model.get('x') - this.padding) + "px",
-                    top: (this.model.get('y') - this.padding) + "px",
-                    padding: this.padding + "px",
-                    position: 'absolute'
-                })
-                .draggable({
-                    drag: this.drag,
-                    start: this.start,
-                    stop: this.stop
-                })
-                .find(tag).change(this.change);
+            var domelem = '';
+            switch(optiontype){
+                case 'r':
+                case 'c':
+                    domelem += '<'+tag;
+                    for (var attribute in attributes){
+                        if(attributes.hasOwnProperty(attribute)){
+                            domelem += ' ' + attribute + '="' + attributes[attribute]+'"';
+                        }
+                    }
+                    domelem += '>';
+                    if(label){
+                        domelem += '<input type="text" class="label" value="' + label + '" />';
+                    }
+                    break;
+
+                case 't':
+                    if(label){
+                        domelem += '<input type="text" class="label" value="' + label + '" />';
+                    }
+                    domelem += '<'+tag;
+                    for (var attribute in attributes){
+                        if(attributes.hasOwnProperty(attribute)){
+                            domelem += ' ' + attribute + '="' + attributes[attribute]+'"';
+                        }
+                    }
+                    domelem += '>';
+                    break;
+
+                case 'l':
+                    domelem += '<'+tag;
+                    for (var attribute in attributes){
+                        if(attributes.hasOwnProperty(attribute)){
+                            domelem += ' ' + attribute + '="' + attributes[attribute]+'"';
+                        }
+                    }
+                    domelem += '>';
+                    if(label){
+                        domelem += label + '</'+tag+'>';
+                    }
+                    break;
+
+                case 'q':
+                    domelem += '<'+tag;
+                    for (var attribute in attributes){
+                        if(attributes.hasOwnProperty(attribute)){
+                            domelem += ' ' + attribute + '="' + attributes[attribute]+'"';
+                        }
+                    }
+                    domelem += '>';
+                    domelem += attributes.name + '</'+tag+'>';
+                    break;
+
+            }
+
+            /*domelem += '<'+tag;
+            for (var attribute in attributes){
+                if(attributes.hasOwnProperty(attribute)){
+                    domelem += ' ' + attribute + '="' + attributes[attribute]+'"';
+                }
+            }
+            domelem += '>';
+            if(label){
+                if(optiontype !== 'l'){
+                   domelem += '<input type="text" class="label" value="' + label + '" />';
+                }else{
+                    domelem += label + '</'+tag+'>';
+                }
+            }else if(optiontype === 'q'){
+                domelem += attributes.name + '</'+tag+'>';
+            }*/
+
+            //this.$el.empty().append(this.make(tag, attributes, content));
+            this.$el.empty().append(domelem);
+            
+            if($("fieldset.use-last-frame").length > 0){
+                size = this.calculate_size();
+                this.$el.width(size.width + this.padding * 2 + this.handlePadding)
+                    .height(size.height + this.padding * 2)
+                    .draggable({
+                        drag: this.drag,
+                        start: this.start,
+                        stop: this.stop
+                    })
+                    .css({
+                        left: (this.model.get('x') - this.padding) + "px",
+                        top: (this.model.get('y') - this.padding) + "px",
+                        padding: this.padding + "px",
+                        position: 'absolute'
+                    });
+            }
+            
+            this.$el.find(tag).change(this.change);
+            if (optiontype !== 'l' || label){
+                this.$el.find('.label').change(this.change);
+            }
 
             return this;
+            //$("fieldset.ui-sortable").find("fieldset['name'="+attributes.name+"]").append(this.$el);
         },
 
         is_out: function (position) {
@@ -207,28 +313,48 @@
         },
 
         change: function () {
-            var $input = this.$el.find('input'),
-                optiontype = this.model.get('optiontype'),
-                value = "",
-                prop = "solution";
-            if (optiontype === 'l') {
-                $input = this.$el.find("textarea");
-                prop = "text";
-            }
-            if (optiontype === 'c' || optiontype === 'r') {
-                value = _.isUndefined($input.attr('checked')) ? false : true;
-                if (value && optiontype === 'r') {
-                    // Update the solution stored in the other radio models
-                    $("input[type=radio]").filter(function (idx, radio) {
-                        return radio !== $input[0];
-                    }).trigger("change");
-                }
-            } else {
-                value = $input.val();
-            }
+            var optiontype = this.model.get('optiontype');
             this.start();
-            this.model.set(prop, value);
+            switch(optiontype){
+                case 'l':   var $input = this.$el.find("textarea");
+                            var value = $input.val();
+                            this.model.set('text', value);
+                            break;
+                case 'c':
+                case 'r':   var $input = null;
+                            if(optiontype === 'r')
+                                $input = this.$el.find('input[type=radio]');
+                            else
+                                $input = this.$el.find('input[type=checkbox]');
+                            var value = _.isUndefined($input.attr('checked')) ? false : true;
+                            if (value && optiontype === 'r') {
+                                // Update the solution stored in the other radio models
+                                this.$el.parent().find("input[type=radio][name="+ $input.attr('name') +"]").filter(function (idx, radio) {
+                                    return radio !== $input[0];
+                                }).trigger("change");
+                            }
+                            var $label = this.$el.find(".label");
+                            var label = $label.val();
+                            this.model.set({'solution': value,
+                                            'text': label});
+                            break;
+                case 't':   var $input = this.$el.find("input");
+                            var $label = this.$el.find(".label");
+                            var value = $input.val();
+                            var label = $label.val();
+                            this.model.set({'solution': value,
+                                            'text': label});
+                            break;
+            }
             this.model.save();
+        },
+
+        change_order: function(event){
+            this.model.unbind("change", this.render, this);
+            var order = this.model.get("optiontype") !== "q"? (this.$el.parent().parent().index()+1)*10 + this.$el.index() + 1 : (this.$el.index() + 1) * 10;
+            this.model.set('order', order);
+            this.model.save();
+            this.model.bind("change", this.render, this);
         }
 
     });
@@ -269,8 +395,8 @@
                 .find('#option-solution').change(this.change_property_handler(['solution', false])).val(solution).end()
                 .find('#option-feedback').change(this.change_property_handler(['feedback', false])).val(this.model.get("feedback")).end()
                 .find('#option-x').change(this.change_property_handler(['x', true])).val(this.model.get('x')).end()
-                .find('#option-y').change(this.change_property_handler(['y', true])).val(this.model.get('y'));
-
+                .find('#option-y').change(this.change_property_handler(['y', true])).val(this.model.get('y'))
+                
             if (optiontype === 'c' || optiontype === 'r') {
                 this.$el
                     .find('#option-width').attr("disabled", "disabled").val(this.model.get('width')).end()
@@ -279,6 +405,12 @@
                 this.$el
                     .find('#option-width').attr("disabled", false).change(this.change_property_handler(['width', true])).val(this.model.get('width')).end()
                     .find('#option-height').attr("disabled", false).change(this.change_property_handler(['height', true])).val(this.model.get('height'));
+            }
+
+            if (optiontype === 'r') {
+                this.$el.find("#option-name").attr("disabled", false).change(this.change_property_handler(['name', false])).val(this.model.get('name'));
+            }else{
+                this.$el.find("#option-name").attr("disabled", "disabled").val(this.model.get('name'));
             }
 
             if (optiontype === 'l') {
@@ -303,6 +435,7 @@
             this.$el.find("#option-y").unbind('change');
             this.$el.find("#option-width").unbind('change');
             this.$el.find("#option-height").unbind('change');
+            this.$el.find("#option-name").unbind('change');
         },
 
         change_property_handler: function (args) {
@@ -325,7 +458,8 @@
                 .find('#option-x').val('').end()
                 .find('#option-y').val('').end()
                 .find('#option-width').val('').end()
-                .find('#option-height').val('');
+                .find('#option-height').val('')
+                .find('#option-name').val('');
         },
 
         change_property: function (prop, numerical) {
@@ -338,7 +472,7 @@
                     // Update the solution stored in the other radio models
                     _.each(
                         MOOC.views.current_index_view.collection.filter(function (model) {
-                            return model.get("optiontype") === 'r' && model.get("id") !== self.model.get("id");
+                            return model.get("optiontype") === 'r' && model.get("name") === self.model.get("name") && model.get("id") !== self.model.get("id");
                         }),
                         function (radio) {
                             radio.set(prop, false);
@@ -379,6 +513,44 @@
             // internal state
             this._rendered = false;
 
+            // last item inserted position
+            if(!this.$fieldset.hasClass('use-last-frame')){
+                this._last_ypos = this.collection.last()? this.collection.last().get('y') + 10 : 0;
+                var ypos_taken = true;
+                var self = this;
+                while(ypos_taken){
+                    var model = this.collection.find(function(model) { return model.get('y') == self._last_ypos; });
+                    if(model){
+                        ypos_taken = true;
+                        this._last_ypos += 10;
+                    }else{
+                        ypos_taken = false;
+                    }
+                }
+            }else{
+                this._last_ypos = 0;
+            }
+
+            // last question inserted position
+            if( this.collection.last() && this.collection.last().get('name') ){
+                var last_name = this.collection.last().get('name');
+                this._last_question = parseInt(last_name.match(/\d+/), 10);
+            }else{
+                this._last_question = 0;
+            }
+            var question_taken = true;
+            var self = this;
+            while(question_taken){
+                var model = this.collection.find(function(model) { return model.get('name') == 'q'+self._last_question; });
+                if(model){
+                    question_taken = true;
+                    this._last_question += 1;
+                }else{
+                    question_taken = false;
+                }
+            }
+            this._current_question = this._last_question;
+
             // create an array of option views to keep track of children
             this._optionViews = [];
 
@@ -395,8 +567,38 @@
             this._rendered = true;
 
             this.$fieldset.empty();
-            _(this._optionViews).each(function (ov) {
-                self.$fieldset.append(ov.render().el);
+            var questions = _.groupBy(this._optionViews, function(elem){ return elem.model.get('name'); });
+            _(questions).each(function(qset){
+                //var qfieldset = $('<fieldset>');
+                //var qfieldset = qset.shift().render().$el;
+                var qfieldset = qset.filter(function(el){return el.model.get('optiontype') === 'q'})[0];
+                if (qfieldset){
+                    var qindex = qset.indexOf(qfieldset); 
+                    qfieldset = qfieldset.render().$el;
+                    if(qindex > -1){
+                        qset.splice(qindex, 1);
+                        self.$fieldset.append(qfieldset);
+                    }
+                    _(qset).each(function (ov) {
+                        qfieldset.children('fieldset').eq(0).append(ov.render().el);
+                    });
+                }else{
+                    qfieldset = self.$fieldset;
+                    _(qset).each(function (ov) {
+                        qfieldset.append(ov.render().el);
+                    });
+                }
+                
+                qfieldset.children().sortable({
+                    update: function( event, ui ) {
+                        $(this.children).trigger('drop');
+                    },
+                    start: function( event, ui ) {
+                        if(ui.item.prop('tagName').toLowerCase() === 'fieldset'){
+                            console.log(ui.item.attr('name'));
+                        }
+                    }
+                });
             });
 
             return this;
@@ -412,7 +614,19 @@
             this._optionViews.push(ov);
 
             if (this._rendered) {
-                this.$fieldset.append(ov.render().el);
+                if(ov.model.get('optiontype') !== 'q'){
+                    var qfieldset = this.$fieldset.find('fieldset[name=q'+this._current_question+']');
+                    if(qfieldset.length > 0){
+                        qfieldset.append(ov.render().el);
+                        qfieldset.children().trigger('drop');
+                    }else{
+                        this.$fieldset.append(ov.render().el);
+                        this.$fieldset.trigger('drop');
+                    }
+                }else{
+                    this.$fieldset.append(ov.render().el);
+                    this.$fieldset.trigger('drop');
+                }
             }
         },
 
@@ -431,13 +645,25 @@
             var settings = {},
                 option;
             settings.optiontype = this.$el.find("#option-optiontype-creation").val();
-            if (settings.optiontype === 'l') {
-                settings.width = 50;
-                settings.height = 3;
+            switch (settings.optiontype){
+                case 'l':   settings.width = 50;
+                            settings.height = 3;
+                            break;
+                case 'q':   this._last_question++;
+                            settings.name = 'q'+ this._last_question;                            
+                            this._current_question = this._last_question;
+                            break;
+                default:    settings.text = 'label'
             }
+            if(this._current_question > 0)
+                settings.name = 'q'+this._current_question;
+            settings.y = this._last_ypos;
+            settings.order = this.collection.length;
             option = new MOOC.models.Option(settings);
             this.collection.add(option);
-            option.save();
+            // TODO: Improve this "safe save"
+            option.save({success: function(){ /* Do nothing */ }},{error: function(model, response){ model.set('y', model.get('y')+10); model.save(); }});
+            this._last_ypos += 10;
         },
 
         select_option: function (option_element) {
@@ -453,12 +679,13 @@
             if (selected !== null) {
                 MOOC.router.navigate("option" + selected.model.get('id'),
                                      {trigger: true});
+                this._current_question = parseInt(selected.model.get('name').match(/\d+/), 10);
             }
         },
 
         option_click: function (event) {
             var target = event.target;
-            if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+            if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'FIELDSET') {
                 target = target.parentNode;
             }
             this.select_option(target);
@@ -513,6 +740,21 @@
             $fieldset.css({ "background-image": "url(" + $img.attr("src") + ")" });
             $img.remove();
         }
+
+        $fieldset.sortable({
+            update: function( event, ui ) {
+                _(this.children).each(function(qset){
+                    _(qset.children).each(function(opset){
+                        $(opset.children).trigger('drop');
+                    });
+                });
+            },
+            start: function( event, ui ) {
+                if(ui.item.prop('tagName').toLowerCase() === 'fieldset'){
+                    console.log(ui.item.attr('name'));
+                }
+            }
+        });
 
         MOOC.router = new MOOC.App();
         MOOC.router.route("", "index");
