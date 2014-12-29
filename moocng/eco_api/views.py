@@ -105,7 +105,7 @@ def ListRecords(request, num="1"):
 
 		nrOfUnits = SubElement(general, 'eco:nrOfUnits')
 		nrOfUnits.text = str(knowledgequantum)
-		estimated_effort = 1
+		estimated_effort = 2
 		try:
 			estimated_effort = int(course.estimated_effort)
 		except:
