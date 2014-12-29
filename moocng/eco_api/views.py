@@ -105,6 +105,13 @@ def ListRecords(request, num="1"):
 
 		nrOfUnits = SubElement(general, 'eco:nrOfUnits')
 		nrOfUnits.text = str(knowledgequantum)
+		estimated_effort = 1
+		try:
+			estimated_effort = int(course.estimated_effort)
+		except:
+			pass
+		studyLoad = SubElement(general, 'eco:studyLoad')
+		studyLoad.text = str(estimated_effort)
 
 		startDate = SubElement(general, 'eco:startDate')
 		if course.start_date:
@@ -119,11 +126,6 @@ def ListRecords(request, num="1"):
 		educational = SubElement(lom, 'lom:educational')
 		typicalLearningTime = SubElement(educational, 'lom:typicalLearningTime')
 		duration = SubElement(typicalLearningTime, 'lom:duration')#TODO
-		estimated_effort = 1
-		try:
-			estimated_effort = int(course.estimated_effort)
-		except:
-			pass
 		if(course.start_date and course.end_date and estimated_effort):
 			diff = ((course.end_date - course.start_date).days / 7) * int(estimated_effort)
 			duration.text = "P"
