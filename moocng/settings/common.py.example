@@ -58,6 +58,7 @@ DATABASES = {
 }
 
 API_URI = 'moocng.devopenmooc.com'
+API_OFFICIAL_COURSE_TAGVALUE = 'Official'
 
 MONGODB_URI = 'mongodb://localhost:27017/moocng'
 
