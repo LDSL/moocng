@@ -24,6 +24,29 @@
   <script src="{{ STATIC_URL }}js/modal.js"></script>
   <script src="{{ STATIC_URL }}js/libs/less-1.7.3.min.js"></script>
   <script src="{{ STATIC_URL }}js/libs/device.min.js"></script>
+  <script>
+    var geoadvice_translate = {
+      'ok': "{% trans 'Got it' %}",
+      "greeting": "{% trans 'Hello! Active your location' %}",
+      "greeting_2": "{% trans 'for a better educational experience' %}",
+      "video_label": "{% trans 'Location permission in' %}",
+      "more_info": "{% trans 'More information' %}",
+      "browser_details": "{% trans 'Your browser is' %}",
+      "browser_guide": {
+        "chrome": "{% blocktrans %}Active location tracking by clicking on \"Allow\" in the bar that will appear above{% endblocktrans %}",
+        "chrome-ios": "{% blocktrans %}Active location tracking by clicking on \"Allow\" in the bar that will appear below{% endblocktrans %}",
+        "chrome-android": "{% blocktrans %}Active location tracking by clicking on \"Allow\" in the bar that will appear below{% endblocktrans %}",
+        "firefox": "{% blocktrans %}Active location tracking by selecting \"Share Location\" on the dialog that will appear above{% endblocktrans %}",
+        "opera": "{% blocktrans %}Active location tracking by clicking on \"Allow\" in the dialog that will appear above{% endblocktrans %}",
+        "msie": "{% blocktrans %}Active location tracking by selecting  \"Always allow\" on the \"Options for this site\" dropdown that will appear in the bar that will appear below{% endblocktrans %}",
+        "safari": "{% blocktrans %}Active location tracking by clicking on \"Allow\" in the dialog that will appear above{% endblocktrans %}",
+        "safari-ios": "{% blocktrans %}Active location tracking by clicking on \"OK\" in the dialog that will appear{% endblocktrans %}"
+      },
+      "whylocation": "{% trans 'Why tracking my location is important?' %}",
+      "whylocation_explain": "{% trans 'Allowing us to know where you are is useful for you. Why?, because we use this information to suggest you courses and user groups to enhance your learning experience. ECO are massive and open online courses with emphasis on the location and importance of networked learning. Your geographic location helps us improve your learning experience, thank you' %}",
+      "readmore": "{% trans 'Read more' %}"
+    }
+  </script>
   <script src="{{ STATIC_URL }}js/userinfo.js"></script>
   {% block extraheader %}{% endblock %}
   {% if google_analytics %}

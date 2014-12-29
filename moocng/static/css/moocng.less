@@ -464,6 +464,106 @@ div.button, a.button {
 			}
 		}
 	}
+
+	&.geoadvise {
+		max-width: 650px;
+		left: 50%;
+		margin-left: -325px;
+		max-height: 90vh;
+		top: 5vh;
+		border-top: 4px solid @highlight;
+		padding: 20px 30px;
+
+		a {
+			color: @highlight;
+			border-bottom: 1px solid @comp;
+		}
+
+		.modal-header {
+			text-align: right;
+			position: static;
+			width: auto;
+		}
+
+		.modal-body {
+			height: auto;
+			text-align: center;
+
+			h1 {
+				font-weight: 900;
+				margin: 10px 0 32px;
+
+				span {
+					font-weight: 300;
+					display: block;
+				}
+			}
+
+			p {
+				color: @neutral_medium_1;
+				margin: 15px 0 20px;
+			}
+
+			.video {
+				max-width: 452px;
+				max-height: 224px;
+				overflow: hidden;
+				margin: 0 auto;
+
+				&.opera {
+					max-height: 290px;
+				}
+
+				&.msie, &.safari-ios {
+					max-height: 340px;
+				}
+
+				&.chrome-android {
+					max-height: 282px;
+				}
+				
+				video {
+					max-width: 452px;	
+				}
+
+				& + .label {
+					font-size: 12px;
+					margin: 0;
+				}
+			}
+		}
+
+		.modal-footer {
+			text-align: center;
+			color: @highlight;
+			padding: 20px 0;
+			border-top: 1px solid @neutral_light_1;
+			position: static;
+			width: auto;
+
+			h2 {
+				font-size: 22px;
+				font-weight: 300;
+				margin-bottom: 16px;
+			}
+		}
+	}
+
+	@media screen and (max-height: 1050px){
+		&.geoadvise {
+			max-height: 100vh;
+			top: 0;
+			overflow: auto;
+		}
+	}
+
+	@media screen and (max-width: 650px){
+		&.geoadvise {
+			width: 100%;
+			left: 0;
+			margin-left: 0;
+		}
+	}
 }
 
 #modal_bck {
