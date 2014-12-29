@@ -450,9 +450,17 @@ def create_groups(id_course):
         students = course.students.all()
 
         num_groups = len(students) / size_group
+        groupNames = {
+            'es': 'Grupo',
+            'en': 'Group',
+            'fr': 'Groupe',
+            'pt': 'Grupo',
+            'de': 'Gruppe',
+            'it': 'Gruppo'
+        }
 
         if (num_groups == 0):
-            group = {"id_course": id_course, "name": "Group", "size": 0, "members": []}
+            group = {"id_course": id_course, "name": groupNames[settings.DEFAULT_LANGUAGE], "size": 0, "members": []}
             for student in students:
                 group["members"].append({"id_user": student.id, "username": student.username, 
                                         "first_name":student.first_name, "last_name":student.last_name, 
@@ -466,7 +474,7 @@ def create_groups(id_course):
             cont = 0
             groups = []
             for i in range(1, num_groups+1):
-                group = {"id_course": id_course, "name": "Group" + str(i), "size": 0, "members": []}
+                group = {"id_course": id_course, "name": groupNames[settings.DEFAULT_LANGUAGE] + str(i), "size": 0, "members": []}
                 for y in range(cont, i*size_group):
                     student =  students[y]
                     group["members"].append({"id_user": student.id, "username": student.username, 
@@ -495,7 +503,7 @@ def create_groups(id_course):
                         cont += 1
                         cont2 += 1
                 else:
-                    group = {"id_course": id_course, "name": "Group " + str(i), "members": []}
+                    group = {"id_course": id_course, "name": groupNames[settings.DEFAULT_LANGUAGE] + str(i), "members": []}
                     for i in range(cont, len(students)):
                         student =  students[cont]
                         group["members"].append({"id_user": student.id, "username": student.username, 
@@ -507,39 +515,40 @@ def create_groups(id_course):
                     groups.append(group)
 
             # Create topics for each group
-            course = Course.objects.filter(id=id_course)[:1].get()
-            split_result = re.split(r'([0-9]+)', course.forum_slug)
-            cid = split_result[1]
-            
-            for group in groups:
-                content = _(u"This is the topic for ") + group["name"] + _(u" where you can comment and help other team members")
-                data = {
-                    "uid": 1,
-                    "title": group["name"],
-                    "content": content,
-                    "cid": cid
-                }
-                timestamp = int(round(time.time() * 1000))
-                authhash = hashlib.md5(settings.FORUM_API_SECRET + str(timestamp)).hexdigest()
-                headers = {
-                    "Content-Type": "application/json",
-                    "auth-hash": authhash,
-                    "auth-timestamp": timestamp
-                }
+            if course.forum_slug:
+                course = Course.objects.filter(id=id_course)[:1].get()
+                split_result = re.split(r'([0-9]+)', course.forum_slug)
+                cid = split_result[1]
                 
-                if settings.FEATURE_FORUM:
-                    try:
-                        r = requests.post(settings.FORUM_URL + "/api2/topics", data=json.dumps(data), headers=headers)
-                        if r.status_code == requests.codes.ok:
-                            group["forum_slug"] = r.json()["slug"]
-                            print "  --> Topic for Group '" + group["name"] + "' created succesfully."
-                        else:
-                            print "  --> Could no create a topic for Group '" + group["name"] + "'. Server returns error code " + r.status_code + "."
-                            print r.text
+                for group in groups:
+                    content = _(u"This is the topic for ") + group["name"] + _(u" where you can comment and help other team members")
+                    data = {
+                        "uid": 1,
+                        "title": group["name"],
+                        "content": content,
+                        "cid": cid
+                    }
+                    timestamp = int(round(time.time() * 1000))
+                    authhash = hashlib.md5(settings.FORUM_API_SECRET + str(timestamp)).hexdigest()
+                    headers = {
+                        "Content-Type": "application/json",
+                        "auth-hash": authhash,
+                        "auth-timestamp": timestamp
+                    }
+                    
+                    if settings.FEATURE_FORUM:
+                        try:
+                            r = requests.post(settings.FORUM_URL + "/api2/topics", data=json.dumps(data), headers=headers)
+                            if r.status_code == requests.codes.ok:
+                                group["forum_slug"] = r.json()["slug"]
+                                print "  --> Topic for Group '" + group["name"] + "' created succesfully."
+                            else:
+                                print "  --> Could no create a topic for Group '" + group["name"] + "'. Server returns error code " + r.status_code + "."
+                                print r.text
 
-                    except:
-                        print "Error creating course forum topic"
-                        print "Unexpected error:", sys.exc_info()
+                        except:
+                            print "Error creating course forum topic"
+                            print "Unexpected error:", sys.exc_info()
 
             mongodb.get_db().get_collection('groups').insert(groups)
 

@@ -16,7 +16,14 @@ def free_enrollment(request, course_slug):
     course, permission = get_course_if_user_can_view_and_permission(course_slug, request)
     if permission:
         if request.method == 'POST':
-
+            groupNames = {
+                'es': 'Grupo',
+                'en': 'Group',
+                'fr': 'Groupe',
+                'pt': 'Grupo',
+                'de': 'Gruppe',
+                'it': 'Gruppo'
+            }
             groupCollection = mongodb.get_db().get_collection('groups')
             groups = groupCollection.find({ 'id_course': course.id}).sort("size",pymongo.ASCENDING)
             if(groups and groups.count() > 0):
@@ -36,7 +43,7 @@ def free_enrollment(request, course_slug):
                     groupCollection.update({'_id': ObjectId(group["_id"])}, {"$set": {"members": group["members"], "size": group["size"]}})
 
                 else:
-                    group = {"id_course": course.id, "name": "Group" + str(groups.count()+1), "size": 1, "members": []}
+                    group = {"id_course": course.id, "name": groupNames[settings.DEFAULT_LANGUAGE] + str(groups.count()+1), "size": 1, "members": []}
                     group["members"].append(new_member)
                     groupCollection.insert(group)
            
