@@ -442,6 +442,7 @@ CERTIFICATE_URL = 'http://devopenmooc.com/idcourse/%(courseid)s/email/%(email)s'
 
 MASSIVE_EMAIL_BATCH_SIZE = 30
 
+ATTACHMENTS_MAX_SIZE = 5 # in MB
 PEER_REVIEW_TEXT_MAX_SIZE = 5000  # in chars
 PEER_REVIEW_FILE_MAX_SIZE = 5  # in MB
 PEER_REVIEW_ASSIGNATION_EXPIRE = 24  # in hours
