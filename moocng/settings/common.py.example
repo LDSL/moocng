@@ -118,6 +118,8 @@ LOCALE_PATHS = (
     os.path.join(BASEDIR, 'locale'),
 )
 
+DEFAULT_LANGUAGE = 'es'
+
 SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
