@@ -66,6 +66,9 @@
                 infoadd: "{% trans 'Add an asset:' %}",
             }
         };
+        MOOC.vars = {
+            max_file_size: {{ max_file_size }}
+        }
         MOOC.init({{ course.id }}, {{ unit_badge_classes|safe }});
     </script>
 {% endblock %}
@@ -379,6 +382,10 @@
 <div class="alert alert-error hide" id="generic">
     <h4>{% trans "Error" %}</h4>
     <p>{% trans "Something went wrong, please try again later." %}</p>
+</div>
+<div class="alert alert-error hide" id="FileTooBig">
+    <h4>{% trans "Error" %}</h4>
+    <p>{% trans "The attached file size is too big, the max file size is" %} {{max_file_size}}Mb.</p>
 </div>
 <div class="alert alert-error hide" id="required">
     <h4>{% trans "Error" %}</h4>
