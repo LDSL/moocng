@@ -70,7 +70,11 @@ class AttachmentForm(forms.ModelForm):
         file_name, file_ext = os.path.splitext(self.cleaned_data["attachment"].name)
         file_name = slugify(file_name)
         self.cleaned_data["attachment"].name = "%s%s" % (file_name, file_ext)
-        return self.cleaned_data["attachment"]
+        attachment = self.cleaned_data.get("attachment", False)
+        if attachment:
+             if attachment._size > settings.ATTACHMENTS_MAX_SIZE*1024*1024:
+                   raise ValidationError("File too large ( > "+settings.ATTACHMENTS_MAX_SIZE+"mb )")
+             return attachment
 
 class TranscriptionForm(forms.ModelForm):
     transcription_type = forms.ChoiceField(choices=get_transcription_types_choices(), widget=forms.widgets.Select)
@@ -82,7 +86,11 @@ class TranscriptionForm(forms.ModelForm):
         file_name, file_ext = os.path.splitext(self.cleaned_data["filename"].name)
         file_name = slugify(file_name)
         self.cleaned_data["filename"].name = "%s%s" % (file_name, file_ext)
-        return self.cleaned_data["filename"]
+        attachment = self.cleaned_data.get("filename", False)
+        if attachment:
+             if attachment._size > settings.ATTACHMENTS_MAX_SIZE*1024*1024:
+                   raise ValidationError("File too large ( > "+settings.ATTACHMENTS_MAX_SIZE+"mb )")
+             return attachment
 
 class ActivityForm(forms.Form):
     course_id = forms.IntegerField(required=True)

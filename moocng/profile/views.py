@@ -40,48 +40,14 @@ from cgi import escape
 from django.utils.html import urlize
 
 def profile_timeline(request):
-	profile = {
-		'cn': 'Raul',
-		'sn': 'Yeguas',
-		'username': 'raul.yeguas',
-		'get_full_name': 'Raul Yeguas',
-		'email': 'raul.yeguas@geographica.gs',
-		'badges': ['badge1','badge2'],
-		'karma': 15,
-		'social': {
-			'posts': 3,
-			'followers': '15K',
-			'followings': 1,
-			'starred': 359,
-			'lists': ['Mesozoico', 'RMS can\'t skate', 'Linus vs nVidia']
-		}
-	}
-
 	return render_to_response('profile/timeline.html', {
-		'profile': profile,
+		'profile': {},
 		'request': request
 		}, context_instance=RequestContext(request))
 
 def profile_groups(request):
-	profile = {
-		'cn': 'Raul',
-		'sn': 'Yeguas',
-		'username': 'raul.yeguas',
-		'get_full_name': 'Raul Yeguas',
-		'email': 'raul.yeguas@geographica.gs',
-		'badges': ['badge1','badge2'],
-		'karma': 15,
-		'social': {
-			'posts': 3,
-			'followers': '15K',
-			'followings': 1,
-			'starred': 359,
-			'lists': ['Mesozoico', 'RMS can\'t skate', 'Linus vs nVidia']
-		}
-	}
-
 	return render_to_response('profile/groups.html', {
-		'profile': profile,
+		'profile': {},
 		'request': request
 		}, context_instance=RequestContext(request))
 
@@ -94,8 +60,8 @@ def profile_courses(request, id):
 		user = request.user
 		id = request.user.id
 	else:
-		user = get_user(id)
-		id = int(id)
+		user = User.objects.get(username=id)
+		id = user.id
 
 	case = _getCase(request,id)
 
@@ -124,25 +90,8 @@ def profile_courses(request, id):
 
 @login_required
 def profile_calendar(request):
-	profile = {
-		'cn': 'Raul',
-		'sn': 'Yeguas',
-		'username': 'raul.yeguas',
-		'get_full_name': 'Raul Yeguas',
-		'email': 'raul.yeguas@geographica.gs',
-		'badges': ['badge1','badge2'],
-		'karma': 15,
-		'social': {
-			'posts': 3,
-			'followers': '15K',
-			'followings': 1,
-			'starred': 359,
-			'lists': ['Mesozoico', 'RMS can\'t skate', 'Linus vs nVidia']
-		}
-	}
-
 	return render_to_response('profile/calendar.html', {
-		'profile': profile,
+		'profile': {},
 		'request': request,
 		}, context_instance=RequestContext(request))
 
@@ -155,8 +104,8 @@ def profile_user(request, id):
 		id = request.user.id
 		user =  request.user
 	else:
-		id = int(id)
-		user = get_user(id)
+		user = User.objects.get(username=id)
+		id = user.id
 
 	courses = get_courses_user_is_enrolled(user)
 
@@ -175,8 +124,10 @@ def profile_posts(request, id):
 		if(not request.user.id):
 			return HttpResponseRedirect("/auth/login")
 		id = request.user.id
+		user = request.user
 	else:
-		id = int(id)
+		user = User.objects.get(username=id)
+		id = user.id
 
 	if request.method == 'POST':
 		form = PostForm(request.POST)
@@ -200,22 +151,22 @@ def profile_posts(request, id):
 	else:
 		case = _getCase(request,id)
 
-		user = get_blog_user(request.user.id)
-		if(user and id in user["following"]):
+		blog_user = get_blog_user(request.user.id)
+		if(blog_user and id in user["following"]):
 			following = "true"
 		else:
 			following = "false"
 
 		followingCount = 0
 		if(request.user.id != id):
-			user = get_blog_user(id)
-			if(user):
+			blog_user = get_blog_user(id)
+			if(blog_user):
 				followingCount = len(user["following"])
-		elif(user):
+		elif(blog_user):
 			followingCount = len(user["following"])
 
 
-		listPost = get_posts(case, id, user, 0)
+		listPost = get_posts(case, id, blog_user, 0)
 		
 		return render_to_response('profile/posts.html', {
 			"id":id,
@@ -226,7 +177,7 @@ def profile_posts(request, id):
 			'totalPost': count_posts(id),
 			'posts': listPost,
 			'case': case,
-			"user_view_profile": get_user(id),
+			"user_view_profile": user,
 			"following": following,
 			"followingCount": followingCount,
 			"followerCount": get_num_followers(id)

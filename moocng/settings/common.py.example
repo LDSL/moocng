@@ -119,6 +119,8 @@ LOCALE_PATHS = (
     os.path.join(BASEDIR, 'locale'),
 )
 
+DEFAULT_LANGUAGE = 'es'
+
 SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
@@ -442,13 +444,15 @@ CERTIFICATE_URL = 'http://devopenmooc.com/idcourse/%(courseid)s/email/%(email)s'
 
 MASSIVE_EMAIL_BATCH_SIZE = 30
 
+ATTACHMENTS_MAX_SIZE = 5 # in MB
 PEER_REVIEW_TEXT_MAX_SIZE = 5000  # in chars
 PEER_REVIEW_FILE_MAX_SIZE = 5  # in MB
 PEER_REVIEW_ASSIGNATION_EXPIRE = 24  # in hours
 
 ASSET_SLOT_GRANULARITY = 5  # Slot time of assets should be a multiple of this value (in minutes)
 
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 * 1
 
 FORUM_URL = "http://forum.devopenmooc.com"
 FORUM_API_SECRET = 'password'
