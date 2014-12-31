@@ -2152,9 +2152,11 @@ ul.rating {
 			height: 208px;
 			ul li {
 				display: table;
-				padding: 15px 20px 20px;
+				padding: 15px 60px 20px 20px;
 				border-bottom: 1px solid @neutral_light_2;
 				background: @white;
+				width: 100%;
+				position: relative;
 				
 				img {
 					display: table-cell;
@@ -2199,6 +2201,11 @@ ul.rating {
 						font-size: 14px;
 						line-height: inherit;
 						display: inline-block;
+
+						&.block {
+							display: block;
+							width: 100%;
+						}
 					}
 					
 					.hashtag, a {
@@ -2224,6 +2231,10 @@ ul.rating {
 					&:after {
 						content: url("/static/img/feed_comment.png");
 						vertical-align: middle;
+						position: absolute;
+						top: 50%;
+						right: 20px;
+						margin-top: -12px;
 					}
 				}
 				

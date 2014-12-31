@@ -67,8 +67,8 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="row">
+		<!--</div>
+		<div class="row">-->
 			<!--<div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
 				<div class="dash-box">
 					<div class="title">
@@ -144,7 +144,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div>-->
 			<div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
 				<div class="dash-box">
 					<div class="title">
@@ -156,7 +156,18 @@
 								<h4>{% trans "General" %}</h4>
 								<div class="content feed">
 									<ul>
-										<li class="wiki">
+										{% for announcement in announcements %}
+										<li class="comment">
+											<div>
+												<h5>{{announcement.title}}</h5>
+												<p class="date">{{announcement.datetime|date:'d-m-Y H:i'}}</p>
+												{% autoescape off %}
+												<div class="text block">{{ announcement.content }}</div>
+												{% endautoescape %}
+											</div>
+										</li>
+										{% endfor %}
+										<!--<li class="wiki">
 											<img src="{{ STATIC_URL }}img/profile_hector.png">
 											<div>
 												<h5>Juan Pedro Pérez <span>@juanpp</span></h5>
@@ -187,11 +198,11 @@
 												<p class="date">20 jul 2014</p>
 												<p class="text">Le gusta el tema <a href="#">"3.1 Base del mapa..."</a><span class="hashtag">#UNED_geocart01</span></p>
 											</div>
-										</li>
+										</li>-->
 									</ul>
 								</div>
 							</li>
-							<li>
+							<!--<li>
 								<h4>{% trans "Team" %}</h4>
 								<div class="content feed">
 									<ul>
@@ -229,14 +240,14 @@
 										</li>
 									</ul>
 								</div>
-							</li>
+							</li>-->
 						</ul>
-						<div class="bottom-bar">
+						<!--<div class="bottom-bar">
 							<a href="#" class="button pull-right">Ver todas las notificaciones<img src="{{ STATIC_URL }}/img/icon_notification.png"></a>
-						</div>
+						</div>-->
 					</div>
 				</div>
-			</div>-->
+			</div>
 		</div>		
 	</div>
 	<!--<div class="popup">
@@ -254,7 +265,8 @@
 				var $dash = $(value);
 				var width = $dash.children('.content').first().outerWidth();
 				$dash.find('.content .tabs .content').width(width);
-				var height = $dash.find('.content ol')[0].scrollHeight;
+				var $heightElement = $dash.find('.content ol')[0] || $dash.find('.content ul')[0]
+				var height = $heightElement.scrollHeight;
 				var bottombar = $dash.find('.bottom-bar');
 				if (bottombar.length > 0){
 					height += bottombar.outerHeight() + 5;
