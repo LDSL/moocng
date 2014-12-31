@@ -401,6 +401,8 @@ def course_dashboard(request, course_slug):
 
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
 
+    announcements = Announcement.objects.filter(course=course).order_by('datetime').reverse()[:5]
+
     CourseRatingFormSet = formset_factory(CourseRatingForm, extra=0, max_num=1)
     if request.method == "POST":
         rating_form = CourseRatingForm(request.POST)
@@ -451,6 +453,7 @@ def course_dashboard(request, course_slug):
         'rating_form': rating_form,
         'rating_formset': rating_formset,
         'group': group,
+        'announcements': announcements,
     }, context_instance=RequestContext(request))
 
 @login_required
