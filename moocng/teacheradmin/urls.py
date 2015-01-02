@@ -108,4 +108,7 @@ urlpatterns = patterns('moocng.teacheradmin.views',
 
     # Course's external apps admin
     url(r'^externalapps/', include('moocng.externalapps.urls')),
+
+    url(r'^lists/$', 'teacheradmin_lists', name='teacheradmin_lists'),
+    url(r'^lists/coursestudents$', 'teacheradmin_lists_coursestudents', name='teacheradmin_lists_coursestudents'),
 )

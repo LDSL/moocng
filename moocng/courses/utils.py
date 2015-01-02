@@ -54,6 +54,10 @@ logger = logging.getLogger(__name__)
 TRACE_CLONE_COURSE_DIR = 'trace_clone_course'
 import pymongo
 
+import csv
+import StringIO
+from HTMLParser import HTMLParser
+
 
 def is_teacher(user, courses):
 
@@ -591,3 +595,19 @@ def change_user_group(id_user, id_group, new_id_group, pos_lat=0.0, pos_lon=0.0)
     activity_entry = {"id_course": group["id_course"], "id_user": id_user, "former_id_group": ObjectId(id_group), "new_id_group": ObjectId(new_id_group), "timestamp": timestamp, "lat": pos_lat, "lon": pos_lon}
     groupsActivityCollection.insert(activity_entry)
 
+def get_course_students_csv(course):
+    course_file = StringIO.StringIO()
+
+    course_csv = csv.writer(course_file, quoting=csv.QUOTE_ALL)
+    headers = ["first_name", "last_name", "email"]
+    course_csv.writerow(headers)
+
+    h = HTMLParser()
+    for student in course.students.all():
+        row = []
+        for field in headers:
+            fieldvalue = getattr(student, field)
+            row.append(h.unescape(fieldvalue).encode("utf-8", "replace"))
+        course_csv.writerow(row)
+
+    return course_file.getvalue()
