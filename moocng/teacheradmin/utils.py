@@ -20,9 +20,9 @@ from django.core.urlresolvers import reverse
 from moocng.courses.utils import send_mail_wrapper
 
 
-def send_invitation(request, invitation):
+def send_invitation_not_registered(request, invitation):
     subject = _(u'You have been invited to be a teacher in "%s"') % invitation.course.name
-    template = 'teacheradmin/email_invitation_teacher.txt'
+    template = 'teacheradmin/email_invitation_teacher_not_registered.txt'
     context = {
         'host': invitation.host.get_full_name() or invitation.host.username,
         'course': invitation.course.name,
@@ -32,6 +32,16 @@ def send_invitation(request, invitation):
     to = [invitation.email]
     send_mail_wrapper(subject, template, context, to)
 
+def send_invitation_registered(request, email, course):
+    subject = _(u'You have been invited to be a teacher in "%s"') % course.name
+    template = 'teacheradmin/email_invitation_teacher.txt'
+    context = {
+        'course': course.name,
+        'host': request.user.get_full_name() or request.user.username,
+        'site': get_current_site(request).name
+    }
+    to = [email]
+    send_mail_wrapper(subject, template, context, to)
 
 def send_removed_notification(request, email, course):
     subject = _(u'You have been removed as teacher from "%s"') % course.name
