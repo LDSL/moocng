@@ -228,8 +228,8 @@
             
             if($("fieldset.use-last-frame").length > 0){
                 size = this.calculate_size();
-                this.$el.width(size.width + this.padding * 2 + this.handlePadding)
-                    .height(size.height + this.padding * 2)
+                this.$el/*.width(size.width + this.padding * 2 + this.handlePadding)
+                    .height(size.height + this.padding * 2)*/
                     .draggable({
                         drag: this.drag,
                         start: this.start,
@@ -239,6 +239,7 @@
                         left: (this.model.get('x') - this.padding) + "px",
                         top: (this.model.get('y') - this.padding) + "px",
                         padding: this.padding + "px",
+                        paddingRight: this.handlePadding + "px",
                         position: 'absolute'
                     });
             }
