@@ -664,11 +664,22 @@ if (_.isUndefined(window.MOOC)) {
                 return checkRequiredAux(this.$el);
             },
 
+            checkDates: function() {
+                var start_date = new Date(this.$el.find("input#start_date").val());
+                var deadline = new Date(this.$el.find("input#end_date").val());
+                return start_date.getTime() < deadline.getTime();
+            },
+
             save: function (evt) {
                 evt.preventDefault();
                 evt.stopPropagation();
                 if (!this.checkRequired()) {
                     MOOC.ajax.showAlert("required");
+                    return;
+                }
+                var unit_type = this.$el.find("select#type").val();
+                if (unit_type != 'n' && !this.checkDates()){
+                    MOOC.ajax.showAlert("wrong_dates");
                     return;
                 }
                 MOOC.ajax.showLoading();
