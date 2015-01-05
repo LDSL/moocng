@@ -52,7 +52,9 @@
 						{% if member.languages %}
 						<p class="tag pull-left"><img src="{{ STATIC_URL }}img/ECO_icon_info_idioma.svg" alt="{% trans "Languages"%}">{% for language in member.languages %}{{ language }}{% endfor %}</p>
 						{% endif %}
-						<p class="tag pull-right"><img src="{{ STATIC_URL }}img/ECO_icon_info_karma.svg" alt="{% trans "Karma"%}">{% if member.karma %}{{ member.karma }}{% else %}0{% endif %}</p>
+						{% if feature_forum %}
+						<p class="tag pull-right karma" data-user="{{member.username}}"><img src="{{ STATIC_URL }}img/ECO_icon_info_karma.svg" alt="{% trans "Karma"%}"></p>
+						{% endif %}
 					</div>
 				</li>
 				{% endfor %}
@@ -210,5 +212,25 @@
 			   	}
 			});
 		})
+	</script>
+	<script>
+	$(function(){
+		$('.userlist .karma').each(function(idx, elem){
+			var user = $(elem).attr('data-user');
+			user = user.replace('.','-');
+			$.ajax({
+			    url: '{{ forum_url }}/api2/users/'+user,
+			    type: 'GET',
+			    //dataType: 'jsonp',
+			    //jsonpCallback: 'callback',
+			    success: function(result) { if(result){
+			    								$(elem).append('<span>'+result.reputation+'</span>');
+			    							}else{
+			    								console.log('Unable to request Karma for user ' + user)
+			    							} },
+			    error: function() { console.log('Unable to request Karma for user ' + user) },
+			});
+		});
+	});
 	</script>
 {% endblock %}
