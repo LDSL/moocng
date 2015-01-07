@@ -94,6 +94,7 @@ function showGeolocationAdvise(){
 	}
 
 	var browser_guide = geoadvice_translate.browser_guide[browser];
+	var broser_help_link = geoadvice_translate.browser_help_link[browser];
 	var video_file = "geolocation_";
 	video_file += geolocation_allowed == undefined ? 'firsttime' : 'blocked';
 	video_file += '_' + browser;
@@ -109,14 +110,16 @@ function showGeolocationAdvise(){
 			confirmDiv += '<div class="video '+ browser +'"><video autoplay loop> \
 					<source src="/static/video/'+ video_file +'"> \
 				</video></div> \
-				<p class="label">'+ geoadvice_translate.video_label +' '+ browserName +'. <a href="#">'+ geoadvice_translate.more_info +'</a>.</p></video> \
+				<p class="label">'+ geoadvice_translate.video_label +' '+ browserName +'.';
+			if(broser_help_link)
+				confirmDiv += ' <a href="'+ broser_help_link +'" target="_blank">'+ geoadvice_translate.more_info +'</a>.';
+			confirmDiv += '</p></video> \
 				<p>'+ geoadvice_translate.browser_details +' '+ browserName +'. '+ browser_guide +'.</p> \
 			</div>';
 		}
 		confirmDiv +='<div class="modal-footer"> \
-				<h2><a href="#">'+ geoadvice_translate.whylocation +'</a></h2> \
-				<p>'+ geoadvice_translate.whylocation_explain +'. \
-				<a href="#">' + geoadvice_translate.readmore + '</a>.</p> \
+			<h2>'+ geoadvice_translate.whylocation +'</h2> \
+			<p>'+ geoadvice_translate.whylocation_explain +'.</p> \
 			</div></div>';
 	var $confirmDiv = $(confirmDiv);
 	$('body').append($confirmDiv);
