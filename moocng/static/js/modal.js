@@ -46,8 +46,11 @@
         this.isShown = true;
 
         var that = this;
-        this.$element.removeClass('hide');
-        $('body').append('<div id="modal_bck"></div>');
+        this.$element.addClass('show');
+        var background = $('<div id="modal_bck"></div>'); 
+        $('body').append(background);
+        setTimeout(function(){ background.addClass('show'); }, 100);
+
         this.$element.find('[data-dismiss]').on('click', function(e){
           e.preventDefault();
           that.hide();
@@ -62,8 +65,10 @@
 
         this.isShown = false;
 
-        this.$element.addClass('hide');
-        $('#modal_bck').remove();
+        this.$element.removeClass('show');
+        var background = $('#modal_bck');
+        background.removeClass('show');
+        setTimeout(function(){ background.remove(); }, 500);
         this.$element.find('[data-dismiss]').off('click');
         this.escape();
       }
@@ -91,7 +96,7 @@
         , options = $.extend({}, $.fn.modal.defaults, $this.data(), typeof option == 'object' && option)
       if (!data) $this.data('modal', (data = new Modal(this, options)))
       if (typeof option == 'string') data[option]()
-      else if (options.show) data.show()
+      else if (options.show) data.show()      
     })
   }
 
