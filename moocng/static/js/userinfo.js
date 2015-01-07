@@ -114,9 +114,9 @@ function showGeolocationAdvise(){
 			</div>';
 		}
 		confirmDiv +='<div class="modal-footer"> \
-				<h2>'+ geoadvice_translate.whylocation +'</h2> \
-				<p>'+ geoadvice_translate.whylocation_explain +'.</p> \
-				<a href="#">' + geoadvice_translate.readmore + '</a> \
+				<h2><a href="#">'+ geoadvice_translate.whylocation +'</a></h2> \
+				<p>'+ geoadvice_translate.whylocation_explain +'. \
+				<a href="#">' + geoadvice_translate.readmore + '</a>.</p> \
 			</div></div>';
 	var $confirmDiv = $(confirmDiv);
 	$('body').append($confirmDiv);
@@ -126,7 +126,7 @@ function showGeolocationAdvise(){
         backdrop: "static",
         keyboard: false
     });
-    confirmModal.modal("show");
+    setTimeout(function(){ confirmModal.modal("show"); }, 1000);    
 
     $confirmDiv.find('.modal-header a').click(function(){
     	confirmModal.modal("hide");
