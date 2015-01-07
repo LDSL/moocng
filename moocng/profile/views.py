@@ -152,7 +152,7 @@ def profile_posts(request, id):
 		case = _getCase(request,id)
 
 		blog_user = get_blog_user(request.user.id)
-		if(blog_user and id in user["following"]):
+		if(blog_user and id in blog_user["following"]):
 			following = "true"
 		else:
 			following = "false"
@@ -161,9 +161,9 @@ def profile_posts(request, id):
 		if(request.user.id != id):
 			blog_user = get_blog_user(id)
 			if(blog_user):
-				followingCount = len(user["following"])
+				followingCount = len(blog_user["following"])
 		elif(blog_user):
-			followingCount = len(user["following"])
+			followingCount = len(blog_user["following"])
 
 
 		listPost = get_posts(case, id, blog_user, 0)
