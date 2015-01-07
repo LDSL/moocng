@@ -13,12 +13,7 @@
 				<a href="{{post.id_user}}"><span class="shared">{% trans "Shared by"%} {{post.shared_by}}</span></a>
 				<div class="clearfix"></div>
 				{% endif %}
-				<a href=
-				{% if post.id_author %}
-					{{post.id_author}}
-				{% else %}
-					{{post.id_user}}
-				{% endif %}
+				<a href={{post.username|slice:"1:"}}
 				><span class="namePost">{{post.first_name}} {{post.last_name}}</span></a>
 				<span class="emailPost">{{post.username}}</span>
 				
@@ -38,8 +33,8 @@
 				{% else %}
 				<div class="tools" id={{post.id}}>
 				{% endif %}
-				<!-- <span class="reply">{% trans "Reply" %}</span>  -->
-				{% if case == 1 %}
+				<!--<span class="reply">{% trans "Reply" %}</span>-->
+				{% if post.id_user != request.user.id %}
 						<span title="Retweet" class="retweet">{{post.shared}}</span>
 				{% else %}
 					<span title="Retweet" class="noRetweet" style="cursor: inherit;">{{post.shared}}</span>
