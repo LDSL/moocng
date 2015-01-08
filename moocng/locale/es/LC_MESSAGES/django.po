@@ -561,7 +561,7 @@ msgid "badges"
 msgstr "medallas"
 
 #: badges/models.py:149
-#, fuzzy
+
 msgid "Criteria_type"
 msgstr "Criterio"
 
@@ -1051,7 +1051,7 @@ msgid "Maximum of massive emails that a course can send per month"
 msgstr "Número máximo de emails que un curso puede enviar por mes"
 
 #: courses/models.py:199
-#, fuzzy
+
 msgid "Has this course groups?"
 msgstr "Puede listar cursos de un usuario"
 
@@ -1126,7 +1126,7 @@ msgid "Rate"
 msgstr "Valorar"
 
 #: courses/models.py:435
-#, fuzzy
+
 msgid "Enrollment timestamp"
 msgstr "Método de matriculación"
 
@@ -1265,22 +1265,22 @@ msgid "Nugget"
 msgstr "Píldora"
 
 #: courses/models.py:736
-#, fuzzy
+
 msgid "VTT file"
 msgstr "A rellenar"
 
 #: courses/models.py:738
-#, fuzzy
+
 msgid "Transcription type"
 msgstr "Descripción"
 
 #: courses/models.py:749
-#, fuzzy
+
 msgid "transcription"
 msgstr "Mis notas"
 
 #: courses/models.py:750
-#, fuzzy
+
 msgid "transcriptions"
 msgstr "Mis notas"
 
@@ -1397,7 +1397,7 @@ msgid "You could see your transcript <a href=\"%s\">here</a>"
 msgstr "Puedes ver tus notas <a href=\"%s\">aquí</a>"
 
 #: courses/security.py:121
-#, fuzzy
+
 msgid "This course has not started yet"
 msgstr "Este curso no está listo aún"
 
@@ -1406,12 +1406,12 @@ msgid "This course has not started yet, but you can enroll into it"
 msgstr "Este curso aún no ha comenzado, pero usted puede inscribirse en él"
 
 #: courses/security.py:126
-#, fuzzy
+
 msgid "This course has finished"
 msgstr "Este curso está vacío"
 
 #: courses/security.py:128
-#, fuzzy
+
 msgid "This course is not public"
 msgstr "Este curso no está listo aún"
 
@@ -2111,12 +2111,12 @@ msgid "Go to group's forum"
 msgstr "Ir al foro de grupo"
 
 #: courses/templates/courses/group.html:26
-#, fuzzy
+
 msgid "members"
 msgstr "¡Recuerda!"
 
 #: courses/templates/courses/group.html:28
-#, fuzzy
+
 msgid "Change group"
 msgstr "Cambie"
 
@@ -2162,7 +2162,7 @@ msgstr ""
 "abiertos"
 
 #: courses/templates/courses/home_as_list.html:13
-#, fuzzy
+
 msgid "Enter now"
 msgstr "Registrarme ahora"
 
@@ -2187,7 +2187,7 @@ msgid "catalogue"
 msgstr "catálogo"
 
 #: courses/templates/courses/home_as_list.html:36
-#, fuzzy
+
 msgid "Courses catalogue"
 msgstr "catálogo"
 
@@ -2691,27 +2691,27 @@ msgid "peer review assignments"
 msgstr "actividades revisadas por compañeros"
 
 #: peerreview/models.py:94
-#, fuzzy
+
 msgid "Description for score 1"
 msgstr "Descripción"
 
 #: peerreview/models.py:96
-#, fuzzy
+
 msgid "Description for score 2"
 msgstr "Descripción"
 
 #: peerreview/models.py:98
-#, fuzzy
+
 msgid "Description for score 3"
 msgstr "Descripción"
 
 #: peerreview/models.py:100
-#, fuzzy
+
 msgid "Description for score 4"
 msgstr "Descripción"
 
 #: peerreview/models.py:102
-#, fuzzy
+
 msgid "Description for score 5"
 msgstr "Descripción"
 
@@ -3093,12 +3093,12 @@ msgid "Country"
 msgstr "País"
 
 #: profile/models.py:90
-#, fuzzy
+
 msgid "Middle name"
 msgstr "Nombre del fichero adjunto"
 
 #: profile/models.py:94
-#, fuzzy
+
 msgid "Interests"
 msgstr "Áreas de interés"
 
@@ -3513,7 +3513,7 @@ msgid "There are not assets yet"
 msgstr "No hay ningún recurso todavía."
 
 #: teacheradmin/templates/teacheradmin/badges.html:73
-#, fuzzy
+
 msgid "Badge title"
 msgstr "Imagen de la medalla"
 
@@ -3529,17 +3529,17 @@ msgid "Peer review"
 msgstr "Actividad revisada por compañeros"
 
 #: teacheradmin/templates/teacheradmin/badges.html:92
-#, fuzzy
+
 msgid "Select unit"
 msgstr "Seleccione un fichero"
 
 #: teacheradmin/templates/teacheradmin/badges.html:101
-#, fuzzy
+
 msgid "Select peer review"
 msgstr "Actividad revisada por compañeros"
 
 #: teacheradmin/templates/teacheradmin/badges.html:108
-#, fuzzy
+
 msgid "Add peer review"
 msgstr "Actividad revisada por compañeros"
 
@@ -3562,7 +3562,7 @@ msgid "Save"
 msgstr "Guardar"
 
 #: teacheradmin/templates/teacheradmin/badges.html:168
-#, fuzzy
+
 msgid "Delete badge"
 msgstr "Borrar"
 
@@ -3686,7 +3686,7 @@ msgid "Sent at"
 msgstr "Enviado el"
 
 #: teacheradmin/templates/teacheradmin/groups.html:56
-#, fuzzy
+
 msgid "Warning"
 msgstr "¡Atención!"
 
@@ -3711,12 +3711,12 @@ msgid "Accept"
 msgstr "Aceptar"
 
 #: teacheradmin/templates/teacheradmin/groups.html:83
-#, fuzzy
+
 msgid "Create groups"
 msgstr "Crear un curso"
 
 #: teacheradmin/templates/teacheradmin/groups.html:85
-#, fuzzy
+
 msgid "Groups already exist for this course"
 msgstr "No hay estadísticas para este curso"
 
@@ -3954,7 +3954,7 @@ msgid "Title:"
 msgstr "Título:"
 
 #: teacheradmin/templates/teacheradmin/units.html:60
-#, fuzzy
+
 msgid "Score description"
 msgstr "Descripción de la medalla"
 
@@ -3976,7 +3976,7 @@ msgid "Delete"
 msgstr "Borrar"
 
 #: teacheradmin/templates/teacheradmin/units.html:143
-#, fuzzy
+
 msgid "Transcriptions"
 msgstr "Descripción"
 
@@ -4003,12 +4003,12 @@ msgid "There are no attachments yet."
 msgstr "No hay aún ningún fichero adjunto."
 
 #: teacheradmin/templates/teacheradmin/units.html:247
-#, fuzzy
+
 msgid "Transcription file name"
 msgstr "Nombre de la organización"
 
 #: teacheradmin/templates/teacheradmin/units.html:251
-#, fuzzy
+
 msgid "There are no transcriptions yet."
 msgstr "No hay aún ningún fichero adjunto."
 
@@ -4154,7 +4154,7 @@ msgstr "Catálogo"
 
 #: templates/base.html:58 templates/base_bigheader.html:46
 #: templates/base_bigheader.html.py:166
-#, fuzzy
+
 msgid "Teams"
 msgstr "Grupos"
 
@@ -4200,7 +4200,7 @@ msgid "MOOC"
 msgstr "MOOC"
 
 #: templates/base_bigheader.html:85
-#, fuzzy
+
 msgid "Follow us"
 msgstr "Síguenos"
 
@@ -4296,184 +4296,184 @@ msgstr "Pruebas"
 msgid "Documentation"
 msgstr "Documentación"
 
-#~ msgid "Order"
-#~ msgstr "Orden"
+msgid "Order"
+msgstr "Orden"
 
-#, fuzzy
-#~ msgid "Group name"
-#~ msgstr "Nombre del curso"
 
-#~ msgid "{0}.{1} ({2}: {3}) at {4} x {5}"
-#~ msgstr "{0} . {1} ( {2} : {3} ) a {4} x {5}"
+msgid "Group name"
+msgstr "Nombre del curso"
 
-#~ msgid "Clue"
-#~ msgstr "Pista"
+msgid "{0}.{1} ({2}: {3}) at {4} x {5}"
+msgstr "{0} . {1} ( {2} : {3} ) a {4} x {5}"
 
-#~ msgid "Got it"
-#~ msgstr "Lo tengo"
+msgid "Clue"
+msgstr "Pista"
 
-#~ msgid "Hello! Active your location"
-#~ msgstr "Hola! Activa tu ubicación"
+msgid "Got it"
+msgstr "Lo tengo"
 
-#~ msgid "for a better educational experience"
-#~ msgstr "para una mejor experiencia educativa"
+msgid "Hello! Active your location"
+msgstr "Hola! Activa tu ubicación"
 
-#~ msgid "Location permission in"
-#~ msgstr "Permiso de localización"
+msgid "for a better educational experience"
+msgstr "para una mejor experiencia educativa"
 
-#, fuzzy
-#~ msgid "More information"
-#~ msgstr "Información"
+msgid "Location permission in"
+msgstr "Permiso de localización en"
 
-#, fuzzy
-#~ msgid "Your browser is"
-#~ msgstr "Su navegador está obsoleto"
 
-#~ msgid ""
-#~ "Active location tracking by clicking on \\\"Allow\\\" in the bar that "
-#~ "will appear above"
-#~ msgstr ""
-#~ "Activa el rastreo de la ubicación haciendo clic en \\\"Permitir\\\" en la "
-#~ "barra que aparecerá arriba"
+msgid "More information"
+msgstr "Información"
 
-#~ msgid ""
-#~ "Active location tracking by clicking on \\\"Allow\\\" in the bar that "
-#~ "will appear below"
-#~ msgstr ""
-#~ "Activa el rastreo de la ubicación haciendo clic en \\\"Permitir\\\" en la "
-#~ "barra que aparecerá debajo"
 
-#~ msgid ""
-#~ "Active location tracking by selecting \\\"Share Location\\\" on the "
-#~ "dialog that will appear above"
-#~ msgstr ""
-#~ "Activa el rastreo de la ubicación seleccionando \\\"Compartir Ubicación\\"
-#~ "\" en el diálogo que aparecerá arriba"
+msgid "Your browser is"
+msgstr "Su navegador es"
 
-#~ msgid ""
-#~ "Active location tracking by clicking on \\\"Allow\\\" in the dialog that "
-#~ "will appear above"
-#~ msgstr ""
-#~ "Activa el rastreo de la ubicación haciendo clic en \\\"Permitir\\\" en el "
-#~ "diálogo que aparecerá arriba"
+msgid ""
+"Active location tracking by clicking on \\\"Allow\\\" in the bar that "
+"will appear above"
+msgstr ""
+"Activa el rastreo de la ubicación haciendo clic en \\\"Permitir\\\" en la "
+"barra que aparecerá arriba"
 
-#~ msgid ""
-#~ "Active location tracking by selecting  \\\"Always allow\\\" on the \\"
-#~ "\"Options for this site\\\" dropdown that will appear in the bar that "
-#~ "will appear below"
-#~ msgstr ""
-#~ "Activa el rastreo de la ubicación seleccionando \\\"Permitir siempre\\\" "
-#~ "en el desplegable \\\"Opciones para este sitio\\\" que aparecerá en la "
-#~ "barra debajo"
+msgid ""
+"Active location tracking by clicking on \\\"Allow\\\" in the bar that "
+"will appear below"
+msgstr ""
+"Activa el rastreo de la ubicación haciendo clic en \\\"Permitir\\\" en la "
+"barra que aparecerá debajo"
 
-#~ msgid ""
-#~ "Active location tracking by clicking on \\\"OK\\\" in the dialog that "
-#~ "will appear"
-#~ msgstr ""
-#~ "Activa el rastreo de la ubicación haciendo clic en \\\"Aceptar\\\" en el "
-#~ "cuadro de diálogo que aparecerá"
+msgid ""
+"Active location tracking by selecting \\\"Share Location\\\" on the "
+"dialog that will appear above"
+msgstr ""
+"Activa el rastreo de la ubicación seleccionando \\\"Compartir Ubicación\\"
+"\" en el diálogo que aparecerá arriba"
 
-#~ msgid "Why tracking my location is important?"
-#~ msgstr "¿Por qué el seguimiento de mi ubicación es importante?"
+msgid ""
+"Active location tracking by clicking on \\\"Allow\\\" in the dialog that "
+"will appear above"
+msgstr ""
+"Activa el rastreo de la ubicación haciendo clic en \\\"Permitir\\\" en el "
+"diálogo que aparecerá arriba"
 
-#~ msgid ""
-#~ "Allowing us to know where you are is useful for you. Why?, because we use "
-#~ "this information to suggest you courses and user groups to enhance your "
-#~ "learning experience. ECO are massive and open online courses with "
-#~ "emphasis on the location and importance of networked learning. Your "
-#~ "geographic location helps us improve your learning experience, thank you"
-#~ msgstr ""
-#~ "El permitirnos saber dónde se encuentra es útil para usted. ¿Por qué?, "
-#~ "porque usamos esta información para sugerir cursos y grupos de usuarios "
-#~ "para mejorar su experiencia de aprendizaje. ECO son cursos online masivos "
-#~ "y abiertos con énfasis en la localización y la importancia del "
-#~ "aprendizaje en red. Su ubicación geográfica nos ayuda a mejorar su "
-#~ "experiencia de aprendizaje, gracias"
+msgid ""
+"Active location tracking by selecting  \\\"Always allow\\\" on the \\"
+"\"Options for this site\\\" dropdown that will appear in the bar that "
+"will appear below"
+msgstr ""
+"Activa el rastreo de la ubicación seleccionando \\\"Permitir siempre\\\" "
+"en el desplegable \\\"Opciones para este sitio\\\" que aparecerá en la "
+"barra debajo"
 
-#~ msgid "Register in %(site_name)s to enroll in this course"
-#~ msgstr "Registrarme en %(site_name)s para matricularme en este curso"
+msgid ""
+"Active location tracking by clicking on \\\"OK\\\" in the dialog that "
+"will appear"
+msgstr ""
+"Activa el rastreo de la ubicación haciendo clic en \\\"Aceptar\\\" en el "
+"cuadro de diálogo que aparecerá"
 
-#~ msgid "Team section under construction"
-#~ msgstr "Sección equipo en construcción"
+msgid "Why tracking my location is important?"
+msgstr "¿Por qué el seguimiento de mi ubicación es importante?"
 
-#, fuzzy
-#~ msgid "User score"
-#~ msgstr "Perfil de usuario"
+msgid ""
+"Allowing us to know where you are is useful for you. Why?, because we use "
+"this information to suggest you courses and user groups to enhance your "
+"learning experience. ECO are massive and open online courses with "
+"emphasis on the location and importance of networked learning. Your "
+"geographic location helps us improve your learning experience, thank you"
+msgstr ""
+"El permitirnos saber dónde se encuentra es útil para usted. ¿Por qué?, "
+"porque usamos esta información para sugerir cursos y grupos de usuarios "
+"para mejorar su experiencia de aprendizaje. ECO son cursos online masivos "
+"y abiertos con énfasis en la localización y la importancia del "
+"aprendizaje en red. Su ubicación geográfica nos ayuda a mejorar su "
+"experiencia de aprendizaje, gracias"
 
-#~ msgid "Review for"
-#~ msgstr "Revisión de"
+msgid "Register in %(site_name)s to enroll in this course"
+msgstr "Registrarme en %(site_name)s para matricularme en este curso"
 
-#~ msgid "Pending reservations allowed:"
-#~ msgstr "Reservas pendientes permitidas:"
+msgid "Team section under construction"
+msgstr "Sección equipo en construcción"
 
-#~ msgid "Total reservations allowed:"
-#~ msgstr "Total de reservas permitidas:"
 
-#~ msgid "Certification banner"
-#~ msgstr "Banner de certificación"
+msgid "User score"
+msgstr "Perfil de usuario"
 
-#~ msgid "Certification image alternative text"
-#~ msgstr "texto alternativo de la imagen de la certificación "
+msgid "Review for"
+msgstr "Revisión de"
 
-#~ msgid ""
-#~ "This text is used to describe the certification image. It is necessary "
-#~ "for accessibility "
-#~ msgstr ""
-#~ "Este texto se emplea para describir la imagen del certificado. Es "
-#~ "necesario por accesibilidad."
+msgid "Pending reservations allowed:"
+msgstr "Reservas pendientes permitidas:"
 
-#~ msgid "View the evaluation criteria"
-#~ msgstr "Vea los criterios de evaluación"
+msgid "Total reservations allowed:"
+msgstr "Total de reservas permitidas:"
 
-#~ msgid "My courses"
-#~ msgstr "Mis cursos"
+msgid "Certification banner"
+msgstr "Banner de certificación"
 
-#~ msgid "Welcome"
-#~ msgstr "Bienvenido"
+msgid "Certification image alternative text"
+msgstr "texto alternativo de la imagen de la certificación "
 
-#~ msgid "Profile settings"
-#~ msgstr "Preferencias del perfil"
+msgid ""
+"This text is used to describe the certification image. It is necessary "
+"for accessibility "
+msgstr ""
+"Este texto se emplea para describir la imagen del certificado. Es "
+"necesario por accesibilidad."
 
-#~ msgid "Course summary"
-#~ msgstr "El curso"
+msgid "View the evaluation criteria"
+msgstr "Vea los criterios de evaluación"
 
-#~ msgid "You are enrolled in this course"
-#~ msgstr "Estás matriculado en este curso"
+msgid "My courses"
+msgstr "Mis cursos"
 
-#~ msgid "Get a certification in this course"
-#~ msgstr "Obtenga un certificado en este curso"
+msgid "Welcome"
+msgstr "Bienvenido"
 
-#~ msgid "Register in %(site_name)s to get a certification in this course"
-#~ msgstr ""
-#~ "Registrarme en %(site_name)s para obtener un certificado en este curso"
+msgid "Profile settings"
+msgstr "Preferencias del perfil"
 
-#~ msgid "Course Code"
-#~ msgstr "Código del Curso"
+msgid "Course summary"
+msgstr "El curso"
 
-#~ msgid "Save changes and add an asset availability to this nugget"
-#~ msgstr "Guardar cambios y añadir disponibilidad de recursos a esta píldora"
+msgid "You are enrolled in this course"
+msgstr "Estás matriculado en este curso"
 
-#~ msgid "Available from:"
-#~ msgstr "Disponible desde:"
+msgid "Get a certification in this course"
+msgstr "Obtenga un certificado en este curso"
 
-#~ msgid "Available to:"
-#~ msgstr "Disponible hasta:"
+msgid "Register in %(site_name)s to get a certification in this course"
+msgstr ""
+"Registrarme en %(site_name)s para obtener un certificado en este curso"
 
-#~ msgid "Save changes and add an asset"
-#~ msgstr "Guardar cambios y añadir un recurso"
+msgid "Course Code"
+msgstr "Código del Curso"
 
-#~ msgid "Remove the asset availability"
-#~ msgstr "Eliminar la disponibilidad de recursos"
+msgid "Save changes and add an asset availability to this nugget"
+msgstr "Guardar cambios y añadir disponibilidad de recursos a esta píldora"
 
-#~ msgid "Confirm operation"
-#~ msgstr "Confirmar operación"
+msgid "Available from:"
+msgstr "Disponible desde:"
 
-#~ msgid ""
-#~ "Are you completely sure you want to do this operation? It is possible "
-#~ "that some reservations are cancelled after this change "
-#~ msgstr ""
-#~ "¿Está completamente seguro de que quiere realizar esta operación? Es "
-#~ "posible que algunas reservas sean canceladas después de este cambio "
+msgid "Available to:"
+msgstr "Disponible hasta:"
 
-#~ msgid "Methodology"
-#~ msgstr "Metodología"
+msgid "Save changes and add an asset"
+msgstr "Guardar cambios y añadir un recurso"
+
+msgid "Remove the asset availability"
+msgstr "Eliminar la disponibilidad de recursos"
+
+msgid "Confirm operation"
+msgstr "Confirmar operación"
+
+msgid ""
+"Are you completely sure you want to do this operation? It is possible "
+"that some reservations are cancelled after this change "
+msgstr ""
+"¿Está completamente seguro de que quiere realizar esta operación? Es "
+"posible que algunas reservas sean canceladas después de este cambio "
+
+msgid "Methodology"
+msgstr "Metodología"

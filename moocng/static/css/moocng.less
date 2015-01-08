@@ -722,6 +722,31 @@ body {
 			}
 			
 			.btn-group{
+
+				&#microblog-share {
+					textarea {
+						width: 350px;
+						height: 100px;
+						font-family: inherit;
+						resize: none;
+					}
+
+					.btn {
+						float: right;
+						width: auto;
+						height: auto;
+						background-color: @highlight;
+						color: @white;
+						font-size: 13px;
+						text-transform: uppercase;
+					}
+
+					&:after {
+						content: "";
+						display: block;
+						clear: both;
+					}
+				}
 				
 				.dropdown-toggle.usermenu {
 					padding: 0;
@@ -2506,6 +2531,19 @@ ul.rating {
 	
 	.bookmark {
 		vertical-align: middle;
+	}
+
+	.share {
+		display: inline-block;
+		padding: 0 12px 4px;
+
+		&:before {
+			content: "";
+			display: inline-block;
+			height: 24px;
+			width: 24px;
+			background-color: @highlight;
+		}
 	}
 	
 	.social_like {

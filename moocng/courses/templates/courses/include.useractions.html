@@ -1,14 +1,15 @@
 {% load i18n usercourses gravatar %}
 <div class="btn-toolbar pull-right">
-	<!--<div class="btn-group">
+	<div class="btn-group" id="microblog-share">
 		<a class="dropdown-toggle" href="#">
 			<img src="{{ STATIC_URL }}img/icon_microblog.png">
 		</a>
 		<div class="dropdown-menu">
-			<input type="text" placeholder="Write a message...">
+			<textarea placeholder="Write a message..."></textarea>
+			<a class="btn" href="#">{% trans 'Share' %}</a>
 		</div>
 	</div>
-	<div class="btn-group">
+	<!--<div class="btn-group">
 		<a class="btn" href="#">
 			<img src="{{ STATIC_URL }}img/icon_forum.png">
 		</a>
@@ -23,8 +24,8 @@
 			<li>Notificación 2</li>
 			<li>Notificación 3</li>
 		</ul>
-	</div>
-	<div class="vruler"></div>-->
+	</div>-->
+	<div class="vruler"></div>
 	<div class="btn-group">
 		<a class="dropdown-toggle usermenu" data-toggle="dropdown">
 			<img src="{% gravatar_for_email user.email %}&s=48" alt="{% firstof user.get_full_name user.username %}">      
@@ -65,3 +66,16 @@
 		</ul>
 	</div>
 </div>
+<script>
+	$('#microblog-share .btn').click(function(e){
+		e.preventDefault();
+		var text = $('#microblog-share textarea').val();
+		$.post({
+			url: '{% url profile_posts %}',
+			data: {'text': text}
+		}).done(function(data){
+			console.log('ole!');
+			console.log(data);
+		});
+	});
+</script>
