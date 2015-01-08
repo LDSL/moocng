@@ -721,6 +721,24 @@ def course_progress(request, course_slug):
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
 
+    cert_url = None
+    if(course.certification_available):
+        total_mark, units_info = get_course_mark(course, request.user)
+        if course.threshold is not None and float(course.threshold) <= total_mark:
+            passed = True
+            if course.external_certification_available:
+                cert_url = settings.CERTIFICATE_URL % {
+                    'courseid': course.id,
+                    'email': request.user.email.lower()
+                }
+            badge = course.completion_badge
+            if badge is not None:
+                try:
+                    award = Award.objects.get(badge=badge, user=request.user)
+                except Award.DoesNotExist:
+                    award = Award(badge=badge, user=request.user)
+                    award.save()
+
     return render_to_response('courses/progress.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
@@ -731,6 +749,7 @@ def course_progress(request, course_slug):
         'is_ready' : is_ready,
         'is_teacher': is_teacher_test(request.user, course),
         'group': group,
+        'cert_url': cert_url
     }, context_instance=RequestContext(request))
 
 

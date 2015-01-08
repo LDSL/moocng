@@ -55,7 +55,7 @@ class CourseForm(forms.ModelForm):
         widgets = {
             'start_date': HTML5DateInput(),
             'end_date': HTML5DateInput(),
-            'certification_banner': BootstrapClearableFileInput(),
+            #'certification_file': BootstrapClearableFileInput(),
             'status': BootstrapInlineRadioSelect(),
         }
 

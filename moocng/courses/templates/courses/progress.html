@@ -9,9 +9,18 @@
 {% block content %}
 <section class="course_progress">
 <div class="container">
-    <div class="row">
-        <div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 bottom-line">
+    <div class="row bottom-line">
+        <div class="col-lg-12 col-md-8 col-sm-6 col-mob-4">
             <h3>{% trans "Progress" %}</h3>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-2 col-mob-4">
+            <h2>{% trans 'Congratulations, you got a certification!' %}</h2>
+            {% if course.certification_available and course.certification_file %}
+                <p><a href="{{ MEDIA_URL }}{{ course.certification_file }}" target="_blank">{% trans 'Download certification file' %}</a></p>
+            {% endif %}
+            {% if cert_url %}
+                <p><a href="{{ cert_url }}" target="_blank">{% trans 'Get an official certification' %}</a></p>
+            {% endif %}
         </div>
     </div>
     <div class="row">
