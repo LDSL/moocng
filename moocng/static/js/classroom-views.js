@@ -178,6 +178,20 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
                 });
             }
 
+            // Update progress
+            $.ajax({
+                url: '/users/'+ MOOC.vars.user_id +'/courses',
+                type: 'GET'
+            }).done(function(data){
+                var userprogress = _.find(data, function(item){
+                    return parseInt(item.id) == MOOC.router.lastUnitView.model.collection.courseId; 
+                });
+                var $progressbar = $('.course-toolbar .progress-bar');
+                var progress = userprogress.progressPercentage + '%';
+                $progressbar.find('p').eq(0).html(progress);
+                $progressbar.find('.progress span').eq(0).css('width', progress);
+            });
+
             // Call activity if media type has no end event
             var media_type = this.model.get('media_content_type');
             if(media_type != 'youtube' && media_type != 'ytaccesible' && media_type != 'vimeo'){
