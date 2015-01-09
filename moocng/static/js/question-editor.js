@@ -361,13 +361,14 @@
 
     MOOC.views.OptionPropertiesView = Backbone.View.extend({
         events: {
-            "click #remove-option": "remove_option"
+            "click #remove-option": "remove_option",
+            "click .spoiler .header a": "toggle_advanced_controls"
         },
 
         initialize: function () {
             _.bindAll(this, 'close', 'render', 'reset', 'remove_option',
                       'change_property_handler', 'change_property',
-                      'unbind_change');
+                      'unbind_change', 'toggle_advanced_controls');
             this.model.bind("change", _.bind(function () {
                 this.unbind_change();
                 this.render();
@@ -487,6 +488,11 @@
                 this.model.set(prop, value);
                 this.model.save();
             }
+        },
+
+        toggle_advanced_controls: function(e) {
+            e.preventDefault();
+            $(".spoiler").toggleClass('open');
         }
 
     });

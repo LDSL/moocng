@@ -1104,3 +1104,22 @@ footer {
         }
     }
 }
+
+.spoiler {
+    .header {
+
+    }
+
+    .content {
+        overflow-y: hidden;
+        overflow-x: auto;
+        max-height: 0;
+        transition: max-height .5s ease-in-out;
+    }
+
+    &.open {
+        .content {
+            max-height: calc(~'100vh - 200px');
+        }
+    }
+}
