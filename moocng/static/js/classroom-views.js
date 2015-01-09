@@ -214,20 +214,21 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
 
         comments = this.model.get("teacher_comments") || '';
         if(comments){
-            $("#comments").html(comments);
+            $("#comments").html(comments).parent().removeClass('hide');
         }else{
-            $("#comments").parent().remove();
+            $("#comments").parent().addClass('hide');
         }
 
         supplementary = this.model.get("supplementary_material") || '';
         if(supplementary){
-            $("#supplementary").html(supplementary);
+            $("#supplementary").html(supplementary).parent().removeClass('hide');
         }else{
-            $("#supplementary").parent().remove();            
+            $("#supplementary").parent().addClass('hide');        
         }
         this.setupListernerFor(this.model, "attachmentList", _.bind(function () {
             attachments = this.model.get("attachmentList") || [];
             if(attachments.length > 0){
+                $("#attachments").parent().removeClass('hide');
                 $("#attachments ul").empty();
                 attachments.each(function (attachment) {
                     var view = new MOOC.views.Attachment({
@@ -237,7 +238,7 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
                     view.render();
                 });
             }else{
-                $("#attachments").parent().remove();
+                $("#attachments").parent().addClass('hide');
             }
         }, this));
     },

@@ -51,6 +51,8 @@ from moocng.externalapps.models import externalapps
 
 from moocng.badges.models import BadgeByCourse
 
+from moocng.courses.utils import get_course_students_csv
+
 import pprint
 
 from django.core import serializers
@@ -782,3 +784,24 @@ def teacheradmin_emails(request, course_slug):
         'students': students,
         'form': form,
     }, context_instance=RequestContext(request))
+
+@is_teacher_or_staff
+def teacheradmin_lists(request, course_slug):
+    course = get_object_or_404(Course, slug=course_slug)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+
+    return render_to_response('teacheradmin/lists.html', {
+        'course': course,
+        'is_enrolled': is_enrolled,
+    }, context_instance=RequestContext(request))
+
+@is_teacher_or_staff
+def teacheradmin_lists_coursestudents(request, course_slug):
+    course = get_object_or_404(Course, slug=course_slug)
+    students_list = get_course_students_csv(course)
+    
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="%s.csv"' % (course_slug)
+    response.write(students_list)
+
+    return response
