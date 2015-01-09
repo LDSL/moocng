@@ -181,6 +181,10 @@ button, input {
 			background-color: @neutral_light_3;
 		}
 	}
+
+	&.open .dropdown-toggle {
+		background-color: @neutral_light_3;
+	}
 	
 	.dropdown-menu{
 		visibility: hidden;
@@ -225,7 +229,7 @@ button, input {
 		background-color: @neutral_light_3;
 	}
 	
-	&:hover > .dropdown-menu {
+	&:not(.click):hover > .dropdown-menu, &.click.open > .dropdown-menu {
 		visibility: visible;
 		opacity: 1;
 	}
@@ -724,34 +728,62 @@ body {
 			.btn-group{
 
 				&#microblog-share {
-					textarea {
-						width: 350px;
-						height: 100px;
-						font-family: inherit;
-						resize: none;
-					}
+					
+					.dropdown-menu {
+						width: 390px;
 
-					.btn {
-						float: right;
-						width: auto;
-						height: auto;
-						background-color: @highlight;
-						color: @white;
-						font-size: 13px;
-						text-transform: uppercase;
-					}
+						textarea {
+							width: 350px;
+							height: 100px;
+							padding: 10px;
+							font-family: inherit;
+							resize: none;
+						}
 
-					&:after {
-						content: "";
-						display: block;
-						clear: both;
+						.btn {
+							float: right;
+							width: auto;
+							height: auto;
+							background-color: @highlight;
+							color: @white;
+							font-size: 13px;
+							text-transform: uppercase;
+						}
+
+						.loading {
+							text-align: center;
+						}
+
+						.done {
+							text-align: left;
+							p {
+								margin-bottom: 10px;
+							}
+
+							a {
+								display: inline-block;
+								font-size: 13px;
+								padding-top: 10px;
+							}
+
+							.btn {
+								float: left;
+								margin: 0 15px 0 0;
+							}
+						}
+
+						&:after {
+							content: "";
+							display: block;
+							clear: both;
+						}
 					}
 				}
 				
 				.dropdown-toggle.usermenu {
 					padding: 0;
 				}
-				
+
 				.notifications {
 					text-align: center;
 					position: relative;
@@ -828,13 +860,15 @@ body {
 		}
 		
 		h3 {
-			font-size: 14px;
-			font-weight: 400;
-			
+			color: @neutral_light_2;
+			font-size: 12px;
+			text-transform: uppercase;
+
 			span {
-				color: @neutral_light_2;
-				font-size: 12px;
-				text-transform: uppercase;
+				font-size: 14px;
+				font-weight: 400;
+				text-transform: none;
+				color: @white;
 			}
 		}
 		

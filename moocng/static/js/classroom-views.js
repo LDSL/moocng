@@ -34,6 +34,11 @@ MOOC.views.Unit = Backbone.View.extend({
 		"click #kq-q-showq": "showPR",
     },
 
+    initialize: function() {
+        var self = this;
+        $('#course-share').off('click').on('click', self.shareKQ);
+    },
+
 	/* RENDER INDEX */
     render: function () {
         "use strict";
@@ -94,6 +99,23 @@ MOOC.views.Unit = Backbone.View.extend({
         "use strict";
         var kq = $(evt.target).parent().attr("id").split("kq")[1];
         MOOC.router.navigate(this.id + "/kq" + kq + "/as", { trigger: true });
+    },
+
+    shareKQ: function (evt) {
+        "use strict";
+        evt.preventDefault();
+        var hashtag = $('#hashtag').html();
+        var url = window.location.href;
+        if(hashtag && url){
+            console.log(hashtag);
+            console.log(url);
+            var $microblog = $('#microblog-share');
+            var $textarea = $microblog.find('.editor textarea');
+            $textarea.val(' ' + hashtag + ' ' + url);
+            $textarea[0].setSelectionRange(0,0);
+            $microblog.addClass('open');
+            $textarea.focus();
+        }
     }
 });
 

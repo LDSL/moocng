@@ -1,12 +1,22 @@
 {% load i18n usercourses gravatar %}
 <div class="btn-toolbar pull-right">
-	<div class="btn-group" id="microblog-share">
+	<div class="btn-group click" id="microblog-share">
 		<a class="dropdown-toggle" href="#">
 			<img src="{{ STATIC_URL }}img/icon_microblog.png">
 		</a>
 		<div class="dropdown-menu">
-			<textarea placeholder="Write a message..."></textarea>
-			<a class="btn" href="#">{% trans 'Share' %}</a>
+			<div class="editor">
+				<textarea placeholder="Write a message..."></textarea>
+				<a class="btn" href="#">{% trans 'Publish' %}</a>
+			</div>
+			<div class="loading hide">
+				<p>{% trans 'Sending...' %}</p>
+			</div>
+			<div class="done hide">
+				<p>{% trans 'Message posted!' %}</p>
+				<a class="btn" href="#">{% trans 'Close' %}</a>
+				<a href="{% url profile_posts %}">{% trans 'Go to my posts' %}</a>
+			</div>
 		</div>
 	</div>
 	<!--<div class="btn-group">
@@ -67,15 +77,32 @@
 	</div>
 </div>
 <script>
-	$('#microblog-share .btn').click(function(e){
+	$('.btn-group.click .dropdown-toggle').click(function(e){
+		$(this).parent().toggleClass('open');
+	});
+	$('#microblog-share .editor .btn').click(function(e){
 		e.preventDefault();
 		var text = $('#microblog-share textarea').val();
-		$.post({
-			url: '{% url profile_posts %}',
-			data: {'text': text}
-		}).done(function(data){
-			console.log('ole!');
-			console.log(data);
-		});
+		if (text.trim()) {
+			$('#microblog-share .editor').addClass('hide');
+			$('#microblog-share .loading').removeClass('hide');
+			$.ajax({
+				url: '{% url profile_posts %}',
+				type: 'POST',
+				data: 'csrfmiddlewaretoken={{ csrf_token }}&postText='+text,
+				contentType: 'application/x-www-form-urlencoded',
+			}).done(function(data){
+				$('#microblog-share .loading').addClass('hide');
+				$('#microblog-share .done').removeClass('hide');
+			});
+		}
+	});
+	$('#microblog-share .done .btn').click(function(e){
+		e.preventDefault();
+		$sharetab = $('#microblog-share');
+		$sharetab.find('editor textarea').val('');
+		$sharetab.find('.done').addClass('hide');
+		$sharetab.find('.editor').removeClass('hide');
+		$sharetab.removeClass('open');
 	});
 </script>
