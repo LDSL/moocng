@@ -156,6 +156,9 @@ def course_add(request):
                 except (User.DoesNotExist):
                     messages.error(request, _('That user doesn\'t exists, the owner must be an user of the platform'))
                     return HttpResponseRedirect(reverse('course_add'))
+                except (User.MultipleObjectsReturned):
+                    messages.error(request, _('There is more than a teacher with this name or email, please select other or contact with support.'))
+                    return HttpResponseRedirect(reverse('course_add'))
             except ValidationError:
                 # is name plus id
                 owner_id = name_and_id_regex.search(email_or_id)
