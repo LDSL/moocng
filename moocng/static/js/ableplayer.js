@@ -647,6 +647,15 @@
           },
           onError: function (x) {
             deferred.fail();
+          },
+          onStateChange: function(newState) {
+            if (newState.data === 0) {
+              var splitted_hash = window.location.hash.split('/');
+              var kq = parseInt(splitted_hash[splitted_hash.length -1].slice(2));
+              if(kq){
+                MOOC.players_listener.trigger('mediaContentFinished', MOOC.views.kqViews[kq]);
+              }
+            }
           }
         }
       });
