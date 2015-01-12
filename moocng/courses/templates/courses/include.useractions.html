@@ -100,7 +100,7 @@
 	$('#microblog-share .done .btn').click(function(e){
 		e.preventDefault();
 		$sharetab = $('#microblog-share');
-		$sharetab.find('editor textarea').val('');
+		$sharetab.find('.editor textarea').val('');
 		$sharetab.find('.done').addClass('hide');
 		$sharetab.find('.editor').removeClass('hide');
 		$sharetab.removeClass('open');
