@@ -898,7 +898,7 @@ def check_survey(request, course_slug, survey_id, survey_token):
     group = get_group_by_user_and_course(request.user.id, course.id)
 
     try:
-        server = Server(settings.SURVEY_API_URL, False)
+        server = Server(settings.SURVEY_API_URL, True)
         sessionKey = server.get_session_key(settings.SURVEY_API_USER, settings.SURVEY_API_PASSWORD)
         response = server.export_responses_by_token(sessionKey, survey_id, 'json', survey_token, 'es', 'complete')
         server.release_session_key(sessionKey)

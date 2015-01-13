@@ -61,8 +61,8 @@ API_URI = 'moocng.devopenmooc.com'
 API_OFFICIAL_COURSE_TAGVALUE = 'Official'
 
 SURVEY_API_URL = 'http://survey.ecolearning.eu/index.php?r=admin/remotecontrol'
-SURVEY_API_USER = 'raul'
-SURVEY_API_PASSWORD = 'rd3v3l0p'
+SURVEY_API_USER = 'user'
+SURVEY_API_PASSWORD = 'pass'
 
 MONGODB_URI = 'mongodb://localhost:27017/moocng'
 
