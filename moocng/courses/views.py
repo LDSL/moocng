@@ -33,15 +33,18 @@ from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 from datetime import date
 import requests
+from jsonrpc_requests import Server, TransportError
 import json
 import sys
+import base64
 
 from moocng.badges.models import Award
 from moocng.courses.models import Course, CourseTeacher, Announcement,KnowledgeQuantum
 from moocng.courses.utils import (get_unit_badge_class, is_course_ready,
                                   is_teacher as is_teacher_test,
                                   send_mail_wrapper,get_sillabus_tree, create_groups,
-                                  get_group_by_user_and_course, get_groups_by_course, change_user_group)
+                                  get_group_by_user_and_course, get_groups_by_course, change_user_group,
+                                  create_kq_activity, update_course_mark_by_user)
 
 from moocng.courses.marks import get_course_mark, get_course_intermediate_calculations, normalize_unit_weight
 from moocng.courses.security import (get_course_if_user_can_view_or_404,
@@ -880,3 +883,50 @@ def change_group(request, id_group, id_new_group):
     change_user_group(request.user.id, id_group, id_new_group, latitude, longitude)
     return HttpResponse("true")
 
+@login_required
+def check_survey(request, course_slug, survey_id, survey_token):
+    user = request.user
+    course = get_course_if_user_can_view_or_404(course_slug, request)
+    units = get_units_available_for_user(course, user)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+    task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    is_teacher = is_teacher_test(user, course),
+    is_ready, ask_admin = is_course_ready(course)
+    group = get_group_by_user_and_course(request.user.id, course.id)
+
+    try:
+        server = Server(settings.SURVEY_API_URL, False)
+        sessionKey = server.get_session_key('raul', 'rd3v3l0p')
+        response = server.export_responses_by_token(sessionKey, survey_id, 'json', survey_token, 'es', 'complete')
+        server.release_session_key(sessionKey)
+    except TransportError as ex:
+        return HttpResponse(ex.args[1])
+
+    sliced = re.sub('<[^>]*>', '', response)
+    decoded_response = json.loads(base64.b64decode(sliced))
+    user_response = decoded_response[u'responses'][0]
+    if user_response[user_response.keys()[0]][u'lastpage']:
+        template_name = 'courses/survey_completed.html'
+
+        last_unit = list(units)[-1]
+        knowledge_quantums = KnowledgeQuantum.objects.filter(unit_id=last_unit.id)
+        for kq in knowledge_quantums:
+            create_kq_activity(kq, user)
+        update_course_mark_by_user(course, user)
+
+    else:
+        template_name = 'courses/survey_not_completed.html'
+
+    
+    return render_to_response(template_name, {
+        'course': course,
+        'is_enrolled' : is_enrolled,
+        'progress': get_course_progress_for_user(course, request.user),
+        'task_list': task_list,
+        'tasks_done': tasks_done,
+        'is_teacher': is_teacher,
+        'is_ready': is_ready,
+        'group': group,
+        'survey_token': survey_token,
+        'survey_id': survey_id,
+    }, context_instance=RequestContext(request))

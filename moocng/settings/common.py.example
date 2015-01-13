@@ -60,6 +60,8 @@ DATABASES = {
 API_URI = 'moocng.devopenmooc.com'
 API_OFFICIAL_COURSE_TAGVALUE = 'Official'
 
+SURVEY_API_URL = 'http://survey.ecolearning.eu/index.php?r=admin/remotecontrol'
+
 MONGODB_URI = 'mongodb://localhost:27017/moocng'
 
 BADGES_SERVICE_URL = "backpack.openbadges.org"

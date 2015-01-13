@@ -68,6 +68,7 @@ urlpatterns = patterns(
     url(r'^course/(?P<course_slug>[-\w]+)/clone-activity/$', 'clone_activity', name='course_clone_activity'),
 
     url(r'^course/setmark/(?P<knowledgequantumid>\d+)/$','course_setmark',name='course_setmark'),
+    url(r'^course/(?P<course_slug>[-\w]+)/checksurvey/(?P<survey_id>[-\w]+)/(?P<survey_token>[-\w]+)$', 'check_survey', name='check_survey'),
 
     # Teacher's course administration
     url(r'^course/(?P<course_slug>[-\w]+)/teacheradmin/',

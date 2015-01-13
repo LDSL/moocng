@@ -607,3 +607,22 @@ def get_course_students_csv(course):
         course_csv.writerow(row)
 
     return course_file.getvalue()
+
+def create_kq_activity(kq, user):
+    activityCollection = mongodb.get_db().get_collection('activity')
+    kq_activity = {
+        "course_id": kq.unit.course.id,
+        "unit_id": kq.unit.id,
+        "kq_id": kq.id,
+        "user_id": user.id,
+        "timestamp": int(round(time.time() * 1000)),
+        "lat": 0.0,
+        "lon": 0.0
+    }
+    kq_key = {
+        "course_id": kq.unit.course.id,
+        "unit_id": kq.unit.id,
+        "kq_id": kq.id,
+        "user_id": user.id
+    }
+    activityCollection.update(kq_key, { '$setOnInsert': kq_activity}, upsert=True);
