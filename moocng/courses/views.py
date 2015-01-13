@@ -407,6 +407,8 @@ def course_dashboard(request, course_slug):
 
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
 
+    announcements = Announcement.objects.filter(course=course).order_by('datetime').reverse()[:5]
+
     CourseRatingFormSet = formset_factory(CourseRatingForm, extra=0, max_num=1)
     if request.method == "POST":
         rating_form = CourseRatingForm(request.POST)
@@ -457,6 +459,7 @@ def course_dashboard(request, course_slug):
         'rating_form': rating_form,
         'rating_formset': rating_formset,
         'group': group,
+        'announcements': announcements,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -896,7 +899,7 @@ def check_survey(request, course_slug, survey_id, survey_token):
 
     try:
         server = Server(settings.SURVEY_API_URL, False)
-        sessionKey = server.get_session_key('raul', 'rd3v3l0p')
+        sessionKey = server.get_session_key(settings.SURVEY_API_USER, settings.SURVEY_API_PASSWORD)
         response = server.export_responses_by_token(sessionKey, survey_id, 'json', survey_token, 'es', 'complete')
         server.release_session_key(sessionKey)
     except TransportError as ex:
@@ -905,6 +908,7 @@ def check_survey(request, course_slug, survey_id, survey_token):
     sliced = re.sub('<[^>]*>', '', response)
     decoded_response = json.loads(base64.b64decode(sliced))
     user_response = decoded_response[u'responses'][0]
+    print user_response
     if user_response[user_response.keys()[0]][u'lastpage']:
         template_name = 'courses/survey_completed.html'
 
