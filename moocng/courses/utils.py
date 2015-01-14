@@ -345,7 +345,7 @@ def update_passed(db, collection, passed_now, data):
 
 def update_course_mark_by_user(course, user):
     db = mongodb.get_db()
-    for unit in course.unit_set.scorables():
+    for unit in course.unit_set.all():
         for kq in unit.knowledgequantum_set.all():
             updated_kq, passed_kq_now = update_kq_mark(db, kq, user, course.threshold)
             update_passed(db, 'stats_kq', passed_kq_now, {'kq_id': kq.pk})

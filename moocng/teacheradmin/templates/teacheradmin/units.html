@@ -36,7 +36,7 @@
             unit: {
                 unit: "{% trans 'unit' %}",
                 d: "{% trans 'Draft' %}",
-                l: "{% trans 'Listable' %}",
+                l: "{% trans 'Hidden' %}",
                 p: "{% trans 'Published' %}",
                 n: "{% trans 'Normal' %}",
                 h: "{% trans 'Homework' %}",
@@ -87,7 +87,7 @@
                     <input type="radio" name="status" id="status-published" /> {% trans "Published" %}
                 </label>
                 <label for="status-listable" class="radio inline pointer">
-                    <input type="radio" name="status" id="status-listable" /> {% trans "Listable" %}
+                    <input type="radio" name="status" id="status-listable" /> {% trans "Hidden" %}
                 </label>
                 <label for="status-draft" class="radio inline pointer">
                     <input type="radio" name="status" id="status-draft" /> {% trans "Draft" %}

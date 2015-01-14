@@ -890,7 +890,7 @@ def change_group(request, id_group, id_new_group):
 def check_survey(request, course_slug, survey_id, survey_token):
     user = request.user
     course = get_course_if_user_can_view_or_404(course_slug, request)
-    units = get_units_available_for_user(course, user)
+    units = get_units_available_for_user(course, user, True)
     is_enrolled = course.students.filter(id=request.user.id).exists()
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
     is_teacher = is_teacher_test(user, course),

@@ -521,7 +521,7 @@ class Unit(Sortable):
 
     UNIT_STATUSES = (
         ('d', _(u'Draft')),
-        ('l', _(u'Listable')),
+        ('l', _(u'Hidden')),
         ('p', _(u'Published')),
     )
 
@@ -549,6 +549,12 @@ class Unit(Sortable):
 
     def natural_key(self):
         return self.course.natural_key() + (self.title, )
+
+    def is_scorable(self):
+        if not settings.COURSES_USING_OLD_TRANSCRIPT:
+            return self.unittype != 'n'
+        else:
+            return true
 
 
 def unit_invalidate_cache(sender, instance, **kwargs):

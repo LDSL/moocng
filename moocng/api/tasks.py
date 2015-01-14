@@ -29,6 +29,7 @@ from moocng.courses.models import Unit
 
 @task
 def on_activity_created_task(activity_created, unit_activity, course_activity):
+    logger = on_activity_created_task.get_logger()
     db = get_db()
     kq = KnowledgeQuantum.objects.get(id=activity_created['kq_id'])
     kq_type = kq.kq_type()
@@ -290,6 +291,7 @@ def update_mark(submitted):
         return (updated_kq_mark, updated_unit_mark, updated_course_mark,
                 passed_kq, passed_unit, passed_course)
     mark_course, units_info = calculate_course_mark(unit.course, user)
+
     updated_course_mark, passed_course = update_course_mark(db, course, user, mark_course)
     return (updated_kq_mark, updated_unit_mark, updated_course_mark,
             passed_kq, passed_unit, passed_course)
