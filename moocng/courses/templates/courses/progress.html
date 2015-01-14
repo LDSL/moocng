@@ -14,12 +14,15 @@
             <h3>{% trans "Progress" %}</h3>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-2 col-mob-4">
+            <h2>{% trans 'Your mark is' %} <span class="mark">{{ course_mark }}</span></h2>
+            {% if passed %}
             <h2>{% trans 'Congratulations, you got a certification!' %}</h2>
             {% if course.certification_available and course.certification_file %}
-                <p><a href="{{ MEDIA_URL }}{{ course.certification_file }}" target="_blank">{% trans 'Download certification file' %}</a></p>
+                <p><a class="button" href="{{ MEDIA_URL }}{{ course.certification_file }}" target="_blank">{% trans 'Download certification file' %}</a></p>
             {% endif %}
             {% if cert_url %}
-                <p><a href="{{ cert_url }}" target="_blank">{% trans 'Get an official certification' %}</a></p>
+                <p><a class="button" href="{{ cert_url }}" target="_blank">{% trans 'Get an official certification' %}</a></p>
+            {% endif %}
             {% endif %}
         </div>
     </div>

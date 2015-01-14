@@ -708,7 +708,8 @@ def course_progress(request, course_slug):
         }, context_instance=RequestContext(request))
 
     units = []
-    for u in get_units_available_for_user(course, request.user):
+    course_units = get_units_available_for_user(course, request.user)
+    for u in course_units:
         unit = {
             'id': u.id,
             'title': u.title,
@@ -718,12 +719,37 @@ def course_progress(request, course_slug):
         }
         units.append(unit)
 
+#####################################################################################
+    total_mark, units_info = get_course_mark(course, request.user)
+    total_weight_unnormalized, unit_course_counter, course_units = get_course_intermediate_calculations(course)
+
+    for unit_info in units_info:
+        print unit_info
+    
+    units_info_ordered = []
+    for unit in course_units:
+        uinfo = next((u for u in units_info if u['unit_id'] == unit.pk),
+                     {'relative_mark': 0, 'mark': 0})
+        uinfo['unit'] = unit
+        normalized_unit_weight = normalize_unit_weight(unit,
+                                                       unit_course_counter,
+                                                       total_weight_unnormalized)
+        uinfo['normalized_weight'] = normalized_unit_weight
+        unit_class = get_unit_badge_class(unit)
+        uinfo['badge_class'] = unit_class
+        units_info_ordered.append(uinfo)
+
+    for unit_info in units_info_ordered:
+        print unit_info
+######################################################################################
+
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
 
     cert_url = None
+    passed = False
     if(course.certification_available):
-        total_mark, units_info = get_course_mark(course, request.user)
+        print "Course threshold %s" % (course.threshold)
         if course.threshold is not None and float(course.threshold) <= total_mark:
             passed = True
             if course.external_certification_available:
@@ -745,11 +771,14 @@ def course_progress(request, course_slug):
         'task_list': task_list,
         'tasks_done': tasks_done,
         'unit_list': units,
+        'unit_list_info': units_info_ordered,
         'is_enrolled': is_enrolled,  # required due course nav templatetag
         'is_ready' : is_ready,
         'is_teacher': is_teacher_test(request.user, course),
         'group': group,
-        'cert_url': cert_url
+        'passed': passed,
+        'cert_url': cert_url,
+        'course_mark': round(total_mark,2),
     }, context_instance=RequestContext(request))
 
 

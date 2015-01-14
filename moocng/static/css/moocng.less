@@ -3243,6 +3243,21 @@ ul.rating {
 }
 
 .course_progress {
+	.button {
+		font-size: 0.9em;
+		color: @highlight;
+		border: 2px solid @highlight;
+		padding: 10px 15px;
+		margin-bottom: 5px;
+		display: inline-block;
+		transition: color .1s ease-in-out, background-color .1s ease-in-out;
+
+		&:hover {
+			color: @white;
+			background-color: @highlight;
+		}
+	}
+
 	#unit-kqs {
 		li {
 			padding: 16px 5px 16px 40px;

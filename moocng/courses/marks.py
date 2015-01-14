@@ -182,3 +182,49 @@ def get_course_mark(course, user, db=None):
     else:
         total_mark = 0
     return (total_mark, get_units_info_from_course(course, user, db=db))
+
+def get_unit_mark(unit, user, db=None):
+    data_unit = {   'user_id': user.pk,
+                    'unit_id': unit.pk }
+    db = db or get_db()
+    mark_unit_item = db.get_collection('marks_unit').find(data_unit).limit(1)
+    if mark_unit_item:
+        mark_unit = mark_unit_item['mark']
+    else:
+        mark_unit = 0
+    return mark_unit
+
+def get_unit_relative_mark(unit, user, db=None):
+    data_unit = {   'user_id': user.pk,
+                    'unit_id': unit.pk }
+    db = db or get_db()
+    mark_unit_item = db.get_collection('marks_unit').find(data_unit).limit(1)
+    if mark_unit_item:
+        mark_unit = mark_unit_item['relative_mark']
+    else:
+        mark_unit = 0
+    return mark_unit
+
+def get_kq_mark(kq, user, db=None):
+    data_unit = {   'user_id': user.pk,
+                    'kq_id': kq.pk }
+    print data_unit
+    db = db or get_db()
+    mark_kq_item = db.get_collection('marks_kq').find(data_unit).limit(1)
+    if mark_kq_item and mark_kq_item.count() > 0:
+        mark_kq = mark_kq_item[0]['mark']
+    else:
+        mark_kq = 0
+    print mark_kq
+    return mark_kq
+
+def get_kq_relative_mark(kq, user, db=None):
+    data_unit = {   'user_id': user.pk,
+                    'kq_id': kq.pk }
+    db = db or get_db()
+    mark_kq_item = db.get_collection('marks_kq').find(data_unit).limit(1)
+    if mark_kq_item:
+        mark_kq = mark_kq_item['relative_mark']
+    else:
+        mark_kq = 0
+    return mark_kq
