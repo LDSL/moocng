@@ -103,7 +103,7 @@ function showGeolocationAdvise(){
 
 	var confirmDiv = '<div id="geolocation_advise" class="modal geoadvise"> \
 		<div class="modal-header"><a href="#">'+ geoadvice_translate.ok +'</a></div> \
-		<div class="modal-body"> \
+		<div class="modal-body fixedHeight"> \
 			<img src="/static/img/geolocation.png"> \
 			<h1>'+ geoadvice_translate.greeting +' <span>'+ geoadvice_translate.greeting_2 +'.</span></h1>';
 		if(browser_guide){

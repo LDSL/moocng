@@ -401,6 +401,7 @@ div.button, a.button {
 
 	&.show {
 		top: 15vh;	
+		display: block;
 	}
 
 	h3 {
@@ -426,8 +427,11 @@ div.button, a.button {
 
 	.modal-body {
 		margin-bottom: 25px;
-		height: calc(~'70vh - 130px');
 		overflow: auto;
+
+		&.fixedHeight {
+			height: calc(~'70vh - 130px');
+		}
 
 		p {
 			padding: 5px 0;

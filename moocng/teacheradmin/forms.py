@@ -107,6 +107,16 @@ class CourseForm(forms.ModelForm):
                 raise forms.ValidationError(self.error_messages['invalid_image'])
         return background
 
+    def clean(self):
+        start_date = self.cleaned_data.get("start_date")
+        end_date = self.cleaned_data.get("end_date")
+        print start_date
+        print end_date
+        if start_date >= end_date:
+            raise forms.ValidationError(_('Start date must be lower than end date'))
+        return self.cleaned_data
+
+
 class GroupsForm(forms.ModelForm):
     class Meta:
         model = Course

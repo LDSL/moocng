@@ -256,6 +256,7 @@
     <script src="{{ STATIC_URL }}js/libs/backbone-0.9.2.min.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/libs/async.min.js" type="text/javascript"></script>
     <script src="{% url jsi18n %}" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/popover.js"></script>
     {% media_contents_javascripts course=course %}
     {% compress js %}
     <script src="{{ STATIC_URL }}js/ajax.js" type="text/javascript"></script>
@@ -342,6 +343,8 @@
                 file_max_size: {{ peer_review.file_max_size }}
             }
         };
+        MOOC.vars = MOOC.vars || {};
+        MOOC.vars.user_id = {{ user.id }}
         MOOC.init({{ course.id }}, true);
     </script>
 {% endblock %}
