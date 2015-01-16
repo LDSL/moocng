@@ -42,15 +42,11 @@ class TeacherAuthentication(Authentication):
 class ApiKeyAuthentication(Authentication):
 
     def is_authenticated(self, request, **kwargs):
-        print "Check by API KEY"
         key = request.GET.get('key', None)
-        print "API KEY: %s" % (key)
         if key:
             userapi = UserApi.objects.filter(key=key)
             if userapi:
-                print userapi
                 request.user = userapi[0].user
-                print request.user
                 return True
         return False
 
@@ -81,11 +77,8 @@ class MultiAuthentication(object):
         Should return either ``True`` if allowed, ``False`` if not or an
         ``HttpResponse`` if you need something custom.
         """
-        print "Autorizando"
-        print len(self.backends)
         unauthorized = False
         for backend in self.backends:
-            print backend
             check = backend.is_authenticated(request, **kwargs)
             if check:
                 if isinstance(check, HttpUnauthorized):

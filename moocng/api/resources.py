@@ -1055,7 +1055,6 @@ class UserResource(BaseModelResource):
         # In tastypie, the override_urls don't call
         # Authentication/Authorization
         self.is_authenticated(request)
-        print request.user
         self.is_authorized(request)
 
         obj = self.get_object(request, kwargs)

@@ -41,7 +41,8 @@ from moocng.courses.models import Course, CourseTeacher, Announcement,KnowledgeQ
 from moocng.courses.utils import (get_unit_badge_class, is_course_ready,
                                   is_teacher as is_teacher_test,
                                   send_mail_wrapper,get_sillabus_tree, create_groups,
-                                  get_group_by_user_and_course, get_groups_by_course, change_user_group)
+                                  get_group_by_user_and_course, get_groups_by_course,
+                                  change_user_group, has_user_passed_course)
 
 from moocng.courses.marks import get_course_mark, get_course_intermediate_calculations, normalize_unit_weight
 from moocng.courses.security import (get_course_if_user_can_view_or_404,
@@ -300,7 +301,8 @@ def course_overview(request, course_slug):
         'course_teachers': course_teachers,
         'announcements': announcements,
         'use_old_calculus': settings.COURSES_USING_OLD_TRANSCRIPT,
-        'is_overview' : True
+        'is_overview' : True,
+        'passed': has_user_passed_course(request.user, course),
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -362,6 +364,7 @@ def course_classroom(request, course_slug):
         'is_teacher': is_teacher_test(request.user, course),
         'peer_review': peer_review,
         'group': group,
+        'passed': has_user_passed_course(request.user, course),
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -451,6 +454,7 @@ def course_dashboard(request, course_slug):
         'rating_form': rating_form,
         'rating_formset': rating_formset,
         'group': group,
+        'passed': has_user_passed_course(request.user, course),
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -491,6 +495,7 @@ def course_syllabus(request, course_slug):
         'is_teacher': is_teacher,
         'unit_list': get_sillabus_tree(course,request.user,minversion=False),
         'group': group,
+        'passed': has_user_passed_course(request.user, course),
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -535,7 +540,8 @@ def course_group(request, course_slug):
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
-        'groups':groups
+        'groups':groups,
+        'passed': has_user_passed_course(request.user, course),
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -569,6 +575,7 @@ def course_forum(request, course_slug):
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
+        'passed': has_user_passed_course(request.user, course),
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -602,6 +609,7 @@ def course_calendar(request, course_slug):
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
+        'passed': has_user_passed_course(request.user, course),
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -635,6 +643,7 @@ def course_wiki(request, course_slug):
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
+        'passed': has_user_passed_course(request.user, course),
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -671,6 +680,7 @@ def course_teachers(request, course_slug):
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
+        'passed': has_user_passed_course(request.user, course),
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -720,6 +730,7 @@ def course_progress(request, course_slug):
         units.append(unit)
 
 #####################################################################################
+# TODO: Needs work to get the course score details
     total_mark, units_info = get_course_mark(course, request.user)
     total_weight_unnormalized, unit_course_counter, course_units = get_course_intermediate_calculations(course)
 
@@ -747,11 +758,10 @@ def course_progress(request, course_slug):
     group = get_group_by_user_and_course(request.user.id, course.id)
 
     cert_url = None
-    passed = False
+    passed = has_user_passed_course(request.user, course)
     if(course.certification_available):
         print "Course threshold %s" % (course.threshold)
-        if course.threshold is not None and float(course.threshold) <= total_mark:
-            passed = True
+        if passed:
             if course.external_certification_available:
                 cert_url = settings.CERTIFICATE_URL % {
                     'courseid': course.id,
@@ -798,6 +808,7 @@ def course_extra_info(request, course_slug):
         'is_teacher': is_teacher_test(request.user, course),
         'static_page': course.static_page,
         'group': group,
+        'passed': has_user_passed_course(request.user, course),
     }, context_instance=RequestContext(request))
 
 
@@ -823,6 +834,7 @@ def announcement_detail(request, course_slug, announcement_id, announcement_slug
         'announcement': announcement,
         'template_base': 'courses/base_course.html',
         'group': group,
+        'passed': has_user_passed_course(request.user, course),
     }, context_instance=RequestContext(request))
 
 

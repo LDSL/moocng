@@ -42,6 +42,7 @@ from moocng.courses.serializer import (CourseClone, UnitClone, KnowledgeQuantumC
                                        BaseMetaWalkClass, QuestionClone, PeerReviewAssignmentClone,
                                        EvaluationCriterionClone, OptionClone, AttachmentClone)
 from moocng.peerreview.models import PeerReviewAssignment, EvaluationCriterion
+from moocng.courses.marks import get_course_mark
 
 
 from moocng.courses.security import get_units_available_for_user
@@ -587,3 +588,9 @@ def change_user_group(id_user, id_group, new_id_group, pos_lat=0.0, pos_lon=0.0)
     activity_entry = {"id_course": group["id_course"], "id_user": id_user, "former_id_group": ObjectId(id_group), "new_id_group": ObjectId(new_id_group), "timestamp": timestamp, "lat": pos_lat, "lon": pos_lon}
     groupsActivityCollection.insert(activity_entry)
 
+def has_user_passed_course(user, course):
+    passed = False
+    total_mark, units_info = get_course_mark(course, user)
+    if course.threshold is not None and float(course.threshold) <= total_mark:
+        passed = True
+    return passed

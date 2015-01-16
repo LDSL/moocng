@@ -812,6 +812,19 @@ body {
 				text-transform: uppercase;
 			}
 		}
+
+		.cert_button {
+			height: 48px;
+			width: 48px;
+			background-color: @comp;
+			border-radius: 24px;
+			svg {
+				margin-top: 3px;
+				width: 39px;
+				height: 40px;
+				fill: @highlight;
+			}
+		}
 		
 		.menu {
 			position: absolute;
@@ -2894,9 +2907,14 @@ ul.rating {
 	h3 {
 		font-size: 22px;
 		font-weight: 300;
+		line-height: 28px;
 		color: @neutral_medium_1;
 		padding: 25px 0;
 		float: none;
+
+		&.pull-left {
+			float: left;
+		}
 	}
 
 	h4 {
@@ -2904,6 +2922,16 @@ ul.rating {
 		font-weight: 600;
 		line-height: 24px;
 		color: @highlight;
+
+		&.mark {
+			font-weight: 400;
+			line-height: 28px;
+			padding: 25px 20px 25px 0;
+
+			span {
+				font-weight: 600;
+			}
+		}
 	}
 
 	.progress {
@@ -3243,18 +3271,41 @@ ul.rating {
 }
 
 .course_progress {
-	.button {
-		font-size: 0.9em;
-		color: @highlight;
-		border: 2px solid @highlight;
-		padding: 10px 15px;
-		margin-bottom: 5px;
-		display: inline-block;
-		transition: color .1s ease-in-out, background-color .1s ease-in-out;
+	.bottom-line {
+		padding-top: 0;
+		& > * {
+			height: 110px;
+		}
+	}
+	
+	.certifications {
+		text-align: center;
+		padding: 10px 0;
+-webkit-transform-style: preserve-3d;
+   -moz-transform-style: preserve-3d;
+  		transform-style: preserve-3d;
 
-		&:hover {
-			color: @white;
-			background-color: @highlight;
+		.button {
+			font-size: 16px;
+			text-align: center;
+			text-transform: uppercase;
+			color: @highlight;
+			width: 100%;
+			border: 2px solid @highlight;
+			padding: 10px 15px;
+			margin-bottom: 5px;
+			display: inline-block;
+			transition: color .1s ease-in-out, background-color .1s ease-in-out;
+
+			&:hover {
+				color: @white;
+				background-color: @highlight;
+			}
+
+			& + a {
+				display: inline-block;
+				margin: 10px 0 5px;
+			}
 		}
 	}
 

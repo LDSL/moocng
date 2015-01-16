@@ -11,19 +11,21 @@
 <div class="container">
     <div class="row bottom-line">
         <div class="col-lg-12 col-md-8 col-sm-6 col-mob-4">
-            <h3 class="pull-left">{% trans "Progress" %}</h3>
-            <div class="pull-right">
-                <h4>{% trans 'Your course score is' %} <span class="mark">{{ course_mark }}</span></h4>
-            </div>  
+            <h3 class="pull-left v_middle">{% trans "Progress" %}</h3>
+            <h4 class="mark pull-right v_middle">{% trans 'Your course score is' %} <span>{{ course_mark }}</span></h4>
         </div>
-        <div class="col-lg-4 col-md-4 col-sm-2 col-mob-4">
-            {% if passed %}
-            {% if course.certification_available and course.certification_file %}
-                <p><a class="button" href="{{ MEDIA_URL }}{{ course.certification_file }}" target="_blank">{% trans 'Download certification file' %}</a></p>
-            {% endif %}
+        <div class="col-lg-4 col-md-4 col-sm-2 col-mob-4 certifications">
+            {% if course.certification_available and passed %}
+            <div class="v_middle">
             {% if cert_url %}
-                <p><a class="button" href="{{ cert_url }}" target="_blank">{% trans 'Get an official certification' %}</a></p>
+                <a class="button" href="{{ cert_url }}" target="_blank">{% trans 'Get an official certification' %}</a>
             {% endif %}
+            {% if course.certification_file and not cert_url %}
+                <a class="button" href="{{ MEDIA_URL }}{{ course.certification_file }}" target="_blank">{% trans 'Download certification file' %}</a>
+            {% elif course.certification_file %}
+                <a href="{{ MEDIA_URL }}{{ course.certification_file }}" target="_blank">{% trans 'Download certification file' %}</a>
+            {% endif %}
+            </div>
             {% endif %}
         </div>
     </div>
