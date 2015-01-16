@@ -54,8 +54,10 @@ class UserResourceAuthorization(Authorization):
         # those ignore the allowed_methods restriction
         if request.method == 'GET':
             url_name = resolve(request.path).url_name
+            print "Autorizacion por usuario con url_name = %s" % (url_name)
             if url_name in PERMISSIONS.keys():
                 required_perm = PERMISSIONS.get(url_name)
+                print "Required perm = %s" % (required_perm)
                 return request.user.has_perm(required_perm)
             return True
         return False
