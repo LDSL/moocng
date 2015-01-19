@@ -48,7 +48,8 @@
 					</li>
 					<li>
 						{% url course_syllabus course.slug as url_syllabus %}
-						<a href="{{ url_syllabus }}" {% if request.path == url_syllabus %} class="selected"{% endif %}>
+						{% url course_classroom course.slug as url_classroom %}
+						<a href="{{ url_syllabus }}" {% if request.path == url_syllabus or request.path == url_classroom %} class="selected"{% endif %}>
 							{% trans "Syllabus" %}
 						</a>
 					</li>
