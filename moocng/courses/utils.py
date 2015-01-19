@@ -126,7 +126,6 @@ def send_mail_wrapper(subject, template, context, to):
     """
     try:
         body = loader.render_to_string(template, context)
-        print body
         email = EmailMessage(
             subject=subject,
             body=body,

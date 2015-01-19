@@ -12,7 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 from django.contrib.sites.models import get_current_site
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
@@ -26,7 +25,7 @@ def send_invitation_not_registered(request, invitation):
     context = {
         'host': invitation.host.get_full_name() or invitation.host.username,
         'course': invitation.course.name,
-        'register': reverse('register'),
+        'course_url': "https://%s%s" % (request.get_host(), reverse('course_overview', args=[invitation.course.slug])),
         'site': get_current_site(request).name
     }
     to = [invitation.email]
@@ -38,6 +37,7 @@ def send_invitation_registered(request, email, course):
     context = {
         'course': course.name,
         'host': request.user.get_full_name() or request.user.username,
+        'course_url': "https://%s%s" % (request.get_host(), reverse('course_overview', args=[course.slug])),
         'site': get_current_site(request).name
     }
     to = [email]
