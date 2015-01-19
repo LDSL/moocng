@@ -5,7 +5,7 @@
 {% block nav-course-overview %}class="active"{% endblock %}
 
 {% block extraheader %}
-<link rel="alternate" type="application/rss+xml" href="{% url announcements_feed course.slug %}" />
+<link rel="alternate" type="application/rss+xml" title="{% trans 'Announcements feed' %}" href="{% url announcements_feed course.slug %}" />
 {% endblock %}
 
 {% block content %}
@@ -159,11 +159,11 @@
 										{% for announcement in announcements %}
 										<li class="comment">
 											<div>
-												<h5>{{announcement.title}}</h5>
+												<h5><a href="{% url announcement_detail course.slug announcement.id announcement.slug %}">{{announcement.title}}</a></h5>
 												<p class="date">{{announcement.datetime|date:'d-m-Y H:i'}}</p>
-												{% autoescape off %}
+												<!--{% autoescape off %}
 												<div class="text block">{{ announcement.content }}</div>
-												{% endautoescape %}
+												{% endautoescape %}-->
 											</div>
 										</li>
 										{% endfor %}

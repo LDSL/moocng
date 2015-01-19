@@ -2128,12 +2128,13 @@ ul.rating {
 				}
 				
 				&.comment {
+					padding: 15px 20px 20px 60px;
 					&:after {
 						content: url("/static/img/feed_comment.png");
 						vertical-align: middle;
 						position: absolute;
 						top: 50%;
-						right: 20px;
+						left: 20px;
 						margin-top: -12px;
 					}
 				}
@@ -2766,7 +2767,7 @@ ul.rating {
 }
 
 /** SYLLABUS AND COURSE_PROGRESS **/
-.syllabus, .course_progress {
+.syllabus, .course_progress, .course_announcement {
 	position: relative;
 
 	h3 {
@@ -3130,6 +3131,12 @@ ul.rating {
 				font-size: 0.8em;
 			}
 		}
+	}
+}
+
+.course_announcement {
+	.body {
+		margin-top: 20px;
 	}
 }
 

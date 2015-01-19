@@ -768,6 +768,8 @@ def announcement_detail(request, course_slug, announcement_id, announcement_slug
     course = get_course_if_user_can_view_or_404(course_slug, request)
     announcement = get_object_or_404(Announcement, id=announcement_id)
     task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+    is_ready, ask_admin = is_course_ready(course)
     group = get_group_by_user_and_course(request.user.id, course.id)
 
     return render_to_response('courses/announcement.html', {
@@ -775,9 +777,12 @@ def announcement_detail(request, course_slug, announcement_id, announcement_slug
         'progress': get_course_progress_for_user(course, request.user),
         'task_list': task_list,
         'tasks_done': tasks_done,
+        'is_enrolled': is_enrolled,  # required due course nav templatetag
+        'is_ready' : is_ready,
+        'is_teacher': is_teacher_test(request.user, course),
+        'group': group,
         'announcement': announcement,
         'template_base': 'courses/base_course.html',
-        'group': group,
     }, context_instance=RequestContext(request))
 
 
