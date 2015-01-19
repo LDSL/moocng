@@ -798,7 +798,7 @@ code {
 
 .teacheradmin-question fieldset textarea {
     height: auto;
-    width: auto;
+    width: 100%;
 }
 
 .teacheradmin-stats .pie.viewport svg {
@@ -1106,6 +1106,8 @@ footer {
 }
 
 .spoiler {
+    margin-bottom: 10px;
+
     .header {
 
     }
@@ -1114,12 +1116,22 @@ footer {
         overflow-y: hidden;
         overflow-x: auto;
         max-height: 0;
-        transition: max-height .5s ease-in-out;
+        padding: 0;
+        transition: max-height .5s ease-in-out, padding .01s ease-in-out .5s;
+        background: @neutral_light_3;
     }
 
     &.open {
         .content {
             max-height: calc(~'100vh - 200px');
+            padding: 5px;
+            transition: max-height .5s ease-in-out, padding .01s ease-in-out;
         }
+    }
+}
+
+.unavailable {
+    input {
+        background-color: @neutral_light_2;
     }
 }

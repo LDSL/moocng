@@ -70,12 +70,22 @@ fieldset .option input {
 
     fieldset .option input[type=text] + input[type=text] {
         vertical-align: top;
+        width: 50%;
+        margin-left: 1%;
     }
 
-fieldset .option .label {
+fieldset .option .label{
     display: inline-block;
-    margin: 0 5px;
 }
+
+    fieldset .option .label:first-child {
+        width: 49%;
+    }
+
+    fieldset .option .label:not(:first-child) {
+        width: calc(100% - 30px);
+        margin: 0 5px;
+    }
 
     fieldset .option fieldset {
         background-color: #DDD;
@@ -83,7 +93,7 @@ fieldset .option .label {
     }
 
         fieldset .option fieldset .option {
-            padding: 5px;
+            padding: 5px 20px 5px 5px;
         }
 
 fieldset.use-last-frame .selected {

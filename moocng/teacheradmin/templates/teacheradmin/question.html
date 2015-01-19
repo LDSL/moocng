@@ -29,6 +29,11 @@
             });
         }(jQuery));
     </script>
+    <script>
+        MOOC.trans = {
+            'saving': '{% trans "Saving changes has no finished yet" %}'
+        }
+    </script>
 {% endblock %}
 
 {% block section %}
@@ -45,7 +50,7 @@
   <button id="add-option" class="btn">{% trans "Add" %}</button>
 </div>
 
-<form action="{{ form_url }}" method="post">{% csrf_token %}{% block form_top %}{% endblock %}
+<form action="{{ form_url }}" method="post" class="col-lg-8 col-md-6 col-sm-6 col-mob-4">{% csrf_token %}{% block form_top %}{% endblock %}
 {%if original.use_last_frame %}
 <fieldset class="use-last-frame">
     {% if original.last_frame %}
@@ -59,39 +64,39 @@
 </fieldset>
 </form>
 
-<div class="col-lg-9 col-md-9 col-sm-8 col-mob-4 no-margin" id="option-properties">
-<p><label for="option-name">{% trans 'Question' %}</label>
-    <input class="input-xlarge" type="text" id="option-name" /></p>
-<p><label for="option-solution">{% trans 'Solution' %}</label>
-    <input type="text" class="input-xlarge" id="option-solution" /></p>
-<p><label for="option-feedback">{% trans 'Feedback' %}</label>
-    <input type="text" class="input-xlarge" id="option-feedback" maxlength="200" /></p>
-<div class="spoiler">
-    <div class="header">
-        <a href="#">{% trans 'Advanced' %}</a>
+<div class="col-lg-8 col-md-6 col-sm-2 col-mob-4" id="option-properties">
+    <p><label for="option-name">{% trans 'Question' %}</label>
+        <input class="input-xlarge" type="text" id="option-name" disabled/></p>
+    <p><label for="option-solution">{% trans 'Solution' %}</label>
+        <input type="text" class="input-xlarge" id="option-solution" disabled/></p>
+    <p><label for="option-feedback">{% trans 'Feedback' %}</label>
+        <input type="text" class="input-xlarge" id="option-feedback" maxlength="200" disabled/></p>
+    <div class="spoiler">
+        <div class="header">
+            <a id="spoiler-toggle" href="#">{% trans 'Advanced' %}</a>
+        </div>
+        <div class="content">
+            <p><label for="option-id">{% trans "Id" %}</label>
+                <span id="option-id"></span></p>
+            <p><label for="option-optiontype">{% trans 'Type' %}</label>
+                <select class="input-medium" id="option-optiontype">
+                    <option value="l">{% trans "Label" %}</option>
+                    <option value="t">{% trans "Input text" %}</option>
+                    <option value="c">{% trans "Checkbox" %}</option>
+                    <option value="r">{% trans "Radio" %}</option>
+                </select></p>
+            <p><label for="option-x">{% trans 'Coord. X' %}</label>
+                <input class="input-small" type="number" min="0" id="option-x" /></p>
+            <p><label for="option-y">{% trans 'Coord. Y' %}</label>
+                <input class="input-small" type="number" min="0" id="option-y" /></p>
+            <p><label for="option-width">{% trans 'Width' %}</label>
+                <input class="input-small" type="number" min="1" id="option-width" /></p>
+            <p><label for="option-height">{% trans 'Height' %}</label>
+                <input class="input-small" type="number" min="1" id="option-height" /></p>
+        </div>
     </div>
-    <div class="content">
-        <p><label for="option-id">{% trans "Id" %}</label>
-            <span id="option-id"></span></p>
-        <p><label for="option-optiontype">{% trans 'Type' %}</label>
-            <select class="input-medium" id="option-optiontype">
-                <option value="l">{% trans "Label" %}</option>
-                <option value="t">{% trans "Input text" %}</option>
-                <option value="c">{% trans "Checkbox" %}</option>
-                <option value="r">{% trans "Radio" %}</option>
-            </select></p>
-        <p><label for="option-x">{% trans 'Coord. X' %}</label>
-            <input class="input-small" type="number" min="0" id="option-x" /></p>
-        <p><label for="option-y">{% trans 'Coord. Y' %}</label>
-            <input class="input-small" type="number" min="0" id="option-y" /></p>
-        <p><label for="option-width">{% trans 'Width' %}</label>
-            <input class="input-small" type="number" min="1" id="option-width" /></p>
-        <p><label for="option-height">{% trans 'Height' %}</label>
-            <input class="input-small" type="number" min="1" id="option-height" /></p>
-    </div>
-</div>
 
-<button id="remove-option" class="btn btn-danger">{% trans "Remove" %}</button>
+    <button id="remove-option" class="btn btn-danger">{% trans "Remove" %}</button>
 
 <!--<table id="option-properties" class="table table-bordered table-striped table-condensed">
     <thead>

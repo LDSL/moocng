@@ -22,6 +22,9 @@
         window.MOOC = {};
     }
 
+    MOOC.vars = MOOC.vars || {};
+    MOOC.vars.saving = [];
+    window.onbeforeunload = function(){ $('#option-properties *:focus').blur(); if(MOOC.vars.saving.length) return MOOC.trans.saving; else return null; };
     MOOC.models = {};
 
     MOOC.models.Option = Backbone.Model.extend({
@@ -106,10 +109,7 @@
                 attributes = {
                     type: this.option_types[optiontype],
                     value: sol,
-                    style: [
-                        "width: " + this.model.get("width") + "px;",
-                        "height: " + this.model.get("height") + "px;"
-                    ].join(" ")
+                    style: []
                 },
                 size = {},
                 label = this.model.get('text');
@@ -132,8 +132,10 @@
                 content = this.model.get("text");
                 delete attributes.type;
                 delete attributes.value;
-                attributes.cols = this.model.get("width");
-                attributes.rows = this.model.get("height");
+                if($('fieldset.use-last-frame').length){
+                    attributes.cols = this.model.get("width");
+                    attributes.rows = this.model.get("height");
+                }
                 attributes.style = [];
                 attributes.style.push('resize:none;');
                 attributes.style.push('line-height: 20px;');
@@ -145,10 +147,7 @@
                     "height: auto;"
                 ].join(" ");
             }else if(optiontype === 't'){
-                attributes.style = [
-                    "width: auto;",
-                    "height: auto;"
-                ].join(" ");
+                // Nothing to do
             }
 
             var domelem = '';
@@ -206,24 +205,6 @@
 
             }
 
-            /*domelem += '<'+tag;
-            for (var attribute in attributes){
-                if(attributes.hasOwnProperty(attribute)){
-                    domelem += ' ' + attribute + '="' + attributes[attribute]+'"';
-                }
-            }
-            domelem += '>';
-            if(label){
-                if(optiontype !== 'l'){
-                   domelem += '<input type="text" class="label" value="' + label + '" />';
-                }else{
-                    domelem += label + '</'+tag+'>';
-                }
-            }else if(optiontype === 'q'){
-                domelem += attributes.name + '</'+tag+'>';
-            }*/
-
-            //this.$el.empty().append(this.make(tag, attributes, content));
             this.$el.empty().append(domelem);
             
             if($("fieldset.use-last-frame").length > 0){
@@ -249,7 +230,6 @@
             }
 
             return this;
-            //$("fieldset.ui-sortable").find("fieldset['name'="+attributes.name+"]").append(this.$el);
         },
 
         is_out: function (position) {
@@ -300,7 +280,15 @@
             } else {
                 this.model.set("x", position.left + this.padding);
                 this.model.set("y", position.top + this.padding);
-                this.model.save();
+                MOOC.vars.saving.push(1);
+                this.model.save(null, {
+                    error: function(){
+                        MOOC.vars.saving.pop();
+                    },
+                    success: function(){
+                        MOOC.vars.saving.pop();
+                    }
+                });
             }
         },
 
@@ -338,7 +326,7 @@
                             this.model.set({'solution': value,
                                             'text': label});
                             break;
-                case 't':   var $input = this.$el.find("input");
+                case 't':   var $input = this.$el.find("input:not(.label)");
                             var $label = this.$el.find(".label");
                             var value = $input.val();
                             var label = $label.val();
@@ -346,14 +334,30 @@
                                             'text': label});
                             break;
             }
-            this.model.save();
+            MOOC.vars.saving.push(1);
+            this.model.save(null, {
+                error: function(){
+                    MOOC.vars.saving.pop();
+                },
+                success: function(){
+                    MOOC.vars.saving.pop();
+                }
+            });
         },
 
         change_order: function(event){
             this.model.unbind("change", this.render, this);
             var order = this.model.get("optiontype") !== "q"? (this.$el.parent().parent().index()+1)*10 + this.$el.index() + 1 : (this.$el.index() + 1) * 10;
             this.model.set('order', order);
-            this.model.save();
+            MOOC.vars.saving.push(1);
+            this.model.save(null, {
+                error: function(){
+                    MOOC.vars.saving.pop();
+                },
+                success: function(){
+                    MOOC.vars.saving.pop();
+                }
+            });
             this.model.bind("change", this.render, this);
         }
 
@@ -362,7 +366,7 @@
     MOOC.views.OptionPropertiesView = Backbone.View.extend({
         events: {
             "click #remove-option": "remove_option",
-            "click .spoiler .header a": "toggle_advanced_controls"
+            "click #spoiler-toggle": "toggle_advanced_controls"
         },
 
         initialize: function () {
@@ -408,10 +412,15 @@
                     .find('#option-height').attr("disabled", false).change(this.change_property_handler(['height', true])).val(this.model.get('height'));
             }
 
-            if (optiontype === 'r') {
+            if (optiontype) {
                 this.$el.find("#option-name").attr("disabled", false).change(this.change_property_handler(['name', false])).val(this.model.get('name'));
+                this.$el.find("#option-solution").attr("disabled", false);
+                this.$el.find("#option-feedback").attr("disabled", false);
+
             }else{
                 this.$el.find("#option-name").attr("disabled", "disabled").val(this.model.get('name'));
+                this.$el.find("#option-solution").attr("disabled", "disabled");
+                this.$el.find("#option-feedback").attr("disabled", "disabled");
             }
 
             if (optiontype === 'l') {
@@ -419,12 +428,12 @@
                     .find("#option-solution").val(this.model.get("text")).end()
                     .find("#solution-title").addClass("hide").end()
                     .find("#content-title").removeClass("hide");
-                this.$el.find("#option-feedback").parent().parent().addClass("hide");
+                //this.$el.find("#option-feedback").parent().parent().addClass("unavailable");
             } else {
                 this.$el
                     .find("#solution-title").removeClass("hide").end()
                     .find("#content-title").addClass("hide");
-                this.$el.find("#option-feedback").parent().parent().removeClass("hide");
+                //this.$el.find("#option-feedback").parent().parent().removeClass("unavailable");
             }
         },
 
@@ -486,14 +495,22 @@
                 }
 
                 this.model.set(prop, value);
-                this.model.save();
+                MOOC.vars.saving.push(1);
+                this.model.save(null, {
+                    error: function(){
+                        MOOC.vars.saving.pop();
+                    },
+                    success: function(){
+                        MOOC.vars.saving.pop();
+                    }
+                });
             }
         },
 
         toggle_advanced_controls: function(e) {
             e.preventDefault();
             $(".spoiler").toggleClass('open');
-        }
+        },
 
     });
 
@@ -611,6 +628,7 @@
         },
 
         add: function (option) {
+            $('#option-properties *:focus').blur();
             var ov = new MOOC.views.OptionView({
                 model: option,
                 parent_view: this,
@@ -637,6 +655,7 @@
         },
 
         remove: function (option) {
+            $('#option-properties *:focus').blur();
             var view_to_remove = _(this._optionViews).select(function (ov) {
                 return ov.model === option;
             })[0];
@@ -667,12 +686,13 @@
             settings.order = this.collection.length;
             option = new MOOC.models.Option(settings);
             this.collection.add(option);
-            // TODO: Improve this "safe save"
-            option.save({success: function(){ /* Do nothing */ }},{error: function(model, response){ model.set('y', model.get('y')+10); model.save(); }});
+            MOOC.vars.saving.push(1);
+            option.save(null, {success: function(){ MOOC.vars.saving.pop();}, error: function(model, response){ model.set('y', model.get('y')+10); model.save(null, {success: function(){ MOOC.vars.saving.pop();}}); }});
             this._last_ypos += 10;
         },
 
         select_option: function (option_element) {
+            $('#option-properties *:focus').blur();
             var selected = null;
             _(this._optionViews).each(function (ov) {
                 if (ov.el === option_element) {
