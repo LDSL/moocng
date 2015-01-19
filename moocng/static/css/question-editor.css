@@ -58,6 +58,7 @@ fieldset.use-last-frame .option {
     opacity: 0.7;
     display: block;
     cursor: pointer;
+    min-width: 150px;
 }
 
 fieldset.use-last-frame .option input {

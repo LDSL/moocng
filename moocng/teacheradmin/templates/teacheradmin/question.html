@@ -50,7 +50,7 @@
   <button id="add-option" class="btn">{% trans "Add" %}</button>
 </div>
 
-<form action="{{ form_url }}" method="post" class="col-lg-8 col-md-6 col-sm-6 col-mob-4">{% csrf_token %}{% block form_top %}{% endblock %}
+<form action="{{ form_url }}" method="post" {% if original.use_last_frame %}class="col-lg-16 col-md-12 col-sm-8 col-mob-4"{% else %}class="col-lg-8 col-md-6 col-sm-6 col-mob-4"{% endif %}>{% csrf_token %}{% block form_top %}{% endblock %}
 {%if original.use_last_frame %}
 <fieldset class="use-last-frame">
     {% if original.last_frame %}

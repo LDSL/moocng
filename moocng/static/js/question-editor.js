@@ -33,7 +33,7 @@
                 optiontype: 't',
                 x: 0,
                 y: 0,
-                width: 100,
+                width: 250,
                 height: 28,
                 solution: '',
                 text: "",
@@ -72,7 +72,8 @@
 
     MOOC.views = {};
 
-    MOOC.views.defaultSize = 14; // For checkboxes and radios
+    MOOC.views.defaultWidth = 250; // For checkboxes and radios
+    MOOC.views.defaultHeight = 20; // For checkboxes and radios
 
     MOOC.views.OptionView = Backbone.View.extend({
         tagName: 'span',
@@ -116,8 +117,8 @@
 
             if (optiontype === 'c' || optiontype === 'r') {
                 attributes.style = [
-                    "width: " + MOOC.views.defaultSize + "px;",
-                    "height: " + MOOC.views.defaultSize + "px;"
+                    /*"width: " + MOOC.views.defaultWidth + "px;",
+                    "height: " + MOOC.views.defaultHeight + "px;"*/
                 ].join(" ");
 
                 if (optiontype === 'r') {
@@ -209,6 +210,10 @@
             
             if($("fieldset.use-last-frame").length > 0){
                 size = this.calculate_size();
+                if (size.width <= MOOC.views.defaultWidth)
+                    size.width = MOOC.views.defaultWidth;
+                if (size.height <= MOOC.views.defaultHeight)
+                    size.height = MOOC.views.defaultHeight;
                 this.$el.width(size.width + this.padding * 2 + this.handlePadding)
                     .height(size.height + this.padding * 2)
                     .draggable({
