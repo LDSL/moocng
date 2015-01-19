@@ -564,7 +564,7 @@
                 var last_name = this.collection.last().get('name');
                 this._last_question = parseInt(last_name.match(/\d+/), 10);
             }else{
-                this._last_question = 0;
+                this._last_question = 1;
             }
             var question_taken = true;
             var self = this;
@@ -679,9 +679,9 @@
                 case 'l':   settings.width = 50;
                             settings.height = 3;
                             break;
-                case 'q':   this._last_question++;
-                            settings.name = 'q'+ this._last_question;                            
+                case 'q':   settings.name = 'q'+ this._last_question;                            
                             this._current_question = this._last_question;
+                            this._last_question++;
                             break;
                 default:    settings.text = 'label'
             }
