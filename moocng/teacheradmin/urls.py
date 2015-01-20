@@ -67,6 +67,9 @@ urlpatterns = patterns('moocng.teacheradmin.views',
     url(r'^categories/$', 'teacheradmin_categories',
         name='teacheradmin_categories'),
 
+    url(r'^badges/(?P<badge_id>\d+)$', 'teacheradmin_badges',
+        name='teacheradmin_badges'),
+
     url(r'^badges/$', 'teacheradmin_badges',
         name='teacheradmin_badges'),
 
@@ -103,8 +106,8 @@ urlpatterns = patterns('moocng.teacheradmin.views',
     url(r'^badges/reloadPills/(?P<id>\d+)/$', 'reload_pills',
         name='reload_pills'),
 
-    url(r'^badges/delteBadge/(?P<id>\d+)/$', 'delte_badge',
-        name='delte_badge'),
+    url(r'^badges/deleteBadge/(?P<id>\d+)/$', 'delete_badge',
+        name='delete_badge'),
 
     # Course's external apps admin
     url(r'^externalapps/', include('moocng.externalapps.urls')),

@@ -3732,6 +3732,7 @@ ul.rating {
 .userprofile, .userposts {
 	background-color: @neutral_light_3;
 	padding: 20px 0 90px;
+	min-height: calc(~'100vh - 450px');
 
 	&.white {
 		background-color: @white;
@@ -4084,7 +4085,7 @@ ul.rating {
 			color: @neutral_medium_2;
 			list-style: none;
 
-			li {
+			& > li {
 				display: table;
 				padding: 20px;
 				border-bottom: 1px solid @neutral_light_1;
@@ -4149,6 +4150,22 @@ ul.rating {
 
 						span {
 							background-color: @highlight;
+						}
+					}
+				}
+
+				.badges {
+					padding: 10px 0;
+
+					li {
+						list-style: none;
+						display: inline-block;
+						margin-right: 20px;
+
+						svg {
+							width: 28px;
+							height: 28px;
+							vertical-align: middle;
 						}
 					}
 				}

@@ -168,7 +168,7 @@ class BadgeByCourse(models.Model):
         verbose_name_plural = _(u'badges_badgebycourse')
 
     def __unicode__(self):
-        return self.name
+        return self.title
 
 
 class Award(models.Model):

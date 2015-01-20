@@ -23,6 +23,7 @@ from moocng.courses.security import (get_courses_available_for_user,
 									get_courses_user_is_enrolled,
 									get_course_progress_for_user)
 from moocng.courses.utils import (is_teacher as is_teacher_test)
+from moocng.badges.utils import (get_user_badges_group_by_course)
 
 from moocng.slug import unique_slugify
 from moocng.utils import use_cache
@@ -85,7 +86,29 @@ def profile_courses(request, id):
 		'courses': courses,
 		'courses_completed': courses_completed,
 		"user_view_profile": user,
-		"badges": get_db().get_collection('badge').find({"id_user": id}).count()
+		"badges_count": get_db().get_collection('badge').find({"id_user": id}).count()
+		}, context_instance=RequestContext(request))
+
+# @login_required
+def profile_badges(request, id):
+
+	if(not id):
+		if(not request.user.id):
+			return HttpResponseRedirect("/auth/login")
+		user = request.user
+		id = request.user.id
+	else:
+		user = User.objects.get(username=id)
+		id = user.id
+
+	courses = get_user_badges_group_by_course(user)
+
+	return render_to_response('profile/badges.html', {
+		"id":id,
+		'request': request,
+		"user_view_profile": user,
+		"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
+		"courses": courses,
 		}, context_instance=RequestContext(request))
 
 @login_required
@@ -111,7 +134,7 @@ def profile_user(request, id):
 
 	return render_to_response('profile/user.html', {
 		"id":id,
-		"badges": get_db().get_collection('badge').find({"id_user": id}).count(),
+		"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
 		'request': request,
 		'courses': courses,
 		'is_user': True,
@@ -170,7 +193,7 @@ def profile_posts(request, id):
 		
 		return render_to_response('profile/posts.html', {
 			"id":id,
-			"badges": get_db().get_collection('badge').find({"id_user": id}).count(),
+			"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
 			# "email":"@" + request.user.email.split("@")[0],
 			'request': request,
 			'form': PostForm(),
