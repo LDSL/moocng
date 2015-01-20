@@ -18,6 +18,19 @@
 (function ($, Backbone, _) {
     "use strict";
 
+    // First, checks if it isn't implemented yet.
+    if (!String.prototype.format) {
+      String.prototype.format = function() {
+        var args = arguments;
+        return this.replace(/{(\d+)}/g, function(match, number) { 
+          return typeof args[number] != 'undefined'
+            ? args[number]
+            : match
+          ;
+        });
+      };
+    }
+
     if (_.isUndefined(window.MOOC)) {
         window.MOOC = {};
     }
@@ -460,8 +473,28 @@
         },
 
         remove_option: function () {
-            this.model.destroy();
-            MOOC.router.navigate("", {trigger: true});
+            $('#option-properties *:focus').blur();
+
+            var option_name = "";
+            switch(this.model.get('optiontype')){
+                case 'q': option_name += MOOC.trans['question'];
+                            break;
+                case 'l': option_name += MOOC.trans['label'];
+                            break;
+                case 't': option_name += MOOC.trans['input_text'];
+                            break;
+                case 'r': option_name += MOOC.trans['radio'];
+                            break;
+                case 'c': option_name += MOOC.trans['checkbox'];
+                            break;
+            }
+            var option_text = this.model.get('text');
+            if(option_text)
+                option_name += " " + option_text;
+            if (confirm(MOOC.trans['delete_prompt'].format(option_name, this.model.get('name')))) {
+                this.model.destroy();
+                MOOC.router.navigate("", {trigger: true});
+            }
         },
 
         reset: function () {
@@ -656,11 +689,13 @@
                     this.$fieldset.append(ov.render().el);
                     this.$fieldset.trigger('drop');
                 }
+                this.select_option(ov.el);
             }
         },
 
         remove: function (option) {
             $('#option-properties *:focus').blur();
+            
             var view_to_remove = _(this._optionViews).select(function (ov) {
                 return ov.model === option;
             })[0];
@@ -668,7 +703,7 @@
 
             if (this._rendered) {
                 view_to_remove.remove();
-            }
+            }          
         },
 
         create_option: function () {
@@ -689,10 +724,7 @@
                 settings.name = 'q'+this._current_question;
             settings.y = this._last_ypos;
             settings.order = this.collection.length;
-            option = new MOOC.models.Option(settings);
-            this.collection.add(option);
-            MOOC.vars.saving.push(1);
-            option.save(null, {success: function(){ MOOC.vars.saving.pop();}, error: function(model, response){ model.set('y', model.get('y')+10); model.save(null, {success: function(){ MOOC.vars.saving.pop();}}); }});
+            option = this.collection.create(settings, {'wait': true});
             this._last_ypos += 10;
         },
 
