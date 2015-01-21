@@ -146,6 +146,7 @@ class Course(Sortable):
         ('d', _(u'Draft')),
         ('p', _(u'Published')),
         ('h', _(u'Hidden')),
+        ('o', _(u'Always Open')),
     )
 
     status = models.CharField(
@@ -282,7 +283,7 @@ class Course(Sortable):
     @property
     def is_public(self):
         # If you change it, you should change the public method in CourseQuerySet class
-        return self.status in ['p', 'h']
+        return self.status in ['p', 'o', 'h']
 
     @property
     def is_active(self):
@@ -297,8 +298,8 @@ class Course(Sortable):
     def is_outdated(self):
         today = datetime.date.today()
         return (self.is_public and
-                (self.end_date < today)
-                )
+                self.end_date < today and
+                self.status != 'o')
 
     def _resize_image(self, filename, size):
         """
