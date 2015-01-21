@@ -18,6 +18,7 @@ from django.db import connection, models
 from django.db.models import signals
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse
 
 from moocng.courses.models import Announcement
 
@@ -26,6 +27,7 @@ import pymongo
 from dateutil import tz
 from datetime import date, datetime
 from bson.objectid import ObjectId
+import re
 
 class Organization(models.Model):
     name = models.CharField(verbose_name=_(u"Organization name"),
@@ -153,8 +155,24 @@ def get_posts(case, id, user, page):
     if(case == 0 and user):
         for following in user["following"]:
                 idsUsers.append({"id_user": following})
+
+    print "Searching %s on page %s" % (idsUsers, page)
         
     posts = postCollection.find({"$or": idsUsers})[page:page+10].sort("date",pymongo.DESCENDING)
+
+    print posts.count()
+
+    return _processPost(posts)
+
+def search_posts(query, page):
+    postCollection = get_micro_blog_db().get_collection('post')
+    mongoQuery = {'$regex': '.*%s.*' % (query)}
+
+    print "Searching %s on page %s" % (mongoQuery, page)
+
+    posts = postCollection.find({'text': mongoQuery})[page:page+10].sort("date",pymongo.DESCENDING)
+
+    print posts.count()
 
     return _processPost(posts)
 
@@ -163,6 +181,15 @@ def insert_post(post):
 
 def count_posts(id):
     return get_micro_blog_db().get_collection('post').find({'id_user': id}).count()
+
+def _hashtag_to_link(matchobj):
+    hashtag = matchobj.group(0)
+    hashtagUrl = reverse('profile_posts_hashtag', args=[hashtag[1:]])
+    return '<a href="%s" target="_blank">%s</a>' % (hashtagUrl, hashtag)
+
+def _proccess_hashtags(text):
+    hashtagged = re.sub(r'(?:(?<=\s)|^)#(\w*[A-Za-z_]+\w*)', _hashtag_to_link, text)
+    return hashtagged
 
 def _processPost(posts):
     listPost = []
@@ -176,6 +203,7 @@ def _processPost(posts):
         if("original_date" in post):
             post["original_date"] = datetime.strptime(post.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
         post["id"] = post.pop("_id")
+        post["text"] = _proccess_hashtags(post["text"])
         listPost.append(post)
 
     return listPost

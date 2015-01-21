@@ -17,7 +17,9 @@ from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 
 
-from moocng.profile.models import UserProfile, get_blog_user, get_posts, insert_post, count_posts, update_following_blog_user, insert_blog_user, save_retweet, get_num_followers
+from moocng.profile.models import (	UserProfile, get_blog_user, get_posts, 
+									insert_post, count_posts, update_following_blog_user, 
+									insert_blog_user, save_retweet, get_num_followers, search_posts)
 
 from moocng.courses.security import (get_courses_available_for_user,
 									get_courses_user_is_enrolled,
@@ -183,16 +185,84 @@ def profile_posts(request, id):
 			"followerCount": get_num_followers(id)
 			}, context_instance=RequestContext(request))
 
-# @login_required
-def load_more_posts(request, page, id):
-	if(not id):
-		id = request.user.id
+def profile_posts_search(request, query, hashtag=False):
+	if(not request.user.id):
+		return HttpResponseRedirect("/auth/login")
+	id = request.user.id
+	user = request.user
+
+	if request.method == 'POST':
+		form = PostForm(request.POST)
+		if form.is_valid():
+			insert_post({
+							"id_user": request.user.id, 
+							"first_name": request.user.first_name,
+							"last_name":request.user.last_name,
+							"username": "@" + request.user.username,
+							"gravatar": "http:" + gravatar_for_email(request.user.email),
+							"date": datetime.utcnow().isoformat(),
+							"text": urlize(escape(form.cleaned_data['postText'])),
+							"children": [],
+							"favourite": [],
+							"shared": 0
+
+						})
+
+			return HttpResponseRedirect("/user/posts")
+	
 	else:
-		id = int(id)
+		case = _getCase(request,id)
 
+		blog_user = get_blog_user(request.user.id)
+		if(blog_user and id in blog_user["following"]):
+			following = "true"
+		else:
+			following = "false"
+
+		followingCount = 0
+		if(request.user.id != id):
+			blog_user = get_blog_user(id)
+			if(blog_user):
+				followingCount = len(blog_user["following"])
+		elif(blog_user):
+			followingCount = len(blog_user["following"])
+
+		if hashtag:
+			search_query = '#%s' % (query)
+		listPost = search_posts(search_query, 0)
+		
+		return render_to_response('profile/posts_search.html', {
+			"id":id,
+			"badges": get_db().get_collection('badge').find({"id_user": id}).count(),
+			# "email":"@" + request.user.email.split("@")[0],
+			'request': request,
+			'form': PostForm(),
+			'totalPost': count_posts(id),
+			'posts': listPost,
+			'case': case,
+			"user_view_profile": user,
+			"following": following,
+			"followingCount": followingCount,
+			"followerCount": get_num_followers(id),
+			"query": query,
+			"is_hashtag": hashtag,
+			}, context_instance=RequestContext(request))
+
+
+# @login_required
+def load_more_posts(request, page, query, hashtag=False):
 	page = int(page)
-	listPost = get_posts(0, id, get_blog_user(request.user.id), page)
-
+	listPost = None
+	if hashtag:
+		if query:
+			query = "#%s" % (query)
+			listPost = search_posts(query, page)
+	else:
+		if(not query):
+			id = request.user.id
+		else:
+			id = int(query)
+		listPost = get_posts(0, id, get_blog_user(request.user.id), page)
 
 	return render_to_response('profile/post.html', {
 			'request': request,

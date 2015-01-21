@@ -4493,6 +4493,16 @@ ul.rating {
 					color:@neutral_medium_1;
 					margin-right:20px;
 					margin-top:17px;
+
+					a {
+						color: @highlight;
+						border-bottom: 1px solid transparent;
+						transition: border-color .2s ease-in-out;
+
+						&:hover {
+							border-color: @comp;
+						}
+					}
 				}
 
 				.tools{
