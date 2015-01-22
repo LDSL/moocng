@@ -53,7 +53,9 @@
 						<li>
 							{% url profile_posts user_view_profile.username as url_posts %}
 							{% url profile_posts as url_posts2 %}
-							<a href="{{ url_posts }}" {% if request.path == url_posts or  request.path == url_posts2 %} class="selected" {% endif %}>
+							{% url profile_posts_search query as url_post_search %}
+							{% url profile_posts_hashtag query as url_post_hashtag %}
+							<a href="{{ url_posts }}" {% if request.path == url_posts or request.path == url_posts2 or request.path == url_post_search or request.path == url_post_hashtag %} class="selected" {% endif %}>
 								{% trans "Posts" %}
 							</a>
 						</li>

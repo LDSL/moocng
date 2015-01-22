@@ -3918,7 +3918,7 @@ ul.rating {
 		&.action, &.info {
 			color: @highlight;
 			border-bottom: none;
-			
+
 			img, svg, object{
 				vertical-align: middle;
 				position: relative;
@@ -3939,6 +3939,15 @@ ul.rating {
 			&.done {
 				path, polygon, circle {
 					fill: @highlight;
+				}
+			}
+
+			&.text {
+				color: @neutral_medium_2;
+				transition: color .1s ease-in-out;
+
+				&:hover {
+					color: @neutral_intense;
 				}
 			}
 		}

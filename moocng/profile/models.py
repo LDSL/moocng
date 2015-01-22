@@ -155,12 +155,8 @@ def get_posts(case, id, user, page):
     if(case == 0 and user):
         for following in user["following"]:
                 idsUsers.append({"id_user": following})
-
-    print "Searching %s on page %s" % (idsUsers, page)
         
     posts = postCollection.find({"$or": idsUsers})[page:page+10].sort("date",pymongo.DESCENDING)
-
-    print posts.count()
 
     return _processPost(posts)
 
@@ -168,11 +164,7 @@ def search_posts(query, page):
     postCollection = get_micro_blog_db().get_collection('post')
     mongoQuery = {'$regex': '.*%s.*' % (query)}
 
-    print "Searching %s on page %s" % (mongoQuery, page)
-
     posts = postCollection.find({'text': mongoQuery})[page:page+10].sort("date",pymongo.DESCENDING)
-
-    print posts.count()
 
     return _processPost(posts)
 
@@ -185,7 +177,7 @@ def count_posts(id):
 def _hashtag_to_link(matchobj):
     hashtag = matchobj.group(0)
     hashtagUrl = reverse('profile_posts_hashtag', args=[hashtag[1:]])
-    return '<a href="%s" target="_blank">%s</a>' % (hashtagUrl, hashtag)
+    return '<a href="%s">%s</a>' % (hashtagUrl, hashtag)
 
 def _proccess_hashtags(text):
     hashtagged = re.sub(r'(?:(?<=\s)|^)#(\w*[A-Za-z_]+\w*)', _hashtag_to_link, text)
@@ -195,6 +187,7 @@ def _processPost(posts):
     listPost = []
     from_zone = tz.tzutc()
     to_zone = tz.tzlocal()
+
     for post in posts:
         # post["text"] = post["text"]
         # post["email"] = "@" + post["email"].split("@")[0]

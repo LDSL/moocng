@@ -229,6 +229,8 @@ def profile_posts_search(request, query, hashtag=False):
 
 		if hashtag:
 			search_query = '#%s' % (query)
+		else:
+			search_query = query
 		listPost = search_posts(search_query, 0)
 		
 		return render_to_response('profile/posts_search.html', {
@@ -250,13 +252,13 @@ def profile_posts_search(request, query, hashtag=False):
 
 
 # @login_required
-def load_more_posts(request, page, query, hashtag=False):
+def load_more_posts(request, page, query, search=False, hashtag=False):
 	page = int(page)
 	listPost = None
-	if hashtag:
-		if query:
+	if search and query:
+		if hashtag:
 			query = "#%s" % (query)
-			listPost = search_posts(query, page)
+		listPost = search_posts(query, page)
 	else:
 		if(not query):
 			id = request.user.id
