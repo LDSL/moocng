@@ -2178,6 +2178,14 @@ ul.rating {
 						top: 3px;
 					}
 				}
+
+				&.empty {
+					text-align: center;
+					font-style: italic;
+					width: 100%;
+					color: @neutral_medium_2;
+					margin-left: -25px; //because of parent's padding
+				}
 				
 				span,a {
 					white-space: nowrap;
@@ -2341,6 +2349,15 @@ ul.rating {
 							color: @neutral_intense;
 						}
 					}
+				}
+
+				&.empty {
+					text-align: center;
+					font-style: italic;
+					width: 100%;
+					color: @neutral_medium_2;
+					border-bottom: none;
+					margin-top: 35px;
 				}
 			}
 		}

@@ -28,11 +28,15 @@
 									</ol>
 								{% endif %}
 								</li>
+							{% empty %}
+								<li class="empty">{% trans "There is no course content yet" %}</li>
 							{% endfor %}
 						</ol>
+						{% if unit_list|length > 0 %}
 						<div class="bottom-bar">
 							<a href="{% url course_syllabus course.slug %}" class="button pull-right"><img src="{{ STATIC_URL }}/img/ECO_icon_toc.svg">{% trans "View full syllabus" %}</a>
 						</div>
+						{% endif %}
 					</div>
 				</div>
 			</div>
@@ -49,6 +53,8 @@
 									<ol>
 										{% for task in task_list %}
 										<li class="{% if task.done %} done {% endif %}"><a href="{% url course_classroom course.slug %}#unit{{ task.item.kq.unit_id }}/kq{{ task.item.kq.id }}/{{task.type}}">{{ task.title }}</a></li>
+										{% empty %}
+										<li class="empty">{% trans "There is no tasks yet" %}</li>
 										{% endfor %}
 									</ol>
 								</div>
@@ -64,9 +70,10 @@
 								</div>
 							</li>-->
 						</ul>
+						{% with task_list|length as tasks_num %}
+						{% if tasks_num > 0 %}
 						<div class="bottom-bar">
-							{% with task_list|length as tasks_num %}
-							{% if tasks_done == 0 and task_done < tasks_num %}
+							{% if tasks_done == 0 %}
 								{% if next_task %}
 									<a class="button pull-right" href="{% url course_classroom course.slug %}#unit{{ next_task.item.kq.unit_id }}/kq{{ next_task.item.kq.id }}/{{next_task.type}}">{% trans "Do my first task" %}<img src="{{ STATIC_URL }}/img/ECO_icon_flecha_enlace.svg"></a>
 								{% else %}
@@ -78,13 +85,12 @@
 								{% else %}
 									<a class="button pull-right" >{% blocktrans %}You have done {{ tasks_done }} tasks of {{ tasks_num }}{% endblocktrans %}.</a>
 								{% endif %}
-							{% elif tasks_num == 0  %}
-								<a class="button pull-right" >{% trans "There is no tasks to do yet" %}</a>
 							{% else %}
 								<a class="button pull-right" >{% trans "Congratulations, you have completed all your current tasks!" %}</a>
 							{% endif %}
-							{% endwith %}
 						</div>
+						{% endif %}
+						{% endwith %}
 					</div>
 				</div>
 			</div>
@@ -119,6 +125,8 @@
 												{% endautoescape %}
 											</div>
 										</li>
+										{% empty %}
+										<li class="empty">{% trans "There is no posts yet" %}</li>
 										{% endfor %}
 										<!--<li class="read">
 											<img src="{{ STATIC_URL }}img/profile_hector.png">
