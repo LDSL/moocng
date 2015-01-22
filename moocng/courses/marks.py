@@ -121,6 +121,7 @@ def calculate_unit_mark(unit, user, normalized_unit_weight=None):
 
     .. versionadded:: 0.1
     """
+
     if normalized_unit_weight is None:
         total_weight_unnormalized, unit_course_counter, course_units = get_course_intermediate_calculations(unit.course)
         normalized_unit_weight = normalize_unit_weight(unit, unit_course_counter, total_weight_unnormalized)
@@ -141,7 +142,7 @@ def get_kq_info_from_course(unit, user, db=None):
 
 def normalize_unit_weight(unit, course_unit_counter, total_weight_unnormalized):
     if total_weight_unnormalized == 0:
-        if course_unit_counter == 0:
+        if course_unit_counter == 0 or not unit.is_scorable():
             return 0
         else:
             return 100.0 / course_unit_counter

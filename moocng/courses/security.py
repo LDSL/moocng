@@ -258,7 +258,7 @@ def get_course_progress_for_user(course, user):
     kq_passed = 0
     kq_total = 0
 
-    for u in get_units_available_for_user(course, user):
+    for u in get_units_available_for_user(course, user, True):
         for q in KnowledgeQuantum.objects.filter(unit_id=u.id):
             kq_total += 1
             if q.is_completed(user):
