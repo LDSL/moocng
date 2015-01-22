@@ -2309,15 +2309,15 @@ ul.rating {
 						font-size: 14px;
 						line-height: inherit;
 						display: inline-block;
+						color: @neutral_medium_1;
 
 						.hashtag, a {
 							color: @highlight;
-							border-bottom: 1px solid @comp;
-							margin-left: 8px;
+							border-bottom: 1px solid transparent;
 							transition: border .2s ease-in-out;
 
 							&:hover{
-								border-bottom-color: @highlight;
+								border-bottom-color: @comp;
 							}
 						}
 					}
