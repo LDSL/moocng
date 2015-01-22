@@ -864,7 +864,7 @@ body {
 			font-size: 12px;
 			text-transform: uppercase;
 
-			span {
+			#hashtag {
 				font-size: 14px;
 				font-weight: 400;
 				text-transform: none;
@@ -2235,6 +2235,9 @@ ul.rating {
 					
 					&:last-child {
 						margin-left: 10px;
+						vertical-align: middle;
+						position: relative;
+						top: -2px;
 					}
 				}
 			}
@@ -2252,6 +2255,7 @@ ul.rating {
 					display: table-cell;
 					margin-right: 10px;
 					padding-top: 5px;
+					width: 32px;
 				}
 				
 				div {
@@ -2291,16 +2295,16 @@ ul.rating {
 						font-size: 14px;
 						line-height: inherit;
 						display: inline-block;
-					}
-					
-					.hashtag, a {
-						color: @highlight;
-						border-bottom: 1px solid @comp;
-						margin-left: 8px;
-						transition: border .2s ease-in-out;
 
-						&:hover{
-							border-bottom-color: @highlight;
+						.hashtag, a {
+							color: @highlight;
+							border-bottom: 1px solid @comp;
+							margin-left: 8px;
+							transition: border .2s ease-in-out;
+
+							&:hover{
+								border-bottom-color: @highlight;
+							}
 						}
 					}
 				}
