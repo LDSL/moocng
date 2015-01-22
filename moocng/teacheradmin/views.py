@@ -273,13 +273,14 @@ def teacheradmin_units_question(request, course_slug, kq_id):
                 'text': opt.text,
                 'x': opt.x, 'y': opt.y,
                 'width': opt.width, 'height': opt.height,
+                'order': opt.order, 'name': opt.name
                 } for opt in obj.option_set.all()]
         context = {
             'course': course,
             'is_enrolled': is_enrolled,
             'object_id': obj.id,
             'original': obj,
-            'options_json': simplejson.dumps(json),
+            'options_json': simplejson.dumps(json, sort_keys=True),
             'goback': goback,
         }
         return render_to_response('teacheradmin/question.html', context,

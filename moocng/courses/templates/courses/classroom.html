@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-fileupload.2.3.1-j6.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/ableplayer.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/ableplayer-transcript.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/popover.css">
     {% if mathjax_enabled %}
       {% mathjax_scripts %}
     {% endif %}
@@ -313,7 +314,8 @@
                 video: "{% trans "Video" %}",
                 videoTooltip: "{% trans "Video" %}",
                 presentation: "{% trans "Presentación" %}",
-                presentationTooltip: "{% trans "Presentación" %}"
+                presentationTooltip: "{% trans "Presentación" %}",
+                clue: "{% trans "Clue" %}"
             },
             peerreview: {
                 prFileMaxSize: "{% trans "Your file is too big" %}",

@@ -857,6 +857,7 @@ class AnswerResource(BaseMongoUserResource):
     def obj_update(self, bundle, request=None, **kwargs):
 
         answer_validate_date(bundle, request)
+        print "Validando..."
         question_id = int(kwargs.get("pk"))
         if (len(bundle.data.get("replyList", [])) > 0):
             newobj = self._collection.find_and_modify({
