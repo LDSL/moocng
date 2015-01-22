@@ -2189,9 +2189,11 @@ ul.rating {
 			height: 208px;
 			ul li {
 				display: table;
-				padding: 15px 20px 20px;
+				padding: 15px 60px 20px 20px;
 				border-bottom: 1px solid @neutral_light_2;
 				background: @white;
+				width: 100%;
+				position: relative;
 				
 				img {
 					display: table-cell;
@@ -2236,6 +2238,11 @@ ul.rating {
 						font-size: 14px;
 						line-height: inherit;
 						display: inline-block;
+
+						&.block {
+							display: block;
+							width: 100%;
+						}
 					}
 					
 					.hashtag, a {
@@ -2258,9 +2265,14 @@ ul.rating {
 				}
 				
 				&.comment {
+					padding: 15px 20px 20px 60px;
 					&:after {
 						content: url("/static/img/feed_comment.png");
 						vertical-align: middle;
+						position: absolute;
+						top: 50%;
+						left: 20px;
+						margin-top: -12px;
 					}
 				}
 				
@@ -2892,7 +2904,7 @@ ul.rating {
 }
 
 /** SYLLABUS AND COURSE_PROGRESS **/
-.syllabus, .course_progress {
+.syllabus, .course_progress, .course_announcement {
 	position: relative;
 
 	h3 {
@@ -3256,6 +3268,12 @@ ul.rating {
 				font-size: 0.8em;
 			}
 		}
+	}
+}
+
+.course_announcement {
+	.body {
+		margin-top: 20px;
 	}
 }
 
