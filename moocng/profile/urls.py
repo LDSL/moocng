@@ -16,8 +16,11 @@ urlpatterns = patterns(
    
     url(r'^user/courses/$', 'profile_courses',
         name='profile_courses'),
+
+    url(r'^user/badges/(?P<id>[-\w.]*)$', 'profile_badges',
+        name='profile_badges'),
     
-    url(r'^user/calendar$', 'profile_calendar',
+    url(r'^user/calendar/$', 'profile_calendar',
         name='profile_calendar'),
    
     url(r'^user/profile/(?P<id>[-\w.]*)$', 'profile_user',
@@ -37,5 +40,5 @@ urlpatterns = patterns(
     url(r'^user/userFollow/(?P<id>[-\w.]+)/(?P<follow>[-\w.]+)$', 'user_follow',
             name='user_follow'),
     url(r'^user/retweet/(?P<id>[-\w.]+)$', 'retweet',
-            name='retweet')
+            name='retweet'),
 )

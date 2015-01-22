@@ -32,7 +32,7 @@
 				                    </g>
 				                </g>
 				            </svg>
-							<p>{{ badges }}</p>
+							<p>{{ badges_count }}</p>
 						</div>
 						<div class="profile-data">
 							<h4 class="noLowRes">{% trans "Karma" %}</h4>
@@ -82,6 +82,13 @@
 							{% url profile_courses as url_courses2 %}
 							<a href="{{ url_courses }}" {% if request.path == url_courses or  request.path == url_courses2%} class="selected" {% endif %}>
 								{% trans "Courses" %}
+							</a>
+						</li>
+						<li>
+							{% url profile_badges user_view_profile.username as url_badges %}
+							{% url profile_badges as url_badges2 %}
+							<a href="{{ url_badges }}" {% if request.path == url_badges or request.path == url_badges2 %} class="selected" {% endif %}>
+								{% trans "Badges" %}
 							</a>
 						</li>
 						<!--<li>

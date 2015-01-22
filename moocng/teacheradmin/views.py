@@ -30,7 +30,7 @@ from django.utils.translation import ugettext as _
 from moocng.courses.models import (Course, CourseTeacher, KnowledgeQuantum,
                                    Option, Announcement, Unit, Attachment, Language,
                                    Transcription, get_transcription_types_choices)
-from moocng.courses.utils import UNIT_BADGE_CLASSES
+from moocng.courses.utils import UNIT_BADGE_CLASSES, get_course_students_csv
 from moocng.categories.models import Category
 from moocng.media_contents import get_media_content_types_choices
 from moocng.mongodb import get_db
@@ -50,8 +50,6 @@ from moocng.assets.models import Asset
 from moocng.externalapps.models import externalapps
 
 from moocng.badges.models import BadgeByCourse
-
-from moocng.courses.utils import get_course_students_csv
 
 import pprint
 
@@ -584,19 +582,36 @@ def teacheradmin_categories(request, course_slug):
     }, context_instance=RequestContext(request))
 
 @is_teacher_or_staff
-def teacheradmin_badges(request, course_slug):
+def teacheradmin_badges(request, course_slug, badge_id=None):
 
     course = get_object_or_404(Course, slug=course_slug)
 
     if request.method == 'POST':
-
+        try:
+            badge_id = int(request.POST["badgeId"])
+        except:
+            badge_id = None
+        badge_title = request.POST['badgeTitle']
+        badge_description = request.POST["badgeDescription"]
+        badge_note = request.POST['noteBadge']
+        badge_color = request.POST['colorBadge']
         criteria_type = int(request.POST["criteriaType"])
         if(criteria_type == 0):
-            citeria = request.POST["unitBadge"]
+            criteria = request.POST["unitBadge"]
         else:
-            citeria = ','.join(request.POST.getlist('pillsBadge'))
+            criteria = ','.join(request.POST.getlist('pillsBadge'))
 
-        badge = BadgeByCourse.create(request.POST['badgeTitle'], request.POST["badgeDescription"], citeria, criteria_type, request.POST['noteBadge'], request.POST['colorBadge'], course)
+        if not badge_id:
+            badge = BadgeByCourse.create(badge_title, badge_description, criteria, criteria_type, badge_note, badge_color, course)
+        else:
+            badge = BadgeByCourse.objects.get(id=badge_id)
+            badge.title = badge_title
+            badge.description = badge_description
+            badge.note = badge_note
+            badge.color = badge_color
+            badge.criteria_type = criteria_type
+            badge.criteria = criteria
+
         badge.save()
 
         return HttpResponseRedirect("/course/" + course_slug + "/teacheradmin/badges/")
@@ -611,11 +626,21 @@ def teacheradmin_badges(request, course_slug):
     if(units and len(units) > 0):
         pills = units[0].knowledgequantum_set.all().order_by("order")
 
+    badge = None
+    if badge_id:
+        badge = BadgeByCourse.objects.get(id=badge_id)
+        if badge.criteria_type == 1:
+            criteria_list = [int(n) for n in badge.criteria.split(',')]
+            criteria_items = KnowledgeQuantum.objects.filter(id__in=criteria_list)
+            badge.criteria = criteria_items
+
+
     return render_to_response('teacheradmin/badges.html', {
         'course': course,
         'units': units,
         'pills':pills,
-        "badges":BadgeByCourse.objects.filter(course_id = course.id).order_by("title")
+        'badges':BadgeByCourse.objects.filter(course_id = course.id).order_by("title"),
+        'badge': badge,
     }, context_instance=RequestContext(request))
 
 @is_teacher_or_staff
@@ -642,7 +667,7 @@ def teacheradmin_assets(request, course_slug):
     }, context_instance=RequestContext(request))
 
 @is_teacher_or_staff
-def delte_badge(request, course_slug, id):
+def delete_badge(request, course_slug, id):
     BadgeByCourse.objects.filter(id=id).delete()
     return HttpResponse("true")
 
