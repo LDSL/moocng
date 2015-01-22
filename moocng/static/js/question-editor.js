@@ -238,6 +238,7 @@
                         left: (this.model.get('x') - this.padding) + "px",
                         top: (this.model.get('y') - this.padding) + "px",
                         padding: this.padding + "px",
+                        paddingRight: this.handlePadding + "px",
                         position: 'absolute'
                     });
             }
@@ -246,7 +247,6 @@
             if (optiontype !== 'l' || label){
                 this.$el.find('.label').change(this.change);
             }
->>>>>>> dev_raul_forms
 
             return this;
         },

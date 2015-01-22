@@ -41,8 +41,9 @@ from moocng.teacheradmin.forms import (CourseForm, AnnouncementForm,
                                        StaticPageForm, GroupsForm)
 from moocng.teacheradmin.models import Invitation, MassiveEmail
 from moocng.teacheradmin.tasks import send_massive_email_task
-from moocng.teacheradmin.utils import (send_invitation,
-                                       send_removed_notification)
+from moocng.teacheradmin.utils import (send_invitation_registered,
+                                       send_removed_notification,
+                                       send_invitation_not_registered)
 from moocng.videos.tasks import process_video_task
 
 from moocng.assets.utils import course_get_assets
@@ -389,7 +390,7 @@ def teacheradmin_teachers_invite(request, course_slug):
             return HttpResponse(status=409)
         except CourseTeacher.DoesNotExist:
             ct = CourseTeacher.objects.create(course=course, teacher=user)
-
+        send_invitation_registered(request, user.email, course)
         name = user.get_full_name()
         if not name:
             name = user.username
@@ -407,7 +408,7 @@ def teacheradmin_teachers_invite(request, course_slug):
             invitation = Invitation(host=request.user, email=email_or_id,
                                     course=course, datetime=datetime.now())
             invitation.save()
-            send_invitation(request, invitation)
+            send_invitation_not_registered(request, invitation)
             data = {
                 'name': email_or_id,
                 'gravatar': gravatar_img_for_email(email_or_id, 20),
