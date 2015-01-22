@@ -35,10 +35,24 @@ urlpatterns = patterns(
     url(r'^user/posts/$', 'profile_posts',
         name='profile_posts'),
 
-    url(r'^user/loadMorePosts/(?P<page>[-\w]+)/(?P<id>[-\w.]+)$', 'load_more_posts',
-            name='load_more_posts'),
+    url(r'^user/posts/search/(?P<query>[-\w.]+)$', 'profile_posts_search',
+        name='profile_posts_search'),
+
+    url(r'^user/posts/hashtag/(?P<query>[-\w.]+)$', 'profile_posts_search',
+        {'hashtag': True}, name='profile_posts_hashtag'),
+
+    url(r'^user/loadMorePosts/(?P<page>[-\w]+)/(?P<query>[-\w.]+)$', 'load_more_posts',
+        name='load_more_posts'),
+    
+    url(r'^user/loadMorePosts/search/(?P<page>[-\w]+)/(?P<query>[-\w.]+)$', 'load_more_posts',
+        {'search': True}, name='load_more_posts_search'),
+
+    url(r'^user/loadMorePosts/hashtag/(?P<page>[-\w]+)/(?P<query>[-\w.]+)$', 'load_more_posts',
+        {'search': True, 'hashtag': True}, name='load_more_posts_hashtag'),
+
     url(r'^user/userFollow/(?P<id>[-\w.]+)/(?P<follow>[-\w.]+)$', 'user_follow',
-            name='user_follow'),
+        name='user_follow'),
+
     url(r'^user/retweet/(?P<id>[-\w.]+)$', 'retweet',
-            name='retweet'),
+        name='retweet'),
 )

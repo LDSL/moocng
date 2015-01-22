@@ -129,12 +129,13 @@
 			<h2 id="kq-title" class="pull-left">{{ course.title }}</h2>
 			<a class="bookmark pull-right" id="bookmark_btn" href="#"><img src="{{ STATIC_URL }}img/ECO_icon_marcador_0.svg" alt="{% trans 'Bookmark' %}"></a>
 		</div>
-        {% if feature_social %}
-		<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4">
+		<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4 pull-right">
+            {% if feature_social %}
 			<a class="hide-text social_like facebook selected" href="#">{% trans 'Like this on Facebook' %} <span>10</span></a>
 			<a class="hide-text social_like gplus" href="#">{% trans '+1 on Google+' %} <span>10</span></a>
+            {% endif %}
+            <a class="hide-text share" id="course-share" href="#">{% trans 'Share' %}</a>
 		</div>
-        {% endif %}
 	</div>
 	<div class="row kq">
 		<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">

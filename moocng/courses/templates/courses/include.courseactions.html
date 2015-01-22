@@ -5,7 +5,7 @@
 			<div class="col-lg-12 col-md-8 col-sm-5 col-mob-4">
 				<h1>{{ course.name }}</h1>
 				{% if course.hashtag %}
-				<h3 class="noLowRes"><span>Hashtag: </span>{{ course.hashtag }}</h3>
+				<h3 class="noLowRes">Hashtag: <a href="{% url profile_posts_hashtag course.hashtag %}" id="hashtag">#{{ course.hashtag }}</a></h3>
 				{% endif %}
 			</div>
 			{% if is_ready %}

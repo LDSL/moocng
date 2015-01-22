@@ -224,6 +224,7 @@ def get_units_available_for_user(course, user, is_overview=False):
 def get_tasks_available_for_user(course, user, is_overview=False):
     tasks = []
     numdone = 0
+    next_task = None
 
     for u in get_units_available_for_user(course, user):
         for q in KnowledgeQuantum.objects.filter(unit_id=u.id):
@@ -248,9 +249,10 @@ def get_tasks_available_for_user(course, user, is_overview=False):
                 }
                 if done:
                     numdone += 1
+                elif not next_task:
+                	next_task = task
                 tasks.append(task)
-                
-    return tasks, numdone
+    return tasks, numdone, next_task
 
 def get_course_progress_for_user(course, user):
     kq_passed = 0

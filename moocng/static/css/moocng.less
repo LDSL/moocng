@@ -181,6 +181,10 @@ button, input {
 			background-color: @neutral_light_3;
 		}
 	}
+
+	&.open .dropdown-toggle {
+		background-color: @neutral_light_3;
+	}
 	
 	.dropdown-menu{
 		visibility: hidden;
@@ -225,7 +229,7 @@ button, input {
 		background-color: @neutral_light_3;
 	}
 	
-	&:hover > .dropdown-menu {
+	&:not(.click):hover > .dropdown-menu, &.click.open > .dropdown-menu {
 		visibility: visible;
 		opacity: 1;
 	}
@@ -726,11 +730,64 @@ body {
 			}
 			
 			.btn-group{
+
+				&#microblog-share {
+					
+					.dropdown-menu {
+						width: 390px;
+
+						textarea {
+							width: 350px;
+							height: 100px;
+							padding: 10px;
+							font-family: inherit;
+							resize: none;
+						}
+
+						.btn {
+							float: right;
+							width: auto;
+							height: auto;
+							background-color: @highlight;
+							color: @white;
+							font-size: 13px;
+							text-transform: uppercase;
+						}
+
+						.loading {
+							text-align: center;
+						}
+
+						.done {
+							text-align: left;
+							p {
+								margin-bottom: 10px;
+							}
+
+							a {
+								display: inline-block;
+								font-size: 13px;
+								padding-top: 10px;
+							}
+
+							.btn {
+								float: left;
+								margin: 0 15px 0 0;
+							}
+						}
+
+						&:after {
+							content: "";
+							display: block;
+							clear: both;
+						}
+					}
+				}
 				
 				.dropdown-toggle.usermenu {
 					padding: 0;
 				}
-				
+
 				.notifications {
 					text-align: center;
 					position: relative;
@@ -807,13 +864,15 @@ body {
 		}
 		
 		h3 {
-			font-size: 14px;
-			font-weight: 400;
-			
-			span {
-				color: @neutral_light_2;
-				font-size: 12px;
-				text-transform: uppercase;
+			color: @neutral_light_2;
+			font-size: 12px;
+			text-transform: uppercase;
+
+			#hashtag {
+				font-size: 14px;
+				font-weight: 400;
+				text-transform: none;
+				color: @white;
 			}
 		}
 		
@@ -2123,6 +2182,14 @@ ul.rating {
 						top: 3px;
 					}
 				}
+
+				&.empty {
+					text-align: center;
+					font-style: italic;
+					width: 100%;
+					color: @neutral_medium_2;
+					margin-left: -25px; //because of parent's padding
+				}
 				
 				span,a {
 					white-space: nowrap;
@@ -2180,6 +2247,9 @@ ul.rating {
 					
 					&:last-child {
 						margin-left: 10px;
+						vertical-align: middle;
+						position: relative;
+						top: -2px;
 					}
 				}
 			}
@@ -2199,6 +2269,7 @@ ul.rating {
 					display: table-cell;
 					margin-right: 10px;
 					padding-top: 5px;
+					width: 32px;
 				}
 				
 				div {
@@ -2239,20 +2310,15 @@ ul.rating {
 						line-height: inherit;
 						display: inline-block;
 
-						&.block {
-							display: block;
-							width: 100%;
-						}
-					}
-					
-					.hashtag, a {
-						color: @highlight;
-						border-bottom: 1px solid @comp;
-						margin-left: 8px;
-						transition: border .2s ease-in-out;
+						.hashtag, a {
+							color: @highlight;
+							border-bottom: 1px solid @comp;
+							margin-left: 8px;
+							transition: border .2s ease-in-out;
 
-						&:hover{
-							border-bottom-color: @highlight;
+							&:hover{
+								border-bottom-color: @highlight;
+							}
 						}
 					}
 				}
@@ -2294,6 +2360,15 @@ ul.rating {
 							color: @neutral_intense;
 						}
 					}
+				}
+
+				&.empty {
+					text-align: center;
+					font-style: italic;
+					width: 100%;
+					color: @neutral_medium_2;
+					border-bottom: none;
+					margin-top: 35px;
 				}
 			}
 		}
@@ -2522,6 +2597,18 @@ ul.rating {
 	
 	.bookmark {
 		vertical-align: middle;
+	}
+
+	.share {
+		display: inline-block;
+		padding: 0 12px 4px;
+
+		&:before {
+			content: url('/static/img/ECO_icon_compartir.svg');
+			display: inline-block;
+			height: 24px;
+			width: 24px;
+		}
 	}
 	
 	.social_like {
@@ -3914,7 +4001,7 @@ ul.rating {
 		&.action, &.info {
 			color: @highlight;
 			border-bottom: none;
-			
+
 			img, svg, object{
 				vertical-align: middle;
 				position: relative;
@@ -3935,6 +4022,15 @@ ul.rating {
 			&.done {
 				path, polygon, circle {
 					fill: @highlight;
+				}
+			}
+
+			&.text {
+				color: @neutral_medium_2;
+				transition: color .1s ease-in-out;
+
+				&:hover {
+					color: @neutral_intense;
 				}
 			}
 		}
@@ -4505,6 +4601,16 @@ ul.rating {
 					color:@neutral_medium_1;
 					margin-right:20px;
 					margin-top:17px;
+
+					a {
+						color: @highlight;
+						border-bottom: 1px solid transparent;
+						transition: border-color .2s ease-in-out;
+
+						&:hover {
+							border-color: @comp;
+						}
+					}
 				}
 
 				.tools{
