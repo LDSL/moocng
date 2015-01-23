@@ -289,6 +289,11 @@ def course_overview(request, course_slug):
         rating_obj = 0
 
     tasks = get_tasks_available_for_user(course, request.user)
+    
+    if is_enrolled:
+        has_passed: has_user_passed_course(request.user, course)
+    else:
+        has_passed: False
 
     return render_to_response('courses/overview.html', {
         'course': course,
@@ -308,7 +313,7 @@ def course_overview(request, course_slug):
         'announcements': announcements,
         'use_old_calculus': settings.COURSES_USING_OLD_TRANSCRIPT,
         'is_overview' : True,
-        'passed': has_user_passed_course(request.user, course),
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -359,6 +364,11 @@ def course_classroom(request, course_slug):
 
     group = get_group_by_user_and_course(request.user.id, course.id)
 
+    if is_enrolled:
+        has_passed: has_user_passed_course(request.user, course)
+    else:
+        has_passed: False
+
     return render_to_response('courses/classroom.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
@@ -370,7 +380,7 @@ def course_classroom(request, course_slug):
         'is_teacher': is_teacher_test(request.user, course),
         'peer_review': peer_review,
         'group': group,
-        'passed': has_user_passed_course(request.user, course),
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -453,6 +463,11 @@ def course_dashboard(request, course_slug):
     group = get_group_by_user_and_course(request.user.id, course.id)
     posts_list = search_posts(course.hashtag, 0)
 
+    if is_enrolled:
+        has_passed: has_user_passed_course(request.user, course)
+    else:
+        has_passed: False
+
     return render_to_response('courses/dashboard.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
@@ -468,7 +483,7 @@ def course_dashboard(request, course_slug):
         'group': group,
         'announcements': announcements,
         'posts_list': posts_list,
-        'passed': has_user_passed_course(request.user, course),
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -499,6 +514,11 @@ def course_syllabus(request, course_slug):
     tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
 
+    if is_enrolled:
+        has_passed: has_user_passed_course(request.user, course)
+    else:
+        has_passed: False
+
     return render_to_response('courses/syllabus.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
@@ -509,7 +529,7 @@ def course_syllabus(request, course_slug):
         'is_teacher': is_teacher,
         'unit_list': get_sillabus_tree(course,request.user,minversion=False),
         'group': group,
-        'passed': has_user_passed_course(request.user, course),
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -544,6 +564,10 @@ def course_group(request, course_slug):
             if(len(g["members"]) <= course.group_max_size + (course.group_max_size * settings.GROUPS_UPPER_THRESHOLD / 100)):
                 groups.append(g)
 
+    if is_enrolled:
+        has_passed: has_user_passed_course(request.user, course)
+    else:
+        has_passed: False
 
     return render_to_response('courses/group.html', {
         'course': course,
@@ -555,7 +579,7 @@ def course_group(request, course_slug):
         'is_teacher': is_teacher,
         'group': group,
         'groups':groups,
-        'passed': has_user_passed_course(request.user, course),
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -580,6 +604,11 @@ def course_forum(request, course_slug):
     tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
 
+    if is_enrolled:
+        has_passed: has_user_passed_course(request.user, course)
+    else:
+        has_passed: False
+
     return render_to_response('courses/forum.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
@@ -589,7 +618,7 @@ def course_forum(request, course_slug):
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
-        'passed': has_user_passed_course(request.user, course),
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -614,6 +643,11 @@ def course_calendar(request, course_slug):
     tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
 
+    if is_enrolled:
+        has_passed: has_user_passed_course(request.user, course)
+    else:
+        has_passed: False
+
     return render_to_response('courses/calendar.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
@@ -623,7 +657,7 @@ def course_calendar(request, course_slug):
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
-        'passed': has_user_passed_course(request.user, course),
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -648,6 +682,11 @@ def course_wiki(request, course_slug):
     tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
 
+    if is_enrolled:
+        has_passed: has_user_passed_course(request.user, course)
+    else:
+        has_passed: False
+
     return render_to_response('courses/wiki.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
@@ -657,7 +696,7 @@ def course_wiki(request, course_slug):
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
-        'passed': has_user_passed_course(request.user, course),
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -673,6 +712,10 @@ def course_teachers(request, course_slug):
 
     tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
+    if is_enrolled:
+        has_passed: has_user_passed_course(request.user, course)
+    else:
+        has_passed: False
 
     # if not is_ready and not request.user.is_superuser:
     if not is_ready and not is_teacher:
@@ -694,7 +737,7 @@ def course_teachers(request, course_slug):
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
-        'passed': has_user_passed_course(request.user, course),
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -772,10 +815,10 @@ def course_progress(request, course_slug):
     group = get_group_by_user_and_course(request.user.id, course.id)
 
     cert_url = None
-    passed = has_user_passed_course(request.user, course)
+    has_passed = has_user_passed_course(request.user, course)
     if(course.certification_available):
         print "Course threshold %s" % (course.threshold)
-        if passed:
+        if has_passed:
             if course.external_certification_available:
                 cert_url = settings.CERTIFICATE_URL % {
                     'courseid': course.id,
@@ -800,7 +843,7 @@ def course_progress(request, course_slug):
         'is_ready' : is_ready,
         'is_teacher': is_teacher_test(request.user, course),
         'group': group,
-        'passed': passed,
+        'passed': has_passed,
         'cert_url': cert_url,
         'course_mark': round(total_mark,2),
     }, context_instance=RequestContext(request))
@@ -812,6 +855,10 @@ def course_extra_info(request, course_slug):
     is_enrolled = course.students.filter(id=request.user.id).exists()
     tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
+    if is_enrolled:
+        has_passed: has_user_passed_course(request.user, course)
+    else:
+        has_passed: False
 
     return render_to_response('courses/static_page.html', {
         'course': course,
@@ -822,7 +869,7 @@ def course_extra_info(request, course_slug):
         'is_teacher': is_teacher_test(request.user, course),
         'static_page': course.static_page,
         'group': group,
-        'passed': has_user_passed_course(request.user, course),
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 
@@ -841,6 +888,10 @@ def announcement_detail(request, course_slug, announcement_id, announcement_slug
     is_ready, ask_admin = is_course_ready(course)
     tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
+    if is_enrolled:
+        has_passed: has_user_passed_course(request.user, course)
+    else:
+        has_passed: False
 
     return render_to_response('courses/announcement.html', {
         'course': course,
@@ -854,7 +905,7 @@ def announcement_detail(request, course_slug, announcement_id, announcement_slug
         'announcement': announcement,
         'template_base': 'courses/base_course.html',
         'group': group,
-        'passed': has_user_passed_course(request.user, course),
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 
