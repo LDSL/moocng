@@ -291,9 +291,9 @@ def course_overview(request, course_slug):
     tasks = get_tasks_available_for_user(course, request.user)
     
     if is_enrolled:
-        has_passed: has_user_passed_course(request.user, course)
+        has_passed= has_user_passed_course(request.user, course)
     else:
-        has_passed: False
+        has_passed= False
 
     return render_to_response('courses/overview.html', {
         'course': course,
@@ -365,9 +365,9 @@ def course_classroom(request, course_slug):
     group = get_group_by_user_and_course(request.user.id, course.id)
 
     if is_enrolled:
-        has_passed: has_user_passed_course(request.user, course)
+        has_passed= has_user_passed_course(request.user, course)
     else:
-        has_passed: False
+        has_passed= False
 
     return render_to_response('courses/classroom.html', {
         'course': course,
@@ -464,9 +464,9 @@ def course_dashboard(request, course_slug):
     posts_list = search_posts(course.hashtag, 0)
 
     if is_enrolled:
-        has_passed: has_user_passed_course(request.user, course)
+        has_passed= has_user_passed_course(request.user, course)
     else:
-        has_passed: False
+        has_passed= False
 
     return render_to_response('courses/dashboard.html', {
         'course': course,
@@ -515,9 +515,9 @@ def course_syllabus(request, course_slug):
     group = get_group_by_user_and_course(request.user.id, course.id)
 
     if is_enrolled:
-        has_passed: has_user_passed_course(request.user, course)
+        has_passed= has_user_passed_course(request.user, course)
     else:
-        has_passed: False
+        has_passed= False
 
     return render_to_response('courses/syllabus.html', {
         'course': course,
@@ -565,9 +565,9 @@ def course_group(request, course_slug):
                 groups.append(g)
 
     if is_enrolled:
-        has_passed: has_user_passed_course(request.user, course)
+        has_passed= has_user_passed_course(request.user, course)
     else:
-        has_passed: False
+        has_passed= False
 
     return render_to_response('courses/group.html', {
         'course': course,
@@ -605,9 +605,9 @@ def course_forum(request, course_slug):
     group = get_group_by_user_and_course(request.user.id, course.id)
 
     if is_enrolled:
-        has_passed: has_user_passed_course(request.user, course)
+        has_passed= has_user_passed_course(request.user, course)
     else:
-        has_passed: False
+        has_passed= False
 
     return render_to_response('courses/forum.html', {
         'course': course,
@@ -644,9 +644,9 @@ def course_calendar(request, course_slug):
     group = get_group_by_user_and_course(request.user.id, course.id)
 
     if is_enrolled:
-        has_passed: has_user_passed_course(request.user, course)
+        has_passed= has_user_passed_course(request.user, course)
     else:
-        has_passed: False
+        has_passed= False
 
     return render_to_response('courses/calendar.html', {
         'course': course,
@@ -683,9 +683,9 @@ def course_wiki(request, course_slug):
     group = get_group_by_user_and_course(request.user.id, course.id)
 
     if is_enrolled:
-        has_passed: has_user_passed_course(request.user, course)
+        has_passed= has_user_passed_course(request.user, course)
     else:
-        has_passed: False
+        has_passed= False
 
     return render_to_response('courses/wiki.html', {
         'course': course,
@@ -713,9 +713,9 @@ def course_teachers(request, course_slug):
     tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
     if is_enrolled:
-        has_passed: has_user_passed_course(request.user, course)
+        has_passed= has_user_passed_course(request.user, course)
     else:
-        has_passed: False
+        has_passed= False
 
     # if not is_ready and not request.user.is_superuser:
     if not is_ready and not is_teacher:
@@ -856,9 +856,9 @@ def course_extra_info(request, course_slug):
     tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
     if is_enrolled:
-        has_passed: has_user_passed_course(request.user, course)
+        has_passed= has_user_passed_course(request.user, course)
     else:
-        has_passed: False
+        has_passed= False
 
     return render_to_response('courses/static_page.html', {
         'course': course,
@@ -889,9 +889,9 @@ def announcement_detail(request, course_slug, announcement_id, announcement_slug
     tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
     if is_enrolled:
-        has_passed: has_user_passed_course(request.user, course)
+        has_passed= has_user_passed_course(request.user, course)
     else:
-        has_passed: False
+        has_passed= False
 
     return render_to_response('courses/announcement.html', {
         'course': course,
