@@ -775,7 +775,8 @@ class Attachment(models.Model):
     kq = models.ForeignKey(KnowledgeQuantum,
                            verbose_name=_(u'Nugget'))
     attachment = models.FileField(verbose_name=_(u'Attachment'),
-                                  upload_to='attachments')
+                                  upload_to='attachments',
+                                  max_length=200)
 
     objects = AttachmentManager()
 
