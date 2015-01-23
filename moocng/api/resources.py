@@ -179,7 +179,12 @@ class UnitResource(BaseModelResource):
         }
 
     def dehydrate_mark(self, bundle):
-        return get_unit_mark(bundle.obj, bundle.request.user)
+        mark = 0;
+        try:
+            mark = get_unit_mark(bundle.obj, bundle.request.user)
+        except:
+            pass
+        return mark
 
     def alter_deserialized_detail_data(self, request, data):
         if u'title' in data and data[u'title'] is not None:
