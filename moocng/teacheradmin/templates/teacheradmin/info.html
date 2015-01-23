@@ -170,6 +170,21 @@
         {% if form.certification_available.help_text %}<span class="help-inline">{{ form.certification_available.help_text }}</span>{% endif %}
     </p>
     <p>
+        {{ form.external_certification_available.errors }}
+        <label for="id_external_certification_available" style="margin: 32px 0;">
+          {{ form.external_certification_available }}
+          {% trans "External certification available" %}
+        </label>
+        {% if form.external_certification_available.help_text %}<span class="help-inline">{{ form.external_certification_available.help_text }}</span>{% endif %}
+    </p>
+    <p>
+        {{ form.certification_file.errors }}
+        {{ form.certification_file.label_tag }}
+        {{ form.certification_file }}
+        {% if form.certification_file.help_text %}<span class="help-inline">{{ form.certification_file.help_text }}</span>{% endif %}
+        <span class="help-inline">{% trans "Max file size" %}: {{ max_file_size }}Mb</span>
+    </p>
+    <p>
         {{ form.thumbnail.errors }}
         {{ form.thumbnail.label_tag }}
         {{ form.thumbnail }}

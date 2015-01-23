@@ -135,6 +135,13 @@ class Course(Sortable):
     certification_available = models.BooleanField(
         default=False,
         verbose_name=_(u'Certification available'))
+    external_certification_available = models.BooleanField(
+        default=False,
+        verbose_name=_(u'External certification available'))
+    certification_file = models.FileField(verbose_name=_(u'Certification file'),
+        upload_to='certifications',
+        null=True,
+        blank=True)
     completion_badge = models.ForeignKey(
         Badge, blank=True, null=True, verbose_name=_(u'Completion badge'),
         related_name='course')

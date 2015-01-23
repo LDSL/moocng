@@ -63,7 +63,7 @@ class UnitQuerySet(QuerySet):
 
     def scorables(self):
         if not settings.COURSES_USING_OLD_TRANSCRIPT:
-            return self.exclude(unittype='n')
+            return self.exclude(unittype='n', weight=0)
         return self.all()
 
 
