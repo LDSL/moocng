@@ -636,6 +636,7 @@ MOOC.models.KnowledgeQuantum = Backbone.Model.extend({
         asset_availability: null,
         peer_review_score: null,
         marked: false,
+        mark: 0,
         attachmentList: null,
         transcriptionList: null,
         questionInstance: null,
@@ -668,6 +669,7 @@ MOOC.models.KnowledgeQuantum = Backbone.Model.extend({
         model2send.unset("completed");
         model2send.unset("correct");
         model2send.unset("marked");
+        model2send.unset("mark");
         model2send.unset("questionInstance");
         model2send.unset("attachmentList");
         model2send.unset("transcriptionList");
