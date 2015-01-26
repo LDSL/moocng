@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-23 15:43+0100\n"
+"POT-Creation-Date: 2015-01-26 10:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,7 +63,7 @@ msgstr "Utilisateur Apis"
 msgid "Apikey of {0}  :::  {1}"
 msgstr "Clé API de {0} ::: {1}"
 
-#: api/resources.py:85
+#: api/resources.py:86
 msgid "Sorry, this request could not be processed. Please try again later."
 msgstr ""
 "Désolé, cette demande n'a pas pu aboutir. Veuillez s'il vous plaît réessayer "
@@ -150,7 +150,7 @@ msgstr "Réservé à partir de"
 msgid "Asset"
 msgstr "Actif"
 
-#: assets/models.py:86 assets/models.py:88 courses/models.py:459
+#: assets/models.py:86 assets/models.py:88 courses/models.py:466
 msgid "Datetime"
 msgstr "Date heure"
 
@@ -221,11 +221,11 @@ msgid "Your reservation has been modified"
 msgstr "Votre réservation a été modifiée"
 
 #: assets/views.py:48 assets/views.py:104 assets/views.py:136
-#: courses/views.py:329 courses/views.py:390 courses/views.py:482
-#: courses/views.py:516 courses/views.py:561 courses/views.py:594
-#: courses/views.py:627 courses/views.py:660 courses/views.py:707
-#: courses/templates/courses/transcript_course.html:6 peerreview/views.py:52
-#: peerreview/views.py:120 peerreview/views.py:165
+#: courses/views.py:335 courses/views.py:402 courses/views.py:500
+#: courses/views.py:540 courses/views.py:590 courses/views.py:629
+#: courses/views.py:668 courses/views.py:707 courses/views.py:759
+#: courses/templates/courses/transcript_course.html:6 peerreview/views.py:53
+#: peerreview/views.py:121 peerreview/views.py:167
 msgid "You are not enrolled in this course"
 msgstr "Vous n'êtes pas inscrit(e) à ce cours"
 
@@ -499,7 +499,7 @@ msgid "Upload an image to represent the badge, it must be png"
 msgstr "Téléchargez une image pour illustrer le badge, au format png"
 
 #: badges/models.py:94 badges/models.py:146
-#: courses/templates/courses/progress.html:68
+#: courses/templates/courses/progress.html:83
 #: teacheradmin/templates/teacheradmin/badges.html:85
 msgid "Criteria"
 msgstr "Critères"
@@ -565,8 +565,8 @@ msgid "Color"
 msgstr ""
 
 #: badges/models.py:158 contact/email.py:29 contact/forms.py:37
-#: courses/models.py:399 courses/models.py:422 courses/models.py:457
-#: courses/models.py:499 externalapps/models.py:50 teacheradmin/models.py:38
+#: courses/models.py:406 courses/models.py:429 courses/models.py:464
+#: courses/models.py:506 externalapps/models.py:50 teacheradmin/models.py:38
 #: teacheradmin/models.py:59 teacheradmin/models.py:65
 #: teacheradmin/templates/teacheradmin/stats.html:51
 #: teacheradmin/templates/teacheradmin/stats.html:92
@@ -690,7 +690,7 @@ msgstr "Vous n'avez pas encore gagné de badges."
 msgid "This category doesn't have an icon"
 msgstr "Cette catégorie ne dispose pas d'icône"
 
-#: categories/models.py:12 courses/models.py:70 courses/models.py:455
+#: categories/models.py:12 courses/models.py:70 courses/models.py:462
 msgid "Slug"
 msgstr "Terme"
 
@@ -784,8 +784,8 @@ msgstr "Vous devez accepter les Conditions d'Utilisation"
 msgid "Other"
 msgstr "Autre"
 
-#: contact/models.py:23 courses/models.py:376 courses/models.py:454
-#: courses/models.py:498 courses/models.py:595 peerreview/models.py:90
+#: contact/models.py:23 courses/models.py:383 courses/models.py:461
+#: courses/models.py:505 courses/models.py:602 peerreview/models.py:90
 #: teacheradmin/templates/teacheradmin/units.html:100
 #: teacheradmin/templates/teacheradmin/units.html:151
 msgid "Title"
@@ -931,7 +931,7 @@ msgid "ECTS:"
 msgstr "ECTS :"
 
 #: courses/models.py:90
-#: courses/templates/courses/include.courseactions.html:130
+#: courses/templates/courses/include.courseactions.html:141
 #: courses/templates/courses/overview.html:234
 #: teacheradmin/templates/teacheradmin/base_teacheradmin.html:14
 msgid "Teachers"
@@ -945,7 +945,7 @@ msgstr "Origine de l'enseignant"
 msgid "Students"
 msgstr "Étudiants"
 
-#: courses/models.py:104 courses/models.py:752 profile/models.py:88
+#: courses/models.py:104 courses/models.py:759 profile/models.py:88
 #: teacheradmin/templates/teacheradmin/units.html:239
 msgid "Language"
 msgstr "Langue"
@@ -954,13 +954,13 @@ msgstr "Langue"
 msgid "Hashtag"
 msgstr "Hashtag"
 
-#: courses/models.py:116 courses/models.py:601 courses/models.py:790
+#: courses/models.py:116 courses/models.py:608 courses/models.py:798
 #: teacheradmin/templates/teacheradmin/units.html:155
 #: teacheradmin/templates/teacheradmin/units.html:291
 msgid "Content type"
 msgstr "Type de contenu"
 
-#: courses/models.py:121 courses/models.py:606 courses/models.py:795
+#: courses/models.py:121 courses/models.py:613 courses/models.py:803
 msgid "Content id"
 msgstr "Identité du contenu"
 
@@ -976,15 +976,25 @@ msgstr "Seuil de réussite"
 msgid "Certification available"
 msgstr "Certification disponible"
 
-#: courses/models.py:139
+#: courses/models.py:140 teacheradmin/templates/teacheradmin/info.html:176
+#, fuzzy
+msgid "External certification available"
+msgstr "Certification disponible"
+
+#: courses/models.py:141
+#, fuzzy
+msgid "Certification file"
+msgstr "Certification disponible"
+
+#: courses/models.py:146
 msgid "Completion badge"
 msgstr "Badge de réussite"
 
-#: courses/models.py:142
+#: courses/models.py:149
 msgid "Enrollment method"
 msgstr "Méthode d'inscription"
 
-#: courses/models.py:148 courses/models.py:525
+#: courses/models.py:155 courses/models.py:532
 #: courses/templates/courses/home_as_grid.html:33
 #: courses/templates/courses/home_as_list.html:50
 #: courses/templates/courses/overview.html:267
@@ -993,32 +1003,32 @@ msgstr "Méthode d'inscription"
 msgid "Draft"
 msgstr "Brouillon"
 
-#: courses/models.py:149 courses/models.py:527
+#: courses/models.py:156 courses/models.py:534
 #: teacheradmin/templates/teacheradmin/units.html:40
 #: teacheradmin/templates/teacheradmin/units.html:87
 msgid "Published"
 msgstr "Publié"
 
-#: courses/models.py:150 courses/models.py:526
+#: courses/models.py:157 courses/models.py:533
 #: teacheradmin/templates/teacheradmin/units.html:39
 #: teacheradmin/templates/teacheradmin/units.html:90
 msgid "Hidden"
 msgstr "Caché"
 
-#: courses/models.py:154 courses/models.py:531
+#: courses/models.py:161 courses/models.py:538
 #: teacheradmin/templates/teacheradmin/units.html:85
 msgid "Status"
 msgstr "État"
 
-#: courses/models.py:160
+#: courses/models.py:167
 msgid "Thumbnail"
 msgstr "Vignette"
 
-#: courses/models.py:165
+#: courses/models.py:172
 msgid "thumbnail image alternative text"
 msgstr "vignette du texte alternatif"
 
-#: courses/models.py:167
+#: courses/models.py:174
 msgid ""
 "This text is used to describe the thumbnail image. It is necessary for "
 "accessibility "
@@ -1026,122 +1036,122 @@ msgstr ""
 "Ce texte est utilisé pour décrire la vignette. Il est nécessaire pour son "
 "accessibilité. "
 
-#: courses/models.py:172
+#: courses/models.py:179
 msgid "Background"
 msgstr "Contexte"
 
-#: courses/models.py:180 courses/models.py:389
+#: courses/models.py:187 courses/models.py:396
 msgid "Static page"
 msgstr "Page statique"
 
-#: courses/models.py:187
+#: courses/models.py:194
 msgid "Created from"
 msgstr "Créé à partir de"
 
-#: courses/models.py:192
+#: courses/models.py:199
 msgid "Is the activity student of this course clonable?"
 msgstr "L'activité de l'élève de ce cours peut-elle être dupliquée ?"
 
-#: courses/models.py:195
+#: courses/models.py:202
 msgid "Maximum of massive emails that a course can send per month"
 msgstr ""
 "Nombre maximum de courriels massifs que le cours peut envoyer chaque mois"
 
-#: courses/models.py:201
+#: courses/models.py:208
 msgid "Has this course groups?"
 msgstr "Peut lister les cours d'un utilisateur"
 
-#: courses/models.py:204
+#: courses/models.py:211
 msgid "Maximum number of members allowed for each group"
 msgstr ""
 
-#: courses/models.py:210
+#: courses/models.py:217
 msgid "course"
 msgstr "cours"
 
-#: courses/models.py:211
+#: courses/models.py:218
 msgid "courses"
 msgstr "cours"
 
-#: courses/models.py:213
+#: courses/models.py:220
 msgid "Can list courses of an user"
 msgstr "Peut lister les cours d'un utilisateur"
 
-#: courses/models.py:214
+#: courses/models.py:221
 msgid "Can list passed courses of an user"
 msgstr "Peut lister les anciens cours d'un utilisateur"
 
-#: courses/models.py:383
+#: courses/models.py:390
 msgid "Body"
 msgstr "Corps de texte"
 
-#: courses/models.py:390
+#: courses/models.py:397
 msgid "Static pages"
 msgstr "Pages statiques"
 
-#: courses/models.py:398
+#: courses/models.py:405
 msgid "Teacher"
 msgstr "Professeur"
 
-#: courses/models.py:402
+#: courses/models.py:409
 msgid "course teacher"
 msgstr "professeur du cours"
 
-#: courses/models.py:403
+#: courses/models.py:410
 msgid "course teachers"
 msgstr "les enseignants du cours"
 
-#: courses/models.py:421
+#: courses/models.py:428
 msgid "Student"
 msgstr "Étudiant"
 
-#: courses/models.py:425
+#: courses/models.py:432
 msgid "First time in this course"
 msgstr "Première fois dans ce cours"
 
-#: courses/models.py:426
+#: courses/models.py:433
 msgid "No cloned"
 msgstr "Non dupliqué"
 
-#: courses/models.py:427
+#: courses/models.py:434
 msgid "Cloned"
 msgstr "Dupliqué"
 
-#: courses/models.py:429
+#: courses/models.py:436
 msgid "Old course status"
 msgstr "Ancien statut du cours"
 
-#: courses/models.py:433 courses/templates/courses/base_course.html:29
+#: courses/models.py:440 courses/templates/courses/base_course.html:29
 #: courses/templates/courses/base_course_oldcss.html:29
 #: courses/templates/courses/progress.html:14
 msgid "Progress"
 msgstr "Progrès"
 
-#: courses/models.py:435
+#: courses/models.py:442
 msgid "Rate"
 msgstr ""
 
-#: courses/models.py:437
+#: courses/models.py:444
 msgid "Enrollment timestamp"
 msgstr "Méthode d'inscription"
 
-#: courses/models.py:439
+#: courses/models.py:446
 msgid "Latitude"
 msgstr ""
 
-#: courses/models.py:441
+#: courses/models.py:448
 msgid "Longitude"
 msgstr ""
 
-#: courses/models.py:445
+#: courses/models.py:452
 msgid "course student"
 msgstr "Étudiant du cours"
 
-#: courses/models.py:446
+#: courses/models.py:453
 msgid "course students"
 msgstr "Les étudiants du cours"
 
-#: courses/models.py:456
+#: courses/models.py:463
 #: courses/templates/admin/courses/question/options.html:151
 #: teacheradmin/models.py:78
 #: teacheradmin/templates/teacheradmin/emails.html:93
@@ -1149,30 +1159,30 @@ msgstr "Les étudiants du cours"
 msgid "Content"
 msgstr "Contenu"
 
-#: courses/models.py:464
+#: courses/models.py:471
 msgid "announcement"
 msgstr "annonce"
 
-#: courses/models.py:465
+#: courses/models.py:472
 msgid "announcements"
 msgstr "annonces"
 
-#: courses/models.py:502 teacheradmin/templates/teacheradmin/units.html:41
+#: courses/models.py:509 teacheradmin/templates/teacheradmin/units.html:41
 #: teacheradmin/templates/teacheradmin/units.html:106
 msgid "Normal"
 msgstr "Normal"
 
-#: courses/models.py:503 teacheradmin/templates/teacheradmin/units.html:42
+#: courses/models.py:510 teacheradmin/templates/teacheradmin/units.html:42
 #: teacheradmin/templates/teacheradmin/units.html:107
 msgid "Homework"
 msgstr "Travail personnel"
 
-#: courses/models.py:504 teacheradmin/templates/teacheradmin/units.html:43
+#: courses/models.py:511 teacheradmin/templates/teacheradmin/units.html:43
 #: teacheradmin/templates/teacheradmin/units.html:108
 msgid "Exam"
 msgstr "Examen"
 
-#: courses/models.py:506 courses/models.py:906
+#: courses/models.py:513 courses/models.py:914
 #: courses/templates/admin/courses/question/options.html:122
 #: teacheradmin/templates/teacheradmin/question.html:87
 #: teacheradmin/templates/teacheradmin/question.html:118
@@ -1181,11 +1191,11 @@ msgstr "Examen"
 msgid "Type"
 msgstr "Type"
 
-#: courses/models.py:508
+#: courses/models.py:515
 msgid "Start"
 msgstr "Démarrer"
 
-#: courses/models.py:510
+#: courses/models.py:517
 msgid ""
 "Until this date is reached, no contents of this module will be shown to the "
 "students."
@@ -1193,11 +1203,11 @@ msgstr ""
 "Jusqu'à cette date, aucun des contenus de ce module ne sera accessible aux "
 "étudiants."
 
-#: courses/models.py:513
+#: courses/models.py:520
 msgid "Deadline"
 msgstr "Date limite"
 
-#: courses/models.py:515
+#: courses/models.py:522
 msgid ""
 "Until this date is reached, the students will be able to modify their "
 "answers, but won't see the solution"
@@ -1205,21 +1215,21 @@ msgstr ""
 "Jusqu'à cette date, les étudiants seront en mesure de modifier leurs "
 "réponses, mais ils ne verront pas la solution"
 
-#: courses/models.py:519 courses/models.py:597
+#: courses/models.py:526 courses/models.py:604
 #: teacheradmin/templates/teacheradmin/units.html:112
 #: teacheradmin/templates/teacheradmin/units.html:167
 msgid "Weight"
 msgstr "Poids"
 
-#: courses/models.py:540 teacheradmin/templates/teacheradmin/units.html:37
+#: courses/models.py:547 teacheradmin/templates/teacheradmin/units.html:37
 msgid "unit"
 msgstr "unité"
 
-#: courses/models.py:541
+#: courses/models.py:548
 msgid "units"
 msgstr "unités"
 
-#: courses/models.py:596 teacheradmin/templates/teacheradmin/stats.html:41
+#: courses/models.py:603 teacheradmin/templates/teacheradmin/stats.html:41
 #: teacheradmin/templates/teacheradmin/stats.html:93
 #: teacheradmin/templates/teacheradmin/stats.html:95
 #: teacheradmin/templates/teacheradmin/stats.html:131
@@ -1227,27 +1237,27 @@ msgstr "unités"
 msgid "Unit"
 msgstr "Unité"
 
-#: courses/models.py:610 courses/templates/courses/classroom.html:161
+#: courses/models.py:617 courses/templates/courses/classroom.html:161
 #: teacheradmin/templates/teacheradmin/units.html:46
 #: teacheradmin/templates/teacheradmin/units.html:180
 msgid "Instructor's comments"
 msgstr "Commentaires de l'instructeur"
 
-#: courses/models.py:613 courses/templates/courses/classroom.html:165
+#: courses/models.py:620 courses/templates/courses/classroom.html:165
 #: teacheradmin/templates/teacheradmin/units.html:47
 #: teacheradmin/templates/teacheradmin/units.html:176
 msgid "Supplementary material"
 msgstr "Matériel supplémentaire"
 
-#: courses/models.py:619 teacheradmin/templates/teacheradmin/units.html:48
+#: courses/models.py:626 teacheradmin/templates/teacheradmin/units.html:48
 msgid "nugget"
 msgstr "élément"
 
-#: courses/models.py:620
+#: courses/models.py:627
 msgid "nuggets"
 msgstr "éléments"
 
-#: courses/models.py:742 courses/models.py:769 courses/models.py:789
+#: courses/models.py:749 courses/models.py:776 courses/models.py:797
 #: peerreview/models.py:35 teacheradmin/templates/teacheradmin/stats.html:42
 #: teacheradmin/templates/teacheradmin/stats.html:132
 #: teacheradmin/templates/teacheradmin/stats.html:134
@@ -1255,72 +1265,72 @@ msgstr "éléments"
 msgid "Nugget"
 msgstr "Élément"
 
-#: courses/models.py:744
+#: courses/models.py:751
 msgid "VTT file"
 msgstr "Pour remplir"
 
-#: courses/models.py:746
+#: courses/models.py:753
 msgid "Transcription type"
 msgstr "Description"
 
-#: courses/models.py:757
+#: courses/models.py:764
 msgid "transcription"
 msgstr "Mon relevé de notes"
 
-#: courses/models.py:758
+#: courses/models.py:765
 msgid "transcriptions"
 msgstr "Mon relevé de notes"
 
-#: courses/models.py:770
+#: courses/models.py:777
 msgid "Attachment"
 msgstr "Pièce jointe"
 
-#: courses/models.py:776
+#: courses/models.py:784
 msgid "attachment"
 msgstr "pièce jointe"
 
-#: courses/models.py:777
+#: courses/models.py:785
 msgid "attachments"
 msgstr "pièces jointes"
 
-#: courses/models.py:800 teacheradmin/templates/teacheradmin/units.html:305
+#: courses/models.py:808 teacheradmin/templates/teacheradmin/units.html:305
 msgid "Solution text"
 msgstr "Texte avec solutions"
 
-#: courses/models.py:801
+#: courses/models.py:809
 msgid "If the solution video is specified then this text will be ignored."
 msgstr ""
 "Si la vidéo contenant les solutions est annoncée, ce texte sera alors ignoré."
 
-#: courses/models.py:805
+#: courses/models.py:813
 msgid "Last frame of the nugget's video"
 msgstr "Dernière image de la vidéo de l'élément"
 
-#: courses/models.py:808
+#: courses/models.py:816
 msgid "Use the last frame of the video"
 msgstr "Utiliser la dernière image de la vidéo"
 
-#: courses/models.py:809
+#: courses/models.py:817
 msgid ""
 "Chooses if the nugget's video last frame is used, or a white canvas instead."
 msgstr ""
 "Permet de choisir si la dernière image de la vidéo de l'élément est "
 "utilisée, ou un cadre blanc à la place."
 
-#: courses/models.py:816
+#: courses/models.py:824
 msgid "question"
 msgstr "Question :"
 
-#: courses/models.py:817
+#: courses/models.py:825
 msgid "questions"
 msgstr "questions"
 
-#: courses/models.py:829
+#: courses/models.py:837
 #, python-brace-format
 msgid "{0} - Question {1}"
 msgstr "{0} - Question {1}"
 
-#: courses/models.py:894 courses/templates/courses/classroom.html:276
+#: courses/models.py:902 courses/templates/courses/classroom.html:276
 #: teacheradmin/templates/teacheradmin/question.html:36
 #: teacheradmin/templates/teacheradmin/question.html:50
 #: teacheradmin/templates/teacheradmin/question.html:74
@@ -1328,38 +1338,38 @@ msgstr "{0} - Question {1}"
 msgid "Question"
 msgstr "Question"
 
-#: courses/models.py:909
+#: courses/models.py:917
 #: courses/templates/admin/courses/question/options.html:150
 #: teacheradmin/templates/teacheradmin/question.html:76
 #: teacheradmin/templates/teacheradmin/question.html:150
 msgid "Solution"
 msgstr "Solution"
 
-#: courses/models.py:910
+#: courses/models.py:918
 msgid "Label text"
 msgstr "Texte de l'étiquette"
 
-#: courses/models.py:913
+#: courses/models.py:921
 msgid "Solution feedback for the student"
 msgstr "Information sur la solution pour l'étudiant"
 
-#: courses/models.py:915
+#: courses/models.py:923
 msgid "Order"
 msgstr "Ordre"
 
-#: courses/models.py:917
+#: courses/models.py:925
 msgid "Group name"
 msgstr "Nom du groupe"
 
-#: courses/models.py:922
+#: courses/models.py:930
 msgid "option"
 msgstr "option"
 
-#: courses/models.py:923
+#: courses/models.py:931
 msgid "options"
 msgstr "Options"
 
-#: courses/models.py:927
+#: courses/models.py:935
 #, python-brace-format
 msgid "{0}.{1} ({2}: {3}) at {4} x {5}"
 msgstr "{0}.{1} ({2}: {3}) à {4} x {5}"
@@ -1409,11 +1419,11 @@ msgstr "Ce cours est vide"
 msgid "This course is not public"
 msgstr "Ce cours n'est pas encore prêt"
 
-#: courses/utils.py:525 courses/management/commands/create_groups_forum.py:59
+#: courses/utils.py:526 courses/management/commands/create_groups_forum.py:59
 msgid "This is the topic for "
 msgstr ""
 
-#: courses/utils.py:525 courses/management/commands/create_groups_forum.py:59
+#: courses/utils.py:526 courses/management/commands/create_groups_forum.py:59
 msgid " where you can comment and help other team members"
 msgstr ""
 
@@ -1454,7 +1464,7 @@ msgstr "Votre cours \" %s \"a été créé"
 msgid "The course was successfully created"
 msgstr "Le cours a été créé avec succès"
 
-#: courses/views.py:880
+#: courses/views.py:991
 #, python-format
 msgid ""
 "We are cloning the activity from %(course)s. You will receive an email soon"
@@ -1660,7 +1670,7 @@ msgstr "Les cours"
 
 #: courses/templates/courses/base_course.html:19
 #: courses/templates/courses/base_course_oldcss.html:19
-#: courses/templates/courses/include.courseactions.html:48
+#: courses/templates/courses/include.courseactions.html:59
 #: peerreview/templates/peerreview/reviews.html:12
 msgid "Reviews"
 msgstr "Évaluation"
@@ -1688,7 +1698,7 @@ msgstr "Travail corrigé par des pairs"
 #: courses/templates/courses/classroom.html:81
 #: courses/templates/courses/overview.html:164
 #: courses/templates/courses/overview.html:166
-#: courses/templates/courses/progress.html:65
+#: courses/templates/courses/progress.html:80
 #: courses/templates/courses/transcript.html:44
 #: courses/templates/courses/transcript.html:46
 msgid "Evaluation criteria"
@@ -1731,7 +1741,7 @@ msgstr "Modifier"
 
 #: courses/templates/courses/classroom.html:85
 #: courses/templates/courses/include.useractions.html:17
-#: courses/templates/courses/progress.html:87
+#: courses/templates/courses/progress.html:102
 #: teacheradmin/templates/teacheradmin/emails.html:97
 msgid "Close"
 msgstr "Fermer"
@@ -1823,7 +1833,7 @@ msgstr "Sommaire"
 
 #: courses/templates/courses/classroom.html:236
 #: courses/templates/courses/dashboard.html:17
-#: courses/templates/courses/include.courseactions.html:42
+#: courses/templates/courses/include.courseactions.html:53
 #: courses/templates/courses/overview.html:332
 #: courses/templates/courses/syllabus.html:7
 msgid "Syllabus"
@@ -2095,7 +2105,7 @@ msgstr "Il n'y a pas encore actifs"
 #: courses/templates/courses/dashboard.html:254
 #: courses/templates/courses/group.html:71
 #: courses/templates/courses/group.html:92
-#: courses/templates/courses/include.courseactions.html:114
+#: courses/templates/courses/include.courseactions.html:125
 msgid "Team"
 msgstr "Équipe"
 
@@ -2137,8 +2147,8 @@ msgid "There is no posts yet"
 msgstr "Il n'y a pas encore actifs"
 
 #: courses/templates/courses/dashboard.html:159
-#: courses/templates/courses/include.courseactions.html:79
-#: courses/templates/courses/include.courseactions.html:122
+#: courses/templates/courses/include.courseactions.html:90
+#: courses/templates/courses/include.courseactions.html:133
 msgid "Forum"
 msgstr "Forum"
 
@@ -2267,50 +2277,51 @@ msgid "Explore the full catalogue"
 msgstr ""
 
 #: courses/templates/courses/include.courseactions.html:17
-msgid "Credits"
-msgstr "Crédits"
-
-#: courses/templates/courses/include.courseactions.html:24
 msgid "Total Tasks"
 msgstr "Nombre total de tâches"
 
-#: courses/templates/courses/include.courseactions.html:36
+#: courses/templates/courses/include.courseactions.html:21
+#, fuzzy
+msgid "Congratulations, you have obtained a certification"
+msgstr "Félicitations, vous avez terminé"
+
+#: courses/templates/courses/include.courseactions.html:46
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: courses/templates/courses/include.courseactions.html:55
-#: courses/templates/courses/include.courseactions.html:98
+#: courses/templates/courses/include.courseactions.html:66
+#: courses/templates/courses/include.courseactions.html:109
 #: profile/templates/profile/include.userheader.html:99
 msgid "Calendar"
 msgstr "Calendrier"
 
-#: courses/templates/courses/include.courseactions.html:63
-#: courses/templates/courses/include.courseactions.html:106
+#: courses/templates/courses/include.courseactions.html:74
+#: courses/templates/courses/include.courseactions.html:117
 msgid "Wiki"
 msgstr "Wiki"
 
-#: courses/templates/courses/include.courseactions.html:71
+#: courses/templates/courses/include.courseactions.html:82
 #: profile/templates/profile/timeline.html:59
 msgid "Group"
 msgstr "Groupe"
 
-#: courses/templates/courses/include.courseactions.html:84
+#: courses/templates/courses/include.courseactions.html:95
 msgid "Blog"
 msgstr "Blog"
 
-#: courses/templates/courses/include.courseactions.html:88
+#: courses/templates/courses/include.courseactions.html:99
 msgid "More"
 msgstr "Plus"
 
-#: courses/templates/courses/include.courseactions.html:137
+#: courses/templates/courses/include.courseactions.html:148
 msgid "General information"
 msgstr "Informations générales"
 
-#: courses/templates/courses/include.courseactions.html:144
+#: courses/templates/courses/include.courseactions.html:155
 msgid "Admin course"
 msgstr "Admin du cours"
 
-#: courses/templates/courses/include.courseactions.html:156
+#: courses/templates/courses/include.courseactions.html:167
 #: profile/templates/profile/courses.html:66
 msgid "Your progress"
 msgstr "Votre progression"
@@ -2466,24 +2477,40 @@ msgstr "Annonces"
 msgid "Subscribe to Announcements RSS"
 msgstr "Abonnez-vous aux annonces RSS"
 
-#: courses/templates/courses/progress.html:60
+#: courses/templates/courses/progress.html:15
+#, fuzzy
+msgid "Your course score is"
+msgstr "Votre navigateur c'est"
+
+#: courses/templates/courses/progress.html:21
+#, fuzzy
+msgid "Get an official certification"
+msgstr "Certification disponible"
+
+#: courses/templates/courses/progress.html:24
+#: courses/templates/courses/progress.html:26
+#, fuzzy
+msgid "Download certification file"
+msgstr "Certification disponible"
+
+#: courses/templates/courses/progress.html:75
 msgid "Review details"
 msgstr "Détails de l'examen"
 
-#: courses/templates/courses/progress.html:63
+#: courses/templates/courses/progress.html:78
 msgid "Review date"
 msgstr "Date de l'examination"
 
-#: courses/templates/courses/progress.html:69
+#: courses/templates/courses/progress.html:84
 #: teacheradmin/templates/teacheradmin/badges.html:129
 msgid "Score"
 msgstr "Note"
 
-#: courses/templates/courses/progress.html:76
+#: courses/templates/courses/progress.html:91
 msgid "Final score"
 msgstr "Note finale"
 
-#: courses/templates/courses/progress.html:82
+#: courses/templates/courses/progress.html:97
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -2827,16 +2854,16 @@ msgid "You have already sent a submission. Please reload the page"
 msgstr ""
 "Vous avez déjà envoyé un travail. Veuillez s'il vous plaît rafraîchir la page"
 
-#: peerreview/views.py:56 peerreview/views.py:169
+#: peerreview/views.py:57 peerreview/views.py:171
 msgid "The selected peer review assignment is not part of this course."
 msgstr ""
 "L'examen sélectionné, revu par des pairs, ne fait pas partie de ce cours."
 
-#: peerreview/views.py:66
+#: peerreview/views.py:67
 msgid "You already have a submission assigned."
 msgstr "Un devoir vous a déjà été affecté."
 
-#: peerreview/views.py:100
+#: peerreview/views.py:101
 msgid ""
 "There is no submission avaliable for you at this moment. Please, try again "
 "later."
@@ -2844,15 +2871,15 @@ msgstr ""
 "Il n'y a pas de devoir disponible pour vous pour le moment. Veuillez "
 "réessayer plus tard s'il vous plaît."
 
-#: peerreview/views.py:180
+#: peerreview/views.py:182
 msgid "You don't have this submission assigned."
 msgstr "Ce travail ne vous a pas été attribué."
 
-#: peerreview/views.py:211
+#: peerreview/views.py:213
 msgid "Your can't submit two times the same review."
 msgstr "Vous ne pouvez pas soumettre deux fois le même évaluation."
 
-#: peerreview/views.py:216
+#: peerreview/views.py:218
 #, python-format
 msgid ""
 "Your review has been submitted. You have to review at least %d exercises "
@@ -2861,25 +2888,25 @@ msgstr ""
 "Votre commentaire a été soumis. Vous devez revoir au moins %d exercices "
 "supplémentaires."
 
-#: peerreview/views.py:218
+#: peerreview/views.py:220
 msgid "Your review has been submitted."
 msgstr "Votre commentaire a été soumis."
 
-#: peerreview/views.py:246
+#: peerreview/views.py:248
 #, python-format
 msgid "Your assignment \"%(nugget)s\" has been reviewed"
 msgstr "Votre devoir \"%(nugget)s\" a été examiné"
 
-#: peerreview/views.py:253
+#: peerreview/views.py:255
 msgid "Undefined"
 msgstr "Indéfini"
 
-#: peerreview/views.py:335
+#: peerreview/views.py:337
 #, python-format
 msgid "Your file is greater than the max allowed size (%d MB)."
 msgstr "Votre fichier est supérieur à la taille maximale autorisée ( %d Mo)."
 
-#: peerreview/views.py:339
+#: peerreview/views.py:341
 #, python-format
 msgid "Your text is greater than the max allowed size (%d characters)."
 msgstr ""
@@ -3688,7 +3715,7 @@ msgstr ""
 #: teacheradmin/templates/teacheradmin/badges.html:151
 #: teacheradmin/templates/teacheradmin/categories.html:30
 #: teacheradmin/templates/teacheradmin/groups.html:81
-#: teacheradmin/templates/teacheradmin/info.html:193
+#: teacheradmin/templates/teacheradmin/info.html:208
 #: teacheradmin/templates/teacheradmin/units.html:131
 #: teacheradmin/templates/teacheradmin/units.html:354
 msgid "Save"
@@ -3878,8 +3905,9 @@ msgstr "Identifiant du contenu ou URL"
 msgid "Extra info"
 msgstr "Info supplémentaire"
 
-#: teacheradmin/templates/teacheradmin/info.html:177
-#: teacheradmin/templates/teacheradmin/info.html:190
+#: teacheradmin/templates/teacheradmin/info.html:185
+#: teacheradmin/templates/teacheradmin/info.html:192
+#: teacheradmin/templates/teacheradmin/info.html:205
 msgid "Max file size"
 msgstr ""
 
@@ -4614,25 +4642,8 @@ msgstr "Tests"
 msgid "Documentation"
 msgstr "Documentation"
 
-#, fuzzy
-#~ msgid "External certification available"
-#~ msgstr "Certification disponible"
-
-#, fuzzy
-#~ msgid "Certification file"
-#~ msgstr "Certification disponible"
-
-#, fuzzy
-#~ msgid "Congratulations, you have obtained a certification"
-#~ msgstr "Félicitations, vous avez terminé"
-
-#, fuzzy
-#~ msgid "Your course score is"
-#~ msgstr "Votre navigateur c'est"
-
-#, fuzzy
-#~ msgid "Download certification file"
-#~ msgstr "Certification disponible"
+#~ msgid "Credits"
+#~ msgstr "Crédits"
 
 #~ msgid "Listable"
 #~ msgstr "Éléments listés"
