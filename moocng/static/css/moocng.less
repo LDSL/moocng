@@ -235,8 +235,11 @@ button, input {
 	}
 }
 
-div.button, a.button {
+div.button, a.button, input.button {
 	color: @highlight;
+	background: none;
+	border: none;
+	cursor: pointer;
 
 	&.squared {
 		display: inline-block;
@@ -572,6 +575,30 @@ div.button, a.button {
 			p {
 				font-size: 14px;
 				color: @neutral_medium_1;
+			}
+		}
+
+		&#helpForm {
+			form {
+				width: 80%;
+				margin: 0 auto;
+				text-align: right;
+
+				input[type="text"], textarea {
+					width: 100%;
+					padding: 10px;
+					margin-bottom: 15px;
+					border: 1px solid @neutral_light_2;
+					text-align: left;
+				}
+
+				textarea {
+					min-height: 175px;
+				}
+
+				.button {
+					margin: 0 0 40px 10px;
+				}
 			}
 		}
 	}
@@ -4750,15 +4777,35 @@ ul.rating {
 	}
 }
 
-#help_button {
-	width: 48px;
-	height: 48px;
-	padding: 6px;
+.expandable_lateral_bar {
 	background-color: @highlight;
 	border-radius: 36px 0 0 36px;
 	position: fixed;
 	right: 0;
-	bottom: 110px;
+	bottom: 110px;	
+	height: 48px;
+	max-width: 48px;
+	padding: 6px;
+	overflow: hidden;
+	transition: max-width .5s ease-in-out;
+
+	.handler {
+		display: inline-block;
+		width: 48px;		
+	}
+
+	.content {
+		display: inline-block;
+		overflow: hidden;
+		background: none;
+		color: @white;
+		border-top: none;
+		line-height: 36px;
+	}
+
+	&:hover {
+		max-width: 350px;
+	}
 }
 
 footer {
