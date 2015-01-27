@@ -1045,8 +1045,8 @@ def check_survey(request, course_slug, survey_id, survey_token):
 
         else:
             template_name = 'courses/survey_not_completed.html'
-    except ex:
-        print ex 
+    except Exception as ex:
+        print ex
         template_name = 'courses/survey_not_completed.html'
 
     
