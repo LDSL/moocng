@@ -1014,7 +1014,7 @@ def check_survey(request, course_slug, survey_id, survey_token):
     course = get_course_if_user_can_view_or_404(course_slug, request)
     units = get_units_available_for_user(course, user, True)
     is_enrolled = course.students.filter(id=request.user.id).exists()
-    task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    tasks = get_tasks_available_for_user(course, request.user)
     is_teacher = is_teacher_test(user, course),
     is_ready, ask_admin = is_course_ready(course)
     group = get_group_by_user_and_course(request.user.id, course.id)
@@ -1048,8 +1048,8 @@ def check_survey(request, course_slug, survey_id, survey_token):
         'course': course,
         'is_enrolled' : is_enrolled,
         'progress': get_course_progress_for_user(course, request.user),
-        'task_list': task_list,
-        'tasks_done': tasks_done,
+        'task_list': tasks[0],
+        'tasks_done': tasks[1],
         'is_teacher': is_teacher,
         'is_ready': is_ready,
         'group': group,

@@ -35,12 +35,28 @@ function showHelpForm(){
     	var $target = $(e.target);
     	var subject = $target.find('#help_subject').val();
     	var body = $target.find('#help_body').val();
+        var lat = 0.0, lon = 0.0;
+        if(geolocation){
+            lat = geolocation.coords.latitude;
+            lon = geolocation.coords.longitude;
+        }
+        var url = window.location.href;
+        var device = deviceInfo.type;
+        var orientation = deviceInfo.orientation;
+        var os = deviceInfo.os;
+        var browser = getBrowserName()
     	$.ajax({
-    		url: '',
+    		url: '/contact/support',
     		type: 'POST',
     		data: {
     			'subject': subject,
     			'body': body,
+                'lat': lat,
+                'lon': lon,
+                'device': device,
+                'orientation': orientation,
+                'os': os,
+                'browser': browser,
     		},
     		beforeSend: function(xhr, settings) {
   		        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));

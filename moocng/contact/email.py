@@ -60,3 +60,38 @@ def send_contact_message(communication_type, course, sender_username, sender_ema
         headers=headers,
     )
     mail.send(fail_silently=fail_silently)
+
+def send_support_message(subject, body, url, user, device, position, date, fail_silently=False, connection=None):
+    headers = { 'Reply-To': user.email }
+    mail_subject = "%s - %s" % (settings.SUPPORT_SUBJECT_PREFIX, subject)
+    mail_body = "Message:\n%s\n" % (body)
+    mail_extrainfo = (  "-----------\n"
+                        "Username: %s\n"
+                        "User real name: %s\n"
+                        "User id: %s\n"
+                        "User email: %s\n"
+                        "Related URL: %s\n"
+                        "Contact date: %s\n"
+                        "User geoposition: (%s,%s)\n"
+                        "Device type: %s (%s)\n"
+                        "Browser: %s (%s)\n") % ( user.username,
+                        user.get_full_name(),
+                        user.id,
+                        user.email,
+                        url,
+                        date,
+                        position.latitude, position.longitude,
+                        device.type, device.os,
+                        device.browser, device.orientation)
+    destination = [settings.SUPPORT_EMAIL]
+    origin = user.email
+
+    mail = EmailMultiAlternatives(
+        mail_subject,
+        "%s%s" % (mail_body, mail_extrainfo),
+        origin,
+        destination,
+        connection=connection,
+        headers=headers,
+    )
+    mail.send(fail_silently=fail_silently)

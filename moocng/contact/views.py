@@ -59,3 +59,21 @@ def contact(request):
     return render(request, 'contact/contact.html', {
         'form': form,
     })
+
+def support(request):
+    if request.method != 'POST':
+        raise HttpResponseBadRequest
+    subject = request.POST['subject']
+    body = request.POST['body']
+    url = request.POST['url']
+    user = request.user
+    device = {
+        type: request.POST['device'],
+        orientation: request.POST['orientation'],
+        os: request.POST['os'],
+        browser: request.POST['browser'],
+    }
+    position = { latitude: request.POST['lat'], longitude: request.POST['lon'] }
+    date = time.strftime("%d/%m/%Y %H:%M:%S")
+
+    send_support_message(subject, body, url, user, device, position, date)
