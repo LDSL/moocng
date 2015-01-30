@@ -5,9 +5,7 @@ function showOpenCourseHelp(){
 			<img src="/static/img/ECO_icon_info_tiempo.svg"> \
 			<h1>'+ alwaysopen_translate.greeting +' <span>'+ alwaysopen_translate.greeting_2 +'</span></h1> \
             <p>'+ alwaysopen_translate.info +'</p> \
-		</div> \
-		<div class="modal-footer"> \
-			<p>'+ alwaysopen_translate.footer +'</p> \
+            <p>'+ alwaysopen_translate.footer +'</p> \
 		</div> \
 		</div>';
 		
