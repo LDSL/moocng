@@ -34,12 +34,15 @@ $('#alwaysopen_info').click(function(e){
 
 var opencourses_advised = false;
 $(function(){
-    if(window.localStorage){
-        opencourses_advised = localStorage.getItem('opencourses_advised') == "true";
-    }
+    var isopencourse = $('#alwaysopen_info').length > 0;
+    if(isopencourse){
+        if(window.localStorage){
+            opencourses_advised = localStorage.getItem('opencourses_advised') == "true";
+        }
 
-    if(!opencourses_advised){
-        showOpenCourseHelp();
-        localStorage.setItem('opencourses_advised', true);
+        if(!opencourses_advised){
+            showOpenCourseHelp();
+            localStorage.setItem('opencourses_advised', true);
+        }
     }
 });
