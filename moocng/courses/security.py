@@ -86,7 +86,7 @@ def check_user_can_view_course(course, request):
                 'is_staff': _(u'This course is not public. Your have access to it because you are staff member'),
                 'is_superuser': _(u'This course is not public. Your have access to it because you are a super user'),
                 'is_teacher': _(u'This course is not public. Your have access to it because you are a teacher of the course'),
-                'is_always_open': _(u'This course is always open, but the last edition has finished. Anyway, you can access it'),
+                'is_always_open': _(u'This course is always open, but the last edition has finished. <a id="alwaysopen_info" href="#">More info</a>.'),
             }
             messages.warning(request, msg_table[reason])
     else:
@@ -114,7 +114,7 @@ def get_course_if_user_can_view_and_permission(course_slug, request):
                 'is_staff': _(u'This course is not public. Your have access to it because you are staff member'),
                 'is_superuser': _(u'This course is not public. Your have access to it because you are a super user'),
                 'is_teacher': _(u'This course is not public. Your have access to it because you are a teacher of the course'),
-                'is_always_open': _(u'This course is always open, but the last edition has finished. Anyway, you can access it'),
+                'is_always_open': _(u'This course is always open, but the last edition has finished. <a id="alwaysopen_info" href="#">More info</a>.'),
             }
             messages.warning(request, msg_table[reason])
     else:
