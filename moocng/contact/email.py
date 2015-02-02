@@ -80,9 +80,9 @@ def send_support_message(subject, body, url, user, device, position, date, fail_
                         user.email,
                         url,
                         date,
-                        position.latitude, position.longitude,
-                        device.type, device.os,
-                        device.browser, device.orientation)
+                        position['latitude'], position['longitude'],
+                        device['type'], device['os'],
+                        device['browser'], device['orientation'])
     destination = [settings.SUPPORT_EMAIL]
     origin = user.email
 

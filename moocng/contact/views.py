@@ -19,7 +19,9 @@ from django.shortcuts import render
 from django.utils.translation import ugettext as _
 
 from moocng.contact.forms import ContactForm
-from moocng.contact.email import send_contact_message
+from moocng.contact.email import send_contact_message, send_support_message
+
+import time
 
 
 def contact(request):
@@ -68,12 +70,12 @@ def support(request):
     url = request.POST['url']
     user = request.user
     device = {
-        type: request.POST['device'],
-        orientation: request.POST['orientation'],
-        os: request.POST['os'],
-        browser: request.POST['browser'],
+        'type': request.POST['device'],
+        'orientation': request.POST['orientation'],
+        'os': request.POST['os'],
+        'browser': request.POST['browser'],
     }
-    position = { latitude: request.POST['lat'], longitude: request.POST['lon'] }
+    position = { 'latitude': request.POST['lat'], 'longitude': request.POST['lon'] }
     date = time.strftime("%d/%m/%Y %H:%M:%S")
 
     send_support_message(subject, body, url, user, device, position, date)

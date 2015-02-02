@@ -23,7 +23,7 @@ function showHelpForm(){
         backdrop: "static",
         keyboard: false
     });
-    setTimeout(function(){ helpModal.modal("show"); }, 1000);    
+    setTimeout(function(){ helpModal.modal("show"); }, 100);    
 
     $helpDiv.find('input.close').click(function(){
     	helpModal.modal("hide");
@@ -51,6 +51,7 @@ function showHelpForm(){
     		data: {
     			'subject': subject,
     			'body': body,
+                'url': url,
                 'lat': lat,
                 'lon': lon,
                 'device': device,
@@ -58,9 +59,9 @@ function showHelpForm(){
                 'os': os,
                 'browser': browser,
     		},
-    		beforeSend: function(xhr, settings) {
+    		/*beforeSend: function(xhr, settings) {
   		        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-  		    },
+  		    },*/
     		success: function(response){
     			helpModal.modal("hide");
     			setTimeout(function(){ helpModal.remove(); }, 1000);
