@@ -45,6 +45,8 @@ ADMINS = (
 MANAGERS = ADMINS
 
 EMAIL_SUBJECT_PREFIX = '[OpenMOOC] | '
+SUPPORT_SUBJECT_PREFIX = 'OpenMOOC Support'
+SUPPORT_EMAIL = 'support@example.com'
 
 DATABASES = {
     'default': {

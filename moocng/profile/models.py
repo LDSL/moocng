@@ -129,6 +129,7 @@ class UserProfile(models.Model):
                    interests_list.append(interests_name[interest])
                 except:
                     pass
+
         return interests_list
 
 @receiver(signals.post_save, sender=User, dispatch_uid="create_user_profile")
