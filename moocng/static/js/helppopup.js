@@ -62,7 +62,7 @@ function showHelpForm(){
         if(geolocation){
             data.lat = geolocation.coords.latitude;
             data.lon = geolocation.coords.longitude;
-            $.get('http://maps.googleapis.com/maps/api/geocode/json?latlng='+data.lat+','+data.lon+'&sensor=false', function(geodata){
+            $.get('//maps.googleapis.com/maps/api/geocode/json?latlng='+data.lat+','+data.lon+'&sensor=false', function(geodata){
                 location = geodata.results[3].formatted_address;
                 data.location = location;
                 sendSupportMsg(data);
