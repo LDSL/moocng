@@ -14,7 +14,7 @@
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.utils.translation import ugettext as _
 
@@ -79,3 +79,4 @@ def support(request):
     date = time.strftime("%d/%m/%Y %H:%M:%S")
 
     send_support_message(subject, body, url, user, device, position, date)
+    return HttpResponse('True')

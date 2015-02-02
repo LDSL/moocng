@@ -88,7 +88,7 @@ def send_support_message(subject, body, url, user, device, position, date, fail_
 
     mail = EmailMultiAlternatives(
         mail_subject,
-        "%s%s" % (mail_body, mail_extrainfo),
+        u'%s%s' % (mail_body, mail_extrainfo),
         origin,
         destination,
         connection=connection,
