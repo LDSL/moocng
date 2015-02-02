@@ -33,47 +33,63 @@ function showHelpForm(){
     $helpDiv.find('form').submit(function(e){
     	e.preventDefault();
 
-        var submitBtn = $('#helpForm input[type=submit]');
-        submitBtn.val(helpForm_translate.sending).attr('disabled',true);
+        $('#helpForm input[type=submit]').val(helpForm_translate.sending).attr('disabled',true);
 
     	var $target = $(e.target);
     	var subject = $target.find('#help_subject').val();
     	var body = $target.find('#help_body').val();
         var lat = 0.0, lon = 0.0;
-        if(geolocation){
-            lat = geolocation.coords.latitude;
-            lon = geolocation.coords.longitude;
-        }
+        var location = '';
         var url = window.location.href;
         var device = deviceInfo.type;
         var orientation = deviceInfo.orientation;
         var os = deviceInfo.os;
-        var browser = getBrowserName()
-    	$.ajax({
-    		url: '/contact/support',
-    		type: 'POST',
-    		data: {
-    			'subject': subject,
-    			'body': body,
-                'url': url,
-                'lat': lat,
-                'lon': lon,
-                'device': device,
-                'orientation': orientation,
-                'os': os,
-                'browser': browser,
-    		},
-    		success: function(response){
-    			helpModal.modal("hide");
-    			setTimeout(function(){ helpModal.remove(); }, 1000);
-                submitBtn.val(helpForm_translate.send_button).removeAttr('disabled');
-    		},
-            error: function(response){
-                alert(helpForm_translate.error);
-                submitBtn.val(helpForm_translate.send_button).removeAttr('disabled');
-            }
+        var browser = getBrowserName();
+        var timezone = new Date().getTimezoneOffset()/60 * -1;
+        var data = {
+            'subject': subject,
+            'body': body,
+            'url': url,
+            'lat': lat,
+            'lon': lon,
+            'location': location,
+            'timezone': timezone,
+            'device': device,
+            'orientation': orientation,
+            'os': os,
+            'browser': browser,
+        };
+        if(geolocation){
+            data.lat = geolocation.coords.latitude;
+            data.lon = geolocation.coords.longitude;
+            $.get('http://maps.googleapis.com/maps/api/geocode/json?latlng='+data.lat+','+data.lon+'&sensor=false', function(geodata){
+                location = geodata.results[3].formatted_address;
+                data.location = location;
+                sendSupportMsg(data);
+            });
+        }else{
+            sendSupportMsg(data);
+        }
+        
+    });
+}
 
-    	});
+function sendSupportMsg(data){
+    var submitBtn = $('#helpForm input[type=submit]');
+    $.ajax({
+        url: '/contact/support',
+        type: 'POST',
+        data: data,
+        success: function(response){
+            helpModal.modal("hide");
+            setTimeout(function(){ helpModal.remove(); }, 1000);
+            submitBtn.val(helpForm_translate.send_button).removeAttr('disabled');
+        },
+        error: function(response){
+            alert(helpForm_translate.error);
+            submitBtn.val(helpForm_translate.send_button).removeAttr('disabled');
+        }
+
     });
 }
 

@@ -69,14 +69,16 @@ def support(request):
     body = request.POST['body']
     url = request.POST['url']
     user = request.user
+    timezone = request.POST['timezone']
     device = {
         'type': request.POST['device'],
         'orientation': request.POST['orientation'],
         'os': request.POST['os'],
         'browser': request.POST['browser'],
     }
-    position = { 'latitude': request.POST['lat'], 'longitude': request.POST['lon'] }
+    location = request.POST['location']
+    position = { 'latitude': request.POST['lat'], 'longitude': request.POST['lon'], 'location': location }
     date = time.strftime("%d/%m/%Y %H:%M:%S")
 
-    send_support_message(subject, body, url, user, device, position, date)
+    send_support_message(subject, body, url, user, device, position, date, timezone)
     return HttpResponse('True')
