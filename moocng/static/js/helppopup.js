@@ -32,6 +32,10 @@ function showHelpForm(){
 
     $helpDiv.find('form').submit(function(e){
     	e.preventDefault();
+
+        var submitBtn = $('#helpForm input[type=submit]');
+        submitBtn.val(helpForm_translate.sending).attr('disabled',true);
+
     	var $target = $(e.target);
     	var subject = $target.find('#help_subject').val();
     	var body = $target.find('#help_body').val();
@@ -59,13 +63,16 @@ function showHelpForm(){
                 'os': os,
                 'browser': browser,
     		},
-    		/*beforeSend: function(xhr, settings) {
-  		        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-  		    },*/
     		success: function(response){
     			helpModal.modal("hide");
     			setTimeout(function(){ helpModal.remove(); }, 1000);
+                submitBtn.val(helpForm_translate.send_button).removeAttr('disabled');
     		},
+            error: function(response){
+                alert(helpForm_translate.error);
+                submitBtn.val(helpForm_translate.send_button).removeAttr('disabled');
+            }
+
     	});
     });
 }
