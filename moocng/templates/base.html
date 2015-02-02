@@ -64,6 +64,14 @@
       "whylocation_explain": "{% trans 'Allowing us to know where you are is useful for you. Why?, because we use this information to suggest you courses and user groups to enhance your learning experience. ECO are massive and open online courses with emphasis on the location and importance of networked learning. Your geographic location helps us improve your learning experience, thank you' %}",
       "readmore": "{% trans 'Read more' %}"
     };
+
+    var alwaysopen_translate = {
+      'ok': "{% trans 'Got it' %}",
+      "greeting": "{% trans 'Always open course' %}",
+      "greeting_2": "{% trans 'Important information' %}",
+      "info": "{% trans 'This course is always open so you can access to all contents anytime but, as the edition has been ended, there could be less people participating.' %}",
+      "footer":  "{% trans 'Come on, enter and learn more!' %}",
+    };
   </script>
   <script src="{{ STATIC_URL }}js/userinfo.js"></script>
   {% block extraheader %}{% endblock %}
@@ -134,7 +142,7 @@
         <div class="container">
           <object type="image/svg+xml" class="ok" data="{{ STATIC_URL }}img/ECO_icon_check.svg?#008833"></object>
           <!--<button class="close" data-dismiss="alert">×</button>-->
-          {{ message }}
+          {{ message|safe }}
         </div>
       </div>
       {% endfor %}{% endif %}
@@ -171,6 +179,7 @@
     </footer>
 
   {% block extrajs %}{% endblock %}
+  <script src="{{ STATIC_URL }}js/opencoursepopup.js"></script>
   <script type="text/javascript">
     (function($){
         $(document).ready(function () {
