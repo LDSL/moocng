@@ -75,7 +75,7 @@ def send_support_message(subject, body, url, user, device, position, date, timez
                         "User email: %s\n"
                         "Related URL: %s\n"
                         "Contact date: %s\n"
-                        "User geoposition: %s(%s,%s) (http://maps.google.com/maps?q=%s,%s\n)"
+                        "User geoposition: %s(%s,%s) (http://maps.google.com/maps?q=%s,%s)\n"
                         "Timezone: %s\n"
                         "Device type: %s (%s)\n"
                         "Browser: %s (%s)\n") % ( user.username, base_url, user.username,
