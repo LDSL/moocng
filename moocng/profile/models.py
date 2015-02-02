@@ -124,12 +124,12 @@ class UserProfile(models.Model):
         }
         interests_list = []
         if self.interests is not None:
-	        for interest in self.interests.split(','):
-                    try:
-            	       interests_list.append(interests_name[interest])
-                    except:
-                        pass
-        
+            for interest in self.interests.split(','):
+                try:
+                   interests_list.append(interests_name[interest])
+                except:
+                    pass
+
         return interests_list
 
 @receiver(signals.post_save, sender=User, dispatch_uid="create_user_profile")
