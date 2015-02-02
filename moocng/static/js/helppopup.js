@@ -11,7 +11,7 @@ function showHelpForm(){
 			</form> \
 		</div> \
 		<div class="modal-footer"> \
-			<p>### DISCLAIMER O INFO ###</p> \
+			<p>' + helpForm_translate.disclaimer + '</p> \
 		</div> \
 		</div>';
 		
@@ -93,7 +93,38 @@ function sendSupportMsg(data){
     });
 }
 
+function showHelpInfo(){
+    var helpDiv = '<div id="helpForm" class="modal geoadvise"> \
+    <div class="modal-header"><a href="#">'+ helpForm_translate.ok +'</a></div> \
+        <div class="modal-body fixedHeight"> \
+            <img src="/static/img/ECO_icon_ayudame_black.svg"> \
+            <h1>'+ helpForm_translate.greeting +'</h1> \
+            <p>'+ helpForm_translate.please_login +'</p> \
+        </div> \
+        </div>';
+        
+    var $helpDiv = $(helpDiv);
+    $('body').append($helpDiv);
+
+    helpModal = $helpDiv.modal({
+        show: false,
+        backdrop: "static",
+        keyboard: false
+    });
+    setTimeout(function(){ helpModal.modal("show"); }, 100);    
+
+    $helpDiv.find('a').click(function(){
+        helpModal.modal("hide");
+        setTimeout(function(){ helpModal.remove(); }, 1000);
+    });
+}
+
 $('#help_button').click(function(e){
 	e.preventDefault();
 	showHelpForm();
+});
+
+$('#help_button_noAuth').click(function(e){
+    e.preventDefault();
+    showHelpInfo();
 });
