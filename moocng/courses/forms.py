@@ -20,6 +20,7 @@ from django.forms import ValidationError
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 
+from modeltranslation.forms import TranslationModelForm
 
 from moocng.courses.models import Unit, Attachment, Course, Transcription, get_transcription_types_choices
 
@@ -31,7 +32,7 @@ COURSE_RATING_CHOICES = [
     (5, 5),
 ]
 
-class CourseForm(forms.ModelForm):
+class CourseForm(TranslationModelForm):
 
     class Meta:
         model = Course
