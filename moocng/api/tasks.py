@@ -26,6 +26,8 @@ from moocng.mongodb import get_db
 
 from moocng.courses.models import Unit
 
+from moocng.x_api import utils as x_api
+
 
 @task
 def on_activity_created_task(activity_created, unit_activity, course_activity):
@@ -377,3 +379,14 @@ def on_peerreviewreview_created_task(review_created, user_reviews):
     }
     data_kq.update(increment)
     update_stats(data, data_kq, data_unit, data_course)
+
+@task
+def on_history_created_task(history_created):
+    # Send xAPI event
+    user = User.objects.get(pk=history_created['user_id'])
+    page = {}
+    page['url'] = history_created['url']
+    page['name'] = "Prueba"
+    page['description'] = "Descripción"
+    print page
+    x_api.learnerAccessAPage(user, page)

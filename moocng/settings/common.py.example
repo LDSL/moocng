@@ -61,6 +61,7 @@ DATABASES = {
 
 API_URI = 'moocng.devopenmooc.com'
 API_OFFICIAL_COURSE_TAGVALUE = 'Official'
+XAPI_URL = 'http://llocker.devopenmooc.com/data/xAPI/statements'
 
 SURVEY_API_URL = 'http://survey.ecolearning.eu/index.php?r=admin/remotecontrol'
 SURVEY_API_USER = 'user'
