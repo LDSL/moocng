@@ -9,7 +9,7 @@ from moocng.portal.templatetags.gravatar import (gravatar_for_email)
 from moocng.users.models import User
 from django.conf import settings
 from django.utils.translation import ugettext as _
-
+from django.db.models import Q
 
 def ListRecords(request, num="1"):
 	# courses = Course.objects.values("id", "name")
@@ -44,8 +44,8 @@ def ListRecords(request, num="1"):
 			datestamp.text = datetime.datetime.strptime(str(course.start_date), '%Y-%m-%d').isoformat()
 		if course.teachers.all()[0].groups.all()[0].name == 'teacher' and settings.API_OFFICIAL_COURSE_TAGVALUE:
 			if course.official_course:
-				setSpec.text = settings.API_OFFICIAL_COURSE_TAGVALUE
 				setSpec = SubElement(header, 'setSpec')
+				setSpec.text = settings.API_OFFICIAL_COURSE_TAGVALUE
 		metadata = SubElement(record, 'metadata')
 		lom = SubElement(metadata, 'lom:lom')
 		general = SubElement(lom, 'lom:general')
