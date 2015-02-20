@@ -212,6 +212,9 @@ class Course(Sortable):
     group_max_size = models.PositiveSmallIntegerField(verbose_name=_('Maximum number of members allowed for each group'),
         default=settings.DEFAULT_GROUP_MAX_SIZE)
 
+    official_course = models.BooleanField(verbose_name=_('Is this course official?'),
+                                          default=False)
+
     objects = CourseManager()
 
     class Meta(Sortable.Meta):
