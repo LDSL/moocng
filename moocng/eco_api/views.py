@@ -13,7 +13,7 @@ from django.utils.translation import ugettext as _
 
 def ListRecords(request, num="1"):
 	# courses = Course.objects.values("id", "name")
-	courses = Course.objects.filter(status="p")
+	courses = Course.objects.filter(Q(status="p") | Q(status="o"))
 	# print(courses)
     # root = ElementTree.XML('<?xml version="1.0" encoding="ISO-8859-1"?><context><namespace><prefix>org.instantknowledge.com.</prefix><context>battery</context></namespace><data><state>86%</state><charging>false</charging></data></context>')
 	
@@ -43,8 +43,9 @@ def ListRecords(request, num="1"):
 		if course.start_date:
 			datestamp.text = datetime.datetime.strptime(str(course.start_date), '%Y-%m-%d').isoformat()
 		if course.teachers.all()[0].groups.all()[0].name == 'teacher' and settings.API_OFFICIAL_COURSE_TAGVALUE:
-			setSpec = SubElement(header, 'setSpec')
-			setSpec.text = settings.API_OFFICIAL_COURSE_TAGVALUE
+			if course.official_course:
+				setSpec.text = settings.API_OFFICIAL_COURSE_TAGVALUE
+				setSpec = SubElement(header, 'setSpec')
 		metadata = SubElement(record, 'metadata')
 		lom = SubElement(metadata, 'lom:lom')
 		general = SubElement(lom, 'lom:general')
