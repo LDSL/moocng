@@ -42,10 +42,9 @@ def ListRecords(request, num="1"):
 		datestamp = SubElement(header, 'datestamp')   #TODO
 		if course.start_date:
 			datestamp.text = datetime.datetime.strptime(str(course.start_date), '%Y-%m-%d').isoformat()
-		if course.teachers.all()[0].groups.all()[0].name == 'teacher' and settings.API_OFFICIAL_COURSE_TAGVALUE:
-			if course.official_course:
-				setSpec = SubElement(header, 'setSpec')
-				setSpec.text = settings.API_OFFICIAL_COURSE_TAGVALUE
+		if len(course.teachers.all()) and len(course.teachers.all()[0].groups.all()) and course.teachers.all()[0].groups.all()[0].name == 'teacher' and settings.API_OFFICIAL_COURSE_TAGVALUE and course.official_course:
+			setSpec = SubElement(header, 'setSpec')
+			setSpec.text = settings.API_OFFICIAL_COURSE_TAGVALUE
 		metadata = SubElement(record, 'metadata')
 		lom = SubElement(metadata, 'lom:lom')
 		general = SubElement(lom, 'lom:general')
