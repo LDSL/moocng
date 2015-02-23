@@ -145,7 +145,7 @@ function showGeolocationAdvise(){
 	sessionStorage.setItem('geolocation_advised', true);
 }
 
-function sendHistoryEntry(){
+function sendHistoryEntry(course_id){
 	window.setTimeout(function(){
 		var lat = 0.0;
 		var lon = 0.0;
@@ -161,7 +161,8 @@ function sendHistoryEntry(){
 			url: window.location.href,
 			dev_type: deviceInfo.type,
 			dev_os: deviceInfo.os,
-			dev_orientation: deviceInfo.orientation
+			dev_orientation: deviceInfo.orientation,
+			course_id: course_id || ''
 		};
 
 		$.ajax({

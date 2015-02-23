@@ -31,8 +31,10 @@ def learnerEnrollsInMooc(user, course):
 	verb = {
 		    "actor": {
 		        "objectType": "Agent",
-		        "name": user.get_full_name(),
-		        "mbox": "mailto:%s" % (user.email),
+		        "account": {
+            		"homePage": "https://portal.ecolearning.eu?user=%s" % (user.get_profile().sub),
+            		"name": user.get_profile().sub
+        		}
 		    },
 		    "verb": {
 		        "id": "http://adlnet.gov/expapi/verbs/registered",
@@ -42,7 +44,7 @@ def learnerEnrollsInMooc(user, course):
 		    },
 		    "object": {
 		        "objectType": "Activity",
-		        "id": "http://" + settings.API_URI + course.get_absolute_url(),
+		        "id": 'oai:' + '.'.join(settings.API_URI.split(".")[::-1]) + ":" + str(course.id),
 		        "definition": {
 		            "name": {
 		                "es-ES": course.name,
@@ -60,35 +62,36 @@ def learnerEnrollsInMooc(user, course):
 	     #    	}
 	    	# }
 		}
-	print verb
 	sendStatement(verb)
 
 def learnerAccessAPage(user, page):
 	verb = {
     	"actor": {
 	        "objectType": "Agent",
-	        "name": user.get_full_name(),
-		    "mbox": "mailto:%s" % (user.email),
+	        "account": {
+        		"homePage": "https://portal.ecolearning.eu?user=%s" % (user.get_profile().sub),
+        		"name": user.get_profile().sub
+    		}
 	    },
 	    "verb": {
 	        "id": "http://activitystrea.ms/schema/1.0/access",
 	        "display": {
-	            "es-ES": "ha accedido a la página"
+	            "en-US": "Indicates the learner accessed a page"
 	        }
 	    },
-	    "object": {
+		    "object": {
 	        "objectType": "Activity",
 	        "id": page['url'],
 	        "definition": {
 	            "name": {
-	                "es-ES": page['name']
+	                "en-US": page['name']
 	            },
 	            "description": {
-	                "es-ES": page['description']
+	                "en-US": page['description']
 	            },
-	            "type": "http://adlnet.gov/expapi/activities/lesson"
+	            "type": "http://activitystrea.ms/schema/1.0/page"
 	        }
-	    },
+        },
 	    	# "context": {
 	     #    	"extensions": {
 	     #        	"http://vocab.org/placetime/geopoint/latitude/": "37.35",
@@ -97,5 +100,4 @@ def learnerAccessAPage(user, page):
 	    	# }
 	}
 
-	print verb
 	sendStatement(verb)

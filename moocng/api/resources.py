@@ -942,6 +942,7 @@ class HistoryResource(BaseMongoUserResource):
     dev_type = fields.CharField(null=False)
     dev_os = fields.CharField(null=False)
     dev_orientation = fields.CharField(null=False)
+    course_id = fields.CharField(null=False)
 
     class Meta:
         resource_name = 'history'
@@ -966,7 +967,8 @@ class HistoryResource(BaseMongoUserResource):
             "lon": 1.0,
             "dev_type": "",
             "dev_os": "",
-            "dev_orientation": ""
+            "dev_orientation": "",
+            "course_id": ""
         }
 
     def _initial(self, request, **kwargs):
@@ -981,7 +983,8 @@ class HistoryResource(BaseMongoUserResource):
             "lon": 0.0,
             "dev_type": "",
             "dev_os": "",
-            "dev_orientation": ""
+            "dev_orientation": "",
+            "course_id": "",
         }
 
 

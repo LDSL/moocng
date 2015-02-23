@@ -179,6 +179,7 @@
 </div>
 <script>
 	$(function(){
-		sendHistoryEntry();
+		var course_id = {{ course.id }}
+		sendHistoryEntry(course_id);
 	})
 </script>
