@@ -14,7 +14,7 @@ def sendStatement(verb):
 		headers = {
 			"Content-Type": "application/json",
 			"X-Experience-API-Version": "1.0.0",
-			"Authorization": "Basic MTA4NTMwZmE4NGFiMWMwYTdiZTFiNzUxNDI0NTkyOTgzNWE1YTRkMTpkNGI4Nzk4MDNlYTBlMjAzODQzZmRhODE1MmY3ODAzYWE1YTdiNjRl"
+			"Authorization": settings.XAPI_AUTH
 		}
 		r = requests.post(settings.XAPI_URL, data=json.dumps(verb), headers=headers)
 		if r.status_code == requests.codes.ok:
