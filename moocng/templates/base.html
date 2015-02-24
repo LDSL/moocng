@@ -172,15 +172,12 @@
       <div class="footer">
 		<div class="row">
 	  		<p class="pull-left">
-	    		<a href="{% url copyright %}">&copy; {% now "Y" %} {{ site.name }}. {% trans "All rights reserved" %}</a>
+	    		<a>&copy; {% now "Y" %} {{ site.name }}. {% trans "All rights reserved" %}</a>
 	  		</p>
 	  		<div class="pull-right">
 			    <ul class="inline">
-			      <li><a href="http://ecolearning.eu/privacy-policy/">{% trans "Privacy Policy" %}</a></li>
-			      {% if show_tos %}
-			      <li><a href="http://ecolearning.eu/terms-of-use/">{% trans "Terms of Service" %}</a></li>
-			      {% endif %}
-			      <li>Powered by <a>{% trans "Open" %}{% trans "MOOC" %}</a></li>
+			      <li><a href="http://uned.ecolearning.eu/legal/">{% trans "Condiciones legales" %}</a></li>
+			      <li>{% trans "Con la tecnología" %} <a>OpenMOOC</a> <span style="margin-left: 20px;">D+D <a href="http://geographica.gs" target="_blank">Geographica <img src="{{STATIC_URL}}img/logo_geographica_mini.png" style="margin-left: 5px; vertical-align: middle;"></a></span></li>
 			    </ul>
 	  		</div>
 		</div>

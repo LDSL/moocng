@@ -139,24 +139,13 @@
       <div class="prefoot">
 	<div class="container">
 	  <div class="row">
-	  	{% if institutions %}
 	    <div class="col-lg-7 col-md-5 col-sm-4 col-mob-2">
 	      <p class="text-normal">
 	      	{% spaceless %}
-	      	{% for institution in institutions %}
-	      	{% if forloop.first %}
-	      	{% trans "The" %} <a href="{{institution.url}}" target="_blank">{{institution.name}}</a>
-	      	{% elif forloop.last %}
-	      	{% trans "and the" %} <a href="{{institution.url}}" target="_blank">{{institution.name}}</a>
-	      	{% else %}
-	      	, {% trans "the" %} <a href="{{institution.url}}" target="_blank">{{institution.name}}</a>
-	      	{% endif %}
-	      	{% endfor %}
-	      	{% endspaceless %}
-	      	{% if institutions|length == 1 %}{% trans "cooperates" %}{% else %}{% trans "cooperate" %}{% endif %} {% trans "on the <strong>ECO</strong> platform to encourage the free participation on Open Access Massive Online Courses" %}.
+	      	{% trans "<strong>UNED</strong> COMA es una plataforma creada por la <a href='http://www.uned.es' target='_blank'>Universidad Nacional de Educación a Distancia</a> para facilitar la participación gratuita en los Cursos Online Masivos de Acceso Libre. Tiene el potencial para ampliar el acceso a la educación y mejorar la calidad y rentabilidad de la enseñanza y el aprendizaje." %}
+		{% endspaceless %}
 	      </p>
 	    </div>
-	    {% endif %}
 	    <div class="col-lg-3 col-md-3 col-sm-2 col-mob-1 col-lg-push-1 col-md-push-1">
 	      <ul class="nobullet">
 			{% if feature_sec_catalogue %}
@@ -191,27 +180,10 @@
 	  	{% if institutions %}
 	    <div class="col-lg-7 col-md-5 col-sm-4 col-mob-2">
 	      <ul class="logos stretch inlineblock">
-	      	{% for institution in institutions %}
-			<li><a href="{{institution.url}}" target="_blank"><img src="{{ STATIC_URL }}img/{{institution.logo}}" alt="{{institution.name}}"></a></li>
-			{% endfor %}
+			<li><a href="http://www.uned.es" target="_blank"><img src="{{ STATIC_URL }}img/logo_unedabierta.png" alt="UNED Abierta"></a></li>
 	      </ul>
 	    </div>
 	    {% endif %}
-	    <div class="col-lg-7 col-md-5 col-sm-4 col-mob-2 col-lg-push-1 col-md-push-1">
-	      <ul class="logos inlineblock">
-		<li><a href="http://ecolearning.eu/" target="_blank"><img src="{{ STATIC_URL }}img/logo-eco.png" alt="ECO"></a></li>
-		<li class="noBorder"><a href="http://ec.europa.eu/cip/" target="_blank"><img src="{{ STATIC_URL }}img/logo-cip.png" alt="CIP"></a></li>
-		<li><a href="http://ec.europa.eu/" target="_blank"><img src="{{ STATIC_URL }}img/logo-ec.png" alt="European Commission"></a></li>
-	      </ul>
-	    </div>
-	  </div>
-	  <div class="row mt-20">
-	    <div class="col-lg-7 col-md-5 col-sm-4 col-mob-2">
-	      <p class="text-small">{% trans "Platform integrated into the" %} <br><a href="http://ecolearning.eu/our-project/" target="_blank"><strong>{% trans "ECO: Elearning, Communication and Open-data" %}</strong></a> {% trans "project" %}</p>
-	    </div>
-	    <div class="col-lg-7 col-md-5 col-sm-4 col-mob-2 col-lg-push-1 col-md-push-1">
-	      <p class="text-tiny">Project funded from the European Community's CIP (Programme under grant agreement nº 21127)</p>
-	    </div>
 	  </div>
 	</div>
       </div>
@@ -219,15 +191,12 @@
     <div class="footer">
 	<div class="row">
 	  <p class="pull-left">
-	    <a href="{% url copyright %}">&copy; {% now "Y" %} {{ site.name }}. {% trans "All rights reserved" %}</a>
+	    <a>&copy; {% now "Y" %} {{ site.name }}. {% trans "All rights reserved" %}</a>
 	  </p>
 	  <div class="pull-right">
 	    <ul class="inline">
-	      <li><a href="http://ecolearning.eu/privacy-policy/">{% trans "Privacy Policy" %}</a></li>
-	      {% if show_tos %}
-	      <li><a href="http://ecolearning.eu/terms-of-use/">{% trans "Terms of Service" %}</a></li>
-	      {% endif %}
-	      <li>{% trans "Powered by" %} <a>OpenMOOC</a></li>
+	      <li><a href="http://uned.ecolearning.eu/legal/">{% trans "Condiciones legales" %}</a></li>
+	      <li>{% trans "Con la tecnología" %} <a>OpenMOOC</a> <span style="margin-left: 20px;">D+D <a href="http://geographica.gs" target="_blank">Geographica <img src="{{STATIC_URL}}img/logo_geographica_mini.png" style="margin-left: 5px; vertical-align: middle;"></a></span></li>
 	    </ul>
 	  </div>
 	</div>
