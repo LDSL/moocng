@@ -34,9 +34,6 @@ def ListRecords(request, num="1"):
 
 	listRecords = SubElement(root, 'ListRecords')
 
-	# print(settings.API_URI)
-	# print(Course.objects.values("id", "name"))
-
 	for course in courses:
 		record = SubElement(listRecords, 'record')
 		header = SubElement(record, 'header')
@@ -89,6 +86,8 @@ def ListRecords(request, num="1"):
 				llanguage = SubElement(general, 'lom:language')
 				llanguage.text = language.abbr
 
+		print tostring(root)
+
 		courseImage = SubElement(general, 'eco:courseImage')
 		image_url = "http://" + settings.API_URI
 		if course.thumbnail:
@@ -106,6 +105,13 @@ def ListRecords(request, num="1"):
 
 		nrOfUnits = SubElement(general, 'eco:nrOfUnits')
 		nrOfUnits.text = str(knowledgequantum)
+		estimated_effort = 2
+		try:
+			estimated_effort = int(course.estimated_effort)
+		except:
+			pass
+		studyLoad = SubElement(general, 'eco:studyLoad')
+		studyLoad.text = str(estimated_effort)
 
 		startDate = SubElement(general, 'eco:startDate')
 		if course.start_date:
@@ -120,11 +126,6 @@ def ListRecords(request, num="1"):
 		educational = SubElement(lom, 'lom:educational')
 		typicalLearningTime = SubElement(educational, 'lom:typicalLearningTime')
 		duration = SubElement(typicalLearningTime, 'lom:duration')#TODO
-		estimated_effort = 1
-		try:
-			estimated_effort = int(course.estimated_effort)
-		except:
-			pass
 		if(course.start_date and course.end_date and estimated_effort):
 			diff = ((course.end_date - course.start_date).days / 7) * int(estimated_effort)
 			duration.text = "P"
@@ -151,9 +152,11 @@ def ListRecords(request, num="1"):
 			if(diff != 0):
 				duration.text += str(diff) + "H"
 
+		print tostring(root)
 
 		lifeCycle = SubElement(lom, 'lom:lifeCycle')
 		
+		organizations = []
 		for teacher in course.teachers.all():
 			lcontribute = SubElement(lifeCycle, 'lom:contribute')
 			lrole = SubElement(lcontribute, 'lom:role')
@@ -167,7 +170,19 @@ def ListRecords(request, num="1"):
 				organization = teacher.get_profile().organization.all()[0].name
 			except:
 				pass
-			lentity.text="<![CDATA[BEGIN:VCARD \r\nFN:" + teacher.first_name + " " + teacher.last_name + " \r\nUID:urn:uuid:" + str(teacher.id) + " \r\nEMAIL;TYPE=INTERNET:" + teacher.email + " \r\nORG:" + organization + " N:" + teacher.last_name +";" + teacher.first_name + " \r\nVERSION:3.0 \r\nEND:VCARD \r\n]]>"
+			if organization not in organizations:
+				organizations.append(organization) 
+			lentity.text="<![CDATA[BEGIN:VCARD \r\nFN:" + teacher.first_name + " " + teacher.last_name + " \r\nUID:urn:uuid:" + str(teacher.sub) + " \r\nEMAIL;TYPE=INTERNET:" + teacher.email + " \r\nORG:" + organization + " N:" + teacher.last_name +";" + teacher.first_name + " \r\nVERSION:3.0 \r\nEND:VCARD \r\n]]>"
+
+		for organization in organizations:
+			lcontribute = SubElement(lifeCycle, 'lom:contribute')
+			lrole = SubElement(lcontribute, 'lom:role')
+			lsource = SubElement(lrole, 'lom:source')
+			lsource.text = "LOMv1.0"
+			lvalue = SubElement(lrole, 'lom:value')
+			lvalue.text = "content provider"
+			lentity = SubElement(lcontribute, 'lom:entity')
+			lentity.text="<![CDATA[BEGIN:VCARD \r\nORG:" + organization + " \r\nVERSION:3.0 \r\nEND:VCARD \r\n]]>"
 		
 		lclassification = SubElement(lom, 'lom:classification')
 		lpurpose = SubElement(lclassification, 'lom:purpose')
@@ -189,7 +204,6 @@ def ListRecords(request, num="1"):
 			lstring = SubElement(lentry, 'lom:string')
 			lstring.text = categories[0].name
 		
-
 	return HttpResponse(tostring(root), mimetype='application/xml')
 
 
