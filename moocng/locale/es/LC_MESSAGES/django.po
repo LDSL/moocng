@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: moocng 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-02 15:07+0100\n"
+"POT-Creation-Date: 2015-02-25 07:57+0100\n"
 "PO-Revision-Date: 2015-01-26 10:59+0100\n"
 "Last-Translator: Raúl Yeguas <raul.yeguas@geographica.gs>\n"
 "Language-Team: es_ES <es_ES@li.org>\n"
@@ -1425,11 +1425,11 @@ msgstr "Este curso está vacío"
 msgid "This course is not public"
 msgstr "Este curso no está listo aún"
 
-#: courses/utils.py:526 courses/management/commands/create_groups_forum.py:59
+#: courses/utils.py:525 courses/management/commands/create_groups_forum.py:59
 msgid "This is the topic for "
 msgstr "Este es el tema para "
 
-#: courses/utils.py:526 courses/management/commands/create_groups_forum.py:59
+#: courses/utils.py:525 courses/management/commands/create_groups_forum.py:59
 msgid " where you can comment and help other team members"
 msgstr " donde se puede comentar y ayudar a otros miembros del equipo"
 
@@ -2597,12 +2597,12 @@ msgstr "Wiki en construcción"
 msgid "Free enrollment"
 msgstr "Matriculación libre"
 
-#: enrollment/views.py:66
+#: enrollment/views.py:73
 #, python-format
 msgid "Congratulations, you have successfully enroll in the course %(course)s"
 msgstr "Enhorabuena, te has matriculado correctamente en el curso %(course)s"
 
-#: enrollment/views.py:94
+#: enrollment/views.py:101
 #, python-format
 msgid "You have successfully unenroll in the course %(course)s"
 msgstr "Te has desmatriculado correctamente del curso %(course)s"
@@ -3390,29 +3390,33 @@ msgstr "Perfiles sociales"
 msgid "Interests areas"
 msgstr "Áreas de interés"
 
-#: settings/common.py:95
+#: settings/common.py:97
 msgid "Cloned course activity"
 msgstr "Clonada actividad del curso"
 
-#: settings/common.py:117
+#: settings/common.py:119
 msgid "English"
 msgstr "Inglés"
 
-#: settings/common.py:118
+#: settings/common.py:120
 msgid "Spanish"
 msgstr "Español"
 
-#: settings/common.py:119
+#: settings/common.py:121
 msgid "Italian"
 msgstr "Italiano"
 
-#: settings/common.py:120
+#: settings/common.py:122
 msgid "Portuguese"
 msgstr "Portugués"
 
-#: settings/common.py:121
+#: settings/common.py:123
 msgid "French"
 msgstr "Francés"
+
+#: settings/common.py:124
+msgid "German"
+msgstr ""
 
 #: teacheradmin/admin.py:49
 msgid "Send email massive"
@@ -4379,7 +4383,8 @@ msgstr "Enviando"
 
 #: templates/base.html:37
 msgid "There was an error sending your message. Please, try again."
-msgstr "Ha ocurrido un error al enviar tu mensaje. Por favor, inténtalo de nuevo."
+msgstr ""
+"Ha ocurrido un error al enviar tu mensaje. Por favor, inténtalo de nuevo."
 
 #: templates/base.html:38
 msgid ""
@@ -4389,10 +4394,12 @@ msgid ""
 "If you do not agree this, do not click on the send button and send us an "
 "email to support@ecolearning.eu to get help without giving this information "
 "automatically. Thank you."
-msgstr "Para poder ayudarte mejor, vamos a tomar algunos datos tuyos del usuario "
-"como son tu nombre, email, parte de la plataforma desde la que solicitas ayuda, "
-"el navegador, dispositivo y localización geográfica. Si no estás de acuerdo, envía "
-"un correo a support@ecolearning.eu e intentaremos ayudarte sin estos datos. Gracias."
+msgstr ""
+"Para poder ayudarte mejor, vamos a tomar algunos datos tuyos del usuario "
+"como son tu nombre, email, parte de la plataforma desde la que solicitas "
+"ayuda, el navegador, dispositivo y localización geográfica. Si no estás de "
+"acuerdo, envía un correo a support@ecolearning.eu e intentaremos ayudarte "
+"sin estos datos. Gracias."
 
 #: templates/base.html:39
 msgid "Please, log into ECO to send us a message"

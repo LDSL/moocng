@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-02 15:13+0100\n"
+"POT-Creation-Date: 2015-02-25 07:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1429,11 +1429,11 @@ msgstr "Questo corso è vuoto"
 msgid "This course is not public"
 msgstr "Questo corso non è ancora pronto"
 
-#: courses/utils.py:526 courses/management/commands/create_groups_forum.py:59
+#: courses/utils.py:525 courses/management/commands/create_groups_forum.py:59
 msgid "This is the topic for "
 msgstr "Questo è il tema per "
 
-#: courses/utils.py:526 courses/management/commands/create_groups_forum.py:59
+#: courses/utils.py:525 courses/management/commands/create_groups_forum.py:59
 msgid " where you can comment and help other team members"
 msgstr " dove è possibile commentare e aiutare altri membri del team"
 
@@ -2615,12 +2615,12 @@ msgstr "Wiki in costruzione"
 msgid "Free enrollment"
 msgstr "Iscrizione gratuita"
 
-#: enrollment/views.py:66
+#: enrollment/views.py:73
 #, python-format
 msgid "Congratulations, you have successfully enroll in the course %(course)s"
 msgstr "Congratulazioni, ti sei iscritto con successo al corso %(course)s"
 
-#: enrollment/views.py:94
+#: enrollment/views.py:101
 #, python-format
 msgid "You have successfully unenroll in the course %(course)s"
 msgstr "Hai annullato con successo l'iscrizione nel corso %(course)s"
@@ -3417,29 +3417,33 @@ msgstr "Profili sociali"
 msgid "Interests areas"
 msgstr "Aree di Interesse"
 
-#: settings/common.py:95
+#: settings/common.py:97
 msgid "Cloned course activity"
 msgstr "L'attività del corso è stata clonata"
 
-#: settings/common.py:117
+#: settings/common.py:119
 msgid "English"
 msgstr "Inglese"
 
-#: settings/common.py:118
+#: settings/common.py:120
 msgid "Spanish"
 msgstr "Spagnolo"
 
-#: settings/common.py:119
+#: settings/common.py:121
 msgid "Italian"
 msgstr "Italiano"
 
-#: settings/common.py:120
+#: settings/common.py:122
 msgid "Portuguese"
 msgstr "Portoghese"
 
-#: settings/common.py:121
+#: settings/common.py:123
 msgid "French"
 msgstr "Francese"
+
+#: settings/common.py:124
+msgid "German"
+msgstr ""
 
 #: teacheradmin/admin.py:49
 msgid "Send email massive"
