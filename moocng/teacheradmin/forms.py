@@ -292,7 +292,7 @@ class MassiveGlobalEmailAdminForm(BaseMassiveEmailForm):
         return cleaned_data
 
 
-class StaticPageForm(forms.ModelForm, BootstrapMixin):
+class StaticPageForm(TranslationModelForm, BootstrapMixin):
 
     class Meta:
         model = StaticPage
