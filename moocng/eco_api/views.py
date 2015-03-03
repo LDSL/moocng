@@ -1,4 +1,4 @@
-from django.utils import simplejson
+from django.utils import simplejson, translation
 from django.http import HttpResponse
 import datetime
 import re
@@ -61,6 +61,7 @@ def ListRecords(request, num="1"):
 			lstring.text=course.name
 		else:
 			for language in course.languages.all():
+				translation.trans_real.activate(language.abbr)
 				lstring = SubElement(ltitle, 'lom:string')  
 				lstring.set('language', language.abbr)
 				lstring.text=course.name
@@ -73,6 +74,7 @@ def ListRecords(request, num="1"):
 
 		else:
 			for language in course.languages.all():
+				translation.trans_real.activate(language.abbr)
 				ldescription = SubElement(general, 'lom:description')
 				lstring = SubElement(ldescription, 'lom:string')  
 				lstring.set('language', language.abbr) 
