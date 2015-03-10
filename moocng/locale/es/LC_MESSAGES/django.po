@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: moocng 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-10 08:09+0100\n"
+"POT-Creation-Date: 2015-03-10 18:29+0100\n"
 "PO-Revision-Date: 2015-03-10 09:07+0100\n"
 "Last-Translator: Raúl Yeguas <raul.yeguas@geographica.gs>\n"
 "Language-Team: es_ES <es_ES@li.org>\n"
@@ -220,7 +220,7 @@ msgstr "Su reserva ha sido modificada"
 #: courses/views.py:540 courses/views.py:590 courses/views.py:629
 #: courses/views.py:668 courses/views.py:707 courses/views.py:759
 #: courses/templates/courses/transcript_course.html:6 peerreview/views.py:53
-#: peerreview/views.py:122 peerreview/views.py:170
+#: peerreview/views.py:121 peerreview/views.py:169
 msgid "You are not enrolled in this course"
 msgstr "No estás matriculado en este curso"
 
@@ -2841,7 +2841,7 @@ msgstr "{0} - Criterio de evaluación {1}"
 msgid "You have already sent a submission. Please reload the page"
 msgstr "Tu ya has enviado un ejercicio. Por favor recargue la página"
 
-#: peerreview/views.py:57 peerreview/views.py:174
+#: peerreview/views.py:57 peerreview/views.py:173
 msgid "The selected peer review assignment is not part of this course."
 msgstr ""
 "La actividad revisada por compañeros seleccionada no es parte de este curso"
@@ -2850,7 +2850,7 @@ msgstr ""
 msgid "You already have a submission assigned."
 msgstr "Ya has enviado esta actividad"
 
-#: peerreview/views.py:102
+#: peerreview/views.py:101
 msgid ""
 "There is no submission avaliable for you at this moment. Please, try again "
 "later."
@@ -2858,15 +2858,15 @@ msgstr ""
 "No hay ninguna entrega que necesite revisión en este momento. Por favor, "
 "pruebe más tarde."
 
-#: peerreview/views.py:185
+#: peerreview/views.py:184
 msgid "You don't have this submission assigned."
 msgstr "No tienes asignado para revisión este ejercicio"
 
-#: peerreview/views.py:216
+#: peerreview/views.py:215
 msgid "Your can't submit two times the same review."
 msgstr "No puedes enviar 2 veces la misma revisión"
 
-#: peerreview/views.py:221
+#: peerreview/views.py:220
 #, python-format
 msgid ""
 "Your review has been submitted. You have to review at least %d exercises "
@@ -2874,25 +2874,25 @@ msgid ""
 msgstr ""
 "Tu revisión ha sido enviada. Tienes que revisar al menos %d ejercicios más."
 
-#: peerreview/views.py:223
+#: peerreview/views.py:222
 msgid "Your review has been submitted."
 msgstr "Su revisión ha sido enviada."
 
-#: peerreview/views.py:251
+#: peerreview/views.py:250
 #, python-format
 msgid "Your assignment \"%(nugget)s\" has been reviewed"
 msgstr "Su trabajo \"%(nugget)s\" ha sido revisado"
 
-#: peerreview/views.py:258
+#: peerreview/views.py:257
 msgid "Undefined"
 msgstr "Indefinido"
 
-#: peerreview/views.py:340
+#: peerreview/views.py:339
 #, python-format
 msgid "Your file is greater than the max allowed size (%d MB)."
 msgstr "Tu fichero es mayor del tamaño máximo permitido (%d MB)."
 
-#: peerreview/views.py:344
+#: peerreview/views.py:343
 #, python-format
 msgid "Your text is greater than the max allowed size (%d characters)."
 msgstr "Tu texto es mayor del tamaño máximo permitod (%d caracteres)."
@@ -3394,31 +3394,31 @@ msgstr "Perfiles sociales"
 msgid "Interests areas"
 msgstr "Áreas de interés"
 
-#: settings/common.py:97
+#: settings/common.py:99
 msgid "Cloned course activity"
 msgstr "Clonada actividad del curso"
 
-#: settings/common.py:119
+#: settings/common.py:121
 msgid "English"
 msgstr "Inglés"
 
-#: settings/common.py:120
+#: settings/common.py:122
 msgid "Spanish"
 msgstr "Español"
 
-#: settings/common.py:121
+#: settings/common.py:123
 msgid "Italian"
 msgstr "Italiano"
 
-#: settings/common.py:122
+#: settings/common.py:124
 msgid "Portuguese"
 msgstr "Portugués"
 
-#: settings/common.py:123
+#: settings/common.py:125
 msgid "French"
 msgstr "Francés"
 
-#: settings/common.py:124
+#: settings/common.py:126
 msgid "German"
 msgstr "Alemán"
 

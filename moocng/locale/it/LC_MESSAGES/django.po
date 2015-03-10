@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-10 08:10+0100\n"
+"POT-Creation-Date: 2015-03-10 18:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -224,7 +224,7 @@ msgstr "La tua prenotazione è stata modificata"
 #: courses/views.py:540 courses/views.py:590 courses/views.py:629
 #: courses/views.py:668 courses/views.py:707 courses/views.py:759
 #: courses/templates/courses/transcript_course.html:6 peerreview/views.py:53
-#: peerreview/views.py:122 peerreview/views.py:170
+#: peerreview/views.py:121 peerreview/views.py:169
 msgid "You are not enrolled in this course"
 msgstr "Non sei iscritto a questo corso"
 
@@ -2858,7 +2858,7 @@ msgstr "{0} - EvaluationCriterion {1}"
 msgid "You have already sent a submission. Please reload the page"
 msgstr "Hai già inviato un contributo. Si prega di ricaricare la pagina"
 
-#: peerreview/views.py:57 peerreview/views.py:174
+#: peerreview/views.py:57 peerreview/views.py:173
 msgid "The selected peer review assignment is not part of this course."
 msgstr "L'attività di peer review selezionata non fa parte di questo corso."
 
@@ -2866,7 +2866,7 @@ msgstr "L'attività di peer review selezionata non fa parte di questo corso."
 msgid "You already have a submission assigned."
 msgstr "Hai già un contributo assegnato."
 
-#: peerreview/views.py:102
+#: peerreview/views.py:101
 msgid ""
 "There is no submission avaliable for you at this moment. Please, try again "
 "later."
@@ -2874,15 +2874,15 @@ msgstr ""
 "Non c'è un contributo disponibile per te in questo momento. Per favore, "
 "riprova più tardi."
 
-#: peerreview/views.py:185
+#: peerreview/views.py:184
 msgid "You don't have this submission assigned."
 msgstr "Non ti è stato assegnato questo contributo."
 
-#: peerreview/views.py:216
+#: peerreview/views.py:215
 msgid "Your can't submit two times the same review."
 msgstr "Non puoi inviare due volte la stessa revisione."
 
-#: peerreview/views.py:221
+#: peerreview/views.py:220
 #, python-format
 msgid ""
 "Your review has been submitted. You have to review at least %d exercises "
@@ -2891,26 +2891,26 @@ msgstr ""
 "La tua valutazione è stata presentata. Devi valutare almeno altri %d "
 "contributi."
 
-#: peerreview/views.py:223
+#: peerreview/views.py:222
 msgid "Your review has been submitted."
 msgstr "La tua valutazione è stata presentata."
 
-#: peerreview/views.py:251
+#: peerreview/views.py:250
 #, python-format
 msgid "Your assignment \"%(nugget)s\" has been reviewed"
 msgstr "Il tuo contributo \"%(nugget)s\" è stato valutato."
 
-#: peerreview/views.py:258
+#: peerreview/views.py:257
 msgid "Undefined"
 msgstr "Indefinito"
 
-#: peerreview/views.py:340
+#: peerreview/views.py:339
 #, python-format
 msgid "Your file is greater than the max allowed size (%d MB)."
 msgstr ""
 "La dimensione del file è superiore a quella massima consentita ( %d MB)."
 
-#: peerreview/views.py:344
+#: peerreview/views.py:343
 #, python-format
 msgid "Your text is greater than the max allowed size (%d characters)."
 msgstr ""
@@ -3422,31 +3422,31 @@ msgstr "Profili sociali"
 msgid "Interests areas"
 msgstr "Aree di Interesse"
 
-#: settings/common.py:97
+#: settings/common.py:99
 msgid "Cloned course activity"
 msgstr "L'attività del corso è stata clonata"
 
-#: settings/common.py:119
+#: settings/common.py:121
 msgid "English"
 msgstr "Inglese"
 
-#: settings/common.py:120
+#: settings/common.py:122
 msgid "Spanish"
 msgstr "Spagnolo"
 
-#: settings/common.py:121
+#: settings/common.py:123
 msgid "Italian"
 msgstr "Italiano"
 
-#: settings/common.py:122
+#: settings/common.py:124
 msgid "Portuguese"
 msgstr "Portoghese"
 
-#: settings/common.py:123
+#: settings/common.py:125
 msgid "French"
 msgstr "Francese"
 
-#: settings/common.py:124
+#: settings/common.py:126
 msgid "German"
 msgstr ""
 
