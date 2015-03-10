@@ -7,15 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-10 08:10+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2015-03-10 18:29+0100\n"
+"PO-Revision-Date: 2015-03-10 18:29+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: context_processors.py:43
 msgid "decorative landscape of seville"
@@ -225,7 +226,7 @@ msgstr "Votre réservation a été modifiée"
 #: courses/views.py:540 courses/views.py:590 courses/views.py:629
 #: courses/views.py:668 courses/views.py:707 courses/views.py:759
 #: courses/templates/courses/transcript_course.html:6 peerreview/views.py:53
-#: peerreview/views.py:122 peerreview/views.py:170
+#: peerreview/views.py:121 peerreview/views.py:169
 msgid "You are not enrolled in this course"
 msgstr "Vous n'êtes pas inscrit(e) à ce cours"
 
@@ -903,7 +904,7 @@ msgstr ""
 
 #: courses/models.py:72
 msgid "Requirements"
-msgstr "{0}{/0}{1}Exigences {/1}"
+msgstr "Exigences"
 
 #: courses/models.py:74 courses/models.py:80
 #: courses/templates/courses/overview.html:174
@@ -2869,7 +2870,7 @@ msgid "You have already sent a submission. Please reload the page"
 msgstr ""
 "Vous avez déjà envoyé un travail. Veuillez s'il vous plaît rafraîchir la page"
 
-#: peerreview/views.py:57 peerreview/views.py:174
+#: peerreview/views.py:57 peerreview/views.py:173
 msgid "The selected peer review assignment is not part of this course."
 msgstr ""
 "L'examen sélectionné, revu par des pairs, ne fait pas partie de ce cours."
@@ -2878,7 +2879,7 @@ msgstr ""
 msgid "You already have a submission assigned."
 msgstr "Un devoir vous a déjà été affecté."
 
-#: peerreview/views.py:102
+#: peerreview/views.py:101
 msgid ""
 "There is no submission avaliable for you at this moment. Please, try again "
 "later."
@@ -2886,15 +2887,15 @@ msgstr ""
 "Il n'y a pas de devoir disponible pour vous pour le moment. Veuillez "
 "réessayer plus tard s'il vous plaît."
 
-#: peerreview/views.py:185
+#: peerreview/views.py:184
 msgid "You don't have this submission assigned."
 msgstr "Ce travail ne vous a pas été attribué."
 
-#: peerreview/views.py:216
+#: peerreview/views.py:215
 msgid "Your can't submit two times the same review."
 msgstr "Vous ne pouvez pas soumettre deux fois le même évaluation."
 
-#: peerreview/views.py:221
+#: peerreview/views.py:220
 #, python-format
 msgid ""
 "Your review has been submitted. You have to review at least %d exercises "
@@ -2903,25 +2904,25 @@ msgstr ""
 "Votre commentaire a été soumis. Vous devez revoir au moins %d exercices "
 "supplémentaires."
 
-#: peerreview/views.py:223
+#: peerreview/views.py:222
 msgid "Your review has been submitted."
 msgstr "Votre commentaire a été soumis."
 
-#: peerreview/views.py:251
+#: peerreview/views.py:250
 #, python-format
 msgid "Your assignment \"%(nugget)s\" has been reviewed"
 msgstr "Votre devoir \"%(nugget)s\" a été examiné"
 
-#: peerreview/views.py:258
+#: peerreview/views.py:257
 msgid "Undefined"
 msgstr "Indéfini"
 
-#: peerreview/views.py:340
+#: peerreview/views.py:339
 #, python-format
 msgid "Your file is greater than the max allowed size (%d MB)."
 msgstr "Votre fichier est supérieur à la taille maximale autorisée ( %d Mo)."
 
-#: peerreview/views.py:344
+#: peerreview/views.py:343
 #, python-format
 msgid "Your text is greater than the max allowed size (%d characters)."
 msgstr ""
@@ -3433,31 +3434,31 @@ msgstr "Profils sociaux"
 msgid "Interests areas"
 msgstr "Zones d'intérêts"
 
-#: settings/common.py:97
+#: settings/common.py:99
 msgid "Cloned course activity"
 msgstr "Activité de cours dupliquée"
 
-#: settings/common.py:119
+#: settings/common.py:121
 msgid "English"
 msgstr "Anglais"
 
-#: settings/common.py:120
+#: settings/common.py:122
 msgid "Spanish"
 msgstr "Espagnol"
 
-#: settings/common.py:121
+#: settings/common.py:123
 msgid "Italian"
 msgstr "Italien"
 
-#: settings/common.py:122
+#: settings/common.py:124
 msgid "Portuguese"
 msgstr "Portugais"
 
-#: settings/common.py:123
+#: settings/common.py:125
 msgid "French"
 msgstr "Français"
 
-#: settings/common.py:124
+#: settings/common.py:126
 msgid "German"
 msgstr ""
 
