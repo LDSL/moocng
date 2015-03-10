@@ -45,6 +45,8 @@ ADMINS = (
 MANAGERS = ADMINS
 
 EMAIL_SUBJECT_PREFIX = '[OpenMOOC] | '
+SUPPORT_SUBJECT_PREFIX = 'OpenMOOC Support'
+SUPPORT_EMAIL = 'support@example.com'
 
 DATABASES = {
     'default': {
@@ -108,11 +110,15 @@ TIME_ZONE = 'Europe/Madrid'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-es'
 
 LANGUAGES = (
     ('en', gettext('English')),
     ('es', gettext('Spanish')),
+    ('it', gettext('Italian')),
+    ('pt', gettext('Portuguese')),
+    ('fr', gettext('French')),
+    ('de', gettext('German')),
 )
 
 # the default value is 'django_language' but changing this
@@ -248,6 +254,7 @@ THIRDPARTY_APPS = [
     'south',
     'django_mathjax',
     'pagination',
+    'modeltranslation',
 ]
 
 OPENMOOC_APPS = [

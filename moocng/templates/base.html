@@ -25,8 +25,21 @@
   <script src="{{ STATIC_URL }}js/libs/less-1.7.3.min.js"></script>
   <script src="{{ STATIC_URL }}js/libs/device.min.js"></script>
   <script>
+    var helpForm_translate = {
+      "ok": "{% trans 'Got it' %}",
+      "greeting": "{% trans 'Need help?' %}",
+      "greeting_2": "{% trans 'let us help you' %}",
+      "subject": "{% trans 'Subject' %}",
+      "body": "{% trans 'Body' %}",
+      "send_button": "{% trans 'Send' %}",
+      "cancel_button": "{% trans 'Cancel' %}",
+      "sending": "{%trans 'Sending' %}",
+      "error": "{% trans 'There was an error sending your message. Please, try again.' %}",
+      "disclaimer": "{% trans 'For a better support, we will automatically collect some navigation information like your user name, email, the platform section you are visiting, the device and browser you are using and your geographic location. If you do not agree this, do not click on the send button and send us an email to support@ecolearning.eu to get help without giving this information automatically. Thank you.' %}",
+      "please_login": "{% trans 'Please, log into ECO to send us a message' %}"
+    };
     var geoadvice_translate = {
-      'ok': "{% trans 'Got it' %}",
+      "ok": "{% trans 'Got it' %}",
       "greeting": "{% trans 'Hello! Active your location' %}",
       "greeting_2": "{% trans 'for a better educational experience' %}",
       "video_label": "{% trans 'Location permission in' %}",
@@ -55,7 +68,15 @@
       "whylocation": "{% trans 'Why tracking my location is important?' %}",
       "whylocation_explain": "{% trans 'Allowing us to know where you are is useful for you. Why?, because we use this information to suggest you courses and user groups to enhance your learning experience. ECO are massive and open online courses with emphasis on the location and importance of networked learning. Your geographic location helps us improve your learning experience, thank you' %}",
       "readmore": "{% trans 'Read more' %}"
-    }
+    };
+
+    var alwaysopen_translate = {
+      'ok': "{% trans 'Got it' %}",
+      "greeting": "{% trans 'Always open course' %}",
+      "greeting_2": "{% trans 'Important information' %}",
+      "info": "{% trans 'This course is always open so you can access to all contents anytime but, as the edition has been ended, there could be less people participating.' %}",
+      "footer":  "{% trans 'Come on, enter and learn more!' %}",
+    };
   </script>
   <script src="{{ STATIC_URL }}js/userinfo.js"></script>
   {% block extraheader %}{% endblock %}
@@ -126,7 +147,7 @@
         <div class="container">
           <object type="image/svg+xml" class="ok" data="{{ STATIC_URL }}img/ECO_icon_check.svg?#008833"></object>
           <!--<button class="close" data-dismiss="alert">×</button>-->
-          {{ message }}
+          {{ message|safe }}
         </div>
       </div>
       {% endfor %}{% endif %}
@@ -135,7 +156,18 @@
 
       {% block content %}{% endblock %}
     </div>
-    <a id="help_button" href="https://ecolearninghelp.zendesk.com/hc/requests/new" target="_blank"><img src="{{ STATIC_URL }}img/ECO_icon_ayudame.svg" alt="{% trans "Get help" %}"></a>
+    <div class="expandable_lateral_bar">
+      <div class="handler">
+        <img src="{{ STATIC_URL }}img/ECO_icon_ayudame.svg" alt="{% trans "Get help" %}">
+      </div>
+      <div class="content">
+        {% if user.is_authenticated %}
+        <a id="help_button" href="#">{% trans "Support" %}</a>
+        {% else %}
+        <a id="help_button_noAuth" href="#">{% trans "Support" %}</a>
+        {% endif %}
+      </div>
+    </div>
     <footer>
       <div class="footer">
 		<div class="row">
@@ -156,6 +188,7 @@
     </footer>
 
   {% block extrajs %}{% endblock %}
+  <script src="{{ STATIC_URL }}js/opencoursepopup.js"></script>
   <script type="text/javascript">
     (function($){
         $(document).ready(function () {
@@ -175,5 +208,7 @@
 		}
 	});
   </script>
+  <script src="{{ STATIC_URL }}js/csrf-ajax.js"></script>
+  <script src="{{ STATIC_URL }}js/helppopup.js"></script>
 </body>
 </html>

@@ -117,16 +117,19 @@ class UserProfile(models.Model):
         interests_name = {
             'ES': 'Educational Sciences',
             'SS': 'Social Sciences',
-            'H': 'Humanities',
+            'HUM': 'Humanities',
             'NSM': 'Natural Sciences and Mathematics',
             'BS': 'Biomedical Sciences',
             'TS': 'Technological Sciences'
         }
         interests_list = []
-	if self.interests is not None:
-	        for interest in self.interests.split(','):
-        	    interests_list.append(interests_name[interest])
-        
+        if self.interests is not None:
+            for interest in self.interests.split(','):
+                try:
+                   interests_list.append(interests_name[interest])
+                except:
+                    pass
+
         return interests_list
 
 @receiver(signals.post_save, sender=User, dispatch_uid="create_user_profile")

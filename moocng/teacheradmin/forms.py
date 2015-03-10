@@ -19,6 +19,8 @@ from django.core.files.images import get_image_dimensions
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 
+from modeltranslation.forms import TranslationModelForm
+
 from tinymce.widgets import TinyMCE
 
 from moocng.courses.models import Announcement
@@ -32,7 +34,7 @@ from moocng.media_contents import media_content_extract_id
 from moocng.assets.models import Asset
 
 
-class CourseForm(forms.ModelForm):
+class CourseForm(TranslationModelForm):
 
     """
     Course form. Make some changes to the form classes and clean the media fields
@@ -51,7 +53,7 @@ class CourseForm(forms.ModelForm):
         model = Course
         exclude = ('slug', 'teachers', 'owner', 'students',
                    'max_mass_emails_month', 'created_from',
-                   'is_activity_clonable','group_max_size', 'has_groups', 'forum_slug')
+                   'is_activity_clonable','group_max_size', 'has_groups', 'forum_slug', 'official_course')
         widgets = {
             'start_date': HTML5DateInput(),
             'end_date': HTML5DateInput(),
