@@ -65,6 +65,18 @@ class UserProfile(models.Model):
                                     max_length=256,
                                     null=True,
                                     blank=True)
+    twitter = models.CharField(verbose_name=_(u"Twitter URL"),
+                                    max_length=256,
+                                    null=True,
+                                    blank=True)
+    facebook = models.CharField(verbose_name=_(u"Facebook URL"),
+                                    max_length=256,
+                                    null=True,
+                                    blank=True)
+    linkedin = models.CharField(verbose_name=_(u"LinkeIn URL"),
+                                    max_length=256,
+                                    null=True,
+                                    blank=True)
     birthdate = models.DateField(verbose_name=_(u"Birthdate"),
                                     null=True,
                                     blank=True)

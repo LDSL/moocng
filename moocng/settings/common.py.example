@@ -75,6 +75,8 @@ BADGES_ISSUER_DESCRIPTION = ""
 BADGES_ISSUER_IMAGE = ""
 BADGES_ISSUER_EMAIL = ""
 
+PROFILE_SERVICE_URL = "http://devopenmooc.com/profile"
+
 # Tastypie resource limit per page, 0 means unlimited
 API_LIMIT_PER_PAGE = 0
 
