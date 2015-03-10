@@ -135,7 +135,6 @@ class Badge(models.Model):
 
 
 class BadgeByCourse(models.Model):
-    from moocng.courses.models import Course
     title = models.CharField(verbose_name=_(u'Name'),
                              blank=False, null=False, unique=False,
                              max_length=255)
@@ -155,7 +154,7 @@ class BadgeByCourse(models.Model):
     color = models.TextField(verbose_name=_('Color'),
                                    blank=False, null=False)
 
-    course = models.ForeignKey(Course, verbose_name=_(u'Course'))
+    course = models.ForeignKey('courses.Course', verbose_name=_(u'Course'))
 
 
     @classmethod
@@ -168,7 +167,7 @@ class BadgeByCourse(models.Model):
         verbose_name_plural = _(u'badges_badgebycourse')
 
     def __unicode__(self):
-        return self.name
+        return self.title
 
 
 class Award(models.Model):

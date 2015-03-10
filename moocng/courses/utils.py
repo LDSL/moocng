@@ -42,6 +42,7 @@ from moocng.courses.serializer import (CourseClone, UnitClone, KnowledgeQuantumC
                                        BaseMetaWalkClass, QuestionClone, PeerReviewAssignmentClone,
                                        EvaluationCriterionClone, OptionClone, AttachmentClone)
 from moocng.peerreview.models import PeerReviewAssignment, EvaluationCriterion
+from moocng.courses.marks import get_course_mark
 
 
 from moocng.courses.security import get_units_available_for_user
@@ -53,6 +54,10 @@ logger = logging.getLogger(__name__)
 
 TRACE_CLONE_COURSE_DIR = 'trace_clone_course'
 import pymongo
+
+import csv
+import StringIO
+from HTMLParser import HTMLParser
 
 
 def is_teacher(user, courses):
@@ -121,9 +126,10 @@ def send_mail_wrapper(subject, template, context, to):
     .. versionadded:: 0.1
     """
     try:
+        body = loader.render_to_string(template, context)
         email = EmailMessage(
             subject=subject,
-            body=loader.render_to_string(template, context),
+            body=body,
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=to
         )
@@ -341,7 +347,7 @@ def update_passed(db, collection, passed_now, data):
 
 def update_course_mark_by_user(course, user):
     db = mongodb.get_db()
-    for unit in course.unit_set.scorables():
+    for unit in course.unit_set.all():
         for kq in unit.knowledgequantum_set.all():
             updated_kq, passed_kq_now = update_kq_mark(db, kq, user, course.threshold)
             update_passed(db, 'stats_kq', passed_kq_now, {'kq_id': kq.pk})
@@ -446,9 +452,17 @@ def create_groups(id_course):
         students = course.students.all()
 
         num_groups = len(students) / size_group
+        groupNames = {
+            'es': 'Grupo',
+            'en': 'Group',
+            'fr': 'Groupe',
+            'pt': 'Grupo',
+            'de': 'Gruppe',
+            'it': 'Gruppo'
+        }
 
         if (num_groups == 0):
-            group = {"id_course": id_course, "name": "Group", "size": 0, "members": []}
+            group = {"id_course": id_course, "name": groupNames[settings.DEFAULT_LANGUAGE], "size": 0, "members": []}
             for student in students:
                 group["members"].append({"id_user": student.id, "username": student.username, 
                                         "first_name":student.first_name, "last_name":student.last_name, 
@@ -462,7 +476,7 @@ def create_groups(id_course):
             cont = 0
             groups = []
             for i in range(1, num_groups+1):
-                group = {"id_course": id_course, "name": "Group" + str(i), "size": 0, "members": []}
+                group = {"id_course": id_course, "name": groupNames[settings.DEFAULT_LANGUAGE] + str(i), "size": 0, "members": []}
                 for y in range(cont, i*size_group):
                     student =  students[y]
                     group["members"].append({"id_user": student.id, "username": student.username, 
@@ -491,7 +505,7 @@ def create_groups(id_course):
                         cont += 1
                         cont2 += 1
                 else:
-                    group = {"id_course": id_course, "name": "Group " + str(i), "members": []}
+                    group = {"id_course": id_course, "name": groupNames[settings.DEFAULT_LANGUAGE] + str(i), "members": []}
                     for i in range(cont, len(students)):
                         student =  students[cont]
                         group["members"].append({"id_user": student.id, "username": student.username, 
@@ -503,39 +517,40 @@ def create_groups(id_course):
                     groups.append(group)
 
             # Create topics for each group
-            course = Course.objects.filter(id=id_course)[:1].get()
-            split_result = re.split(r'([0-9]+)', course.forum_slug)
-            cid = split_result[1]
-            
-            for group in groups:
-                content = _(u"This is the topic for ") + group["name"] + _(u" where you can comment and help other team members")
-                data = {
-                    "uid": 1,
-                    "title": group["name"],
-                    "content": content,
-                    "cid": cid
-                }
-                timestamp = int(round(time.time() * 1000))
-                authhash = hashlib.md5(settings.FORUM_API_SECRET + str(timestamp)).hexdigest()
-                headers = {
-                    "Content-Type": "application/json",
-                    "auth-hash": authhash,
-                    "auth-timestamp": timestamp
-                }
+            if course.forum_slug:
+                course = Course.objects.filter(id=id_course)[:1].get()
+                split_result = re.split(r'([0-9]+)', course.forum_slug)
+                cid = split_result[1]
                 
-                if settings.FEATURE_FORUM:
-                    try:
-                        r = requests.post(settings.FORUM_URL + "/api2/topics", data=json.dumps(data), headers=headers)
-                        if r.status_code == requests.codes.ok:
-                            group["forum_slug"] = r.json()["slug"]
-                            print "  --> Topic for Group '" + group["name"] + "' created succesfully."
-                        else:
-                            print "  --> Could no create a topic for Group '" + group["name"] + "'. Server returns error code " + r.status_code + "."
-                            print r.text
+                for group in groups:
+                    content = _(u"This is the topic for ") + group["name"] + _(u" where you can comment and help other team members")
+                    data = {
+                        "uid": 1,
+                        "title": group["name"],
+                        "content": content,
+                        "cid": cid
+                    }
+                    timestamp = int(round(time.time() * 1000))
+                    authhash = hashlib.md5(settings.FORUM_API_SECRET + str(timestamp)).hexdigest()
+                    headers = {
+                        "Content-Type": "application/json",
+                        "auth-hash": authhash,
+                        "auth-timestamp": timestamp
+                    }
+                    
+                    if settings.FEATURE_FORUM:
+                        try:
+                            r = requests.post(settings.FORUM_URL + "/api2/topics", data=json.dumps(data), headers=headers)
+                            if r.status_code == requests.codes.ok:
+                                group["forum_slug"] = r.json()["slug"]
+                                print "  --> Topic for Group '" + group["name"] + "' created succesfully."
+                            else:
+                                print "  --> Could no create a topic for Group '" + group["name"] + "'. Server returns error code " + r.status_code + "."
+                                print r.text
 
-                    except:
-                        print "Error creating course forum topic"
-                        print "Unexpected error:", sys.exc_info()
+                        except:
+                            print "Error creating course forum topic"
+                            print "Unexpected error:", sys.exc_info()
 
             mongodb.get_db().get_collection('groups').insert(groups)
 
@@ -578,3 +593,45 @@ def change_user_group(id_user, id_group, new_id_group, pos_lat=0.0, pos_lon=0.0)
     activity_entry = {"id_course": group["id_course"], "id_user": id_user, "former_id_group": ObjectId(id_group), "new_id_group": ObjectId(new_id_group), "timestamp": timestamp, "lat": pos_lat, "lon": pos_lon}
     groupsActivityCollection.insert(activity_entry)
 
+def get_course_students_csv(course):
+    course_file = StringIO.StringIO()
+
+    course_csv = csv.writer(course_file, quoting=csv.QUOTE_ALL)
+    headers = ["first_name", "last_name", "email"]
+    course_csv.writerow(headers)
+
+    h = HTMLParser()
+    for student in course.students.all():
+        row = []
+        for field in headers:
+            fieldvalue = getattr(student, field)
+            row.append(h.unescape(fieldvalue).encode("utf-8", "replace"))
+        course_csv.writerow(row)
+
+    return course_file.getvalue()
+
+def create_kq_activity(kq, user):
+    activityCollection = mongodb.get_db().get_collection('activity')
+    kq_activity = {
+        "course_id": kq.unit.course.id,
+        "unit_id": kq.unit.id,
+        "kq_id": kq.id,
+        "user_id": user.id,
+        "timestamp": int(round(time.time() * 1000)),
+        "lat": 0.0,
+        "lon": 0.0
+    }
+    kq_key = {
+        "course_id": kq.unit.course.id,
+        "unit_id": kq.unit.id,
+        "kq_id": kq.id,
+        "user_id": user.id
+    }
+    activityCollection.update(kq_key, { '$setOnInsert': kq_activity}, upsert=True);
+
+def has_user_passed_course(user, course):
+    passed = False
+    total_mark, units_info = get_course_mark(course, user)
+    if course.threshold is not None and float(course.threshold) <= total_mark:
+        passed = True
+    return passed

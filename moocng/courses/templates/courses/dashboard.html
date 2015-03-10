@@ -5,7 +5,7 @@
 {% block nav-course-overview %}class="active"{% endblock %}
 
 {% block extraheader %}
-<link rel="alternate" type="application/rss+xml" href="{% url announcements_feed course.slug %}" />
+<link rel="alternate" type="application/rss+xml" title="{% trans 'Announcements feed' %}" href="{% url announcements_feed course.slug %}" />
 {% endblock %}
 
 {% block content %}
@@ -28,11 +28,15 @@
 									</ol>
 								{% endif %}
 								</li>
+							{% empty %}
+								<li class="empty">{% trans "There is no course content yet" %}</li>
 							{% endfor %}
 						</ol>
+						{% if unit_list|length > 0 %}
 						<div class="bottom-bar">
 							<a href="{% url course_syllabus course.slug %}" class="button pull-right"><img src="{{ STATIC_URL }}/img/ECO_icon_toc.svg">{% trans "View full syllabus" %}</a>
 						</div>
+						{% endif %}
 					</div>
 				</div>
 			</div>
@@ -44,11 +48,13 @@
 					<div class="content">
 						<ul class="tabs">
 							<li class="selected">
-								<h4>{% trans "Personal" %}<span><strong>{{ tasks_done }}</strong>/{{ task_list|length}}</span></h4>
-								<div class="content">
+								<h4>{% trans "Personal" %}<span><strong>{{ tasks_done }}</strong>/{{ task_list|length }}</span></h4>
+								<div class="content feed">
 									<ol>
 										{% for task in task_list %}
 										<li class="{% if task.done %} done {% endif %}"><a href="{% url course_classroom course.slug %}#unit{{ task.item.kq.unit_id }}/kq{{ task.item.kq.id }}/{{task.type}}">{{ task.title }}</a></li>
+										{% empty %}
+										<li class="empty">{% trans "There is no tasks yet" %}</li>
 										{% endfor %}
 									</ol>
 								</div>
@@ -64,12 +70,33 @@
 								</div>
 							</li>-->
 						</ul>
+						{% with task_list|length as tasks_num %}
+						{% if tasks_num > 0 %}
+						<div class="bottom-bar">
+							{% if tasks_done == 0 %}
+								{% if next_task %}
+									<a class="button pull-right" href="{% url course_classroom course.slug %}#unit{{ next_task.item.kq.unit_id }}/kq{{ next_task.item.kq.id }}/{{next_task.type}}">{% trans "Do my first task" %}<img src="{{ STATIC_URL }}/img/ECO_icon_flecha_enlace.svg"></a>
+								{% else %}
+									<a class="button pull-right" >{% trans "You have not completed any task yet" %}.</a>
+								{% endif %}
+							{% elif tasks_done < tasks_num %}
+								{% if next_task %}
+									<a class="button pull-right" href="{% url course_classroom course.slug %}#unit{{ next_task.item.kq.unit_id }}/kq{{ next_task.item.kq.id }}/{{next_task.type}}">{% trans "Do the next task" %}<img src="{{ STATIC_URL }}/img/ECO_icon_flecha_enlace.svg"></a>
+								{% else %}
+									<a class="button pull-right" >{% blocktrans %}You have done {{ tasks_done }} tasks of {{ tasks_num }}{% endblocktrans %}.</a>
+								{% endif %}
+							{% else %}
+								<a class="button pull-right" >{% trans "Congratulations, you have completed all your current tasks!" %}</a>
+							{% endif %}
+						</div>
+						{% endif %}
+						{% endwith %}
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="row">
-			<!--<div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
+			<div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
 				<div class="dash-box">
 					<div class="title">
 						<h3>{% trans "News feed" %}</h3>
@@ -80,7 +107,28 @@
 								<h4>{% trans "Microblogging" %}</h4>
 								<div class="content feed">
 									<ul>
-										<li class="read">
+										{% for post in posts_list %}
+										<li>
+											{% url profile_posts post.username|cut:"@" as author_profile_url %}
+											<a href="{{ author_profile_url }}"><img src="{{ post.gravatar }}"></a>
+											<div>
+												<a href="{{ author_profile_url }}"><h5>{{ post.first_name }} {{ post.last_name }} <span>{{ post.username }}</span></h5></a>
+												<p class="date">
+													{% if post.original_date %}
+														{{post.original_date}}
+													{% else %}
+														{{post.date}}
+													{% endif %}
+												</p>
+												{% autoescape off %}
+												<p class="text">{{ post.text }}</p>
+												{% endautoescape %}
+											</div>
+										</li>
+										{% empty %}
+										<li class="empty">{% trans "There is no posts yet" %}</li>
+										{% endfor %}
+										<!--<li class="read">
 											<img src="{{ STATIC_URL }}img/profile_hector.png">
 											<div>
 												<h5>Héctor García <span>@hectorg</span></h5>
@@ -103,11 +151,11 @@
 												<p class="date">20 jul 2014</p>
 												<p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<span class="hashtag">#UNED_geocart01</span></p>
 											</div>
-										</li>
+										</li>-->
 									</ul>
 								</div>
 							</li>
-							<li>
+							<!--<li>
 								<h4>{% trans "Forum" %}</h4>
 								<div class="content feed">
 									<ul>
@@ -137,10 +185,10 @@
 										</li>
 									</ul>
 								</div>
-							</li>
+							</li>-->
 						</ul>
 						<div class="bottom-bar">
-							<a href="#" class="button pull-right">@raul.yeguas<img src="{{ STATIC_URL }}/img/icon_goto.png"></a>
+							<a href="{% url profile_posts %}" class="button pull-right">@{{ user.username }}<img src="{{ STATIC_URL }}/img/ECO_icon_flecha_enlace.svg"></a>
 						</div>
 					</div>
 				</div>
@@ -156,7 +204,18 @@
 								<h4>{% trans "General" %}</h4>
 								<div class="content feed">
 									<ul>
-										<li class="wiki">
+										{% for announcement in announcements %}
+										<li class="comment">
+											<div>
+												<h5><a href="{% url announcement_detail course.slug announcement.id announcement.slug %}">{{announcement.title}}</a></h5>
+												<p class="date">{{announcement.datetime|date:'d-m-Y H:i'}}</p>
+												<!--{% autoescape off %}
+												<div class="text block">{{ announcement.content }}</div>
+												{% endautoescape %}-->
+											</div>
+										</li>
+										{% endfor %}
+										<!--<li class="wiki">
 											<img src="{{ STATIC_URL }}img/profile_hector.png">
 											<div>
 												<h5>Juan Pedro Pérez <span>@juanpp</span></h5>
@@ -187,11 +246,11 @@
 												<p class="date">20 jul 2014</p>
 												<p class="text">Le gusta el tema <a href="#">"3.1 Base del mapa..."</a><span class="hashtag">#UNED_geocart01</span></p>
 											</div>
-										</li>
+										</li>-->
 									</ul>
 								</div>
 							</li>
-							<li>
+							<!--<li>
 								<h4>{% trans "Team" %}</h4>
 								<div class="content feed">
 									<ul>
@@ -229,14 +288,14 @@
 										</li>
 									</ul>
 								</div>
-							</li>
+							</li>-->
 						</ul>
-						<div class="bottom-bar">
+						<!--<div class="bottom-bar">
 							<a href="#" class="button pull-right">Ver todas las notificaciones<img src="{{ STATIC_URL }}/img/icon_notification.png"></a>
-						</div>
+						</div>-->
 					</div>
 				</div>
-			</div>-->
+			</div>
 		</div>		
 	</div>
 	<!--<div class="popup">
@@ -254,13 +313,14 @@
 				var $dash = $(value);
 				var width = $dash.children('.content').first().outerWidth();
 				$dash.find('.content .tabs .content').width(width);
-				var height = $dash.find('.content ol')[0].scrollHeight;
+				//var $heightElement = $dash.find('.content ol')[0] || $dash.find('.content ul')[0]
+				//var height = $heightElement.scrollHeight;
 				var bottombar = $dash.find('.bottom-bar');
-				if (bottombar.length > 0){
+				/*if (bottombar.length > 0){
 					height += bottombar.outerHeight() + 5;
 				}
 				$dash.children('.content').first().height(height);
-				$dash.find('.content .tabs .content').first().height(height);
+				$dash.find('.content .tabs .content').first().height(height);*/
 			});
 		}
 		

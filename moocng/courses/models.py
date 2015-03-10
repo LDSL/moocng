@@ -47,6 +47,8 @@ from moocng.mongodb import get_db
 from moocng.videos.tasks import process_video_task
 from moocng.media_contents import get_media_content_types_choices, media_content_extract_id
 
+from itertools import groupby
+
 logger = logging.getLogger(__name__)
 
 
@@ -133,6 +135,13 @@ class Course(Sortable):
     certification_available = models.BooleanField(
         default=False,
         verbose_name=_(u'Certification available'))
+    external_certification_available = models.BooleanField(
+        default=False,
+        verbose_name=_(u'External certification available'))
+    certification_file = models.FileField(verbose_name=_(u'Certification file'),
+        upload_to='certifications',
+        null=True,
+        blank=True)
     completion_badge = models.ForeignKey(
         Badge, blank=True, null=True, verbose_name=_(u'Completion badge'),
         related_name='course')
@@ -146,6 +155,7 @@ class Course(Sortable):
         ('d', _(u'Draft')),
         ('p', _(u'Published')),
         ('h', _(u'Hidden')),
+        ('o', _(u'Always Open')),
     )
 
     status = models.CharField(
@@ -201,6 +211,9 @@ class Course(Sortable):
 
     group_max_size = models.PositiveSmallIntegerField(verbose_name=_('Maximum number of members allowed for each group'),
         default=settings.DEFAULT_GROUP_MAX_SIZE)
+
+    official_course = models.BooleanField(verbose_name=_('Is this course official?'),
+                                         default=False)
 
     objects = CourseManager()
 
@@ -282,7 +295,7 @@ class Course(Sortable):
     @property
     def is_public(self):
         # If you change it, you should change the public method in CourseQuerySet class
-        return self.status in ['p', 'h']
+        return self.status in ['p', 'o', 'h']
 
     @property
     def is_active(self):
@@ -297,8 +310,8 @@ class Course(Sortable):
     def is_outdated(self):
         today = datetime.date.today()
         return (self.is_public and
-                (self.end_date < today)
-                )
+                self.end_date < today and
+                self.status != 'o')
 
     def _resize_image(self, filename, size):
         """
@@ -521,7 +534,7 @@ class Unit(Sortable):
 
     UNIT_STATUSES = (
         ('d', _(u'Draft')),
-        ('l', _(u'Listable')),
+        ('l', _(u'Hidden')),
         ('p', _(u'Published')),
     )
 
@@ -549,6 +562,12 @@ class Unit(Sortable):
 
     def natural_key(self):
         return self.course.natural_key() + (self.title, )
+
+    def is_scorable(self):
+        if not settings.COURSES_USING_OLD_TRANSCRIPT:
+            return self.unittype != 'n'
+        else:
+            return true
 
 
 def unit_invalidate_cache(sender, instance, **kwargs):
@@ -760,7 +779,8 @@ class Attachment(models.Model):
     kq = models.ForeignKey(KnowledgeQuantum,
                            verbose_name=_(u'Nugget'))
     attachment = models.FileField(verbose_name=_(u'Attachment'),
-                                  upload_to='attachments')
+                                  upload_to='attachments',
+                                  max_length=200)
 
     objects = AttachmentManager()
 
@@ -821,21 +841,39 @@ class Question(models.Model):
         return ugettext(u'{0} - Question {1}').format(self.kq, self.id)
 
     def is_correct(self, answer):
-        correct = True
+        result = 0.0
         if answer['replyList'] is not None:
             replies = dict([(int(r['option']), r['value'])
                             for r in answer['replyList']])
         else:
             replies = {}
 
-        for option in self.option_set.all():
-            reply = replies.get(option.id, None)
-            if reply is None:
-                return False
+        options_dict = {}
+        results_dict = {}
+        for k, g in groupby(self.option_set.all(), lambda x: x.name):
+            opt_list = list(g)
+            if k in options_dict:
+                options_dict[k] = options_dict[k] + opt_list
+            else:
+                options_dict[k] = opt_list
+            results_dict[k] = 0.0
 
-            correct = correct and option.is_correct(reply)
+        for key, value in options_dict.iteritems():
+            correct_q = True
+            for option in value:
+                reply = replies.get(option.id, None)
+                if reply is None:
+                    return False
+                correct_q = correct_q and option.is_correct(reply)
 
-        return correct
+            result_q = 10.0/len(options_dict) if correct_q else 0.0
+            results_dict[key] = result_q
+            result += result_q
+
+        print '\nResults_dict : ' + str(results_dict)
+        print '\nResult : ' + str(result)
+
+        return result
 
     def is_completed(self, user, visited=None):
         db = get_db()
@@ -886,6 +924,10 @@ class Option(models.Model):
     feedback = models.CharField(
         verbose_name=_(u'Solution feedback for the student'), max_length=200,
         blank=True, null=False)
+    order = models.PositiveSmallIntegerField(verbose_name=_(u'Order'),
+                                            null=True)
+    name = models.CharField(verbose_name=_(u'Group name'), max_length=100,
+        blank=True, null=False)
     objects = OptionManager()
 
     class Meta:
@@ -894,19 +936,20 @@ class Option(models.Model):
         unique_together = ('question', 'x', 'y')
 
     def __unicode__(self):
-        return ugettext(u'{0} at {1} x {2}').format(self.optiontype, self.x, self.y)
+        return ugettext(u'{0}.{1} ({2}: {3}) at {4} x {5}').format(self.id, self.optiontype, self.name, self.text, self.x, self.y)
 
     def natural_key(self):
         return self.question.natural_key() + (self.x, self.y)
 
     def is_correct(self, reply):
-        if self.optiontype == 'l':
+        if self.optiontype == 'l' or self.optiontype == 'q':
             return True
         elif self.optiontype == 't':
             if not hasattr(reply, 'lower'):
                 logger.error('Error at option %s - Value %s - Solution %s' % (str(self.id), str(reply), self.solution))
                 return True
             else:
+                print self.solution.lower() +' vs '+ reply.lower()
                 return reply.lower() == self.solution.lower()
         else:
             return bool(reply) == (self.solution.lower() == u'true')

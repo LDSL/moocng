@@ -63,7 +63,7 @@
 		});
 
 		var load = true;
-		var page = 11;
+		var page = 10;
 		$(window).scroll(function() {
 		   if($(window).scrollTop() + $(window).height() == $(document).height() && load) {
 		   		load = false;	
@@ -72,7 +72,7 @@
 			    	success: function(response) {
 			    		if(response.trim() != ""){
 			    			$(".posts").append(response)
-			    			page += 11;
+			    			page += 10;
 			    			load = true;
 			    		}
 			    	}

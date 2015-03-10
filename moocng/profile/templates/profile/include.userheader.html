@@ -32,7 +32,7 @@
 				                    </g>
 				                </g>
 				            </svg>
-							<p>{{ badges }}</p>
+							<p>{{ badges_count }}</p>
 						</div>
 						<div class="profile-data">
 							<h4 class="noLowRes">{% trans "Karma" %}</h4>
@@ -51,15 +51,17 @@
 					<ul class="menu">
 
 						<li>
-							{% url profile_posts id as url_posts %}
+							{% url profile_posts user_view_profile.username as url_posts %}
 							{% url profile_posts as url_posts2 %}
-							<a href="{{ url_posts }}" {% if request.path == url_posts or  request.path == url_posts2 %} class="selected" {% endif %}>
+							{% url profile_posts_search query as url_post_search %}
+							{% url profile_posts_hashtag query as url_post_hashtag %}
+							<a href="{{ url_posts }}" {% if request.path == url_posts or request.path == url_posts2 or request.path == url_post_search or request.path == url_post_hashtag %} class="selected" {% endif %}>
 								{% trans "Posts" %}
 							</a>
 						</li>
 
 						<li>
-							{% url profile_user id as url_profile %}
+							{% url profile_user user_view_profile.username as url_profile %}
 							{% url profile_user as url_profile2 %}
 							<a href="{{ url_profile }}" {% if request.path == url_profile or  request.path == url_profile2 %} class="selected" {% endif %}>
 								{% trans "Profile" %}
@@ -78,10 +80,17 @@
 							</a>
 						</li>-->
 						<li>
-							{% url profile_courses id as url_courses %}
+							{% url profile_courses user_view_profile.username as url_courses %}
 							{% url profile_courses as url_courses2 %}
 							<a href="{{ url_courses }}" {% if request.path == url_courses or  request.path == url_courses2%} class="selected" {% endif %}>
 								{% trans "Courses" %}
+							</a>
+						</li>
+						<li>
+							{% url profile_badges user_view_profile.username as url_badges %}
+							{% url profile_badges as url_badges2 %}
+							<a href="{{ url_badges }}" {% if request.path == url_badges or request.path == url_badges2 %} class="selected" {% endif %}>
+								{% trans "Badges" %}
 							</a>
 						</li>
 						<!--<li>

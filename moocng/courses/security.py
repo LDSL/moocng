@@ -57,12 +57,12 @@ def can_user_view_course(course, user):
         except CourseTeacher.DoesNotExist:
             pass
 
-    # at this point you don't have permissions to see a course
+    # at this point you don't have permissions to see a course unless is always open
     if course.is_public:
         if(course.is_outdated):
             return False, 'not_active_outdated'
         else:
-            return False, 'not_active_yet'
+            return True, 'is_always_open'
     return False, 'not_active'
 
 
@@ -86,6 +86,7 @@ def check_user_can_view_course(course, request):
                 'is_staff': _(u'This course is not public. Your have access to it because you are staff member'),
                 'is_superuser': _(u'This course is not public. Your have access to it because you are a super user'),
                 'is_teacher': _(u'This course is not public. Your have access to it because you are a teacher of the course'),
+                'is_always_open': _(u'This course is always open, but the last edition has finished. <a id="alwaysopen_info" href="#">More info</a>.'),
             }
             messages.warning(request, msg_table[reason])
     else:
@@ -113,6 +114,7 @@ def get_course_if_user_can_view_and_permission(course_slug, request):
                 'is_staff': _(u'This course is not public. Your have access to it because you are staff member'),
                 'is_superuser': _(u'This course is not public. Your have access to it because you are a super user'),
                 'is_teacher': _(u'This course is not public. Your have access to it because you are a teacher of the course'),
+                'is_always_open': _(u'This course is always open, but the last edition has finished. <a id="alwaysopen_info" href="#">More info</a>.'),
             }
             messages.warning(request, msg_table[reason])
     else:
@@ -140,13 +142,13 @@ def get_courses_available_for_user(user):
     """
     if user.is_superuser or user.is_staff:
         # Return every course that hasn't finished
-        return Course.objects.exclude(end_date__lt=date.today())
+        return Course.objects.exclude(end_date__lt=date.today(), status__in=['p','d','h'])
     elif user.is_anonymous() or not CourseTeacher.objects.filter(teacher=user).exists():
         # Regular user, return only the published courses
-        return Course.objects.exclude(end_date__lt=date.today()).filter(status='p')
+        return Course.objects.exclude(end_date__lt=date.today(), status__in=['p','d','h']).filter(Q(status='p') | Q(status='o')).distinct()
     else:
         # Is a teacher, return draft courses if he is one of its teachers
-        return Course.objects.exclude(end_date__lt=date.today()).filter(Q(status='p') | Q(status='d', courseteacher__teacher=user)).distinct()
+        return Course.objects.exclude(end_date__lt=date.today(), status__in=['p','d','h']).filter(Q(status='p') | Q(status='o') | Q(status='d', courseteacher__teacher=user)).distinct()
 
 
 def get_related_courses_available_for_user(course, user):
@@ -164,13 +166,13 @@ def get_related_courses_available_for_user(course, user):
         
         if user.is_superuser or user.is_staff:
         # Return every course that hasn't finished
-            return Course.objects.exclude(end_date__lt=date.today()).filter(categories__name__contains=category).distinct()
+            return Course.objects.exclude(end_date__lt=date.today(), status__in=['p','d','h']).filter(categories__name__contains=category).distinct()
         elif user.is_anonymous() or not CourseTeacher.objects.filter(teacher=user).exists():
             # Regular user, return only the published courses
-            return Course.objects.exclude(end_date__lt=date.today()).filter(status='p').filter(categories__name__contains=category).distinct()
+            return Course.objects.exclude(end_date__lt=date.today(), status__in=['p','d','h']).filter(Q(status='p') | Q(status='o')).distinct().filter(categories__name__contains=category).distinct()
         else:
             # Is a teacher, return draft courses if he is one of its teachers
-            return Course.objects.exclude(end_date__lt=date.today()).filter(Q(status='p') | Q(status='d', courseteacher__teacher=user)).distinct().filter(categories__name__contains=category)
+            return Course.objects.exclude(end_date__lt=date.today(), status__in=['p','d','h']).filter(Q(status='p') | Q(status='o') | Q(status='d', courseteacher__teacher=user)).distinct().filter(categories__name__contains=category)
     else:
         return []
 
@@ -189,7 +191,7 @@ def get_courses_user_is_enrolled(user):
 
     else:
         # Is a teacher, return draft courses if he is one of its teachers
-        return Course.objects.exclude(end_date__lt=date.today()).filter(Q(status='p', coursestudent__student=user) | Q(status='d', courseteacher__teacher=user)).distinct()
+        return Course.objects.exclude(end_date__lt=date.today(), status__in=['p','d','h']).filter(Q(status='p', coursestudent__student=user) | Q(status='o', coursestudent__student=user) | Q(status='d', courseteacher__teacher=user)).distinct()
 
 
 def get_units_available_for_user(course, user, is_overview=False):
@@ -205,18 +207,20 @@ def get_units_available_for_user(course, user, is_overview=False):
         return course.unit_set.all()
     elif user.is_anonymous():
         if is_overview:
-            return course.unit_set.filter(Q(status='p') | Q(status='l'))
+            return course.unit_set.filter(Q(status='p') | Q(status='o') | Q(status='l'))
         else:
             return []
     else:
         if is_overview:
             return Unit.objects.filter(
                 Q(status='p', course=course) |
+                Q(status='o', course=course) |
                 Q(status='l', course=course) |
                 Q(status='d', course=course, course__courseteacher__teacher=user, course__courseteacher__course=course)).distinct()
         else:
             return Unit.objects.filter(
                 Q(status='p', course=course) |
+                Q(status='o', course=course) |
                 Q(status='l', course=course, course__courseteacher__teacher=user, course__courseteacher__course=course) |
                 Q(status='d', course=course, course__courseteacher__teacher=user, course__courseteacher__course=course)).distinct()
 
@@ -224,6 +228,7 @@ def get_units_available_for_user(course, user, is_overview=False):
 def get_tasks_available_for_user(course, user, is_overview=False):
     tasks = []
     numdone = 0
+    next_task = None
 
     for u in get_units_available_for_user(course, user):
         for q in KnowledgeQuantum.objects.filter(unit_id=u.id):
@@ -248,15 +253,16 @@ def get_tasks_available_for_user(course, user, is_overview=False):
                 }
                 if done:
                     numdone += 1
+                elif not next_task:
+                	next_task = task
                 tasks.append(task)
-                
-    return tasks, numdone
+    return tasks, numdone, next_task
 
 def get_course_progress_for_user(course, user):
     kq_passed = 0
     kq_total = 0
 
-    for u in get_units_available_for_user(course, user):
+    for u in get_units_available_for_user(course, user, True):
         for q in KnowledgeQuantum.objects.filter(unit_id=u.id):
             kq_total += 1
             if q.is_completed(user):

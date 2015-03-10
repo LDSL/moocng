@@ -798,7 +798,7 @@ code {
 
 .teacheradmin-question fieldset textarea {
     height: auto;
-    width: auto;
+    width: 100%;
 }
 
 .teacheradmin-stats .pie.viewport svg {
@@ -967,6 +967,11 @@ input[type="checkbox"] {
         margin-left: 10px;
         line-height: 25px;
         font-size: 13px;
+
+        span {
+            display: block;
+            cursor: pointer;
+        }
     }
     
     textarea{
@@ -998,12 +1003,17 @@ input[type="checkbox"] {
                     padding-left: 30px;
                 }
 
-                .delteBadge{
+                .editBadge{
+                    margin-left: 100px;
+                    cursor: pointer;
+                }
+
+                .deleteBadge{
                     -ms-transform: rotate(45deg);
                     -webkit-transform: rotate(45deg);
                     transform: rotate(45deg);
                     padding-top: 3px;
-                    margin-left: 100px;
+                    margin-left: 20px;
                     cursor: pointer;
                 }
             }
@@ -1102,5 +1112,36 @@ footer {
         ul li {
             margin-left: 20px;
         }
+    }
+}
+
+.spoiler {
+    margin-bottom: 10px;
+
+    .header {
+
+    }
+
+    .content {
+        overflow-y: hidden;
+        overflow-x: auto;
+        max-height: 0;
+        padding: 0;
+        transition: max-height .5s ease-in-out, padding .01s ease-in-out .5s;
+        background: @neutral_light_3;
+    }
+
+    &.open {
+        .content {
+            max-height: calc(~'100vh - 200px');
+            padding: 5px;
+            transition: max-height .5s ease-in-out, padding .01s ease-in-out;
+        }
+    }
+}
+
+.unavailable {
+    input {
+        background-color: @neutral_light_2;
     }
 }

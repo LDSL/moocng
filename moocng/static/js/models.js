@@ -334,7 +334,9 @@ MOOC.models.Option = Backbone.Model.extend({
         height: 12,
         solution: null,
         text: "",
-        feedback: null
+        feedback: null,
+        order: 0,
+        name: ""
     },
 
     /**
@@ -376,7 +378,13 @@ MOOC.models.Option = Backbone.Model.extend({
 });
 
 MOOC.models.OptionList  = MOOC.models.TastyPieCollection.extend({
-    model: MOOC.models.Option
+    model: MOOC.models.Option,
+    initialize: function(){
+        this.sort({reset: true});
+    },
+    comparator: function(model){
+        return model.get('order');
+    }
 });
 
 MOOC.models.Question = Backbone.Model.extend({
@@ -628,6 +636,7 @@ MOOC.models.KnowledgeQuantum = Backbone.Model.extend({
         asset_availability: null,
         peer_review_score: null,
         marked: false,
+        mark: 0,
         attachmentList: null,
         transcriptionList: null,
         questionInstance: null,
@@ -660,6 +669,7 @@ MOOC.models.KnowledgeQuantum = Backbone.Model.extend({
         model2send.unset("completed");
         model2send.unset("correct");
         model2send.unset("marked");
+        model2send.unset("mark");
         model2send.unset("questionInstance");
         model2send.unset("attachmentList");
         model2send.unset("transcriptionList");

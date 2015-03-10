@@ -33,15 +33,18 @@ from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 from datetime import date
 import requests
+from jsonrpc_requests import Server, TransportError
 import json
 import sys
+import base64
 
 from moocng.badges.models import Award
 from moocng.courses.models import Course, CourseTeacher, Announcement,KnowledgeQuantum
 from moocng.courses.utils import (get_unit_badge_class, is_course_ready,
                                   is_teacher as is_teacher_test,
                                   send_mail_wrapper,get_sillabus_tree, create_groups,
-                                  get_group_by_user_and_course, get_groups_by_course, change_user_group)
+                                  get_group_by_user_and_course, get_groups_by_course, change_user_group,
+                                  create_kq_activity, update_course_mark_by_user, has_user_passed_course)
 
 from moocng.courses.marks import get_course_mark, get_course_intermediate_calculations, normalize_unit_weight
 from moocng.courses.security import (get_course_if_user_can_view_or_404,
@@ -56,6 +59,7 @@ from moocng.courses.tasks import clone_activity_user_course_task
 from moocng.courses.forms import CourseRatingForm
 from moocng.slug import unique_slugify
 from moocng.utils import use_cache
+from moocng.profile.models import search_posts
 
 import hashlib
 import time
@@ -155,6 +159,9 @@ def course_add(request):
                     owner = User.objects.get(email=email_or_id)
                 except (User.DoesNotExist):
                     messages.error(request, _('That user doesn\'t exists, the owner must be an user of the platform'))
+                    return HttpResponseRedirect(reverse('course_add'))
+                except (User.MultipleObjectsReturned):
+                    messages.error(request, _('There is more than a teacher with this name or email, please select other or contact with support.'))
                     return HttpResponseRedirect(reverse('course_add'))
             except ValidationError:
                 # is name plus id
@@ -281,15 +288,20 @@ def course_overview(request, course_slug):
     else:
         rating_obj = 0
 
-    task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    tasks = get_tasks_available_for_user(course, request.user)
+    
+    if is_enrolled:
+        has_passed= has_user_passed_course(request.user, course)
+    else:
+        has_passed= False
 
     return render_to_response('courses/overview.html', {
         'course': course,
         'permission': permission,
         'progress': get_course_progress_for_user(course, request.user),
         'rating': get_course_rating_for_user(course, request.user),
-        'task_list': task_list,
-        'tasks_done': tasks_done,
+        'task_list': tasks[0],
+        'tasks_done': tasks[1],
         'relatedcourses': relatedcourses,
         'organizers': organizers,
         'rating': rating_obj,
@@ -300,7 +312,8 @@ def course_overview(request, course_slug):
         'course_teachers': course_teachers,
         'announcements': announcements,
         'use_old_calculus': settings.COURSES_USING_OLD_TRANSCRIPT,
-        'is_overview' : True
+        'is_overview' : True,
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -347,21 +360,27 @@ def course_classroom(request, course_slug):
         'file_max_size': settings.PEER_REVIEW_FILE_MAX_SIZE,
     }
 
-    task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    tasks = get_tasks_available_for_user(course, request.user)
 
     group = get_group_by_user_and_course(request.user.id, course.id)
+
+    if is_enrolled:
+        has_passed= has_user_passed_course(request.user, course)
+    else:
+        has_passed= False
 
     return render_to_response('courses/classroom.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
-        'task_list': task_list,
-        'tasks_done': tasks_done,
+        'task_list': tasks[0],
+        'tasks_done': tasks[1],
         'unit_list': units,
         'is_ready' : is_ready,
         'is_enrolled': is_enrolled,
         'is_teacher': is_teacher_test(request.user, course),
         'peer_review': peer_review,
         'group': group,
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -399,7 +418,11 @@ def course_dashboard(request, course_slug):
         'file_max_size': settings.PEER_REVIEW_FILE_MAX_SIZE,
     }
 
-    task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    tasks = get_tasks_available_for_user(course, request.user)
+
+    announcements = Announcement.objects.filter(course=course).order_by('datetime').reverse()[:5]
+
+    announcements = Announcement.objects.filter(course=course).order_by('datetime').reverse()[:5]
 
     CourseRatingFormSet = formset_factory(CourseRatingForm, extra=0, max_num=1)
     if request.method == "POST":
@@ -438,19 +461,29 @@ def course_dashboard(request, course_slug):
         rating_formset = CourseRatingFormSet()
 
     group = get_group_by_user_and_course(request.user.id, course.id)
+    posts_list = search_posts(course.hashtag, 0)
+
+    if is_enrolled:
+        has_passed= has_user_passed_course(request.user, course)
+    else:
+        has_passed= False
 
     return render_to_response('courses/dashboard.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
         'unit_list': get_sillabus_tree(course,request.user, True, True),
-        'task_list': task_list,
-        'tasks_done': tasks_done,
+        'task_list': tasks[0],
+        'tasks_done': tasks[1],
+        'next_task': tasks[2],
         'is_enrolled': is_enrolled,
         'is_teacher': is_teacher,
         'is_ready' : is_ready,
         'rating_form': rating_form,
         'rating_formset': rating_formset,
         'group': group,
+        'announcements': announcements,
+        'posts_list': posts_list,
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -478,19 +511,25 @@ def course_syllabus(request, course_slug):
             'ask_admin': ask_admin,
         }, context_instance=RequestContext(request))
 
-    task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
+
+    if is_enrolled:
+        has_passed= has_user_passed_course(request.user, course)
+    else:
+        has_passed= False
 
     return render_to_response('courses/syllabus.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
-        'task_list': task_list,
-        'tasks_done': tasks_done,
+        'task_list': tasks[0],
+        'tasks_done': tasks[1],
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'unit_list': get_sillabus_tree(course,request.user,minversion=False),
         'group': group,
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -512,7 +551,7 @@ def course_group(request, course_slug):
             'ask_admin': ask_admin,
         }, context_instance=RequestContext(request))
 
-    task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    tasks = get_tasks_available_for_user(course, request.user)
     
     groups = []
     group = {}
@@ -525,17 +564,22 @@ def course_group(request, course_slug):
             if(len(g["members"]) <= course.group_max_size + (course.group_max_size * settings.GROUPS_UPPER_THRESHOLD / 100)):
                 groups.append(g)
 
+    if is_enrolled:
+        has_passed= has_user_passed_course(request.user, course)
+    else:
+        has_passed= False
 
     return render_to_response('courses/group.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
-        'task_list': task_list,
-        'tasks_done': tasks_done,
+        'task_list': tasks[0],
+        'tasks_done': tasks[1],
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
-        'groups':groups
+        'groups':groups,
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -557,18 +601,24 @@ def course_forum(request, course_slug):
             'ask_admin': ask_admin,
         }, context_instance=RequestContext(request))
 
-    task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
+
+    if is_enrolled:
+        has_passed= has_user_passed_course(request.user, course)
+    else:
+        has_passed= False
 
     return render_to_response('courses/forum.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
-        'task_list': task_list,
-        'tasks_done': tasks_done,
+        'task_list': tasks[0],
+        'tasks_done': tasks[1],
         'is_enrolled' : is_enrolled,  
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -590,18 +640,24 @@ def course_calendar(request, course_slug):
             'ask_admin': ask_admin,
         }, context_instance=RequestContext(request))
 
-    task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
+
+    if is_enrolled:
+        has_passed= has_user_passed_course(request.user, course)
+    else:
+        has_passed= False
 
     return render_to_response('courses/calendar.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
-        'task_list': task_list,
-        'tasks_done': tasks_done,
+        'task_list': tasks[0],
+        'tasks_done': tasks[1],
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -623,18 +679,24 @@ def course_wiki(request, course_slug):
             'ask_admin': ask_admin,
         }, context_instance=RequestContext(request))
 
-    task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
+
+    if is_enrolled:
+        has_passed= has_user_passed_course(request.user, course)
+    else:
+        has_passed= False
 
     return render_to_response('courses/wiki.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
-        'task_list': task_list,
-        'tasks_done': tasks_done,
+        'task_list': tasks[0],
+        'tasks_done': tasks[1],
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -648,16 +710,20 @@ def course_teachers(request, course_slug):
     is_ready, ask_admin = is_course_ready(course)
     is_teacher = is_teacher_test(request.user, course)
 
-    task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
+    if is_enrolled:
+        has_passed= has_user_passed_course(request.user, course)
+    else:
+        has_passed= False
 
     # if not is_ready and not request.user.is_superuser:
     if not is_ready and not is_teacher:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
-            'task_list': task_list,
-            'tasks_done': tasks_done,
+            'task_list': tasks[0],
+            'tasks_done': tasks[1],
             'is_enrolled': is_enrolled,
             'ask_admin': ask_admin,
         }, context_instance=RequestContext(request))
@@ -665,12 +731,13 @@ def course_teachers(request, course_slug):
     return render_to_response('courses/teachers.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
-        'task_list': task_list,
-        'tasks_done': tasks_done,
+        'task_list': tasks[0],
+        'tasks_done': tasks[1],
         'is_enrolled' : is_enrolled,   
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
@@ -694,21 +761,22 @@ def course_progress(request, course_slug):
 
     is_ready, ask_admin = is_course_ready(course)
 
-    task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    tasks = get_tasks_available_for_user(course, request.user)
 
     if not is_ready:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
-            'task_list': task_list,
-            'tasks_done': tasks_done,
+            'task_list': tasks[0],
+            'tasks_done': tasks[1],
             'is_enrolled': is_enrolled,
             'is_ready' : is_ready,
             'ask_admin': ask_admin,
         }, context_instance=RequestContext(request))
 
     units = []
-    for u in get_units_available_for_user(course, request.user):
+    course_units = get_units_available_for_user(course, request.user)
+    for u in course_units:
         unit = {
             'id': u.id,
             'title': u.title,
@@ -718,19 +786,66 @@ def course_progress(request, course_slug):
         }
         units.append(unit)
 
-    task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+#####################################################################################
+# TODO: Needs work to get the course score details
+    total_mark, units_info = get_course_mark(course, request.user)
+    total_weight_unnormalized, unit_course_counter, course_units = get_course_intermediate_calculations(course)
+
+    for unit_info in units_info:
+        print unit_info
+    
+    units_info_ordered = []
+    for unit in course_units:
+        uinfo = next((u for u in units_info if u['unit_id'] == unit.pk),
+                     {'relative_mark': 0, 'mark': 0})
+        uinfo['unit'] = unit
+        normalized_unit_weight = normalize_unit_weight(unit,
+                                                       unit_course_counter,
+                                                       total_weight_unnormalized)
+        uinfo['normalized_weight'] = normalized_unit_weight
+        unit_class = get_unit_badge_class(unit)
+        uinfo['badge_class'] = unit_class
+        units_info_ordered.append(uinfo)
+
+    for unit_info in units_info_ordered:
+        print unit_info
+######################################################################################
+
+    tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
+
+    cert_url = None
+    has_passed = has_user_passed_course(request.user, course)
+    if(course.certification_available):
+        print "Course threshold %s" % (course.threshold)
+        if has_passed:
+            if course.external_certification_available:
+                cert_url = settings.CERTIFICATE_URL % {
+                    'courseid': course.id,
+                    'email': request.user.email.lower()
+                }
+            badge = course.completion_badge
+            if badge is not None:
+                try:
+                    award = Award.objects.get(badge=badge, user=request.user)
+                except Award.DoesNotExist:
+                    award = Award(badge=badge, user=request.user)
+                    award.save()
 
     return render_to_response('courses/progress.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
-        'task_list': task_list,
-        'tasks_done': tasks_done,
+        'task_list': tasks[0],
+        'tasks_done': tasks[1],
         'unit_list': units,
+        'unit_list_info': units_info_ordered,
         'is_enrolled': is_enrolled,  # required due course nav templatetag
         'is_ready' : is_ready,
         'is_teacher': is_teacher_test(request.user, course),
         'group': group,
+        'passed': has_passed,
+        'cert_url': cert_url,
+        'course_mark': round(total_mark,2),
     }, context_instance=RequestContext(request))
 
 
@@ -738,18 +853,23 @@ def course_progress(request, course_slug):
 def course_extra_info(request, course_slug):
     course = get_course_if_user_can_view_or_404(course_slug, request)
     is_enrolled = course.students.filter(id=request.user.id).exists()
-    task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
+    if is_enrolled:
+        has_passed= has_user_passed_course(request.user, course)
+    else:
+        has_passed= False
 
     return render_to_response('courses/static_page.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
-        'task_list': task_list,
-        'tasks_done': tasks_done,
+        'task_list': tasks[0],
+        'tasks_done': tasks[1],
         'is_enrolled': is_enrolled,  # required due course nav templatetag
         'is_teacher': is_teacher_test(request.user, course),
         'static_page': course.static_page,
         'group': group,
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 
@@ -764,17 +884,28 @@ def announcement_detail(request, course_slug, announcement_id, announcement_slug
     """
     course = get_course_if_user_can_view_or_404(course_slug, request)
     announcement = get_object_or_404(Announcement, id=announcement_id)
-    task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+    is_ready, ask_admin = is_course_ready(course)
+    tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
+    if is_enrolled:
+        has_passed= has_user_passed_course(request.user, course)
+    else:
+        has_passed= False
 
     return render_to_response('courses/announcement.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
-        'task_list': task_list,
-        'tasks_done': tasks_done,
+        'is_enrolled': is_enrolled,  # required due course nav templatetag
+        'is_ready' : is_ready,
+        'is_teacher': is_teacher_test(request.user, course),
+        'group': group,
+        'task_list': tasks[0],
+        'tasks_done': tasks[1],
         'announcement': announcement,
         'template_base': 'courses/base_course.html',
         'group': group,
+        'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 
@@ -822,14 +953,14 @@ def transcript(request, course_slug=None):
             unit_class = get_unit_badge_class(unit)
             uinfo['badge_class'] = unit_class
             units_info_ordered.append(uinfo)
-        task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+        tasks = get_tasks_available_for_user(course, request.user)
         group = get_group_by_user_and_course(request.user.id, course.id)
         
         courses_info.append({
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
-            'task_list': task_list,
-            'tasks_done': tasks_done,
+            'task_list': tasks[0],
+            'tasks_done': tasks[1],
             'units_info': units_info_ordered,
             'mark': total_mark,
             'award': award,
@@ -877,3 +1008,57 @@ def change_group(request, id_group, id_new_group):
     change_user_group(request.user.id, id_group, id_new_group, latitude, longitude)
     return HttpResponse("true")
 
+@login_required
+def check_survey(request, course_slug, survey_id, survey_token):
+    user = request.user
+    course = get_course_if_user_can_view_or_404(course_slug, request)
+    units = get_units_available_for_user(course, user, True)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+    tasks = get_tasks_available_for_user(course, request.user)
+    is_teacher = is_teacher_test(user, course),
+    is_ready, ask_admin = is_course_ready(course)
+    group = get_group_by_user_and_course(request.user.id, course.id)
+
+    try:
+        server = Server(settings.SURVEY_API_URL, True)
+        sessionKey = server.get_session_key(settings.SURVEY_API_USER, settings.SURVEY_API_PASSWORD)
+        response = server.export_responses_by_token(sessionKey, survey_id, 'json', survey_token, 'es', 'complete')
+        server.release_session_key(sessionKey)
+    except TransportError as ex:
+        return HttpResponse(ex.args[1])
+
+    print "Response es %s" % (response)
+
+    try:
+        sliced = re.sub('<[^>]*>', '', response)
+        decoded_response = json.loads(base64.b64decode(sliced))
+        user_response = decoded_response[u'responses'][0]
+        print user_response
+        if user_response[user_response.keys()[0]][u'lastpage']:
+            template_name = 'courses/survey_completed.html'
+
+            last_unit = list(units)[-1]
+            knowledge_quantums = KnowledgeQuantum.objects.filter(unit_id=last_unit.id)
+            for kq in knowledge_quantums:
+                create_kq_activity(kq, user)
+            update_course_mark_by_user(course, user)
+
+        else:
+            template_name = 'courses/survey_not_completed.html'
+    except Exception as ex:
+        print ex
+        template_name = 'courses/survey_not_completed.html'
+
+    
+    return render_to_response(template_name, {
+        'course': course,
+        'is_enrolled' : is_enrolled,
+        'progress': get_course_progress_for_user(course, request.user),
+        'task_list': tasks[0],
+        'tasks_done': tasks[1],
+        'is_teacher': is_teacher,
+        'is_ready': is_ready,
+        'group': group,
+        'survey_token': survey_token,
+        'survey_id': survey_id,
+    }, context_instance=RequestContext(request))

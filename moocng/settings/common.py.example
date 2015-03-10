@@ -45,6 +45,8 @@ ADMINS = (
 MANAGERS = ADMINS
 
 EMAIL_SUBJECT_PREFIX = '[OpenMOOC] | '
+SUPPORT_SUBJECT_PREFIX = 'OpenMOOC Support'
+SUPPORT_EMAIL = 'support@example.com'
 
 DATABASES = {
     'default': {
@@ -59,6 +61,10 @@ DATABASES = {
 
 API_URI = 'moocng.devopenmooc.com'
 API_OFFICIAL_COURSE_TAGVALUE = 'Official'
+
+SURVEY_API_URL = 'http://survey.ecolearning.eu/index.php?r=admin/remotecontrol'
+SURVEY_API_USER = 'user'
+SURVEY_API_PASSWORD = 'pass'
 
 MONGODB_URI = 'mongodb://localhost:27017/moocng'
 
@@ -104,11 +110,15 @@ TIME_ZONE = 'Europe/Madrid'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-es'
 
 LANGUAGES = (
     ('en', gettext('English')),
     ('es', gettext('Spanish')),
+    ('it', gettext('Italian')),
+    ('pt', gettext('Portuguese')),
+    ('fr', gettext('French')),
+    ('de', gettext('German')),
 )
 
 # the default value is 'django_language' but changing this
@@ -118,6 +128,8 @@ LANGUAGE_COOKIE_NAME = 'language'
 LOCALE_PATHS = (
     os.path.join(BASEDIR, 'locale'),
 )
+
+DEFAULT_LANGUAGE = 'es'
 
 SITE_ID = 1
 
@@ -242,6 +254,7 @@ THIRDPARTY_APPS = [
     'south',
     'django_mathjax',
     'pagination',
+    'modeltranslation',
 ]
 
 OPENMOOC_APPS = [
@@ -442,13 +455,15 @@ CERTIFICATE_URL = 'http://devopenmooc.com/idcourse/%(courseid)s/email/%(email)s'
 
 MASSIVE_EMAIL_BATCH_SIZE = 30
 
+ATTACHMENTS_MAX_SIZE = 5 # in MB
 PEER_REVIEW_TEXT_MAX_SIZE = 5000  # in chars
 PEER_REVIEW_FILE_MAX_SIZE = 5  # in MB
 PEER_REVIEW_ASSIGNATION_EXPIRE = 24  # in hours
 
 ASSET_SLOT_GRANULARITY = 5  # Slot time of assets should be a multiple of this value (in minutes)
 
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 * 1
 
 FORUM_URL = "http://forum.devopenmooc.com"
 FORUM_API_SECRET = 'password'

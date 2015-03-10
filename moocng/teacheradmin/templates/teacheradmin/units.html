@@ -36,7 +36,7 @@
             unit: {
                 unit: "{% trans 'unit' %}",
                 d: "{% trans 'Draft' %}",
-                l: "{% trans 'Listable' %}",
+                l: "{% trans 'Hidden' %}",
                 p: "{% trans 'Published' %}",
                 n: "{% trans 'Normal' %}",
                 h: "{% trans 'Homework' %}",
@@ -66,6 +66,9 @@
                 infoadd: "{% trans 'Add an asset:' %}",
             }
         };
+        MOOC.vars = {
+            max_file_size: {{ max_file_size }}
+        }
         MOOC.init({{ course.id }}, {{ unit_badge_classes|safe }});
     </script>
 {% endblock %}
@@ -84,7 +87,7 @@
                     <input type="radio" name="status" id="status-published" /> {% trans "Published" %}
                 </label>
                 <label for="status-listable" class="radio inline pointer">
-                    <input type="radio" name="status" id="status-listable" /> {% trans "Listable" %}
+                    <input type="radio" name="status" id="status-listable" /> {% trans "Hidden" %}
                 </label>
                 <label for="status-draft" class="radio inline pointer">
                     <input type="radio" name="status" id="status-draft" /> {% trans "Draft" %}
@@ -380,6 +383,10 @@
     <h4>{% trans "Error" %}</h4>
     <p>{% trans "Something went wrong, please try again later." %}</p>
 </div>
+<div class="alert alert-error hide" id="FileTooBig">
+    <h4>{% trans "Error" %}</h4>
+    <p>{% trans "The attached file size is too big, the max file size is" %} {{max_file_size}}Mb.</p>
+</div>
 <div class="alert alert-error hide" id="required">
     <h4>{% trans "Error" %}</h4>
     <p>{% trans "A required field is empty." %}</p>
@@ -391,6 +398,10 @@
 <div class="alert alert-error hide" id="unsaved">
     <h4>{% trans "Error" %}</h4>
     <p>{% trans "This item is new and must be saved before going back." %}</p>
+</div>
+<div class="alert alert-error hide" id="wrong_dates">
+    <h4>{% trans "Error" %}</h4>
+    <p>{% trans "The start date must be lower than the end date" %}.</p>
 </div>
 
 <div id="confirm-delete-action" class="modal hide fade">

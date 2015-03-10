@@ -34,11 +34,12 @@ from django.utils.translation import ugettext as _
 from moocng.api.mongodb import get_db
 from moocng.api.tasks import on_peerreviewreview_created_task
 from moocng.courses.models import KnowledgeQuantum
-from moocng.courses.utils import send_mail_wrapper, is_course_ready
+from moocng.courses.utils import send_mail_wrapper, is_course_ready, has_user_passed_course, get_group_by_user_and_course
 from moocng.courses.security import get_course_if_user_can_view_or_404, get_tasks_available_for_user, get_course_progress_for_user
 from moocng.peerreview.forms import ReviewSubmissionForm, EvalutionCriteriaResponseForm
 from moocng.peerreview.models import PeerReviewAssignment, EvaluationCriterion
-from moocng.peerreview.utils import course_get_visible_peer_review_assignments, save_review, insert_p2p_if_does_not_exists_or_raise
+from moocng.peerreview.utils import (course_get_visible_peer_review_assignments, save_review,
+                                    insert_p2p_if_does_not_exists_or_raise)
 
 
 @login_required
@@ -140,7 +141,8 @@ def course_reviews(request, course_slug):
     submissions = [s['kq'] for s in submissions]
 
     user_submissions = [a.id for a in assignments if a.kq.id in submissions]
-    task_list, tasks_done = get_tasks_available_for_user(course, request.user)
+    tasks = get_tasks_available_for_user(course, request.user)
+    group = get_group_by_user_and_course(request.user.id, course.id)
 
     return render_to_response('peerreview/reviews.html', {
         'course': course,
@@ -148,9 +150,11 @@ def course_reviews(request, course_slug):
         'user_submissions': user_submissions,
         'is_enrolled': is_enrolled,
         'is_ready': is_ready,
-        'task_list': task_list,
-        'tasks_done': tasks_done,
+        'task_list': tasks[0],
+        'tasks_done': tasks[1],
         'progress': get_course_progress_for_user(course, request.user),
+        'passed': has_user_passed_course(request.user, course),
+        'group': group,
     }, context_instance=RequestContext(request))
 
 

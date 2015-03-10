@@ -59,7 +59,8 @@ from moocng.assets.models import Asset, Reservation, AssetAvailability
 from moocng.assets.utils import get_occupation_for_month
 from moocng.courses.models import (Unit, KnowledgeQuantum, Question, Option,
                                    Attachment, Transcription, Course, Language)
-from moocng.courses.marks import normalize_kq_weight, calculate_course_mark
+from moocng.courses.marks import (normalize_kq_weight, calculate_course_mark, get_unit_mark,
+                                    get_kq_mark)
 from moocng.media_contents import (media_content_get_iframe_template,
                                    media_content_get_thumbnail_url)
 from moocng.mongodb import get_db
@@ -165,6 +166,7 @@ class CourseResource(BaseModelResource):
 
 class UnitResource(BaseModelResource):
     course = fields.ToOneField(CourseResource, 'course')
+    mark = fields.DecimalField(readonly=True)
 
     class Meta:
         queryset = Unit.objects.all()
@@ -175,6 +177,14 @@ class UnitResource(BaseModelResource):
         filtering = {
             "course": ('exact'),
         }
+
+    def dehydrate_mark(self, bundle):
+        mark = 0;
+        try:
+            mark = get_unit_mark(bundle.obj, bundle.request.user)
+        except:
+            pass
+        return mark
 
     def alter_deserialized_detail_data(self, request, data):
         if u'title' in data and data[u'title'] is not None:
@@ -203,6 +213,7 @@ class KnowledgeQuantumResource(BaseModelResource):
     correct = fields.BooleanField(readonly=True)
     completed = fields.BooleanField(readonly=True)
     marked = fields.BooleanField(readonly=True)
+    mark = fields.DecimalField(readonly=True)
     normalized_weight = fields.IntegerField(readonly=True)
     transcriptions = fields.ToManyField('moocng.api.resources.TranscriptionResource',
                                             'transcription_set', related_name='kq',
@@ -285,6 +296,9 @@ class KnowledgeQuantumResource(BaseModelResource):
             return False
         else:
             return current_mark.id == bundle.obj.id
+
+    def dehydrate_mark(self, bundle):
+        return get_kq_mark(bundle.obj, bundle.request.user)
 
     def dehydrate_course(self, bundle):
         return bundle.obj.unit.course.id
@@ -857,6 +871,7 @@ class AnswerResource(BaseMongoUserResource):
     def obj_update(self, bundle, request=None, **kwargs):
 
         answer_validate_date(bundle, request)
+        print "Validando..."
         question_id = int(kwargs.get("pk"))
         if (len(bundle.data.get("replyList", [])) > 0):
             newobj = self._collection.find_and_modify({
@@ -1047,6 +1062,7 @@ class UserResource(BaseModelResource):
         # Authentication/Authorization
         self.is_authenticated(request)
         self.is_authorized(request)
+
         obj = self.get_object(request, kwargs)
         if isinstance(obj, HttpResponse):
             return obj

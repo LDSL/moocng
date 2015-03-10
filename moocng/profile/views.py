@@ -17,12 +17,15 @@ from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 
 
-from moocng.profile.models import UserProfile, get_blog_user, get_posts, insert_post, count_posts, update_following_blog_user, insert_blog_user, save_retweet, get_num_followers
+from moocng.profile.models import (	UserProfile, get_blog_user, get_posts, 
+									insert_post, count_posts, update_following_blog_user, 
+									insert_blog_user, save_retweet, get_num_followers, search_posts)
 
 from moocng.courses.security import (get_courses_available_for_user,
 									get_courses_user_is_enrolled,
 									get_course_progress_for_user)
 from moocng.courses.utils import (is_teacher as is_teacher_test)
+from moocng.badges.utils import (get_user_badges_group_by_course)
 
 from moocng.slug import unique_slugify
 from moocng.utils import use_cache
@@ -40,48 +43,14 @@ from cgi import escape
 from django.utils.html import urlize
 
 def profile_timeline(request):
-	profile = {
-		'cn': 'Raul',
-		'sn': 'Yeguas',
-		'username': 'raul.yeguas',
-		'get_full_name': 'Raul Yeguas',
-		'email': 'raul.yeguas@geographica.gs',
-		'badges': ['badge1','badge2'],
-		'karma': 15,
-		'social': {
-			'posts': 3,
-			'followers': '15K',
-			'followings': 1,
-			'starred': 359,
-			'lists': ['Mesozoico', 'RMS can\'t skate', 'Linus vs nVidia']
-		}
-	}
-
 	return render_to_response('profile/timeline.html', {
-		'profile': profile,
+		'profile': {},
 		'request': request
 		}, context_instance=RequestContext(request))
 
 def profile_groups(request):
-	profile = {
-		'cn': 'Raul',
-		'sn': 'Yeguas',
-		'username': 'raul.yeguas',
-		'get_full_name': 'Raul Yeguas',
-		'email': 'raul.yeguas@geographica.gs',
-		'badges': ['badge1','badge2'],
-		'karma': 15,
-		'social': {
-			'posts': 3,
-			'followers': '15K',
-			'followings': 1,
-			'starred': 359,
-			'lists': ['Mesozoico', 'RMS can\'t skate', 'Linus vs nVidia']
-		}
-	}
-
 	return render_to_response('profile/groups.html', {
-		'profile': profile,
+		'profile': {},
 		'request': request
 		}, context_instance=RequestContext(request))
 
@@ -94,8 +63,8 @@ def profile_courses(request, id):
 		user = request.user
 		id = request.user.id
 	else:
-		user = get_user(id)
-		id = int(id)
+		user = User.objects.get(username=id)
+		id = user.id
 
 	case = _getCase(request,id)
 
@@ -119,30 +88,35 @@ def profile_courses(request, id):
 		'courses': courses,
 		'courses_completed': courses_completed,
 		"user_view_profile": user,
-		"badges": get_db().get_collection('badge').find({"id_user": id}).count()
+		"badges_count": get_db().get_collection('badge').find({"id_user": id}).count()
+		}, context_instance=RequestContext(request))
+
+# @login_required
+def profile_badges(request, id):
+
+	if(not id):
+		if(not request.user.id):
+			return HttpResponseRedirect("/auth/login")
+		user = request.user
+		id = request.user.id
+	else:
+		user = User.objects.get(username=id)
+		id = user.id
+
+	courses = get_user_badges_group_by_course(user)
+
+	return render_to_response('profile/badges.html', {
+		"id":id,
+		'request': request,
+		"user_view_profile": user,
+		"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
+		"courses": courses,
 		}, context_instance=RequestContext(request))
 
 @login_required
 def profile_calendar(request):
-	profile = {
-		'cn': 'Raul',
-		'sn': 'Yeguas',
-		'username': 'raul.yeguas',
-		'get_full_name': 'Raul Yeguas',
-		'email': 'raul.yeguas@geographica.gs',
-		'badges': ['badge1','badge2'],
-		'karma': 15,
-		'social': {
-			'posts': 3,
-			'followers': '15K',
-			'followings': 1,
-			'starred': 359,
-			'lists': ['Mesozoico', 'RMS can\'t skate', 'Linus vs nVidia']
-		}
-	}
-
 	return render_to_response('profile/calendar.html', {
-		'profile': profile,
+		'profile': {},
 		'request': request,
 		}, context_instance=RequestContext(request))
 
@@ -155,14 +129,14 @@ def profile_user(request, id):
 		id = request.user.id
 		user =  request.user
 	else:
-		id = int(id)
-		user = get_user(id)
+		user = User.objects.get(username=id)
+		id = user.id
 
 	courses = get_courses_user_is_enrolled(user)
 
 	return render_to_response('profile/user.html', {
 		"id":id,
-		"badges": get_db().get_collection('badge').find({"id_user": id}).count(),
+		"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
 		'request': request,
 		'courses': courses,
 		'is_user': True,
@@ -175,8 +149,10 @@ def profile_posts(request, id):
 		if(not request.user.id):
 			return HttpResponseRedirect("/auth/login")
 		id = request.user.id
+		user = request.user
 	else:
-		id = int(id)
+		user = User.objects.get(username=id)
+		id = user.id
 
 	if request.method == 'POST':
 		form = PostForm(request.POST)
@@ -200,24 +176,87 @@ def profile_posts(request, id):
 	else:
 		case = _getCase(request,id)
 
-		user = get_blog_user(request.user.id)
-		if(user and id in user["following"]):
+		blog_user = get_blog_user(request.user.id)
+		if(blog_user and id in blog_user["following"]):
 			following = "true"
 		else:
 			following = "false"
 
 		followingCount = 0
 		if(request.user.id != id):
-			user = get_blog_user(id)
-			if(user):
-				followingCount = len(user["following"])
-		elif(user):
-			followingCount = len(user["following"])
+			blog_user = get_blog_user(id)
+			if(blog_user):
+				followingCount = len(blog_user["following"])
+		elif(blog_user):
+			followingCount = len(blog_user["following"])
 
 
-		listPost = get_posts(case, id, user, 0)
+		listPost = get_posts(case, id, blog_user, 0)
 		
 		return render_to_response('profile/posts.html', {
+			"id":id,
+			"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
+			# "email":"@" + request.user.email.split("@")[0],
+			'request': request,
+			'form': PostForm(),
+			'totalPost': count_posts(id),
+			'posts': listPost,
+			'case': case,
+			"user_view_profile": user,
+			"following": following,
+			"followingCount": followingCount,
+			"followerCount": get_num_followers(id)
+			}, context_instance=RequestContext(request))
+
+def profile_posts_search(request, query, hashtag=False):
+	if(not request.user.id):
+		return HttpResponseRedirect("/auth/login")
+	id = request.user.id
+	user = request.user
+
+	if request.method == 'POST':
+		form = PostForm(request.POST)
+		if form.is_valid():
+			insert_post({
+							"id_user": request.user.id, 
+							"first_name": request.user.first_name,
+							"last_name":request.user.last_name,
+							"username": "@" + request.user.username,
+							"gravatar": "http:" + gravatar_for_email(request.user.email),
+							"date": datetime.utcnow().isoformat(),
+							"text": urlize(escape(form.cleaned_data['postText'])),
+							"children": [],
+							"favourite": [],
+							"shared": 0
+
+						})
+
+			return HttpResponseRedirect("/user/posts")
+	
+	else:
+		case = _getCase(request,id)
+
+		blog_user = get_blog_user(request.user.id)
+		if(blog_user and id in blog_user["following"]):
+			following = "true"
+		else:
+			following = "false"
+
+		followingCount = 0
+		if(request.user.id != id):
+			blog_user = get_blog_user(id)
+			if(blog_user):
+				followingCount = len(blog_user["following"])
+		elif(blog_user):
+			followingCount = len(blog_user["following"])
+
+		if hashtag:
+			search_query = '#%s' % (query)
+		else:
+			search_query = query
+		listPost = search_posts(search_query, 0)
+		
+		return render_to_response('profile/posts_search.html', {
 			"id":id,
 			"badges": get_db().get_collection('badge').find({"id_user": id}).count(),
 			# "email":"@" + request.user.email.split("@")[0],
@@ -226,22 +265,29 @@ def profile_posts(request, id):
 			'totalPost': count_posts(id),
 			'posts': listPost,
 			'case': case,
-			"user_view_profile": get_user(id),
+			"user_view_profile": user,
 			"following": following,
 			"followingCount": followingCount,
-			"followerCount": get_num_followers(id)
+			"followerCount": get_num_followers(id),
+			"query": query,
+			"is_hashtag": hashtag,
 			}, context_instance=RequestContext(request))
 
+
 # @login_required
-def load_more_posts(request, page, id):
-	if(not id):
-		id = request.user.id
-	else:
-		id = int(id)
-
+def load_more_posts(request, page, query, search=False, hashtag=False):
 	page = int(page)
-	listPost = get_posts(0, id, get_blog_user(request.user.id), page)
-
+	listPost = None
+	if search and query:
+		if hashtag:
+			query = "#%s" % (query)
+		listPost = search_posts(query, page)
+	else:
+		if(not query):
+			id = request.user.id
+		else:
+			id = int(query)
+		listPost = get_posts(0, id, get_blog_user(request.user.id), page)
 
 	return render_to_response('profile/post.html', {
 			'request': request,

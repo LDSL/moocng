@@ -29,6 +29,7 @@ from moocng.courses.models import Unit
 
 @task
 def on_activity_created_task(activity_created, unit_activity, course_activity):
+    logger = on_activity_created_task.get_logger()
     db = get_db()
     kq = KnowledgeQuantum.objects.get(id=activity_created['kq_id'])
     kq_type = kq.kq_type()
@@ -137,6 +138,9 @@ def has_passed_now(new_mark, mark_item, threshold):
 
 def update_kq_mark(db, kq, user, threshold, new_mark_kq=None, new_mark_normalized_kq=None):
     from moocng.courses.marks import calculate_kq_mark
+
+    print '  --> update_kq_mark'
+    
     if not new_mark_kq or not new_mark_normalized_kq:
         new_mark_kq, new_mark_normalized_kq = calculate_kq_mark(kq, user)
     data_kq = {}
@@ -290,6 +294,7 @@ def update_mark(submitted):
         return (updated_kq_mark, updated_unit_mark, updated_course_mark,
                 passed_kq, passed_unit, passed_course)
     mark_course, units_info = calculate_course_mark(unit.course, user)
+
     updated_course_mark, passed_course = update_course_mark(db, course, user, mark_course)
     return (updated_kq_mark, updated_unit_mark, updated_course_mark,
             passed_kq, passed_unit, passed_course)

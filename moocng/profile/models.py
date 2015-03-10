@@ -18,6 +18,7 @@ from django.db import connection, models
 from django.db.models import signals
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse
 
 from moocng.courses.models import Announcement
 
@@ -26,6 +27,7 @@ import pymongo
 from dateutil import tz
 from datetime import date, datetime
 from bson.objectid import ObjectId
+import re
 
 class Organization(models.Model):
     name = models.CharField(verbose_name=_(u"Organization name"),
@@ -115,16 +117,19 @@ class UserProfile(models.Model):
         interests_name = {
             'ES': 'Educational Sciences',
             'SS': 'Social Sciences',
-            'H': 'Humanities',
+            'HUM': 'Humanities',
             'NSM': 'Natural Sciences and Mathematics',
             'BS': 'Biomedical Sciences',
             'TS': 'Technological Sciences'
         }
         interests_list = []
-	if self.interests is not None:
-	        for interest in self.interests.split(','):
-        	    interests_list.append(interests_name[interest])
-        
+        if self.interests is not None:
+            for interest in self.interests.split(','):
+                try:
+                   interests_list.append(interests_name[interest])
+                except:
+                    pass
+
         return interests_list
 
 @receiver(signals.post_save, sender=User, dispatch_uid="create_user_profile")
@@ -158,16 +163,34 @@ def get_posts(case, id, user, page):
 
     return _processPost(posts)
 
+def search_posts(query, page):
+    postCollection = get_micro_blog_db().get_collection('post')
+    mongoQuery = {'$regex': '.*%s.*' % (query)}
+
+    posts = postCollection.find({'text': mongoQuery})[page:page+10].sort("date",pymongo.DESCENDING)
+
+    return _processPost(posts)
+
 def insert_post(post):
     get_micro_blog_db().get_collection('post').insert(post)
 
 def count_posts(id):
     return get_micro_blog_db().get_collection('post').find({'id_user': id}).count()
 
+def _hashtag_to_link(matchobj):
+    hashtag = matchobj.group(0)
+    hashtagUrl = reverse('profile_posts_hashtag', args=[hashtag[1:]])
+    return '<a href="%s">%s</a>' % (hashtagUrl, hashtag)
+
+def _proccess_hashtags(text):
+    hashtagged = re.sub(r'(?:(?<=\s)|^)#(\w*[A-Za-z_]+\w*)', _hashtag_to_link, text)
+    return hashtagged
+
 def _processPost(posts):
     listPost = []
     from_zone = tz.tzutc()
     to_zone = tz.tzlocal()
+
     for post in posts:
         # post["text"] = post["text"]
         # post["email"] = "@" + post["email"].split("@")[0]
@@ -176,6 +199,7 @@ def _processPost(posts):
         if("original_date" in post):
             post["original_date"] = datetime.strptime(post.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
         post["id"] = post.pop("_id")
+        post["text"] = _proccess_hashtags(post["text"])
         listPost.append(post)
 
     return listPost

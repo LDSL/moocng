@@ -62,6 +62,9 @@ setup(
         ])
     },
     zip_safe=False,
+    dependency_links=[
+        'https://github.com/neokore/jsonrpc-requests/tarball/master#egg=jsonrpc-requests-0.1.1',
+    ],
     install_requires=[
         'boto>=2.8.0',
         'celery==3.0.20',
@@ -85,6 +88,7 @@ setup(
         'django-pagination==1.0.7',
         'lxml==2.2.3',
         'BeautifulSoup==3.2.1', #http://www.crummy.com/software/BeautifulSoup/bs3/download/3.x/BeautifulSoup-3.0.8.1.tar.gz
+        'jsonrpc-requests',
     ],
     entry_points = """
         [moocng.externalapp]

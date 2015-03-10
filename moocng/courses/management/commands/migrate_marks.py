@@ -76,8 +76,10 @@ class Command(BaseCommand):
             first_day = datetime.strptime(settings.FIRST_DAY_MIGRATE_MARK, '%Y-%m-%d')
             today = datetime.today()
             num_days = (today - first_day).days
-            start_pk = num_days * settings.NUM_MIGRATE_MARK_DAILY + 1
+            start_pk = 1
             end_pk = (num_days + 1) * settings.NUM_MIGRATE_MARK_DAILY
+            print "num_days: " + str(num_days)
+            print "NUM_MIGRATE_MARK_DAILY: " + str(settings.NUM_MIGRATE_MARK_DAILY)
             self.message("Migrating the users from pk=%s to pk=%s " % (start_pk, end_pk))
             users = users.filter(pk__gte=start_pk, pk__lte=end_pk)
             max_pk = User.objects.aggregate(Max('pk'))['pk__max']
@@ -90,5 +92,7 @@ class Command(BaseCommand):
         courses_actives = options["courses_actives"]
         print("ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ")
         for user in users:
+            print "User: "+str(user)
             for course in self.get_courses(user, courses_pks, courses_actives):
+                print "Course: "+str(course)
                 update_course_mark_by_user(course, user)

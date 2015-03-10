@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-fileupload.2.3.1-j6.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/ableplayer.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/ableplayer-transcript.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/popover.css">
     {% if mathjax_enabled %}
       {% mathjax_scripts %}
     {% endif %}
@@ -128,12 +129,13 @@
 			<h2 id="kq-title" class="pull-left">{{ course.title }}</h2>
 			<a class="bookmark pull-right" id="bookmark_btn" href="#"><img src="{{ STATIC_URL }}img/ECO_icon_marcador_0.svg" alt="{% trans 'Bookmark' %}"></a>
 		</div>
-        {% if feature_social %}
-		<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4">
+		<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4 pull-right">
+            {% if feature_social %}
 			<a class="hide-text social_like facebook selected" href="#">{% trans 'Like this on Facebook' %} <span>10</span></a>
 			<a class="hide-text social_like gplus" href="#">{% trans '+1 on Google+' %} <span>10</span></a>
+            {% endif %}
+            <a class="hide-text share" id="course-share" href="#">{% trans 'Share' %}</a>
 		</div>
-        {% endif %}
 	</div>
 	<div class="row kq">
 		<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
@@ -256,6 +258,7 @@
     <script src="{{ STATIC_URL }}js/libs/backbone-0.9.2.min.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/libs/async.min.js" type="text/javascript"></script>
     <script src="{% url jsi18n %}" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/popover.js"></script>
     {% media_contents_javascripts course=course %}
     {% compress js %}
     <script src="{{ STATIC_URL }}js/ajax.js" type="text/javascript"></script>
@@ -312,7 +315,8 @@
                 video: "{% trans "Video" %}",
                 videoTooltip: "{% trans "Video" %}",
                 presentation: "{% trans "Presentación" %}",
-                presentationTooltip: "{% trans "Presentación" %}"
+                presentationTooltip: "{% trans "Presentación" %}",
+                clue: "{% trans "Clue" %}"
             },
             peerreview: {
                 prFileMaxSize: "{% trans "Your file is too big" %}",
@@ -342,6 +346,8 @@
                 file_max_size: {{ peer_review.file_max_size }}
             }
         };
+        MOOC.vars = MOOC.vars || {};
+        MOOC.vars.user_id = {{ user.id }}
         MOOC.init({{ course.id }}, true);
     </script>
 {% endblock %}

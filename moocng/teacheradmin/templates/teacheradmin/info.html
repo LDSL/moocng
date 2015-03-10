@@ -170,10 +170,26 @@
         {% if form.certification_available.help_text %}<span class="help-inline">{{ form.certification_available.help_text }}</span>{% endif %}
     </p>
     <p>
+        {{ form.external_certification_available.errors }}
+        <label for="id_external_certification_available" style="margin: 32px 0;">
+          {{ form.external_certification_available }}
+          {% trans "External certification available" %}
+        </label>
+        {% if form.external_certification_available.help_text %}<span class="help-inline">{{ form.external_certification_available.help_text }}</span>{% endif %}
+    </p>
+    <p>
+        {{ form.certification_file.errors }}
+        {{ form.certification_file.label_tag }}
+        {{ form.certification_file }}
+        {% if form.certification_file.help_text %}<span class="help-inline">{{ form.certification_file.help_text }}</span>{% endif %}
+        <span class="help-inline">{% trans "Max file size" %}: {{ max_file_size }}Mb</span>
+    </p>
+    <p>
         {{ form.thumbnail.errors }}
         {{ form.thumbnail.label_tag }}
         {{ form.thumbnail }}
         {% if form.thumbnail.help_text %}<span class="help-inline">{{ form.thumbnail.help_text }}</span>{% endif %}
+        <span class="help-inline">{% trans "Max file size" %}: {{ max_file_size }}Mb</span>
     </p>
     <p>
         {{ form.thumbnail_alt.errors }}
@@ -186,6 +202,7 @@
         {{ form.background.label_tag }}
         {{ form.background }}
         {% if form.background.help_text %}<span class="help-inline">{{ form.background.help_text }}</span>{% endif %}
+        <span class="help-inline">{% trans "Max file size" %}: {{ max_file_size }}Mb</span>
     </p>
     <p class="form-actions">
       <input type="submit" class="btn btn-primary" value="{% trans "Save" %}" />

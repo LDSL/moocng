@@ -1,14 +1,25 @@
 {% load i18n usercourses gravatar %}
 <div class="btn-toolbar pull-right">
-	<!--<div class="btn-group">
+	<div class="btn-group click" id="microblog-share">
 		<a class="dropdown-toggle" href="#">
 			<img src="{{ STATIC_URL }}img/icon_microblog.png">
 		</a>
 		<div class="dropdown-menu">
-			<input type="text" placeholder="Write a message...">
+			<div class="editor">
+				<textarea placeholder="Write a message..."></textarea>
+				<a class="btn" href="#">{% trans 'Publish' %}</a>
+			</div>
+			<div class="loading hide">
+				<p>{% trans 'Sending...' %}</p>
+			</div>
+			<div class="done hide">
+				<p>{% trans 'Message posted!' %}</p>
+				<a class="btn" href="#">{% trans 'Close' %}</a>
+				<a href="{% url profile_posts %}">{% trans 'Go to my posts' %}</a>
+			</div>
 		</div>
 	</div>
-	<div class="btn-group">
+	<!--<div class="btn-group">
 		<a class="btn" href="#">
 			<img src="{{ STATIC_URL }}img/icon_forum.png">
 		</a>
@@ -23,8 +34,8 @@
 			<li>Notificación 2</li>
 			<li>Notificación 3</li>
 		</ul>
-	</div>
-	<div class="vruler"></div>-->
+	</div>-->
+	<div class="vruler"></div>
 	<div class="btn-group">
 		<a class="dropdown-toggle usermenu" data-toggle="dropdown">
 			<img src="{% gravatar_for_email user.email %}&s=48" alt="{% firstof user.get_full_name user.username %}">      
@@ -65,3 +76,33 @@
 		</ul>
 	</div>
 </div>
+<script>
+	$('.btn-group.click .dropdown-toggle').click(function(e){
+		$(this).parent().toggleClass('open');
+	});
+	$('#microblog-share .editor .btn').click(function(e){
+		e.preventDefault();
+		var text = $('#microblog-share textarea').val();
+		if (text.trim()) {
+			$('#microblog-share .editor').addClass('hide');
+			$('#microblog-share .loading').removeClass('hide');
+			$.ajax({
+				url: '{% url profile_posts %}',
+				type: 'POST',
+				data: 'csrfmiddlewaretoken={{ csrf_token }}&postText='+text,
+				contentType: 'application/x-www-form-urlencoded',
+			}).done(function(data){
+				$('#microblog-share .loading').addClass('hide');
+				$('#microblog-share .done').removeClass('hide');
+			});
+		}
+	});
+	$('#microblog-share .done .btn').click(function(e){
+		e.preventDefault();
+		$sharetab = $('#microblog-share');
+		$sharetab.find('.editor textarea').val('');
+		$sharetab.find('.done').addClass('hide');
+		$sharetab.find('.editor').removeClass('hide');
+		$sharetab.removeClass('open');
+	});
+</script>
