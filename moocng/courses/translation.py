@@ -2,7 +2,7 @@ from modeltranslation.translator import translator, TranslationOptions
 from moocng.courses.models import Course, StaticPage, Unit, KnowledgeQuantum, Question, Option
 
 class CourseTranslationOptions(TranslationOptions):
-	fields = ('name', 'description', 'requirements', 'learning_goals', 'estimated_effort')
+	fields = ('name', 'description', 'requirements', 'learning_goals', 'intended_audience')
 
 class StaticPageTranslationOptions(TranslationOptions):
 	fields = ('title', 'body')
