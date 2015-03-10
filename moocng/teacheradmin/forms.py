@@ -53,7 +53,7 @@ class CourseForm(TranslationModelForm):
         model = Course
         exclude = ('slug', 'teachers', 'owner', 'students',
                    'max_mass_emails_month', 'created_from',
-                   'is_activity_clonable','group_max_size', 'has_groups', 'forum_slug')
+                   'is_activity_clonable','group_max_size', 'has_groups', 'forum_slug', 'official_course')
         widgets = {
             'start_date': HTML5DateInput(),
             'end_date': HTML5DateInput(),
