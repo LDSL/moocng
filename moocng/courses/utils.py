@@ -22,7 +22,7 @@ import hashlib
 import sys
 import re
 
-from datetime import date
+from datetime import date, datetime
 from deep_serializer import serializer, deserializer
 
 
@@ -635,3 +635,22 @@ def has_user_passed_course(user, course):
     if course.threshold is not None and float(course.threshold) <= total_mark:
         passed = True
     return passed
+
+def get_course_activity_dates_for_user(course, user):
+    result = {}
+    user_course = CourseStudent.objects.get(student_id=user.id, course_id=course.id)
+    
+    db = mongodb.get_db()
+    activity = db.get_collection("activity")
+    last_course_activity = activity.find({
+        "user_id": user.id,
+        "course_id": course.id,
+    }).sort("timestamp", pymongo.DESCENDING).limit(1)
+
+    
+    if user_course.timestamp:
+        result["enrollDate"] = datetime.utcfromtimestamp(user_course.timestamp)
+    if last_course_activity.count() > 0:
+        result["lastViewDate"] = datetime.utcfromtimestamp(last_course_activity[0]["timestamp"]/1000.0)
+
+    return result
