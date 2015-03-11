@@ -56,6 +56,15 @@ class UserProfile(models.Model):
         ('male', _(u'Male')),
         ('female', _(u'Female'))
     )
+
+    LANGUAGE_CHOICES = (
+        ('es', _(u'Spanish')),
+        ('en', _(u'English')),
+        ('fr', _(u'French')),
+        ('de', _(u'Deutsch')),
+        ('it', _(u'Italian')),
+        ('pt', _(u'Portuguese')),
+    )
     gender = models.CharField(verbose_name=_(u"Gender"),
                                     max_length=6,
                                     choices=GENDER_CHOICES,
@@ -99,6 +108,7 @@ class UserProfile(models.Model):
                             blank=True)
     language = models.CharField(verbose_name=_(u"Language"),
                             max_length=2,
+                            choices=LANGUAGE_CHOICES,
                             null=True,
                             blank=True)
     middle_name = models.CharField(verbose_name=_(u"Middle name"),

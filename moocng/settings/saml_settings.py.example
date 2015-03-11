@@ -22,9 +22,9 @@ SAML_ATTRIBUTE_MAPPING = {
     'eduPersonPrincipalName': ('sub', ),
     'description': ('bio', ),
     'labeledURI': ('personalweb', ),
-    'twitterURI': ('twitter', ),
-    'facebookURI': ('facebook', ),
-    'linkedInURI': ('linkedin', ),
+    'twitteruri': ('twitter', ),
+    'facebookuri': ('facebook', ),
+    'linkedinuri': ('linkedin', ),
 }
 
 
