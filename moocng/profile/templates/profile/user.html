@@ -9,26 +9,29 @@
 		<div class="row">
 			<div class="col-lg-4 col-md-4 col-sm-8 col-mob-4">
 				<dl class="info">
-					<!--{% if profile.location %}
+					{% if profile.city or profile.country %}
 					<div class="row separator_h">
 						<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 element">
 							<img class="icon" src="{{ STATIC_URL }}img/ECO_icon_info_localizacion.svg">
 							<dt>{% trans "Location" %}</dt>
-							<dd>{{ profile.location }}</dd>
+							{% if profile.city %}
+							<dd>{{ profile.city }}</dd>
+							{% endif %}
+							{% if profile.country %}
+							<dd>{{ profile.country }}</dd>
+							{% endif %}
 						</div>
 					</div>
-					{% endif %}-->
-					<!--{% if profile.languages %}
+					{% endif %}
+					{% if profile.language %}
 					<div class="row separator_h">
 						<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 element">
 							<img class="icon" src="{{ STATIC_URL }}img/ECO_icon_info_idioma.svg">
-							<dt>{% trans "Languages" %}</dt>
-							{% for language in profile.languages %}
-							<dd>{{ language }}</dd>
-							{% endfor %}
+							<dt>{% trans "Language" %}</dt>
+							<dd>{{ profile.get_language_display }}</dd>
 						</div>
 					</div>
-					{% endif %}-->
+					{% endif %}
 					{% if user_view_profile.get_profile.gender %}
 					<div class="row separator_h">
 						<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 element">
@@ -75,17 +78,29 @@
 					{% if user_view_profile.get_profile.bio %}
 					<div class="bio">{{ user_view_profile.get_profile.bio|safe }}</div>
 					{% endif %}
-					<!--{% if profile.socialmedia|length > 0 %}
+					{% if profile.twitter or profile.facebook or profile.linkedin %}
 					<div class="social separator_h">
 						<h5>{% trans "Social profiles" %}</h5>
-						{% for social in profile.socialmedia %}
-							<a class="hide-text" href="{{ social.url }}">
-								<object data="{{ STATIC_URL }}img/ECO_icon_seguir_{{ social.name }}.svg?#55555d" type="image/svg+xml"></object>
-								{{ social.name }}
+						{% if profile.twitter %}
+							<a class="hide-text" href="{{ profile.twitter }}" target="_blank">
+								<object data="{{ STATIC_URL }}img/ECO_icon_seguir_twitter.svg?#55555d" type="image/svg+xml"></object>
+								{{ profile.twitter }}
 							</a>
-						{% endfor %}
+						{% endif %}
+						{% if profile.facebook %}
+							<a class="hide-text" href="{{ profile.facebook }}" target="_blank">
+								<object data="{{ STATIC_URL }}img/ECO_icon_seguir_facebook.svg?#55555d" type="image/svg+xml"></object>
+								{{ profile.facebook }}
+							</a>
+						{% endif %}
+						{% if profile.linkedin %}
+							<a class="hide-text" href="{{ profile.linkedin }}" target="_blank">
+								<object data="{{ STATIC_URL }}img/ECO_icon_seguir_linkedin.svg?#55555d" type="image/svg+xml"></object>
+								{{ profile.linkedin }}
+							</a>
+						{% endif %}
 					</div>
-					{% endif %}-->
+					{% endif %}
 					{% if profile.interests|length > 0 %}
 					<div class="interests">
 						<h5>{% trans "Interests areas" %}</h5>
