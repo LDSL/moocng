@@ -244,8 +244,7 @@ class Course(Sortable):
                 kq = KnowledgeQuantum.objects.get(pk=mark["kq_id"])
             except KnowledgeQuantum.DoesNotExist:
                 pass
-        else:
-            return kq
+        return kq
 
     def get_rating(self):
         course_student_set = CourseStudent.objects.filter(course=self)
@@ -683,6 +682,9 @@ class KnowledgeQuantum(Sortable):
                 "$unset": { "current": "" },  
             }
         )
+
+        print user.id
+        print self.id
 
         activity.update({
             "user_id": user.id,
