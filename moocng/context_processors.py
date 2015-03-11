@@ -197,6 +197,11 @@ def extra_settings(request):
         max_file_size = settings.ATTACHMENTS_MAX_SIZE
     except AttributeError:
         max_file_size = 5
+        
+    try:
+        profile_provider_url = settings.PROFILE_SERVICE_URL
+    except AttributeError:
+        profile_provider_url = None
 
     context = {
         'sandbox': sandbox,
@@ -220,7 +225,8 @@ def extra_settings(request):
         'feature_ects': feature_ects,
         'forum_url': forum_url,
         'show_email': show_email,
-        'max_file_size': max_file_size
+        'max_file_size': max_file_size,
+        'profile_provider_url': profile_provider_url
     }
 
     return context
