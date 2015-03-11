@@ -73,7 +73,7 @@ class UserProfile(models.Model):
                                     max_length=256,
                                     null=True,
                                     blank=True)
-    linkedin = models.CharField(verbose_name=_(u"LinkeIn URL"),
+    linkedin = models.CharField(verbose_name=_(u"LinkedIn URL"),
                                     max_length=256,
                                     null=True,
                                     blank=True)

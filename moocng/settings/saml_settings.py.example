@@ -21,10 +21,10 @@ SAML_ATTRIBUTE_MAPPING = {
     'schacmothertongue': ('language', ),
     'eduPersonPrincipalName': ('sub', ),
     'description': ('bio', ),
-    'labeledUrl': ('personalweb', ),
-    'twitterUrl': ('twitter', ),
-    'facebookUrl': ('facebook', ),
-    'linkedInUrl': ('linkedin', ),
+    'labeledURI': ('personalweb', ),
+    'twitterURI': ('twitter', ),
+    'facebookURI': ('facebook', ),
+    'linkedInURI': ('linkedin', ),
 }
 
 
