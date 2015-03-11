@@ -43,7 +43,9 @@
 		<ul class="dropdown-menu usermenu">
 			<li><a href="{% url profile_user %}">{% trans "Profile" %}</a>
                 {% if profile_provider_url %}
-                    <a href="{{ profile_provider_url }}">{% trans "Edit" %}</a></li>
+                	<span>
+                    	<a href="{{ profile_provider_url }}">({% trans "Edit" %})</a></li>
+                    </span>
                 {% endif %}
 			<li><a href="{% url home %}">{% trans "See all courses" %}</a></li>
 			<!--<li><a href="{% url transcript %}">{% trans "My transcript" %}</a></li>
