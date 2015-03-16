@@ -347,7 +347,7 @@
             }
         };
         MOOC.vars = MOOC.vars || {};
-        MOOC.vars.user_id = {{ user.get_profile.sub }};
+        MOOC.vars.user_id = '{{ user.get_profile.sub }}';
         MOOC.init({{ course.id }}, true);
     </script>
 {% endblock %}
