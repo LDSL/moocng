@@ -68,8 +68,9 @@ def ListRecords(request, num="1"):
 				lstring.set('language', language.abbr)
 				lstring.text=course.name
 		
+
+		ldescription = SubElement(general, 'lom:description')
 		if(len(course.languages.all()) == 0):
-			ldescription = SubElement(general, 'lom:description')
 			lstring = SubElement(ldescription, 'lom:string')  
 			lstring.set('language', 'null') 
 			lstring.text = re.sub('<[^<]+?>', '', course.description)
@@ -77,7 +78,6 @@ def ListRecords(request, num="1"):
 		else:
 			for language in course.languages.all():
 				translation.trans_real.activate(language.abbr)
-				ldescription = SubElement(general, 'lom:description')
 				lstring = SubElement(ldescription, 'lom:string')  
 				lstring.set('language', language.abbr) 
 				lstring.text = re.sub('<[^<]+?>', '', course.description)
