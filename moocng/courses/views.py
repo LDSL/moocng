@@ -316,7 +316,7 @@ def course_overview(request, course_slug):
         'passed': has_passed,
     }, context_instance=RequestContext(request))
 
-@login_required
+
 def course_classroom(request, course_slug):
 
     """
@@ -329,6 +329,9 @@ def course_classroom(request, course_slug):
 
     .. versionadded:: 0.1
     """
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
+
     course = get_course_if_user_can_view_or_404(course_slug, request)
     is_enrolled = course.students.filter(id=request.user.id).exists()
     if not is_enrolled:
