@@ -189,6 +189,11 @@ def extra_settings(request):
         forum_url = '#'
 
     try:
+        forum_category_url = settings.FORUM_CATEGORY_URL
+    except AttributeError:
+        forum_category_url = '#'
+
+    try:
         show_email = settings.SHOW_EMAIL
     except AttributeError:
         show_email = False
@@ -224,6 +229,7 @@ def extra_settings(request):
         'feature_social': feature_social,
         'feature_ects': feature_ects,
         'forum_url': forum_url,
+        'forum_category_url': forum_category_url,
         'show_email': show_email,
         'max_file_size': max_file_size,
         'profile_provider_url': profile_provider_url
