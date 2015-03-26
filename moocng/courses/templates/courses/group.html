@@ -28,7 +28,7 @@
 				<span class="movGroup">{% trans "Change group" %}</span>
 				<div class="groups hide">
 					{% for group in groups %}
-					<p id_group="{{ group|mongo_id }}">{{group.name}}</p>
+					<p id_group="{{ group|mongo_id }}">{{group.name}} {%if group.lang %}({{ group.lang }}){% endif %}</p>
 					{% endfor %}
 				</div>
 			</p>

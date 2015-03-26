@@ -996,6 +996,7 @@ def clone_activity(request, course_slug):
 
 @login_required
 def create_course_groups(request,id):
+    print "Create course groups id: %s" % (id)
     create_groups(id)
     return HttpResponse("true")
 
