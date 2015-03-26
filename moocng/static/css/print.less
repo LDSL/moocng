@@ -15,7 +15,15 @@ body {
 }
 
 header {
-	.no-print
+	position: static !important;
+
+	.row > *:not(.logo){
+		.no-print;
+	}
+}
+
+.modal {
+	.no-print;
 }
 
 .userprofile-header {
