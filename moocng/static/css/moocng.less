@@ -4649,7 +4649,7 @@ ul.rating {
 		}
 	}
 
-	.postFrom{
+	.postFrom, .postReply {
 		display:none;
 		textarea{
 			width: 100%;
@@ -4658,6 +4658,7 @@ ul.rating {
 			border-right: none;
 			border: 1px solid @neutral_light_2;
 			font-size: 16px;
+			font-family: inherit;
 			padding: 10px;
 			resize: none;
 		}
@@ -4673,13 +4674,27 @@ ul.rating {
 		}
 	}
 
+	.postReply {
+		position: absolute;
+	}
+
 	.posts{
 		background-color: @white;
 		.post{
+			border-bottom: 1px solid @neutral_light_2;
+
 			&.notMyPost{
 				background-color: @neutral_light_4;
 			}
-			border-bottom: 1px solid @neutral_light_2;
+
+			&.open {
+				padding-bottom: 155px;
+
+				.postReply {
+					display: block;
+				}
+			}
+
 			.cell{
 				display:table-cell;
 				vertical-align: -webkit-baseline-middle;
@@ -4783,6 +4798,15 @@ ul.rating {
 							margin-right: 10px;
 						}
 					}
+				}
+			}
+
+			.replies {
+				padding-left: 71px;
+				background-color: @neutral_light_4;
+
+				.replyPost {
+					border-top: 1px solid @neutral_light_2;
 				}
 			}
 		}

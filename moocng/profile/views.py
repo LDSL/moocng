@@ -19,7 +19,7 @@ from django.utils.translation import ugettext as _
 
 from moocng.profile.models import (	UserProfile, get_blog_user, get_posts, 
 									insert_post, count_posts, update_following_blog_user, 
-									insert_blog_user, save_retweet, get_num_followers, search_posts)
+									insert_blog_user, save_retweet, save_reply, get_num_followers, search_posts)
 
 from moocng.courses.security import (get_courses_available_for_user,
 									get_courses_user_is_enrolled,
@@ -319,6 +319,28 @@ def user_follow(request, id, follow):
 @login_required
 def retweet(request, id):
 	return HttpResponse(save_retweet(request,id))
+
+@login_required
+def reply(request, id):
+	if request.method == 'POST':
+		form = PostForm(request.POST)
+		if form.is_valid():
+			post = {
+						"id_user": request.user.id, 
+						"first_name": request.user.first_name,
+						"last_name":request.user.last_name,
+						"username": "@" + request.user.username,
+						"gravatar": "http:" + gravatar_for_email(request.user.email),
+						"date": datetime.utcnow().isoformat(),
+						"text": urlize(escape(form.cleaned_data['postText'])),
+						"children": [],
+						"favourite": [],
+						"shared": 0
+
+					}
+			save_reply(request, id, post)
+
+			return HttpResponseRedirect("/user/posts")
 
 def _getCase(request, id):
 	if(not request.user or not request.user.id):

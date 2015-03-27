@@ -242,13 +242,20 @@ def save_retweet(request, id):
         del post["_id"]
         insert_post(post)
         return True
-
-    return False
+    else:
+        return False
 
 def save_reply(request, id, post):
     postCollection = get_micro_blog_db().get_collection('post')
-    post = postCollection.find_one({"$and": [{"id_user":request.user.id},{"id_original_post":ObjectId(id)}]})
-    # to be continued...
+    post_orig = postCollection.find_one({"_id":ObjectId(id)})
+    if post_orig:
+        reply_id = postCollection.insert(post)
+        post['id'] = reply_id
+        post_orig["children"].append(post)
+        postCollection.update({'_id': ObjectId(id)}, {"$set": {"children": post_orig["children"]}})
+        return True
+    else:
+        return False
 
 def get_num_followers(id):
     return get_micro_blog_db().get_collection('user').find({"following": {"$eq" : id}}).count()

@@ -55,4 +55,7 @@ urlpatterns = patterns(
 
     url(r'^user/retweet/(?P<id>[-\w.]+)$', 'retweet',
         name='retweet'),
+
+    url(r'^user/reply/(?P<id>[-\w.]+)$', 'reply',
+        name='reply'),
 )
