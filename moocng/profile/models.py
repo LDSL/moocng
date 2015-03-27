@@ -245,6 +245,11 @@ def save_retweet(request, id):
 
     return False
 
+def save_reply(request, id, post):
+    postCollection = get_micro_blog_db().get_collection('post')
+    post = postCollection.find_one({"$and": [{"id_user":request.user.id},{"id_original_post":ObjectId(id)}]})
+    # to be continued...
+
 def get_num_followers(id):
     return get_micro_blog_db().get_collection('user').find({"following": {"$eq" : id}}).count()
 
