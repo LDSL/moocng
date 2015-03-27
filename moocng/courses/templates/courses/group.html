@@ -60,8 +60,49 @@
 				{% endfor %}
 			</ul>
 		</div>
-		<!--<div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
+		<div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
 			<div class="dash-box">
+				<div class="title">
+					<h3>{% trans "News feed" %}</h3>
+				</div>
+				<div class="content">
+					<ul class="tabs">
+						<li class="selected">
+							<h4>{% trans "Microblogging" %}</h4>
+							<div class="content feed">
+								<ul>
+									{% for post in posts_list %}
+									<li>
+										{% url profile_posts post.username|cut:"@" as author_profile_url %}
+										<a href="{{ author_profile_url }}"><img src="{{ post.gravatar }}"></a>
+										<div>
+											<a href="{{ author_profile_url }}"><h5>{{ post.first_name }} {{ post.last_name }} <span>{{ post.username }}</span></h5></a>
+											<p class="date">
+												{% if post.original_date %}
+													{{post.original_date}}
+												{% else %}
+													{{post.date}}
+												{% endif %}
+											</p>
+											{% autoescape off %}
+											<p class="text">{{ post.text }}</p>
+											{% endautoescape %}
+										</div>
+									</li>
+									{% empty %}
+									<li class="empty">{% trans "There is no posts yet" %}</li>
+									{% endfor %}
+								</ul>
+							</div>
+						</li>
+					</ul>
+					<div class="bottom-bar">
+						<a href="#" class="button pull-right" id="shareGroup">{% trans "Share on group's wall" %}<img src="{{ STATIC_URL }}/img/ECO_icon_flecha_enlace.svg"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+			<!--<div class="dash-box">
 				<div class="title">
 					<h3>{% trans "Tasks" %}</h3>
 				</div>
@@ -212,6 +253,20 @@
 			   	}
 			});
 		})
+
+		$('#shareGroup').click(function(e) {
+	        "use strict";
+	        e.preventDefault();
+	        var hashtag = "#{{ group.hashtag }}";
+	        if(hashtag){
+	            var $microblog = $('#microblog-share');
+	            var $textarea = $microblog.find('.editor textarea');
+	            $textarea.val(' ' + hashtag);
+	            $textarea[0].setSelectionRange(0,0);
+	            $microblog.addClass('open');
+	            $textarea.focus();
+	        }
+	    });
 	</script>
 	<script>
 	$(function(){

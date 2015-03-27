@@ -487,7 +487,7 @@ def create_groups(id_course):
                 group = groups[lang][-1]
 
             if not group or len(group["members"]) >= course.group_max_size + (course.group_max_size * settings.GROUPS_UPPER_THRESHOLD / 100):
-                group = {"id_course": id_course, "name": groupNames[lang] + str(len(groups[lang])+1), "lang": lang, "size": 1, "members": []}
+                group = {"id_course": id_course, "name": groupNames[lang] + str(len(groups[lang])+1), "hashtag": course.hashtag+groupNames[lang] + str(len(groups[lang])+1), "lang": lang, "size": 1, "members": []}
                 group["members"].append(student)
                 groups[lang].append(group)
             else:

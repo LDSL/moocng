@@ -52,11 +52,11 @@ def free_enrollment(request, course_slug):
                         groupCollection.update({'_id': ObjectId(group["_id"])}, {"$set": {"members": group["members"], "size": group["size"]}})
 
                     else:
-                        group = {"id_course": course.id, "name": groupNames[language] + str(groups.count()+1), "lang": language, "size": 1, "members": []}
+                        group = {"id_course": course.id, "name": groupNames[language] + str(groups.count()+1), "hashtag": course.hashtag+groupNames[language] + str(groups.count()+1) ,"lang": language, "size": 1, "members": []}
                         group["members"].append(new_member)
                         groupCollection.insert(group)
                 else:
-                    group = {"id_course": course.id, "name": groupNames[language] + str(groups.count()+1), "lang": language, "size": 1, "members": []}
+                    group = {"id_course": course.id, "name": groupNames[language] + str(groups.count()+1), "hashtag": course.hashtag+groupNames[language] + str(groups.count()+1), "lang": language, "size": 1, "members": []}
                     group["members"].append(new_member)
                     groupCollection.insert(group)
            
