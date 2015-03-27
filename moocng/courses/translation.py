@@ -11,7 +11,7 @@ class UnitTranslationOptions(TranslationOptions):
 	fields = ('title',)
 
 class KnowledgeQuantumTranslationOptions(TranslationOptions):
-	fields = ('title', 'teacher_comments', 'supplementary_material')
+	fields = ('title', 'teacher_comments', 'supplementary_material', 'media_content_id')
 
 class QuestionTranslationOptions(TranslationOptions):
 	fields = ('solution_text',)
