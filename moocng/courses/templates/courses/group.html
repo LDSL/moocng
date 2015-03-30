@@ -61,7 +61,7 @@
 			</ul>
 		</div>
 		<div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
-			<div class="dash-box">
+			<div class="dash-box tall">
 				<div class="title">
 					<h3>{% trans "News feed" %}</h3>
 				</div>
@@ -203,13 +203,13 @@
 				var $dash = $(value);
 				var width = $dash.children('.content').first().outerWidth();
 				$dash.find('.content .tabs .content').width(width);
-				var height = $dash.find('.content ol')[0].scrollHeight;
-				var bottombar = $dash.find('.bottom-bar');
-				if (bottombar.length > 0){
+				//var height = $dash.find('.content ol')[0].scrollHeight;
+				//var bottombar = $dash.find('.bottom-bar');
+				/*if (bottombar.length > 0){
 					height += bottombar.outerHeight() + 5;
 				}
 				$dash.children('.content').first().height(height);
-				$dash.find('.content .tabs .content').first().height(height);
+				$dash.find('.content .tabs .content').first().height(height);*/
 			});
 		}
 		
