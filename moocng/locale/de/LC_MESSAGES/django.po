@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Translation sMOOC ES-DE\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-30 10:45+0200\n"
+"POT-Creation-Date: 2015-03-30 15:17+0200\n"
 "PO-Revision-Date: 2015-03-28 18:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -1098,7 +1098,7 @@ msgstr "darf Kurse von einem Benutzer auflisten"
 msgid "Can list passed courses of an user"
 msgstr "darf bestanden Kurse von einem Benutzer auflisten"
 
-#: courses/models.py:393 templates/base.html:33
+#: courses/models.py:393 templates/base.html:34
 msgid "Body"
 msgstr "Inhalt"
 
@@ -1669,7 +1669,7 @@ msgstr "Nachname oder E-mail"
 #: profile/templates/profile/posts_search.html:130
 #: profile/templates/profile/reply.html:36
 #: profile/templates/profile/timeline.html:62
-#: teacheradmin/templates/teacheradmin/emails.html:62 templates/base.html:34
+#: teacheradmin/templates/teacheradmin/emails.html:62 templates/base.html:35
 msgid "Send"
 msgstr "Versenden "
 
@@ -1683,7 +1683,7 @@ msgstr "Versenden "
 #: profile/templates/profile/reply.html:37
 #: profile/templates/profile/timeline.html:67
 #: teacheradmin/templates/teacheradmin/groups.html:60
-#: teacheradmin/templates/teacheradmin/units.html:416 templates/base.html:35
+#: teacheradmin/templates/teacheradmin/units.html:416 templates/base.html:36
 msgid "Cancel"
 msgstr "Abbrechen "
 
@@ -2261,7 +2261,7 @@ msgstr ""
 #: courses/templates/courses/home_as_list.html:57
 #: courses/templates/courses/overview.html:272
 #: courses/templates/courses/overview.html:274
-#: profile/templates/profile/badges.html:30
+#: profile/templates/profile/badges.html:35
 #: profile/templates/profile/courses.html:51
 msgid "decorative classroom image"
 msgstr "Dekoratives Klassenzimmerbild"
@@ -2540,7 +2540,7 @@ msgid "Review date"
 msgstr "Bewertungsdatum"
 
 #: courses/templates/courses/progress.html:84
-#: teacheradmin/templates/teacheradmin/badges.html:129
+#: teacheradmin/templates/teacheradmin/badges.html:130
 msgid "Score"
 msgstr "Auswertung"
 
@@ -2612,7 +2612,7 @@ msgstr "Jetzt empfangen Sie eine Marke!"
 msgid "I want a certificate of completion for this course"
 msgstr "Ich möchte ein Zertifikat nach Abschluss dieses Kurses erhalten"
 
-#: courses/templates/courses/transcript.html:66 templates/base.html:70
+#: courses/templates/courses/transcript.html:66 templates/base.html:71
 msgid "Read more"
 msgstr "Weiterlesen"
 
@@ -3323,11 +3323,11 @@ msgstr "Benutzerprofil"
 msgid "User profiles"
 msgstr "Benutzerprofile"
 
-#: profile/templates/profile/badges.html:13
+#: profile/templates/profile/badges.html:17
 msgid "Achieved badges"
 msgstr "Erworben Marken"
 
-#: profile/templates/profile/badges.html:52
+#: profile/templates/profile/badges.html:58
 msgid "has no badges"
 msgstr "hat keine Marken"
 
@@ -3610,7 +3610,7 @@ msgid "Massive email type"
 msgstr "Batch-Mailingart"
 
 #: teacheradmin/models.py:76
-#: teacheradmin/templates/teacheradmin/emails.html:91 templates/base.html:32
+#: teacheradmin/templates/teacheradmin/emails.html:91 templates/base.html:33
 msgid "Subject"
 msgstr "Betreff"
 
@@ -3748,28 +3748,28 @@ msgstr "Einheiten"
 msgid "Peer review"
 msgstr "Peer Review"
 
-#: teacheradmin/templates/teacheradmin/badges.html:98
+#: teacheradmin/templates/teacheradmin/badges.html:99
 msgid "Select unit"
 msgstr "Einheit selektieren"
 
-#: teacheradmin/templates/teacheradmin/badges.html:107
+#: teacheradmin/templates/teacheradmin/badges.html:108
 msgid "Select peer review"
 msgstr "Peer Review selektieren"
 
-#: teacheradmin/templates/teacheradmin/badges.html:114
+#: teacheradmin/templates/teacheradmin/badges.html:115
 msgid "Add peer review"
 msgstr "Peer Review hinfügen"
 
-#: teacheradmin/templates/teacheradmin/badges.html:117
+#: teacheradmin/templates/teacheradmin/badges.html:118
 msgid "Peer review added (click on the peer review to remove):"
 msgstr ""
 "Peer-Review hinzugefügt (klicken Sie auf den Peer-Review um den entfernen):"
 
-#: teacheradmin/templates/teacheradmin/badges.html:132
+#: teacheradmin/templates/teacheradmin/badges.html:133
 msgid "Choose a color for the badge"
 msgstr "Wählen sie eine Farbe für die Marke"
 
-#: teacheradmin/templates/teacheradmin/badges.html:151
+#: teacheradmin/templates/teacheradmin/badges.html:152
 #: teacheradmin/templates/teacheradmin/categories.html:30
 #: teacheradmin/templates/teacheradmin/groups.html:81
 #: teacheradmin/templates/teacheradmin/info.html:208
@@ -3778,11 +3778,11 @@ msgstr "Wählen sie eine Farbe für die Marke"
 msgid "Save"
 msgstr "Speichern"
 
-#: teacheradmin/templates/teacheradmin/badges.html:180
+#: teacheradmin/templates/teacheradmin/badges.html:181
 msgid "Edit badge"
 msgstr "Marke editieren"
 
-#: teacheradmin/templates/teacheradmin/badges.html:183
+#: teacheradmin/templates/teacheradmin/badges.html:184
 msgid "Delete badge"
 msgstr "Marke löschen"
 
@@ -4452,28 +4452,28 @@ msgstr "Unsere Entschuldigungen für die Unannehmlichkeiten"
 msgid "The platform will be available shortly"
 msgstr "Die Plattform wird in Kürze wieder verfügbar sein"
 
-#: templates/base.html:29 templates/base.html.py:42 templates/base.html:74
+#: templates/base.html:30 templates/base.html.py:43 templates/base.html:75
 msgid "Got it"
 msgstr "Verstanden"
 
-#: templates/base.html:30
+#: templates/base.html:31
 msgid "Need help?"
 msgstr "Brauchen Sie Hilfe?"
 
-#: templates/base.html:31
+#: templates/base.html:32
 msgid "let us help you"
 msgstr "Wir helfen Sie gerne "
 
-#: templates/base.html:36
+#: templates/base.html:37
 msgid "Sending"
 msgstr "sendet.."
 
-#: templates/base.html:37
+#: templates/base.html:38
 msgid "There was an error sending your message. Please, try again."
 msgstr ""
 "Ihr E-mail Versand ist leider fehlgeschlagen. Bitte versuchen Sie es erneut."
 
-#: templates/base.html:38
+#: templates/base.html:39
 msgid ""
 "For a better support, we will automatically collect some navigation "
 "information like your user name, email, the platform section you are "
@@ -4489,31 +4489,31 @@ msgstr ""
 "´Absenden´ und senden Sie uns eine E-Mail an support@ecolearning.eu um "
 "Unterstützung ohne Eintrage dieser Information zu erhalten. Vielen Dank."
 
-#: templates/base.html:39
+#: templates/base.html:40
 msgid "Please, log into ECO to send us a message"
 msgstr "Loggen Sie ich in Ihr ECO-Konto ein um uns eine Nachricht zu senden"
 
-#: templates/base.html:43
+#: templates/base.html:44
 msgid "Hello! Active your location"
 msgstr "Guten Tag! Bitte aktivieren Sie die Ortunng."
 
-#: templates/base.html:44
+#: templates/base.html:45
 msgid "for a better educational experience"
 msgstr "für eine bessere Bildungserfahrung"
 
-#: templates/base.html:45
+#: templates/base.html:46
 msgid "Location permission in"
 msgstr "Ortung erlaubt für"
 
-#: templates/base.html:46
+#: templates/base.html:47
 msgid "More information"
 msgstr "Mehr Information"
 
-#: templates/base.html:47
+#: templates/base.html:48
 msgid "Your browser is"
 msgstr "Ihr Browser ist"
 
-#: templates/base.html:49
+#: templates/base.html:50
 msgid ""
 "Active location tracking by clicking on <strong>Allow</strong> in the bar "
 "that will appear above"
@@ -4521,7 +4521,7 @@ msgstr ""
 "Sie können aktive Ortung einschalten wenn Sie auf <strong>Erlauben</strong> "
 "im Browserfenster oben klicken. "
 
-#: templates/base.html:50 templates/base.html.py:51
+#: templates/base.html:51 templates/base.html.py:52
 msgid ""
 "Active location tracking by clicking on <strong>Allow</strong> in the bar "
 "that will appear below"
@@ -4529,7 +4529,7 @@ msgstr ""
 "Sie können aktive Ortung einschalten wenn Sie auf <strong>Erlauben</strong> "
 "im Browserfenster unten klicken. "
 
-#: templates/base.html:52
+#: templates/base.html:53
 msgid ""
 "Active location tracking by selecting <strong>Share Location</strong> on the "
 "dialog that will appear above"
@@ -4537,7 +4537,7 @@ msgstr ""
 "Sie können aktive Ortung einschalten wenn Sie im Dialogfenster "
 "oben<strong>Ort teilen</strong> selektieren. "
 
-#: templates/base.html:53 templates/base.html.py:55
+#: templates/base.html:54 templates/base.html.py:56
 msgid ""
 "Active location tracking by clicking on <strong>Allow</strong> in the dialog "
 "that will appear above"
@@ -4545,7 +4545,7 @@ msgstr ""
 "Sie können aktive Ortung einschalten wenn Sie im Dialogfenster oben<strong>"
 "´Erlauben´</strong> selektieren. "
 
-#: templates/base.html:54
+#: templates/base.html:55
 msgid ""
 "Active location tracking by selecting  <strong>Always allow</strong> on the "
 "<strong>Options for this site</strong> dropdown that will appear in the bar "
@@ -4555,7 +4555,7 @@ msgstr ""
 "Browserfenster unten bei <strong>´Optionen für diese Webite´</strong>die "
 "Option <strong>´Immer erlauben´</strong> selektieren. "
 
-#: templates/base.html:56
+#: templates/base.html:57
 msgid ""
 "Active location tracking by clicking on <strong>OK</strong> in the dialog "
 "that will appear"
@@ -4563,11 +4563,11 @@ msgstr ""
 "Aktive Ortung, indem Sie auf <strong> OK </ strong> im Dialogfeld das "
 "erscheint clicken."
 
-#: templates/base.html:68
+#: templates/base.html:69
 msgid "Why tracking my location is important?"
 msgstr "Warum ist Standortermittlung hilfreich?"
 
-#: templates/base.html:69
+#: templates/base.html:70
 msgid ""
 "Allowing us to know where you are is useful for you. Why?, because we use "
 "this information to suggest you courses and user groups to enhance your "
@@ -4581,15 +4581,15 @@ msgstr ""
 "on the location and importance of networked learning. Your geographic "
 "location helps us improve your learning experience, thank you"
 
-#: templates/base.html:75
+#: templates/base.html:76
 msgid "Always open course"
 msgstr "Kurs immer verfügbar"
 
-#: templates/base.html:76
+#: templates/base.html:77
 msgid "Important information"
 msgstr "Wichtige Informationen"
 
-#: templates/base.html:77
+#: templates/base.html:78
 msgid ""
 "This course is always open so you can access to all contents anytime but, as "
 "the edition has been ended, there could be less people participating."
@@ -4598,62 +4598,62 @@ msgstr ""
 "Inhalt. Trotzdem informieren wir Sie dass aktuell weniger Teilnehmer aktiv "
 "sind, weil die letzte Kursedition bereits zu Ende ist."
 
-#: templates/base.html:78
+#: templates/base.html:79
 msgid "Come on, enter and learn more!"
 msgstr "Registrieren Sie sich und erfahren Sie mehr"
 
-#: templates/base.html:110 templates/base_bigheader.html:44
+#: templates/base.html:111 templates/base_bigheader.html:44
 #: templates/base_orig.html:46
 msgid "Catalogue"
 msgstr "Katalog"
 
-#: templates/base.html:112 templates/base_bigheader.html:46
+#: templates/base.html:113 templates/base_bigheader.html:46
 #: templates/base_bigheader.html.py:166
 msgid "Teams"
 msgstr "Teams"
 
-#: templates/base.html:115 templates/base_bigheader.html:49
+#: templates/base.html:116 templates/base_bigheader.html:49
 #: templates/base_bigheader.html.py:169 templates/base_orig.html:48
 msgid "About"
 msgstr "Über"
 
-#: templates/base.html:119 templates/base_bigheader.html:53
+#: templates/base.html:120 templates/base_bigheader.html:53
 #: templates/base_bigheader.html.py:172 templates/base_orig.html:50
 msgid "How it works"
 msgstr "Wie funktioniert es?"
 
-#: templates/base.html:139 templates/base_bigheader.html:62
+#: templates/base.html:140 templates/base_bigheader.html:62
 #: templates/base_orig.html:60
 msgid "Log in"
 msgstr "Einloggen"
 
-#: templates/base.html:161 templates/base_bigheader.html:218
+#: templates/base.html:162 templates/base_bigheader.html:218
 #: templates/base_orig.html:76
 msgid "Get help"
 msgstr "Brauchen Sie Hilfe?"
 
-#: templates/base.html:165 templates/base.html.py:167
+#: templates/base.html:166 templates/base.html.py:168
 msgid "Support"
 msgstr "Hilfe"
 
-#: templates/base.html:175 templates/base_bigheader.html:222
+#: templates/base.html:176 templates/base_bigheader.html:222
 #: templates/base_orig.html:80
 msgid "All rights reserved"
 msgstr "Alle Rechten vorbehalten"
 
-#: templates/base.html:179 templates/base_bigheader.html:226
+#: templates/base.html:180 templates/base_bigheader.html:226
 msgid "Privacy Policy"
 msgstr "Datenschutzrichtlinien"
 
-#: templates/base.html:181 templates/base_bigheader.html:228
+#: templates/base.html:182 templates/base_bigheader.html:228
 msgid "Terms of Service"
 msgstr "Dienstleistungsbedingungen"
 
-#: templates/base.html:183
+#: templates/base.html:184
 msgid "Open"
 msgstr "Open"
 
-#: templates/base.html:183
+#: templates/base.html:184
 msgid "MOOC"
 msgstr "MOOC"
 
