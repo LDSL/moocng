@@ -4693,19 +4693,19 @@ ul.rating {
 		position: absolute;
 	}
 
-	.posts{
+	.posts {
 		background-color: @white;
-		.post{
+		.post, .replyPost {
 			border-bottom: 1px solid @neutral_light_2;
 
 			&.notMyPost{
 				background-color: @neutral_light_4;
 			}
 
-			&.open {
+			&.open > .cell > .tools {
 				padding-bottom: 155px;
 
-				.postReply {
+				& > .postReply {
 					display: block;
 				}
 			}
@@ -4823,6 +4823,13 @@ ul.rating {
 				.replyPost {
 					border-top: 1px solid @neutral_light_2;
 				}
+			}
+		}
+
+		.replyPost {
+			
+			.cell .gravatar {
+				margin-left: 0;
 			}
 		}
 		

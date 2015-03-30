@@ -49,9 +49,9 @@
 				<!-- <span class="favourite">0</span> -->
 			</div>
 		</div>
-		{% if post.children|length > 0 %}
+		{% if post.replies|length > 0 %}
 		<div class="replies">
-			{% for reply in post.children %}
+			{% for reply in post.replies %}
 				{% include "profile/reply.html" %}
 			{% endfor %}
 		</div>

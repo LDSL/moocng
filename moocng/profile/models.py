@@ -181,9 +181,26 @@ def get_posts(case, id, user, page):
         for following in user["following"]:
                 idsUsers.append({"id_user": following})
         
-    posts = postCollection.find({"$or": idsUsers})[page:page+10].sort("date",pymongo.DESCENDING)
+    posts = postCollection.find({"$and": [{"$or": idsUsers, }, {"$or": [ {"is_child": {"$exists": False} }, {"is_child": False} ] } ] })[page:page+10].sort("date",pymongo.DESCENDING)
+    posts_list = []
+    for post in posts:
+        print "Post %s: %s (%s)" % (post['_id'],post['text'],post['children'])
+        if len(post['children']) > 0:
+            _proccess_post_children(post)
+        posts_list.append(post)
 
-    return _processPost(posts)
+    return _processPost(posts_list)
+
+def _proccess_post_children(post):
+    postCollection = get_micro_blog_db().get_collection('post')
+    post['replies'] = []
+    for child in post['children']:
+        post_child = postCollection.find({'_id': child}).limit(1)[0]
+        if post_child and len(post_child['children']) > 0:
+            _proccess_post_children(post_child)
+        post_child["id"] = post_child.pop("_id")
+        print "Post children %s: %s (%s)" % (post_child['id'],post_child['text'],post_child['children'])
+        post['replies'].append(post_child)
 
 def search_posts(query, page):
     postCollection = get_micro_blog_db().get_collection('post')
@@ -249,9 +266,9 @@ def save_reply(request, id, post):
     postCollection = get_micro_blog_db().get_collection('post')
     post_orig = postCollection.find_one({"_id":ObjectId(id)})
     if post_orig:
+        post['is_child'] = True
         reply_id = postCollection.insert(post)
-        post['id'] = reply_id
-        post_orig["children"].append(post)
+        post_orig["children"].append(reply_id)
         postCollection.update({'_id': ObjectId(id)}, {"$set": {"children": post_orig["children"]}})
         return True
     else:
