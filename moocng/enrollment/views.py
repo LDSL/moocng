@@ -42,7 +42,7 @@ def free_enrollment(request, course_slug):
                 if groups.count() > 0:
                     group = groups[0]
 
-                    if(len(group["members"]) <= course.group_max_size + (course.group_max_size * settings.GROUPS_UPPER_THRESHOLD / 100)):
+                    if(len(group["members"]) <= course.group_max_size):
                         group["members"].append(new_member)
                         if "size" in group:
                             group["size"] += 1
