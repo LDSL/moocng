@@ -2322,6 +2322,14 @@ ul.rating {
 					}
 				}
 			}
+
+			input[type=text] {
+				width: 90%;
+
+				& + .button {
+					width: 10%;
+				}
+			}
 		}
 		
 		.feed, &.feed {
@@ -2505,6 +2513,10 @@ ul.rating {
 	&.tall {
 		.content {
 			height: 512px;
+
+			.feed, &.feed {
+				height: 464px;
+			}
 		}
 	}
 }
@@ -4384,6 +4396,7 @@ ul.rating {
 
 				.cell {
 					display: table-cell;
+					vertical-align: top;
 
 					&:last-child {
 						width: 100%;

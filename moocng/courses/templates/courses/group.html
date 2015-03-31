@@ -63,41 +63,22 @@
 		<div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
 			<div class="dash-box tall">
 				<div class="title">
-					<h3>{% trans "News feed" %}</h3>
+					<h3>{% trans "Group wall" %}</h3>
 				</div>
 				<div class="content">
 					<ul class="tabs">
 						<li class="selected">
 							<h4>{% trans "Microblogging" %}</h4>
-							<div class="content feed">
+							<div class="content feed" id="dynamicfeed">
 								<ul>
-									{% for post in posts_list %}
-									<li>
-										{% url profile_posts post.username|cut:"@" as author_profile_url %}
-										<a href="{{ author_profile_url }}"><img src="{{ post.gravatar }}"></a>
-										<div>
-											<a href="{{ author_profile_url }}"><h5>{{ post.first_name }} {{ post.last_name }} <span>{{ post.username }}</span></h5></a>
-											<p class="date">
-												{% if post.original_date %}
-													{{post.original_date}}
-												{% else %}
-													{{post.date}}
-												{% endif %}
-											</p>
-											{% autoescape off %}
-											<p class="text">{{ post.text }}</p>
-											{% endautoescape %}
-										</div>
-									</li>
-									{% empty %}
 									<li class="empty">{% trans "There is no posts yet" %}</li>
-									{% endfor %}
 								</ul>
 							</div>
 						</li>
 					</ul>
 					<div class="bottom-bar">
-						<a href="#" class="button pull-right" id="shareGroup">{% trans "Share on group's wall" %}<img src="{{ STATIC_URL }}/img/ECO_icon_flecha_enlace.svg"></a>
+						<input type="text" placeholder="{% trans 'Write a message' %}" id="shareGroup-txt">
+						<a href="#" class="button pull-right" id="shareGroup-btn"><img src="{{ STATIC_URL }}/img/ECO_icon_flecha_enlace.svg"></a>
 					</div>
 				</div>
 			</div>
@@ -203,19 +184,8 @@
 				var $dash = $(value);
 				var width = $dash.children('.content').first().outerWidth();
 				$dash.find('.content .tabs .content').width(width);
-				//var height = $dash.find('.content ol')[0].scrollHeight;
-				//var bottombar = $dash.find('.bottom-bar');
-				/*if (bottombar.length > 0){
-					height += bottombar.outerHeight() + 5;
-				}
-				$dash.children('.content').first().height(height);
-				$dash.find('.content .tabs .content').first().height(height);*/
 			});
 		}
-		
-		$(function(){
-			resizeDashboard();
-		});
 		
 		$( window ).resize(resizeDashboard);
 		
@@ -254,38 +224,80 @@
 			});
 		})
 
-		$('#shareGroup').click(function(e) {
-	        "use strict";
-	        e.preventDefault();
-	        var hashtag = "#{{ group.hashtag }}";
-	        if(hashtag){
-	            var $microblog = $('#microblog-share');
-	            var $textarea = $microblog.find('.editor textarea');
-	            $textarea.val(' ' + hashtag);
-	            $textarea[0].setSelectionRange(0,0);
-	            $microblog.addClass('open');
-	            $textarea.focus();
-	        }
-	    });
-	</script>
-	<script>
-	$(function(){
-		$('.userlist .karma').each(function(idx, elem){
-			var user = $(elem).attr('data-user');
-			user = user.replace('.','-');
+	    $('#shareGroup-btn').click(function(e){
+			e.preventDefault();
+			var text = $('#shareGroup-txt').val();
+			var hashtag = "#{{ group.hashtag }}";
+			if (text.trim()) {
+				$.ajax({
+					url: '/user/posts/',
+					type: 'POST',
+					data: 'postText='+text+' '+hashtag,
+					contentType: 'application/x-www-form-urlencoded',
+					beforeSend: function(xhr, settings) {
+			        	xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+			    	},
+					success: function(data){
+						$('#shareGroup-txt').val('');
+						getNewMessages();
+					}
+				});
+			}
+		});
+
+		function getNewMessages(){
 			$.ajax({
-			    url: '{{ forum_url }}/api2/users/'+user,
-			    type: 'GET',
-			    //dataType: 'jsonp',
-			    //jsonpCallback: 'callback',
-			    success: function(result) { if(result){
-			    								$(elem).append('<span>'+result.reputation+'</span>');
-			    							}else{
-			    								console.log('Unable to request Karma for user ' + user)
-			    							} },
-			    error: function() { console.log('Unable to request Karma for user ' + user) },
+				url: '{% url profile_posts_hashtag_api group.hashtag %}',
+				type: 'GET',
+				success: function(result){
+					var $list_container = $('#dynamicfeed ul');
+					$list_container.empty();
+					for (post of result.posts){
+						var userUrl = '{% url profile_posts %}'+ post.username;
+						var date;
+						if (post.original_date) {
+							date = post.original_date;
+						}else{
+							date = post.date;
+						}
+						var postEl = '<li> \
+							<a href="'+userUrl+'"><img src="'+post.gravatar+'"></a> \
+							<div> \
+								<a href="'+userUrl+'"><h5>'+post.first_name+' '+post.last_name+' <span>'+post.username+'</span></h5></a> \
+								<p class="date">'+date+'</p><br> \
+								<p class="text">'+post.text+'</p> \
+							</div> \
+						</li>';
+						$list_container.prepend(postEl);
+					}
+					$list_container.parent().scrollTop($list_container.outerHeight());
+				}
+			});
+		}
+
+		$(function(){
+			resizeDashboard();
+
+			getNewMessages();
+
+			var teamMicroblogInterval = setInterval(function(){
+				getNewMessages();
+			}, 60000)
+
+			$('.userlist .karma').each(function(idx, elem){
+				var user = $(elem).attr('data-user');
+				user = user.replace('.','-');
+				$.ajax({
+				    url: '{{ forum_url }}/api2/users/'+user,
+				    type: 'GET',
+				    success: function(result) { if(result){
+				    								$(elem).append('<span>'+result.reputation+'</span>');
+				    							}else{
+				    								console.log('Unable to request Karma for user ' + user)
+				    							} },
+				    error: function() { console.log('Unable to request Karma for user ' + user) },
+				});
 			});
 		});
-	});
 	</script>
 {% endblock %}

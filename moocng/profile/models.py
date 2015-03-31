@@ -188,7 +188,53 @@ def get_posts(case, id, user, page):
             _proccess_post_children(post)
         posts_list.append(post)
 
-    return _processPost(posts_list)
+    return _processPostList(posts_list)
+
+def search_posts(query, page):
+    postCollection = get_micro_blog_db().get_collection('post')
+    mongoQuery = {'$regex': '.*%s.*' % (query)}
+
+    posts = postCollection.find({'text': mongoQuery})[page:page+10].sort("date",pymongo.DESCENDING)
+
+    return _processPostList(posts)
+
+def insert_post(post):
+    get_micro_blog_db().get_collection('post').insert(post)
+
+def count_posts(id):
+    return get_micro_blog_db().get_collection('post').find({'id_user': id}).count()
+
+def _hashtag_to_link(matchobj):
+    hashtag = matchobj.group(0)
+    hashtagUrl = reverse('profile_posts_hashtag', args=[hashtag[1:]])
+    return '<a href="%s">%s</a>' % (hashtagUrl, hashtag)
+
+def _proccess_hashtags(text):
+    hashtagged = re.sub(r'(?:(?<=\s)|^)#(\w*[A-Za-z_]+\w*)', _hashtag_to_link, text)
+    return hashtagged
+
+def _processPost(post, from_zone, to_zone):
+    post["date"] = datetime.strptime(post.get("date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
+    if("original_date" in post):
+        post["original_date"] = datetime.strptime(post.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
+    post["id"] = post.pop("_id")
+    post["text"] = _proccess_hashtags(post["text"])
+    listPost.append(post)
+
+def _processPostList(posts):
+    listPost = []
+    from_zone = tz.tzutc()
+    to_zone = tz.tzlocal()
+
+    for post in posts:
+        post["date"] = datetime.strptime(post.get("date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
+        if("original_date" in post):
+            post["original_date"] = datetime.strptime(post.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
+        post["id"] = post.pop("_id")
+        post["text"] = _proccess_hashtags(post["text"])
+        listPost.append(post)
+
+    return listPost
 
 def _proccess_post_children(post):
     postCollection = get_micro_blog_db().get_collection('post')
@@ -207,47 +253,6 @@ def _proccess_post_children(post):
         post_child["text"] = _proccess_hashtags(post_child["text"])
 
         post['replies'].append(post_child)
-
-def search_posts(query, page):
-    postCollection = get_micro_blog_db().get_collection('post')
-    mongoQuery = {'$regex': '.*%s.*' % (query)}
-
-    posts = postCollection.find({'text': mongoQuery})[page:page+10].sort("date",pymongo.DESCENDING)
-
-    return _processPost(posts)
-
-def insert_post(post):
-    get_micro_blog_db().get_collection('post').insert(post)
-
-def count_posts(id):
-    return get_micro_blog_db().get_collection('post').find({'id_user': id}).count()
-
-def _hashtag_to_link(matchobj):
-    hashtag = matchobj.group(0)
-    hashtagUrl = reverse('profile_posts_hashtag', args=[hashtag[1:]])
-    return '<a href="%s">%s</a>' % (hashtagUrl, hashtag)
-
-def _proccess_hashtags(text):
-    hashtagged = re.sub(r'(?:(?<=\s)|^)#(\w*[A-Za-z_]+\w*)', _hashtag_to_link, text)
-    return hashtagged
-
-def _processPost(posts):
-    listPost = []
-    from_zone = tz.tzutc()
-    to_zone = tz.tzlocal()
-
-    for post in posts:
-        # post["text"] = post["text"]
-        # post["email"] = "@" + post["email"].split("@")[0]
-        # print(post["text"])
-        post["date"] = datetime.strptime(post.get("date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
-        if("original_date" in post):
-            post["original_date"] = datetime.strptime(post.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
-        post["id"] = post.pop("_id")
-        post["text"] = _proccess_hashtags(post["text"])
-        listPost.append(post)
-
-    return listPost
 
 def save_retweet(request, id):
     postCollection = get_micro_blog_db().get_collection('post')

@@ -144,7 +144,7 @@ def profile_user(request, id):
 		}, context_instance=RequestContext(request))
 
 # @login_required
-def profile_posts(request, id):
+def profile_posts(request, id, api=False):
 	if(not id):
 		if(not request.user.id):
 			return HttpResponseRedirect("/auth/login")
@@ -190,25 +190,35 @@ def profile_posts(request, id):
 		elif(blog_user):
 			followingCount = len(blog_user["following"])
 
-
 		listPost = get_posts(case, id, blog_user, 0)
 		
-		return render_to_response('profile/posts.html', {
-			"id":id,
-			"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
-			# "email":"@" + request.user.email.split("@")[0],
-			'request': request,
-			'form': PostForm(),
-			'totalPost': count_posts(id),
-			'posts': listPost,
-			'case': case,
-			"user_view_profile": user,
-			"following": following,
-			"followingCount": followingCount,
-			"followerCount": get_num_followers(id)
-			}, context_instance=RequestContext(request))
+		if not api:
+			return render_to_response('profile/posts.html', {
+				"id":id,
+				"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
+				# "email":"@" + request.user.email.split("@")[0],
+				'request': request,
+				'form': PostForm(),
+				'totalPost': count_posts(id),
+				'posts': listPost,
+				'case': case,
+				"user_view_profile": user,
+				"following": following,
+				"followingCount": followingCount,
+				"followerCount": get_num_followers(id)
+				}, context_instance=RequestContext(request))
+		else:
+			response = {
+				"id": id,
+				"user": '@%s' % (user.username),
+				"following": following,
+				"followingCount": followingCount,
+				"followerCount": get_num_followers(id),
+				"posts": listPost
+			}
+			return HttpResponse(json_util.dumps(response), mimetype='application/json')
 
-def profile_posts_search(request, query, hashtag=False):
+def profile_posts_search(request, query, hashtag=False, api=False):
 	if(not request.user.id):
 		return HttpResponseRedirect("/auth/login")
 	id = request.user.id
@@ -256,22 +266,30 @@ def profile_posts_search(request, query, hashtag=False):
 			search_query = query
 		listPost = search_posts(search_query, 0)
 		
-		return render_to_response('profile/posts_search.html', {
-			"id":id,
-			"badges": get_db().get_collection('badge').find({"id_user": id}).count(),
-			# "email":"@" + request.user.email.split("@")[0],
-			'request': request,
-			'form': PostForm(),
-			'totalPost': count_posts(id),
-			'posts': listPost,
-			'case': case,
-			"user_view_profile": user,
-			"following": following,
-			"followingCount": followingCount,
-			"followerCount": get_num_followers(id),
-			"query": query,
-			"is_hashtag": hashtag,
-			}, context_instance=RequestContext(request))
+		if not api:
+			return render_to_response('profile/posts_search.html', {
+				"id":id,
+				"badges": get_db().get_collection('badge').find({"id_user": id}).count(),
+				# "email":"@" + request.user.email.split("@")[0],
+				'request': request,
+				'form': PostForm(),
+				'totalPost': count_posts(id),
+				'posts': listPost,
+				'case': case,
+				"user_view_profile": user,
+				"following": following,
+				"followingCount": followingCount,
+				"followerCount": get_num_followers(id),
+				"query": query,
+				"is_hashtag": hashtag,
+				}, context_instance=RequestContext(request))
+		else:
+			response = {
+				"query": query,
+				"is_hashtag": hashtag,		
+				"posts": listPost
+			}
+			return HttpResponse(json_util.dumps(response), mimetype='application/json')
 
 
 # @login_required

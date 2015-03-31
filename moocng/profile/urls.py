@@ -58,4 +58,16 @@ urlpatterns = patterns(
 
     url(r'^user/reply/(?P<id>[-\w.]+)$', 'reply',
         name='reply'),
+
+    url(r'^user/api/posts/(?P<id>[-\w.]*)$', 'profile_posts',
+        {'api': True}, name='profile_posts_api'),
+
+    url(r'^user/api/posts/$', 'profile_posts',
+        {'api': True}, name='profile_posts_api'),
+
+    url(r'^user/api/posts/search/(?P<query>[-\w.]+)$', 'profile_posts_search',
+        {'hashtag': False, 'api': True}, name='profile_posts_search_api'),
+
+    url(r'^user/api/posts/hashtag/(?P<query>[-\w.]+)$', 'profile_posts_search',
+        {'hashtag': True, 'api': True}, name='profile_posts_hashtag_api'),
 )
