@@ -192,6 +192,8 @@ def get_posts(case, id, user, page):
 
 def _proccess_post_children(post):
     postCollection = get_micro_blog_db().get_collection('post')
+    from_zone = tz.tzutc()
+    to_zone = tz.tzlocal()
     post['replies'] = []
     for child in post['children']:
         post_child = postCollection.find({'_id': child}).limit(1)[0]
