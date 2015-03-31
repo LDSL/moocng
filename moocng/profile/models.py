@@ -184,7 +184,6 @@ def get_posts(case, id, user, page):
     posts = postCollection.find({"$and": [{"$or": idsUsers, }, {"$or": [ {"is_child": {"$exists": False} }, {"is_child": False} ] } ] })[page:page+10].sort("date",pymongo.DESCENDING)
     posts_list = []
     for post in posts:
-        print "Post %s: %s (%s)" % (post['_id'],post['text'],post['children'])
         if len(post['children']) > 0:
             _proccess_post_children(post)
         posts_list.append(post)
@@ -198,8 +197,11 @@ def _proccess_post_children(post):
         post_child = postCollection.find({'_id': child}).limit(1)[0]
         if post_child and len(post_child['children']) > 0:
             _proccess_post_children(post_child)
+        post["date"] = datetime.strptime(post.get("date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
+        if("original_date" in post):
+            post["original_date"] = datetime.strptime(post.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
         post_child["id"] = post_child.pop("_id")
-        print "Post children %s: %s (%s)" % (post_child['id'],post_child['text'],post_child['children'])
+        post["text"] = _proccess_hashtags(post["text"])
         post['replies'].append(post_child)
 
 def search_posts(query, page):
