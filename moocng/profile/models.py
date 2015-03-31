@@ -199,11 +199,13 @@ def _proccess_post_children(post):
         post_child = postCollection.find({'_id': child}).limit(1)[0]
         if post_child and len(post_child['children']) > 0:
             _proccess_post_children(post_child)
-        post["date"] = datetime.strptime(post.get("date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
-        if("original_date" in post):
-            post["original_date"] = datetime.strptime(post.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
+
+        post_child["date"] = datetime.strptime(post_child.get("date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
+        if("original_date" in post_child):
+            post_child["original_date"] = datetime.strptime(post_child.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
         post_child["id"] = post_child.pop("_id")
-        post["text"] = _proccess_hashtags(post["text"])
+        post_child["text"] = _proccess_hashtags(post_child["text"])
+
         post['replies'].append(post_child)
 
 def search_posts(query, page):
