@@ -235,13 +235,15 @@
 					<ul class="unstyled clearfix">
 					{% for course_teacher in course_teachers %}
 						<li class="teacher">
-						<img src="{% gravatar_for_email course_teacher.teacher.email %}&s=48" alt="{% trans 'Profile image of' %} {% firstof course_teacher.teacher.get_full_name course_teacher.teacher.username %" />
-						<p>{% firstof course_teacher.teacher.get_full_name course_teacher.teacher.username %}</p>
-						{% if course_teacher.teacher.get_profile.organization %}
-							{% for org in course_teacher.teacher.get_profile.organization.all%}
-							<span>{{ org }}</span>
-							{% endfor %}
-						{% endif %}
+						<a href="{%url profile_user%}{{course_teacher.teacher.username}}">
+							<img src="{% gravatar_for_email course_teacher.teacher.email %}&s=48" alt="{% trans 'Profile image of' %} {% firstof course_teacher.teacher.get_full_name course_teacher.teacher.username %" />
+							<p>{% firstof course_teacher.teacher.get_full_name course_teacher.teacher.username %}</p>
+							{% if course_teacher.teacher.get_profile.organization %}
+								{% for org in course_teacher.teacher.get_profile.organization.all%}
+								<span>{{ org }}</span>
+								{% endfor %}
+							{% endif %}
+						</a>
 						</li>
 					{% endfor %}
 					</ul>
