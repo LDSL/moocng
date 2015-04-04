@@ -7,14 +7,24 @@
 {% block extraheader %}
 <link rel="alternate" type="application/rss+xml" href="{% url announcements_feed course.slug %}" />
 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.cookie.js"></script>
+
+<meta name="twitter:card" value="summary">
 {% if course.thumbnail %}
 <meta property="og:image" content="{{ MEDIA_URL }}{{ course.thumbnail }}"/>
+<meta itemprop="image" content="{{ MEDIA_URL }}{{ course.thumbnail }}">
+<meta name="twitter:image" content="{{ MEDIA_URL }}{{ course.thumbnail }}">
 {% else %}
 <meta property="og:image" content="{{ STATIC_URL }}img/classroom.jpg"/>
+<meta itemprop="image" content="{{ STATIC_URL }}img/classroom.jpg">
+<meta name="twitter:image" content="{{ STATIC_URL }}img/classroom.jpg">
 {% endif %}
-<meta property="og:title" content="{{ course.name }}"/>
-<meta property="og:site_name" content="{{ course.name }}"/>
+<meta property="og:title" content="{{ course.name }} - {{ site_title }}"/>
+<meta itemprop="name" content="{{ course.name }} - {{ site_title }}">
+<meta name="twitter:title" content="{{ course.name }} - {{ site_title }}">
+<meta name="description" content="{{ course.description|removetags:"p" }}">
 <meta property="og:description" content="{{ course.description|removetags:"p" }}"/>
+<meta itemprop="description" content="{{ course.description|removetags:"p" }}">
+<meta name="twitter:description" content="{{ course.description|removetags:"p" }}">
 {% endblock %}
 
 {% block content %}
