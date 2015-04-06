@@ -10,13 +10,13 @@
 
 <meta name="twitter:card" value="summary">
 {% if course.thumbnail %}
-<meta property="og:image" content="//{{ site }}{{ MEDIA_URL }}{{ course.thumbnail }}"/>
-<meta itemprop="image" content="//{{ site }}{{ MEDIA_URL }}{{ course.thumbnail }}">
-<meta name="twitter:image" content="//{{ site }}{{ MEDIA_URL }}{{ course.thumbnail }}">
+<meta property="og:image" content="http://{{ site }}{{ MEDIA_URL }}{{ course.thumbnail }}"/>
+<meta itemprop="image" content="http://{{ site }}{{ MEDIA_URL }}{{ course.thumbnail }}">
+<meta name="twitter:image" content="http://{{ site }}{{ MEDIA_URL }}{{ course.thumbnail }}">
 {% else %}
-<meta property="og:image" content="//{{ site }}{{ STATIC_URL }}img/classroom.jpg"/>
-<meta itemprop="image" content="//{{ site }}{{ STATIC_URL }}img/classroom.jpg">
-<meta name="twitter:image" content="//{{ site }}{{ STATIC_URL }}img/classroom.jpg">
+<meta property="og:image" content="http://{{ site }}{{ STATIC_URL }}img/classroom.jpg"/>
+<meta itemprop="image" content="http://{{ site }}{{ STATIC_URL }}img/classroom.jpg">
+<meta name="twitter:image" content="http://{{ site }}{{ STATIC_URL }}img/classroom.jpg">
 {% endif %}
 <meta property="og:title" content="{{ course.name }} - {{ site.name }}"/>
 <meta itemprop="name" content="{{ course.name }} - {{ site.name }}">
