@@ -4182,6 +4182,11 @@ ul.rating {
 				padding: 8px 20px 12px;
 			}
 
+			a.print {
+				float: right;
+				padding: 12px 12px 0 0;
+			}
+
 			.button {
 				display: inline-block;
 				background-color: @highlight;
@@ -4396,6 +4401,10 @@ ul.rating {
 					p {
 						font-size: 14px;
 						.line-clamp(18px, 3, @white);
+
+						&.hide-text {
+							font-size: 0;
+						}
 					}
 				}
 
