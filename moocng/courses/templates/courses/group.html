@@ -253,7 +253,7 @@
 					var $list_container = $('#dynamicfeed ul');
 					$list_container.empty();
 					for (post of result.posts){
-						var userUrl = '{% url profile_posts %}'+ post.username;
+						var userUrl = '{% url profile_posts %}'+ post.username.substr(1);
 						var date;
 						if (post.original_date) {
 							date = post.original_date;
