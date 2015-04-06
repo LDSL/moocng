@@ -89,6 +89,11 @@ def certificate_url(request):
 def extra_settings(request):
 
     try:
+        site_url = settings.SITE_URL
+    except AttributeError:
+        site_url = ''
+
+    try:
         sandbox = settings.ALLOW_PUBLIC_COURSE_CREATION
     except AttributeError:
         sandbox = ''
@@ -204,6 +209,7 @@ def extra_settings(request):
         profile_provider_url = None
 
     context = {
+        'site_url': site_url,
         'sandbox': sandbox,
         'mathjax_enabled': mathjax_enabled,
         'feature_teams': feature_teams,
