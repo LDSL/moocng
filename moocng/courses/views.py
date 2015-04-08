@@ -567,6 +567,8 @@ def course_group(request, course_slug):
             if(len(g["members"]) <= course.group_max_size + (course.group_max_size * settings.GROUPS_UPPER_THRESHOLD / 100)):
                 groups.append(g)
 
+    posts_list = search_posts(group["hashtag"], 0)
+
     if is_enrolled:
         has_passed= has_user_passed_course(request.user, course)
     else:
@@ -582,6 +584,7 @@ def course_group(request, course_slug):
         'is_teacher': is_teacher,
         'group': group,
         'groups':groups,
+        'posts_list': posts_list,
         'passed': has_passed,
     }, context_instance=RequestContext(request))
 
@@ -999,6 +1002,7 @@ def clone_activity(request, course_slug):
 
 @login_required
 def create_course_groups(request,id):
+    print "Create course groups id: %s" % (id)
     create_groups(id)
     return HttpResponse("true")
 

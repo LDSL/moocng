@@ -89,6 +89,7 @@ def course_review_assign(request, course_slug, assignment_id):
         'author': {
             '$ne': user_id
         },
+        'language': request.user.get_profile().language,
         'reviewers': {
             '$ne': user_id
         }

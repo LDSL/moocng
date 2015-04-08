@@ -213,7 +213,7 @@ class Course(Sortable):
         default=settings.DEFAULT_GROUP_MAX_SIZE)
 
     official_course = models.BooleanField(verbose_name=_('Is this course official?'),
-                                         default=False)
+                                          default=False)
 
     objects = CourseManager()
 

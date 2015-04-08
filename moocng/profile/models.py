@@ -181,9 +181,14 @@ def get_posts(case, id, user, page):
         for following in user["following"]:
                 idsUsers.append({"id_user": following})
         
-    posts = postCollection.find({"$or": idsUsers})[page:page+10].sort("date",pymongo.DESCENDING)
+    posts = postCollection.find({"$and": [{"$or": idsUsers, }, {"$or": [ {"is_child": {"$exists": False} }, {"is_child": False} ] } ] })[page:page+10].sort("date",pymongo.DESCENDING)
+    posts_list = []
+    for post in posts:
+        if len(post['children']) > 0:
+            _proccess_post_children(post)
+        posts_list.append(post)
 
-    return _processPost(posts)
+    return _processPostList(posts_list)
 
 def search_posts(query, page):
     postCollection = get_micro_blog_db().get_collection('post')
@@ -191,7 +196,7 @@ def search_posts(query, page):
 
     posts = postCollection.find({'text': mongoQuery})[page:page+10].sort("date",pymongo.DESCENDING)
 
-    return _processPost(posts)
+    return _processPostList(posts)
 
 def insert_post(post):
     get_micro_blog_db().get_collection('post').insert(post)
@@ -208,15 +213,20 @@ def _proccess_hashtags(text):
     hashtagged = re.sub(r'(?:(?<=\s)|^)#(\w*[A-Za-z_]+\w*)', _hashtag_to_link, text)
     return hashtagged
 
-def _processPost(posts):
+def _processPost(post, from_zone, to_zone):
+    post["date"] = datetime.strptime(post.get("date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
+    if("original_date" in post):
+        post["original_date"] = datetime.strptime(post.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
+    post["id"] = post.pop("_id")
+    post["text"] = _proccess_hashtags(post["text"])
+    listPost.append(post)
+
+def _processPostList(posts):
     listPost = []
     from_zone = tz.tzutc()
     to_zone = tz.tzlocal()
 
     for post in posts:
-        # post["text"] = post["text"]
-        # post["email"] = "@" + post["email"].split("@")[0]
-        # print(post["text"])
         post["date"] = datetime.strptime(post.get("date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
         if("original_date" in post):
             post["original_date"] = datetime.strptime(post.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
@@ -225,6 +235,24 @@ def _processPost(posts):
         listPost.append(post)
 
     return listPost
+
+def _proccess_post_children(post):
+    postCollection = get_micro_blog_db().get_collection('post')
+    from_zone = tz.tzutc()
+    to_zone = tz.tzlocal()
+    post['replies'] = []
+    for child in post['children']:
+        post_child = postCollection.find({'_id': child}).limit(1)[0]
+        if post_child and len(post_child['children']) > 0:
+            _proccess_post_children(post_child)
+
+        post_child["date"] = datetime.strptime(post_child.get("date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
+        if("original_date" in post_child):
+            post_child["original_date"] = datetime.strptime(post_child.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
+        post_child["id"] = post_child.pop("_id")
+        post_child["text"] = _proccess_hashtags(post_child["text"])
+
+        post['replies'].append(post_child)
 
 def save_retweet(request, id):
     postCollection = get_micro_blog_db().get_collection('post')
@@ -242,8 +270,20 @@ def save_retweet(request, id):
         del post["_id"]
         insert_post(post)
         return True
+    else:
+        return False
 
-    return False
+def save_reply(request, id, post):
+    postCollection = get_micro_blog_db().get_collection('post')
+    post_orig = postCollection.find_one({"_id":ObjectId(id)})
+    if post_orig:
+        post['is_child'] = True
+        reply_id = postCollection.insert(post)
+        post_orig["children"].append(reply_id)
+        postCollection.update({'_id': ObjectId(id)}, {"$set": {"children": post_orig["children"]}})
+        return True
+    else:
+        return False
 
 def get_num_followers(id):
     return get_micro_blog_db().get_collection('user').find({"following": {"$eq" : id}}).count()
