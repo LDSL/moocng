@@ -316,7 +316,7 @@ def course_overview(request, course_slug):
         'passed': has_passed,
     }, context_instance=RequestContext(request))
 
-@login_required
+
 def course_classroom(request, course_slug):
 
     """
@@ -329,6 +329,9 @@ def course_classroom(request, course_slug):
 
     .. versionadded:: 0.1
     """
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
+
     course = get_course_if_user_can_view_or_404(course_slug, request)
     is_enrolled = course.students.filter(id=request.user.id).exists()
     if not is_enrolled:
@@ -564,6 +567,8 @@ def course_group(request, course_slug):
             if(len(g["members"]) <= course.group_max_size + (course.group_max_size * settings.GROUPS_UPPER_THRESHOLD / 100)):
                 groups.append(g)
 
+    posts_list = search_posts(group["hashtag"], 0)
+
     if is_enrolled:
         has_passed= has_user_passed_course(request.user, course)
     else:
@@ -579,6 +584,7 @@ def course_group(request, course_slug):
         'is_teacher': is_teacher,
         'group': group,
         'groups':groups,
+        'posts_list': posts_list,
         'passed': has_passed,
     }, context_instance=RequestContext(request))
 
@@ -996,6 +1002,7 @@ def clone_activity(request, course_slug):
 
 @login_required
 def create_course_groups(request,id):
+    print "Create course groups id: %s" % (id)
     create_groups(id)
     return HttpResponse("true")
 

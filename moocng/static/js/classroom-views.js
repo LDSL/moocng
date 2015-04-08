@@ -170,6 +170,16 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
 
             $("#kq-title").html(this.model.truncateTitle(MOOC.views.KQ_TITLE_MAX_LENGTH));
 
+            var meta_fb_name = $("meta[property*='site_name']");
+            if (meta_fb_name.length > 0){
+                meta_fb_name.attr('content', MOOC.vars.course_name + ' - ' + this.model.truncateTitle(MOOC.views.KQ_TITLE_MAX_LENGTH));
+            }else{
+                $('head').append('<meta property="og:site_name" content="' + MOOC.vars.course_name + ' - ' + this.model.truncateTitle(MOOC.views.KQ_TITLE_MAX_LENGTH) + '"/>');
+            }
+            $("#share_fb").attr('href', 'https://www.facebook.com/sharer/sharer.php?u=' + location.href.replace('#','%23'));
+            $("#share_tw").attr('href', 'https://twitter.com/home?status=' + location.href.replace('#','%23'));
+            $("#share_gplus").attr('href', 'https://plus.google.com/share?url=' + location.href.replace('#','%23'));
+
             unit = MOOC.models.course.getByKQ(this.model.get("id"));
             this.setEventForNavigation("#kq-previous", unit, this.model, false);
             this.setEventForNavigation("#kq-next", unit, this.model, true);

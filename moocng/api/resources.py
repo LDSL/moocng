@@ -603,6 +603,7 @@ class PeerReviewSubmissionsResource(BaseMongoResource):
         bundle.data["reviews"] = 0
         bundle.data["author_reviews"] = 0
         bundle.data["author"] = request.user.id
+        bundle.data["language"] = request.user.get_profile().language
         from moocng.peerreview.utils import insert_p2p_if_does_not_exists_or_raise
         _id = insert_p2p_if_does_not_exists_or_raise(bundle.data, self._collection)
 

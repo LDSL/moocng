@@ -7,6 +7,24 @@
 {% block extraheader %}
 <link rel="alternate" type="application/rss+xml" href="{% url announcements_feed course.slug %}" />
 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.cookie.js"></script>
+
+<meta name="twitter:card" value="summary">
+{% if course.thumbnail %}
+<meta property="og:image" content="http://{{ site }}{{ MEDIA_URL }}{{ course.thumbnail }}"/>
+<meta itemprop="image" content="http://{{ site }}{{ MEDIA_URL }}{{ course.thumbnail }}">
+<meta name="twitter:image" content="http://{{ site }}{{ MEDIA_URL }}{{ course.thumbnail }}">
+{% else %}
+<meta property="og:image" content="http://{{ site }}{{ STATIC_URL }}img/classroom.jpg"/>
+<meta itemprop="image" content="http://{{ site }}{{ STATIC_URL }}img/classroom.jpg">
+<meta name="twitter:image" content="http://{{ site }}{{ STATIC_URL }}img/classroom.jpg">
+{% endif %}
+<meta property="og:title" content="{{ course.name }} - {{ site.name }}"/>
+<meta itemprop="name" content="{{ course.name }} - {{ site.name }}">
+<meta name="twitter:title" content="{{ course.name }} - {{ site.name }}">
+<meta name="description" content="{{ course.description|removetags:"p" }}">
+<meta property="og:description" content="{{ course.description|removetags:"p" }}"/>
+<meta itemprop="description" content="{{ course.description|removetags:"p" }}">
+<meta name="twitter:description" content="{{ course.description|removetags:"p" }}">
 {% endblock %}
 
 {% block content %}
@@ -235,13 +253,15 @@
 					<ul class="unstyled clearfix">
 					{% for course_teacher in course_teachers %}
 						<li class="teacher">
-						<img src="{% gravatar_for_email course_teacher.teacher.email %}&s=48" alt="{% trans 'Profile image of' %} {% firstof course_teacher.teacher.get_full_name course_teacher.teacher.username %" />
-						<p>{% firstof course_teacher.teacher.get_full_name course_teacher.teacher.username %}</p>
-						{% if course_teacher.teacher.get_profile.organization %}
-							{% for org in course_teacher.teacher.get_profile.organization.all%}
-							<span>{{ org }}</span>
-							{% endfor %}
-						{% endif %}
+						<a href="{%url profile_user%}{{course_teacher.teacher.username}}">
+							<img src="{% gravatar_for_email course_teacher.teacher.email %}&s=48" alt="{% trans 'Profile image of' %} {% firstof course_teacher.teacher.get_full_name course_teacher.teacher.username %" />
+							<p>{% firstof course_teacher.teacher.get_full_name course_teacher.teacher.username %}</p>
+							{% if course_teacher.teacher.get_profile.organization %}
+								{% for org in course_teacher.teacher.get_profile.organization.all%}
+								<span>{{ org }}</span>
+								{% endfor %}
+							{% endif %}
+						</a>
 						</li>
 					{% endfor %}
 					</ul>

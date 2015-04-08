@@ -2322,6 +2322,14 @@ ul.rating {
 					}
 				}
 			}
+
+			input[type=text] {
+				width: 90%;
+
+				& + .button {
+					width: 10%;
+				}
+			}
 		}
 		
 		.feed, &.feed {
@@ -2346,6 +2354,7 @@ ul.rating {
 					color: @neutral_intense;
 					line-height: 20px;
 					vertical-align: top;
+					width: 100%;
 					
 					h5 {
 						font-size: 14px;
@@ -2501,6 +2510,16 @@ ul.rating {
 			}
 		}
 	}
+
+	&.tall {
+		.content {
+			height: 512px;
+
+			.feed, &.feed {
+				height: 464px;
+			}
+		}
+	}
 }
 
 /* CLASROOM */
@@ -2653,9 +2672,14 @@ ul.rating {
 }
 
 .kq-header {
-	padding: 20px 0;
+	padding: 20px 0 5px;
 	border-bottom: 1px solid @neutral_light_1;
 	margin-bottom: 20px;
+
+	.pull-up {
+		position: relative;
+		top: -10px;
+	}
 	
 	h2 {
 		color: @neutral_medium_1;
@@ -4378,6 +4402,7 @@ ul.rating {
 
 				.cell {
 					display: table-cell;
+					vertical-align: top;
 
 					&:last-child {
 						width: 100%;
@@ -4658,7 +4683,7 @@ ul.rating {
 		}
 	}
 
-	.postFrom{
+	.postFrom, .postReply {
 		display:none;
 		textarea{
 			width: 100%;
@@ -4667,6 +4692,7 @@ ul.rating {
 			border-right: none;
 			border: 1px solid @neutral_light_2;
 			font-size: 16px;
+			font-family: inherit;
 			padding: 10px;
 			resize: none;
 		}
@@ -4682,13 +4708,27 @@ ul.rating {
 		}
 	}
 
-	.posts{
+	.postReply {
+		position: absolute;
+	}
+
+	.posts {
 		background-color: @white;
-		.post{
+		.post, .replyPost {
+			border-bottom: 1px solid @neutral_light_2;
+
 			&.notMyPost{
 				background-color: @neutral_light_4;
 			}
-			border-bottom: 1px solid @neutral_light_2;
+
+			&.open > .cell > .tools {
+				padding-bottom: 155px;
+
+				& > .postReply {
+					display: block;
+				}
+			}
+
 			.cell{
 				display:table-cell;
 				vertical-align: -webkit-baseline-middle;
@@ -4793,6 +4833,22 @@ ul.rating {
 						}
 					}
 				}
+			}
+
+			.replies {
+				padding-left: 71px;
+				background-color: @neutral_light_4;
+
+				.replyPost {
+					border-top: 1px solid @neutral_light_2;
+				}
+			}
+		}
+
+		.replyPost {
+			
+			.cell .gravatar {
+				margin-left: 0;
 			}
 		}
 		

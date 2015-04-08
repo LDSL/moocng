@@ -7,6 +7,24 @@
 {% block mainclass %}classroom{% endblock %}
 
 {% block extraheader %}
+    <meta name="twitter:card" value="summary">
+    {% if course.thumbnail %}
+    <meta property="og:image" content="http://{{ site }}{{ MEDIA_URL }}{{ course.thumbnail }}"/>
+    <meta itemprop="image" content="http://{{ site }}{{ MEDIA_URL }}{{ course.thumbnail }}">
+    <meta name="twitter:image" content="http://{{ site }}{{ MEDIA_URL }}{{ course.thumbnail }}">
+    {% else %}
+    <meta property="og:image" content="http://{{ site }}{{ STATIC_URL }}img/classroom.jpg"/>
+    <meta itemprop="image" content="http://{{ site }}{{ STATIC_URL }}img/classroom.jpg">
+    <meta name="twitter:image" content="http://{{ site }}{{ STATIC_URL }}img/classroom.jpg">
+    {% endif %}
+    <meta property="og:title" content="{{ course.name }} - {{ site.name }}"/>
+    <meta itemprop="name" content="{{ course.name }} - {{ site.name }}">
+    <meta name="twitter:title" content="{{ course.name }} - {{ site.name }}">
+    <meta name="description" content="{{ course.description|removetags:"p" }}">
+    <meta property="og:description" content="{{ course.description|removetags:"p" }}"/>
+    <meta itemprop="description" content="{{ course.description|removetags:"p" }}">
+    <meta name="twitter:description" content="{{ course.description|removetags:"p" }}">
+
     <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui-1.9.2.custom.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-datepicker.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-fileupload.2.3.1-j6.min.css">
@@ -129,11 +147,52 @@
 			<h2 id="kq-title" class="pull-left">{{ course.title }}</h2>
 			<a class="bookmark pull-right" id="bookmark_btn" href="#"><img src="{{ STATIC_URL }}img/ECO_icon_marcador_0.svg" alt="{% trans 'Bookmark' %}"></a>
 		</div>
-		<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4 pull-right">
+		<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4 pull-right pull-up">
             {% if feature_social %}
 			<a class="hide-text social_like facebook selected" href="#">{% trans 'Like this on Facebook' %} <span>10</span></a>
 			<a class="hide-text social_like gplus" href="#">{% trans '+1 on Google+' %} <span>10</span></a>
             {% endif %}
+            <a class="hide-text" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" id="share_fb">
+                <svg width="48" height="36">
+                    <g>
+                        <path d="M44.547,310.009h-3.563c0,5.373,0,11.991,0,11.991H36c0,0,0-6.551,0-11.991L33,310v-4h3v-2.97
+                            c0-1.963,0.932-5.03,5.029-5.03H45v4c0,0-2.564,0-3,0c-0.437,0-1,0.062-1,1v3h4L44.547,310.009z"/>
+                        <rect x="15" y="286" fill="none" width="48" height="48"/>
+                    </g>
+                    <g>
+                        <path d="M29.547,24.009h-3.563c0,5.373,0,11.991,0,11.991H21c0,0,0-6.551,0-11.991L18,24v-4h3v-2.97c0-1.963,0.932-5.03,5.029-5.03
+                            H30v4c0,0-2.564,0-3,0c-0.437,0-1,0.062-1,1v3h4L29.547,24.009z"/>
+                    </g>
+                </svg>
+            </a>
+            <a class="hide-text" target="_blank" href="https://twitter.com/home?status={{ request.build_absolute_uri }}" id="share_tw">
+                <svg width="48" height="36">
+                    <path d="M33.543,19.107c0.011,0.211,0.016,0.422,0.016,0.636c0,6.507-4.953,14.01-14.01,14.01c-2.782,0-5.369-0.814-7.549-2.212
+                    c0.387,0.044,0.777,0.067,1.175,0.067c2.309,0,4.43-0.785,6.114-2.106c-2.153-0.041-3.973-1.465-4.598-3.419
+                    c0.3,0.056,0.607,0.088,0.926,0.088c0.449,0,0.885-0.062,1.296-0.173c-2.25-0.454-3.949-2.443-3.949-4.828c0-0.021,0-0.041,0-0.062
+                    c0.665,0.369,1.424,0.589,2.231,0.615c-1.322-0.882-2.19-2.391-2.19-4.099c0-0.902,0.243-1.749,0.667-2.476
+                    c2.427,2.979,6.057,4.939,10.148,5.145c-0.084-0.36-0.128-0.735-0.128-1.122c0-2.719,2.204-4.922,4.925-4.922
+                    c1.415,0,2.695,0.598,3.594,1.553c1.12-0.22,2.175-0.63,3.127-1.195c-0.369,1.151-1.148,2.115-2.165,2.725
+                    c0.996-0.117,1.945-0.384,2.827-0.773C35.341,17.546,34.506,18.413,33.543,19.107z"/>
+                </svg>
+            </a>
+            <a class="hide-text" target="_blank"  href="https://plus.google.com/share?url={{ request.build_absolute_uri }}" id="share_gplus">
+                <svg width="48" height="36"><g>
+                    <g>
+                        <path d="M24.407,25.734c-0.656-0.492-2.083-1.5-2.083-2.177c0-0.794,0.226-1.184,1.421-2.118c1.223-0.955,2.089-2.215,2.089-3.779
+                            c0-1.705-0.696-3.249-2.007-3.999h1.857L27.265,12c0,0-5.223,0-7.073,0c-3.589,0-6.581,2.648-6.581,5.561
+                            c0,2.974,1.965,5.347,5.342,5.347c0.234,0,0.463-0.015,0.686-0.029c-0.22,0.419-0.375,0.888-0.375,1.38
+                            c0,0.826,0.454,1.298,1.017,1.843c-0.425,0-0.835,0.012-1.283,0.012c-4.11,0-6.987,2.83-6.987,5.543
+                            c0,2.675,3.469,4.345,7.579,4.345c4.685,0,7.565-2.657,7.565-5.332C27.153,28.526,26.69,27.448,24.407,25.734z M16.271,17.514
+                            c-0.331-2.502,0.949-4.418,2.854-4.362c1.906,0.059,3.538,2.112,3.866,4.614c0.328,2.505-0.768,4.116-2.673,4.061
+                            C18.411,21.768,16.6,20.019,16.271,17.514z M19.571,34.819c-2.84,0-4.893-1.799-4.893-3.958c0-2.118,2.407-3.943,5.249-3.911
+                            c0.662,0.006,1.28,0.111,1.84,0.293c1.544,1.072,2.786,1.743,3.1,2.965c0.059,0.246,0.091,0.501,0.091,0.762
+                            C24.958,33.132,23.566,34.819,19.571,34.819z"/>
+                    </g>
+                    <polygon points="35.998,15 32.998,15 32.998,12 30.998,12 30.998,15 27.998,15 27.998,17 30.998,17 30.998,20 32.998,20 32.998,17 
+                        35.998,17   "/>
+                </g></svg>
+            </a>
             <a class="hide-text share" id="course-share" href="#">{% trans 'Share' %}</a>
 		</div>
 	</div>
@@ -348,6 +407,7 @@
         };
         MOOC.vars = MOOC.vars || {};
         MOOC.vars.user_id = '{{ user.get_profile.sub }}';
+        MOOC.vars.course_name = '{{ course.name }}';
         MOOC.init({{ course.id }}, true);
     </script>
 {% endblock %}

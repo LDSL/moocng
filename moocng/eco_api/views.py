@@ -1,4 +1,4 @@
-from django.utils import simplejson
+from django.utils import simplejson, translation
 from django.http import HttpResponse
 from django.utils.html import strip_tags
 import datetime
@@ -63,19 +63,21 @@ def ListRecords(request, num="1"):
 			lstring.text=course.name
 		else:
 			for language in course.languages.all():
+				translation.trans_real.activate(language.abbr)
 				lstring = SubElement(ltitle, 'lom:string')  
 				lstring.set('language', language.abbr)
 				lstring.text=course.name
 		
+
+		ldescription = SubElement(general, 'lom:description')
 		if(len(course.languages.all()) == 0):
-			ldescription = SubElement(general, 'lom:description')
 			lstring = SubElement(ldescription, 'lom:string')  
 			lstring.set('language', 'null') 
 			lstring.text = re.sub('<[^<]+?>', '', course.description)
 
 		else:
 			for language in course.languages.all():
-				ldescription = SubElement(general, 'lom:description')
+				translation.trans_real.activate(language.abbr)
 				lstring = SubElement(ldescription, 'lom:string')  
 				lstring.set('language', language.abbr) 
 				lstring.text = re.sub('<[^<]+?>', '', course.description)

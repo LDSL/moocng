@@ -14,6 +14,7 @@ def get_user_badges_group_by_course(user):
     	if not courses.has_key(course_id):
     		courses[course_id] = badge_def.course
     		courses[course_id].badges = []
+        badge['definition'] = badge_def
     	courses[course_id].badges.append(badge)
 
     return courses
