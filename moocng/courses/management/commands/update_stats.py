@@ -85,7 +85,7 @@ class Command(BaseCommand):
             map = Code("function(){ emit(this.user_id, 1); }")
             reduce = Code("function(key, values){ return Array.sum(values); }")
             unit_completed_mapreduce = activities.map_reduce(map, reduce, "completed_kqs", query={"unit_id": unit.id})
-            unit_completed = unit_completed_mapreduce.find({'value': unit_num_kqs}).count()
+            unit_completed = unit_completed_mapreduce.find({'value': {'$gte': unit_num_kqs}}).count()
 
             if threshold is not None:
                 unit_passed = db.database.command(
@@ -191,10 +191,10 @@ class Command(BaseCommand):
         map = Code("function(){ emit(this.user_id, 1); }")
         reduce = Code("function(key, values){ return Array.sum(values); }")
         course_completed_mapreduce = activities.map_reduce(map, reduce, "completed_kqs", query={"course_id": course.id})
-        course_completed = course_completed_mapreduce.find({'value': course_num_kqs}).count()
+        course_completed = course_completed_mapreduce.find({'value': {'$gt': course_num_kqs}}).count()
 
         if threshold is not None:
-            course_passed = marks_course.find({'course_id': course.id, 'mark': {'$gt': threshold}}).count()
+            course_passed = marks_course.find({'course_id': course.id, 'mark': {'$gte': threshold}}).count()
         else:
             course_passed = course_completed
 
