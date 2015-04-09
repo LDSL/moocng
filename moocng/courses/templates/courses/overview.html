@@ -6,8 +6,6 @@
 
 {% block extraheader %}
 <link rel="alternate" type="application/rss+xml" href="{% url announcements_feed course.slug %}" />
-<script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.cookie.js"></script>
-
 <meta name="twitter:card" value="summary">
 {% if course.thumbnail %}
 <meta property="og:image" content="http://{{ site }}{{ MEDIA_URL }}{{ course.thumbnail }}"/>
