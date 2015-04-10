@@ -59,7 +59,7 @@ from moocng.courses.tasks import clone_activity_user_course_task
 from moocng.courses.forms import CourseRatingForm
 from moocng.slug import unique_slugify
 from moocng.utils import use_cache
-from moocng.profile.models import search_posts
+from moocng.communityshare.models import Microblog
 
 import hashlib
 import time
@@ -464,7 +464,7 @@ def course_dashboard(request, course_slug):
         rating_formset = CourseRatingFormSet()
 
     group = get_group_by_user_and_course(request.user.id, course.id)
-    posts_list = search_posts(course.hashtag, 0)
+    posts_list = Microblog.search_posts(course.hashtag, 0)
 
     if is_enrolled:
         has_passed= has_user_passed_course(request.user, course)
@@ -567,7 +567,7 @@ def course_group(request, course_slug):
             if(len(g["members"]) <= course.group_max_size + (course.group_max_size * settings.GROUPS_UPPER_THRESHOLD / 100)):
                 groups.append(g)
 
-    posts_list = search_posts(group["hashtag"], 0)
+    posts_list = Microblog.search_posts(group["hashtag"], 0)
 
     if is_enrolled:
         has_passed= has_user_passed_course(request.user, course)
