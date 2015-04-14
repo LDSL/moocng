@@ -683,9 +683,6 @@ class KnowledgeQuantum(Sortable):
             }
         )
 
-        print user.id
-        print self.id
-
         activity.update({
             "user_id": user.id,
             "kq_id": self.id
@@ -872,9 +869,6 @@ class Question(models.Model):
             results_dict[key] = result_q
             result += result_q
 
-        print '\nResults_dict : ' + str(results_dict)
-        print '\nResult : ' + str(result)
-
         return result
 
     def is_completed(self, user, visited=None):
@@ -951,7 +945,6 @@ class Option(models.Model):
                 logger.error('Error at option %s - Value %s - Solution %s' % (str(self.id), str(reply), self.solution))
                 return True
             else:
-                print self.solution.lower() +' vs '+ reply.lower()
                 return reply.lower() == self.solution.lower()
         else:
             return bool(reply) == (self.solution.lower() == u'true')
