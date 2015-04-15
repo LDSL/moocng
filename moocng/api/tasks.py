@@ -213,33 +213,40 @@ def update_unit_mark(db, unit, user, threshold, new_mark_unit=None, new_mark_nor
         data_unit['relative_mark'] = new_mark_normalized_unit
         marks_unit.insert(data_unit)
 
+    # check if user completed this unit
+    unit_kqs = unit.knowledgequantum_set.all()
+    completed = True
+    for kq in unit_kqs:
+        if not kq.is_completed(user):
+            completed = False
 
-    # badge unit checkpoint
-    badges = BadgeByCourse.objects.filter(course_id=unit.course_id, criteria_type=0)
-    for badge in badges:
-        win = False
-        if(badge.note <= new_mark_unit):
-            gotBadge = get_db().get_collection('badge').find_one({'id_badge': badge.id, "id_user": user.pk})
-            if(not gotBadge):
-                evaluateUnit = Unit.objects.get(id=badge.criteria)
-                units = Unit.objects.filter(course_id=evaluateUnit.course_id, order__lte = evaluateUnit.order)
-                win = True       
-                for aux in units:
-                    lastUnit = get_db().get_collection('marks_unit').find_one({'course_id': int(aux.course_id), "unit_id": int(aux.id)})
-                    if(not lastUnit or lastUnit["mark"] < badge.note):
-                        win = False
+    if completed:
+        # badge unit checkpoint
+        badges = BadgeByCourse.objects.filter(course_id=unit.course_id, criteria_type=0)
+        for badge in badges:
+            win = False
+            if(badge.note <= new_mark_unit):
+                gotBadge = get_db().get_collection('badge').find_one({'id_badge': badge.id, "id_user": user.pk})
+                if(not gotBadge):
+                    evaluateUnit = Unit.objects.get(id=badge.criteria)
+                    units = Unit.objects.filter(course_id=evaluateUnit.course_id, order__lte = evaluateUnit.order)
+                    win = True       
+                    for aux in units:
+                        lastUnit = get_db().get_collection('marks_unit').find_one({'course_id': int(aux.course_id), "unit_id": int(aux.id)})
+                        if(not lastUnit or lastUnit["mark"] < badge.note):
+                            win = False
 
-        if(win):
-            get_db().get_collection('badge').insert({"id_badge":badge.id, "id_user":user.pk, "title":badge.title, "description":badge.description, "color":badge.color})
-    
-    # badge unique unit            
-    badges = BadgeByCourse.objects.filter(course_id=unit.course_id, criteria_type=2)
-    for badge in badges:
-        win = False
-        if(badge.note <= new_mark_unit):
-            gotBadge = get_db().get_collection('badge').find_one({'id_badge': badge.id, "id_user": user.pk})
-            if(not gotBadge):
+            if(win):
                 get_db().get_collection('badge').insert({"id_badge":badge.id, "id_user":user.pk, "title":badge.title, "description":badge.description, "color":badge.color})
+        
+        # badge unique unit            
+        badges = BadgeByCourse.objects.filter(course_id=unit.course_id, criteria_type=2)
+        for badge in badges:
+            win = False
+            if(badge.note <= new_mark_unit):
+                gotBadge = get_db().get_collection('badge').find_one({'id_badge': badge.id, "id_user": user.pk})
+                if(not gotBadge):
+                    get_db().get_collection('badge').insert({"id_badge":badge.id, "id_user":user.pk, "title":badge.title, "description":badge.description, "color":badge.color})
 
     return updated_unit_mark, has_passed_now(new_mark_unit, mark_unit_item, threshold)
 
