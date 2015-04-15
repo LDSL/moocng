@@ -598,7 +598,7 @@ def teacheradmin_badges(request, course_slug, badge_id=None):
         badge_note = request.POST['noteBadge']
         badge_color = request.POST['colorBadge']
         criteria_type = int(request.POST["criteriaType"])
-        if(criteria_type == 0):
+        if(criteria_type != 0):
             criteria = request.POST["unitBadge"]
         else:
             criteria = ','.join(request.POST.getlist('pillsBadge'))
