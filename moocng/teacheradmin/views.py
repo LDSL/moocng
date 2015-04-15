@@ -502,6 +502,10 @@ def teacheradmin_info(request, course_slug):
         'form': form,
         'static_page_form': static_page_form,
         'external_apps': external_apps,
+        'thumb_rec_height': course.THUMBNAIL_HEIGHT,
+        'thumb_rec_width': course.THUMBNAIL_WIDTH,
+        'back_rec_height': course.BACKGROUND_HEIGHT,
+        'back_rec_width': course.BACKGROUND_WIDTH,
     }, context_instance=RequestContext(request))
 
 
