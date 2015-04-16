@@ -409,7 +409,7 @@ def course_dashboard(request, course_slug):
     is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher :
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser :
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
