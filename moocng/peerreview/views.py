@@ -34,7 +34,7 @@ from django.utils.translation import ugettext as _
 from moocng.api.mongodb import get_db
 from moocng.api.tasks import on_peerreviewreview_created_task
 from moocng.courses.models import KnowledgeQuantum
-from moocng.courses.utils import send_mail_wrapper, is_course_ready, has_user_passed_course, get_group_by_user_and_course
+from moocng.courses.utils import send_mail_wrapper, is_course_ready, has_user_passed_course, get_group_by_user_and_course, is_teacher as is_teacher_test
 from moocng.courses.security import get_course_if_user_can_view_or_404, get_tasks_available_for_user, get_course_progress_for_user
 from moocng.peerreview.forms import ReviewSubmissionForm, EvalutionCriteriaResponseForm
 from moocng.peerreview.models import PeerReviewAssignment, EvaluationCriterion
@@ -123,6 +123,7 @@ def course_reviews(request, course_slug):
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
     is_ready, ask_admin = is_course_ready(course)
+    is_teacher = is_teacher_test(request.user, course)
 
     if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
