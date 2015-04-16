@@ -340,7 +340,7 @@ def course_classroom(request, course_slug):
 
     is_ready, ask_admin = is_course_ready(course)
 
-    if not is_ready and not request.user.is_superuser:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
