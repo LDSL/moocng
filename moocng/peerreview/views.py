@@ -72,31 +72,18 @@ def course_review_assign(request, course_slug, assignment_id):
 
     assignation_expire = datetime.utcnow() - max_hours_assigned
 
-    submission = collection.find({
-        'kq': assignment.kq.id,
-        '$or': [
-            {
-                'assigned_to': {
-                    '$exists': False
-                },
-            },
-            {
-                'assigned_when': {
-                    '$lt': assignation_expire
-                },
-            }
-        ],
-        'author': {
-            '$ne': user_id
-        },
-        'language': request.user.get_profile().language,
-        'reviewers': {
-            '$ne': user_id
-        }
-    }).sort([
-        ('reviews', pymongo.ASCENDING),
-        ('author_reviews', pymongo.DESCENDING),
-    ]).limit(1)
+    #Check number of course langs to assign a PeerReview
+    if course.languages.count() > 1:
+        is_user_lang_valid = False
+        for lang in course.languages.all():
+            if request.user.get_profile().language == lang.abbr:
+                is_user_lang_valid = True
+        if is_user_lang_valid:
+            submission = _get_peer_review_submission(user_id, assignment.kq.id, assignation_expire, request.user.get_profile().language)
+        else:
+            submission = _get_peer_review_submission(user_id, assignment.kq.id, assignation_expire)
+    else:
+        submission = _get_peer_review_submission(user_id, assignment.kq.id, assignation_expire)
 
     if submission.count() == 0:
         messages.error(request, _('There is no submission avaliable for you at this moment. Please, try again later.'))
@@ -360,3 +347,59 @@ def course_review_upload(request, course_slug):
         }
         insert_p2p_if_does_not_exists_or_raise(submission)
         return HttpResponseRedirect(reverse('course_classroom', args=[course_slug]) + "#unit%d/kq%d/p" % (unit.id, kq.id))
+
+def _get_peer_review_submission(user_id, kq_id, assignation_expire, lang=None):
+    collection = get_db().get_collection('peer_review_submissions')
+    if lang:
+        submission = collection.find({
+            'kq': kq_id,
+            '$or': [
+                {
+                    'assigned_to': {
+                        '$exists': False
+                    },
+                },
+                {
+                    'assigned_when': {
+                        '$lt': assignation_expire
+                    },
+                }
+            ],
+            'author': {
+                '$ne': user_id
+            },
+            'language': lang,
+            'reviewers': {
+                '$ne': user_id
+            }
+        }).sort([
+            ('reviews', pymongo.ASCENDING),
+            ('author_reviews', pymongo.DESCENDING),
+        ]).limit(1)
+    else:
+        submission = collection.find({
+            'kq': kq_id,
+            '$or': [
+                {
+                    'assigned_to': {
+                        '$exists': False
+                    },
+                },
+                {
+                    'assigned_when': {
+                        '$lt': assignation_expire
+                    },
+                }
+            ],
+            'author': {
+                '$ne': user_id
+            },
+            'reviewers': {
+                '$ne': user_id
+            }
+        }).sort([
+            ('reviews', pymongo.ASCENDING),
+            ('author_reviews', pymongo.DESCENDING),
+        ]).limit(1)
+
+    return submission
