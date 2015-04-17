@@ -184,8 +184,8 @@ def update_kq_mark(db, kq, user, threshold, new_mark_kq=None, new_mark_normalize
             get_db().get_collection('badge').insert({"id_badge":badge.id, "id_user":user.pk, "title":badge.title, "description":badge.description, "color":badge.color})
 
     # badge unit checkpoint
-    badges = BadgeByCourse.objects.filter(course_id=unit.course_id, criteria_type=0)
-    course_mark, units_info = get_course_mark(unit.course, user)
+    badges = BadgeByCourse.objects.filter(course_id=kq.unit.course_id, criteria_type=0)
+    course_mark, units_info = get_course_mark(kq.unit.course, user)
     for badge in badges:
         win = False
         if(badge.note <= course_mark):
