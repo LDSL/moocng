@@ -73,8 +73,8 @@ def course_review_assign(request, course_slug, assignment_id):
     assignation_expire = datetime.utcnow() - max_hours_assigned
 
     #Check number of course langs to assign a PeerReview
+    is_user_lang_valid = False
     if course.languages.count() > 1:
-        is_user_lang_valid = False
         for lang in course.languages.all():
             if request.user.get_profile().language == lang.abbr:
                 is_user_lang_valid = True
@@ -86,6 +86,8 @@ def course_review_assign(request, course_slug, assignment_id):
         submission = _get_peer_review_submission(user_id, assignment.kq.id, assignation_expire)
 
     if submission.count() == 0:
+        if course.languages.count() > 1 and is_user_lang_valid:
+            return HttpResponseRedirect(reverse('course_reviews_ignorelang', args=[course_slug, assignment.kq.id]))
         messages.error(request, _('There is no submission avaliable for you at this moment. Please, try again later.'))
         return HttpResponseRedirect(reverse('course_reviews', args=[course_slug]))
     else:
@@ -101,7 +103,7 @@ def course_review_assign(request, course_slug, assignment_id):
 
 
 @login_required
-def course_reviews(request, course_slug):
+def course_reviews(request, course_slug, kq_id=None, ignore_langs=False):
     course = get_course_if_user_can_view_or_404(course_slug, request)
 
     is_enrolled = course.students.filter(id=request.user.id).exists()
@@ -137,6 +139,8 @@ def course_reviews(request, course_slug):
         'course': course,
         'assignments': assignments,
         'user_submissions': user_submissions,
+        'kq_id': kq_id,
+        'ignore_langs': ignore_langs,
         'is_enrolled': is_enrolled,
         'is_ready': is_ready,
         'task_list': tasks[0],
