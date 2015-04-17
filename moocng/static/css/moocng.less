@@ -722,6 +722,16 @@ body {
 				left: auto;
 				top: auto;
 			}
+
+			@media screen and (max-width: 960px){
+				h1.logo {
+					height: 120px;
+
+					img {
+						height: 100%;
+					}
+				}
+			}
 		}
 		
 		h1.logo, .logo-mini {
@@ -1114,6 +1124,10 @@ body {
 					.course-title {
 						opacity: 1;
 						top: 0;
+						max-width: 690px;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						white-space: nowrap;
 					}
 					
 					.btn-toolbar {
@@ -1240,6 +1254,19 @@ body {
 	    text-transform: uppercase;
 	  }
   }
+}
+
+@media screen and (max-width: 960px){
+	.main_banner {
+		.color_back {
+			padding: 30px 20px 45px;
+
+			h1 {
+				font-size: 2.7em;
+				margin-bottom: 50px;
+			}
+		}
+	}
 }
 
 .content {
