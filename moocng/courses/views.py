@@ -767,7 +767,8 @@ def course_progress(request, course_slug):
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
     is_ready, ask_admin = is_course_ready(course)
-
+    is_teacher = is_teacher_test(request.user, course)
+    
     tasks = get_tasks_available_for_user(course, request.user)
 
     if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
