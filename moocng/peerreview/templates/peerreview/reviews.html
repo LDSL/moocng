@@ -19,6 +19,11 @@
                             <div class="well">
                                 <h5 id="kq{{ pra.kq.id }}">{{ pra.kq.title }}</h5>
                                 {% pending_reviews pra user course user_submissions %}
+                                {%if ignore_langs and kq_id == pra.kq.id|slugify %}
+                                    <p><a href="">
+                                        {% trans "Unfortunately there is no submissions available for your language, click here to try again with other languages" %}
+                                    </a>.</p>
+                                {% endif %}
                             </div>
                             {% endfor %}
                         </div>

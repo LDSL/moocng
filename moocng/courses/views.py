@@ -339,8 +339,9 @@ def course_classroom(request, course_slug):
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
     is_ready, ask_admin = is_course_ready(course)
+    is_teacher = is_teacher_test(request.user, course)
 
-    if not is_ready and not request.user.is_superuser:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -409,7 +410,7 @@ def course_dashboard(request, course_slug):
     is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher :
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser :
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -507,7 +508,7 @@ def course_syllabus(request, course_slug):
     is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -547,7 +548,7 @@ def course_group(request, course_slug):
     is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -600,7 +601,7 @@ def course_forum(request, course_slug):
     is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -638,7 +639,7 @@ def course_calendar(request, course_slug):
     is_ready, ask_admin = is_course_ready(course)
     is_teacher = is_teacher_test(request.user, course)
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
@@ -677,7 +678,7 @@ def course_wiki(request, course_slug):
     is_ready, ask_admin = is_course_ready(course)
     is_teacher = is_teacher_test(request.user, course)
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
@@ -724,7 +725,7 @@ def course_teachers(request, course_slug):
         has_passed= False
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
@@ -766,10 +767,11 @@ def course_progress(request, course_slug):
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
     is_ready, ask_admin = is_course_ready(course)
-
+    is_teacher = is_teacher_test(request.user, course)
+    
     tasks = get_tasks_available_for_user(course, request.user)
 
-    if not is_ready:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
