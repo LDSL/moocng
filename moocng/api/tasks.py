@@ -25,6 +25,7 @@ from moocng.courses.models import KnowledgeQuantum
 from moocng.mongodb import get_db
 
 from moocng.courses.models import Unit
+from moocng.courses.marks import get_course_mark
 
 
 @task
