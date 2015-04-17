@@ -86,8 +86,9 @@ def course_review_assign(request, course_slug, assignment_id):
         submission = _get_peer_review_submission(user_id, assignment.kq.id, assignation_expire)
 
     if submission.count() == 0:
-        if course.languages.count() > 1 and is_user_lang_valid:
-            return HttpResponseRedirect(reverse('course_reviews_ignorelang', args=[course_slug, assignment.kq.id]))
+        # Deactivate while it is finished
+        #if course.languages.count() > 1 and is_user_lang_valid:
+        #    return HttpResponseRedirect(reverse('course_reviews_ignorelang', args=[course_slug, assignment.kq.id]))
         messages.error(request, _('There is no submission avaliable for you at this moment. Please, try again later.'))
         return HttpResponseRedirect(reverse('course_reviews', args=[course_slug]))
     else:
