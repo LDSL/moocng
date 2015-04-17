@@ -3890,7 +3890,7 @@ msgstr "Aceptar"
 
 #: teacheradmin/templates/teacheradmin/groups.html:83
 msgid "Create groups"
-msgstr "Crear un curso"
+msgstr "Crear grupos"
 
 #: teacheradmin/templates/teacheradmin/groups.html:85
 msgid "Groups already exist for this course"

@@ -770,7 +770,7 @@ def course_progress(request, course_slug):
 
     tasks = get_tasks_available_for_user(course, request.user)
 
-    if not is_ready:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
