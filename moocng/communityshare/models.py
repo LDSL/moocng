@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.utils.html import urlize, escape
 
 import pymongo
 import re
@@ -12,14 +13,7 @@ from bson.objectid import ObjectId
 class CommunityShareBase(object):
 	def __init__(self, prefix='share'):
 		self.col_prefix=prefix
-		self.col_user = '%s_user' % self.col_prefix
 		self.col_post = '%s_post' % self.col_prefix
-
-	def get_blog_user(self, id):
-	    return get_db().get_collection(self.col_user).find_one({'id_user': id})
-
-	def insert_blog_user(self, user):
-	    get_db().get_collection(self.col_user).insert(user)
 
 	def get_posts(self, case, id, user, page):
 	    postCollection = get_db().get_collection(self.col_post)
@@ -46,7 +40,7 @@ class CommunityShareBase(object):
 	    return self._processPostList(posts)
 
 	def insert_post(self, post):
-	    get_db().get_collection(self.col_post).insert(post)
+		return get_db().get_collection(self.col_post).insert(post)
 
 	def count_posts(self, id):
 	    return get_db().get_collection(self.col_post).find({'id_user': id}).count()
@@ -101,21 +95,20 @@ class CommunityShareBase(object):
 
 	        post['replies'].append(post_child)
 
-	def save_reply(self, request, id, post):
-	    postCollection = get_db().get_collection(self.col_post)
-	    post_orig = postCollection.find_one({"_id":ObjectId(id)})
-	    if post_orig:
-	        post['is_child'] = True
-	        reply_id = postCollection.insert(post)
-	        post_orig["children"].append(reply_id)
-	        postCollection.update({'_id': ObjectId(id)}, {"$set": {"children": post_orig["children"]}})
-	        return True
-	    else:
-	        return False
-
 class Microblog(CommunityShareBase):
 	def __init__(self):
 		super(Microblog,self).__init__('microblog')
+		self.col_user = '%s_user' % self.col_prefix
+
+	def get_blog_user(self, id):
+	    return get_db().get_collection(self.col_user).find_one({'id_user': id})
+
+	def insert_blog_user(self, user_id):
+		user = {
+			"id_user": user_id, 
+			"following": [id]
+		}
+		get_db().get_collection(self.col_user).insert(user)
 
 	def get_num_followers(self, id):
 	    return get_db().get_collection(self.col_user).find({"following": {"$eq" : id}}).count()
@@ -123,21 +116,63 @@ class Microblog(CommunityShareBase):
 	def update_following_blog_user(self, id, following):
 	    get_db().get_collection(self.col_user).update({"id_user": id}, {"$set": {"following": following}})
 
-	def save_retweet(self, request, id):
+	def insert_post(self, id_user, first_name, last_name, username, avatar, postText):
+		post = { 
+			"id_user": id_user,
+			"first_name": first_name,
+			"last_name":last_name,
+			"username": "@%s" % (username),
+			"avatar": avatar,
+			"date": datetime.utcnow().isoformat(),
+			"text": urlize(escape(postText)),
+			"children": [],
+			"favourite": [],
+			"shared": 0,
+		}
+		#get_db().get_collection(self.col_post).insert(post)
+		super(Microblog,self).insert_post(post)
+
+	def save_retweet(self, post_id, user_id, username):
 	    postCollection = get_db().get_collection(self.col_post)
-	    post = postCollection.find_one({"$and": [{"id_user":request.user.id},{"id_original_post":ObjectId(id)}]})
+	    post = postCollection.find_one({"$and": [{"id_user":user_id},{"id_original_post":ObjectId(post_id)}]})
 
 	    if(not post):
-	        postCollection.update({"$or": [{"_id": ObjectId(id)}, {"id_original_post": ObjectId(id)}]}, {"$inc": {"shared":  1}}, multi=True)
-	        post = postCollection.find_one({"_id": ObjectId(id)})
+	        postCollection.update({"$or": [{"_id": ObjectId(post_id)}, {"id_original_post": ObjectId(post_id)}]}, {"$inc": {"shared":  1}}, multi=True)
+	        post = postCollection.find_one({"_id": ObjectId(post_id)})
 	        post["id_author"] = post["id_user"]
-	        post["id_user"] = request.user.id
+	        post["id_user"] = user_id
 	        post["id_original_post"] = post["_id"]
 	        post["original_date"] = post["date"]
 	        post["date"] = datetime.utcnow().isoformat()
-	        post["shared_by"] = "@" + request.user.username
+	        post["shared_by"] = "@%s" % (username)
 	        del post["_id"]
-	        self.insert_post(post)
+	        #get_db().get_collection(self.col_post).insert(post)
+	        super(Microblog,self).insert_post(post)
+	        return True
+	    else:
+	        return False
+
+	def save_reply(self, post_id, user_id, first_name, last_name, username, avatar, postText):
+	    postCollection = get_db().get_collection(self.col_post)
+	    post_orig = postCollection.find_one({"_id":ObjectId(post_id)})
+	    if post_orig:
+	    	post = {
+						"id_user": user_id, 
+						"first_name": first_name,
+						"last_name": last_name,
+						"username": "@%s" % (username),
+						"avatar": avatar,
+						"date": datetime.utcnow().isoformat(),
+						"text": urlize(escape(postText)),
+						"children": [],
+						"favourite": [],
+						"shared": 0,
+						"is_child": True,
+
+					}
+	        reply_id = postCollection.insert(post)
+	        post_orig["children"].append(reply_id)
+	        postCollection.update({'_id': ObjectId(post_id)}, {"$set": {"children": post_orig["children"]}})
 	        return True
 	    else:
 	        return False
@@ -150,4 +185,32 @@ class Blog(CommunityShareBase):
 
 class Forum(CommunityShareBase):
 	def __init__(self):
-		super('forum')
+		super(Forum,self).__init__('forum')
+		self.col_category = '%s_category' % self.col_prefix
+
+	def get_forum_category(self, slug):
+		return get_db().get_collection(self.col_category).find_one({'slug': slug})
+
+	def insert_forum_category(self, name, slug):
+		category = {
+			"name": name,
+			"slug": slug
+		}
+		get_db().get_collection(self.col_category).insert(category)
+
+	def insert_post(self, category_slug, id_user, first_name, last_name, username, avatar, postText):
+		post = { 
+			"category_slug": category_slug,
+			"id_user": id_user,
+			"first_name": first_name,
+			"last_name":last_name,
+			"username": "@%s" % (username),
+			"avatar": avatar,
+			"date": datetime.utcnow().isoformat(),
+			"text": urlize(escape(postText)),
+			"children": [],
+			"favourite": [],
+			"shared": 0,
+		}
+		#get_db().get_collection(self.col_post).insert(post)
+		super(Forum,self).insert_post(post)

@@ -59,7 +59,7 @@ from moocng.courses.tasks import clone_activity_user_course_task
 from moocng.courses.forms import CourseRatingForm
 from moocng.slug import unique_slugify
 from moocng.utils import use_cache
-from moocng.communityshare.models import Microblog
+from moocng.communityshare.models import Microblog, Forum
 
 import hashlib
 import time
@@ -400,6 +400,7 @@ def course_dashboard(request, course_slug):
 
     .. versionadded:: 0.1
     """
+    m = Microblog()
     course = get_course_if_user_can_view_or_404(course_slug, request)
     is_enrolled = course.students.filter(id=request.user.id).exists()
     if not is_enrolled:
@@ -465,7 +466,7 @@ def course_dashboard(request, course_slug):
         rating_formset = CourseRatingFormSet()
 
     group = get_group_by_user_and_course(request.user.id, course.id)
-    posts_list = Microblog.search_posts(course.hashtag, 0)
+    posts_list = m.search_posts(course.hashtag, 0)
 
     if is_enrolled:
         has_passed= has_user_passed_course(request.user, course)
@@ -538,6 +539,7 @@ def course_syllabus(request, course_slug):
 
 @login_required
 def course_group(request, course_slug):
+    m = Microblog()
     course = get_course_if_user_can_view_or_404(course_slug, request)
     is_enrolled = course.students.filter(id=request.user.id).exists()
     if not is_enrolled:
@@ -568,7 +570,7 @@ def course_group(request, course_slug):
             if(len(g["members"]) <= course.group_max_size + (course.group_max_size * settings.GROUPS_UPPER_THRESHOLD / 100)):
                 groups.append(g)
 
-    posts_list = Microblog.search_posts(group["hashtag"], 0)
+    posts_list = m.search_posts(group["hashtag"], 0)
 
     if is_enrolled:
         has_passed= has_user_passed_course(request.user, course)
@@ -615,6 +617,9 @@ def course_forum(request, course_slug):
         has_passed= has_user_passed_course(request.user, course)
     else:
         has_passed= False
+
+    f = Forum()
+
 
     return render_to_response('courses/forum.html', {
         'course': course,

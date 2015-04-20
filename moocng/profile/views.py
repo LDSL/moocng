@@ -153,20 +153,7 @@ def profile_posts(request, id, api=False):
 	if request.method == 'POST':
 		form = PostForm(request.POST)
 		if form.is_valid():
-			m.insert_post({
-							"id_user": request.user.id, 
-							"first_name": request.user.first_name,
-							"last_name":request.user.last_name,
-							"username": "@" + request.user.username,
-							"gravatar": "http:" + gravatar_for_email(request.user.email),
-							"date": datetime.utcnow().isoformat(),
-							"text": urlize(escape(form.cleaned_data['postText'])),
-							"children": [],
-							"favourite": [],
-							"shared": 0
-
-						})
-
+			m.insert_post(request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
 			return HttpResponseRedirect("/user/posts")
 	
 	else:
@@ -224,20 +211,7 @@ def profile_posts_search(request, query, hashtag=False, api=False):
 	if request.method == 'POST':
 		form = PostForm(request.POST)
 		if form.is_valid():
-			m.insert_post({
-							"id_user": request.user.id, 
-							"first_name": request.user.first_name,
-							"last_name":request.user.last_name,
-							"username": "@" + request.user.username,
-							"gravatar": "http:" + gravatar_for_email(request.user.email),
-							"date": datetime.utcnow().isoformat(),
-							"text": urlize(escape(form.cleaned_data['postText'])),
-							"children": [],
-							"favourite": [],
-							"shared": 0
-
-						})
-
+			m.insert_post(request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
 			return HttpResponseRedirect("/user/posts")
 	
 	else:
@@ -336,7 +310,7 @@ def user_follow(request, id, follow):
 @login_required
 def retweet(request, id):
 	m = Microblog()
-	return HttpResponse(m.save_retweet(request,id))
+	return HttpResponse(m.save_retweet(id, request.user.id, request.user.username))
 
 @login_required
 def reply(request, id):
@@ -344,21 +318,7 @@ def reply(request, id):
 		m = Microblog()
 		form = PostForm(request.POST)
 		if form.is_valid():
-			post = {
-						"id_user": request.user.id, 
-						"first_name": request.user.first_name,
-						"last_name":request.user.last_name,
-						"username": "@" + request.user.username,
-						"gravatar": "http:" + gravatar_for_email(request.user.email),
-						"date": datetime.utcnow().isoformat(),
-						"text": urlize(escape(form.cleaned_data['postText'])),
-						"children": [],
-						"favourite": [],
-						"shared": 0
-
-					}
-			m.save_reply(request, id, post)
-
+			m.save_reply(id, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
 			return HttpResponseRedirect("/user/posts")
 
 def _getCase(request, id):
