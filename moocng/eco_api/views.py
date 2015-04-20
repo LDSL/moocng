@@ -12,6 +12,7 @@ from moocng.users.models import User
 from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
 
 def ListRecords(request, num="1"):
 	# courses = Course.objects.values("id", "name")
@@ -220,22 +221,25 @@ def ListRecords(request, num="1"):
 
 def courses_by_users(request,id):
 	result = []
-	user = User.objects.get(userprofile__sub=id)
-	for coursestudent in user.coursestudent_set.all():
-		course = Course.objects.get(id=coursestudent.course_id)
-		current_pill = course.get_user_mark(user)
-		dates_info = get_course_activity_dates_for_user(course, user)
-		course_result = {
-			"id":'.'.join(settings.API_URI.split(".")[::-1]) + ":" + str(course.id), 
-			"progressPercentage" : get_course_progress_for_user(course, user),
-		}
-		if "enrollDate" in dates_info:
-			course_result["firstViewDate"] = dates_info["enrollDate"].isoformat()
-		if "lastViewDate" in dates_info:
-			course_result["lastViewDate"] = dates_info["lastViewDate"].isoformat()
-		if current_pill:
-			course_result["currentPill"] = current_pill.order
-		result.append(course_result)
+	try:
+		user = User.objects.get(userprofile__sub=id)
+		for coursestudent in user.coursestudent_set.all():
+			course = Course.objects.get(id=coursestudent.course_id)
+			current_pill = course.get_user_mark(user)
+			dates_info = get_course_activity_dates_for_user(course, user)
+			course_result = {
+				"id": str(course.id), 
+				"progressPercentage" : get_course_progress_for_user(course, user),
+			}
+			if "enrollDate" in dates_info:
+				course_result["firstViewDate"] = dates_info["enrollDate"].isoformat()
+			if "lastViewDate" in dates_info:
+				course_result["lastViewDate"] = dates_info["lastViewDate"].isoformat()
+			if current_pill:
+				course_result["currentPill"] = current_pill.order
+			result.append(course_result)
+	except ObjectDoesNotExist:
+		pass
 
 	return HttpResponse(simplejson.dumps(result), mimetype='application/json')
 

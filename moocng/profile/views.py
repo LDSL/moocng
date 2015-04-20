@@ -120,7 +120,7 @@ def profile_user(request, id):
 
 	if(not id):
 		if(not request.user.id):
-			return HttpResponseRedirect("/auth/login")
+			return HttpResponseRedirect('/auth/login')
 		id = request.user.id
 		user =  request.user
 	else:
@@ -130,12 +130,12 @@ def profile_user(request, id):
 	courses = get_courses_user_is_enrolled(user)
 
 	return render_to_response('profile/user.html', {
-		"id":id,
-		"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
+		'id': id,
+		'badges_count': get_db().get_collection('badge').find({'id_user': id}).count(),
 		'request': request,
 		'courses': courses,
 		'is_user': True,
-		"user_view_profile": user,
+		'user_view_profile': user,
 		}, context_instance=RequestContext(request))
 
 # @login_required

@@ -454,6 +454,10 @@ div.button, a.button, input.button {
 			width: calc(~'100% - 60px');
 			overflow: hidden;
 		}
+
+		h4 {
+			padding-top: 10px;
+		}
 	}
 
 	.modal-body {
@@ -462,6 +466,10 @@ div.button, a.button, input.button {
 
 		&.fixedHeight {
 			height: calc(~'70vh - 130px');
+		}
+
+		&.maxHeight {
+			max-height: calc(~'70vh - 130px');
 		}
 
 		p {
@@ -713,6 +721,16 @@ body {
 				position: relative;
 				left: auto;
 				top: auto;
+			}
+
+			@media screen and (max-width: 960px){
+				h1.logo {
+					height: 120px;
+
+					img {
+						height: 100%;
+					}
+				}
 			}
 		}
 		
@@ -1106,6 +1124,10 @@ body {
 					.course-title {
 						opacity: 1;
 						top: 0;
+						max-width: 690px;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						white-space: nowrap;
 					}
 					
 					.btn-toolbar {
@@ -1234,6 +1256,19 @@ body {
   }
 }
 
+@media screen and (max-width: 960px){
+	.main_banner {
+		.color_back {
+			padding: 30px 20px 45px;
+
+			h1 {
+				font-size: 2.7em;
+				margin-bottom: 50px;
+			}
+		}
+	}
+}
+
 .content {
   background-color: @neutral_light_3;
   border-top: 1px solid @neutral_light_2;
@@ -1288,7 +1323,7 @@ body {
 
     &.box {
       position: relative;
-      height: 318px;
+      height: 336px;
 
 
 		.label {
@@ -1300,7 +1335,7 @@ body {
 
       .front_face {
 		display: block;
-		height: 298px;
+		height: 316px;
 		overflow: hidden;
 		position: relative;
 		top: 10px;
@@ -1313,7 +1348,7 @@ body {
 			a {
 				display: block;
 				width: 100%;
-				height: 144px;
+				height: 162px;
 				border-bottom: 4px solid @highlight;
 				background-size: cover;
 				background-position: 50% 50%;
@@ -1372,7 +1407,7 @@ body {
 		opacity: 0;
 		
 		display: block;
-		height: 298px;
+		height: 316px;
 		width: calc(~'100% - 9px');
 		overflow: hidden;
 		padding: 18px 18px 20px;
@@ -1448,7 +1483,7 @@ body {
 	
 		.back_face {
 			opacity: 1;
-			height: 318px;
+			height: 336px;
 			top: 0;
 		}
     }
@@ -4985,4 +5020,13 @@ footer {
 	}
 }
 
+.mb20 {
+	h2 {
+		margin: 20px 0 10px;
+	}
+
+	ol, ul {
+		padding-left: 40px;
+	}
+}
 

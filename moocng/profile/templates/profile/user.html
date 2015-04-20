@@ -9,26 +9,26 @@
 		<div class="row">
 			<div class="col-lg-4 col-md-4 col-sm-8 col-mob-4">
 				<dl class="info">
-					{% if profile.city or profile.country %}
+					{% if user_view_profile.get_profile.city or user_view_profile.get_profile.country %}
 					<div class="row separator_h">
 						<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 element">
 							<img class="icon" src="{{ STATIC_URL }}img/ECO_icon_info_localizacion.svg">
 							<dt>{% trans "Location" %}</dt>
-							{% if profile.city %}
-							<dd>{{ profile.city }}</dd>
+							{% if user_view_profile.get_profile.city %}
+							<dd>{{ user_view_profile.get_profile.city }}</dd>
 							{% endif %}
-							{% if profile.country %}
-							<dd>{{ profile.country }}</dd>
+							{% if user_view_profile.get_profile.country %}
+							<dd>{{ user_view_profile.get_profile.country }}</dd>
 							{% endif %}
 						</div>
 					</div>
 					{% endif %}
-					{% if profile.language %}
+					{% if user_view_profile.get_profile.language %}
 					<div class="row separator_h">
 						<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 element">
 							<img class="icon" src="{{ STATIC_URL }}img/ECO_icon_info_idioma.svg">
 							<dt>{% trans "Language" %}</dt>
-							<dd>{{ profile.get_language_display }}</dd>
+							<dd>{{ user_view_profile.get_profile.get_language_display }}</dd>
 						</div>
 					</div>
 					{% endif %}
@@ -58,15 +58,15 @@
 				<div class="profile">
 					<div class="links-bar">
 						{% if user_view_profile.get_profile.personalweb %}
-						<a class="pull-left" href="{{ profile.personalweb }}">
+						<a class="pull-left" href="{{ user_view_profile.personalweb }}">
 							<img src="{{ STATIC_URL }}img/ECO_icon_info_enlace.svg">
 							<span>{{ user_view_profile.get_profile.personalweb }}</span>
 						</a>
 						{% endif %}
-						{% if user_view_profile.email and show_email %}
+						{% if user_view_profile.get_profile.email and show_email %}
 						<a class="pull-left" href="mailto:{{ user_view_profile.email }}">
 							<img src="{{ STATIC_URL }}img/ECO_icon_info_email.svg">
-							<span>{{ user_view_profile.email }}</span>
+							<span>{{ user_view_profile.get_profile.email }}</span>
 						</a>
 						{% endif %}
 						{% if is_user %}
@@ -78,34 +78,34 @@
 					{% if user_view_profile.get_profile.bio %}
 					<div class="bio">{{ user_view_profile.get_profile.bio|safe }}</div>
 					{% endif %}
-					{% if profile.twitter or profile.facebook or profile.linkedin %}
+					{% if user_view_profile.get_profile.twitter or user_view_profile.get_profile.facebook or user_view_profile.get_profile.linkedin %}
 					<div class="social separator_h">
 						<h5>{% trans "Social profiles" %}</h5>
-						{% if profile.twitter %}
-							<a class="hide-text" href="{{ profile.twitter }}" target="_blank">
+						{% if user_view_profile.get_profile.twitter %}
+							<a class="hide-text" href="{{ user_view_profile.get_profile.twitter }}" target="_blank">
 								<object data="{{ STATIC_URL }}img/ECO_icon_seguir_twitter.svg?#55555d" type="image/svg+xml"></object>
-								{{ profile.twitter }}
+								{{ user_view_profile.get_profile.twitter }}
 							</a>
 						{% endif %}
-						{% if profile.facebook %}
-							<a class="hide-text" href="{{ profile.facebook }}" target="_blank">
+						{% if user_view_profile.get_profile.facebook %}
+							<a class="hide-text" href="{{ user_view_profile.get_profile.facebook }}" target="_blank">
 								<object data="{{ STATIC_URL }}img/ECO_icon_seguir_facebook.svg?#55555d" type="image/svg+xml"></object>
-								{{ profile.facebook }}
+								{{ user_view_profile.get_profile.facebook }}
 							</a>
 						{% endif %}
-						{% if profile.linkedin %}
-							<a class="hide-text" href="{{ profile.linkedin }}" target="_blank">
+						{% if user_view_profile.get_profile.linkedin %}
+							<a class="hide-text" href="{{ user_view_profile.get_profile.linkedin }}" target="_blank">
 								<object data="{{ STATIC_URL }}img/ECO_icon_seguir_linkedin.svg?#55555d" type="image/svg+xml"></object>
-								{{ profile.linkedin }}
+								{{ user_view_profile.get_profile.linkedin }}
 							</a>
 						{% endif %}
 					</div>
 					{% endif %}
-					{% if profile.interests|length > 0 %}
+					{% if user_view_profile.get_profile.interests|length > 0 %}
 					<div class="interests">
 						<h5>{% trans "Interests areas" %}</h5>
 						<ul class="tags">
-							{% with profile.interests_name_as_list as arr_interests %}
+							{% with user_view_profile.get_profile.interests_name_as_list as arr_interests %}
 							{% for interest in arr_interests %}
 							<li><a href="#">{% trans interest %}</a></li>
 							{% endfor %}
