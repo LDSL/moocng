@@ -45,7 +45,7 @@ class Command(BaseCommand):
         make_option('-l', '--limit',
                     action='store',
                     dest='limit',
-                    default="100",
+                    default="10000",
                     help="Limit of the users that will be processed"),
     )
 
@@ -91,11 +91,13 @@ class Command(BaseCommand):
             course_csv.writerow(headers)
 
             students = course.students.all()[:limit]
+            headers = ["first_name", "last_name", "email"]
 
             for student in students:
                 row = []
-                fieldvalue = getattr(student, 'email')
-                row.append(h.unescape(fieldvalue.encode("ascii", "ignore")))
+                for field in headers:
+                    fieldvalue = getattr(student, field)
+                    row.append(h.unescape(fieldvalue).encode("ascii", "ignore"))
                 mark, mark_info = calculate_course_mark(course, student)
                 row.append(mark)
                 course_csv.writerow(row)
