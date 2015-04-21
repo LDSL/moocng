@@ -56,7 +56,7 @@ from moocng.courses.security import (get_course_if_user_can_view_or_404,
                                      get_course_rating_for_user,
                                      get_course_if_user_can_view_and_permission)
 from moocng.courses.tasks import clone_activity_user_course_task
-from moocng.courses.forms import CourseRatingForm, ForumPostForm
+from moocng.courses.forms import CourseRatingForm, ForumPostForm, ForumReplyForm
 from moocng.slug import unique_slugify
 from moocng.utils import use_cache
 from moocng.communityshare.models import Microblog, Forum
@@ -570,7 +570,7 @@ def course_forum(request, course_slug):
     if request.method == 'POST':
         form = ForumPostForm(request.POST)
         if form.is_valid():
-            f.insert_post(course_slug, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
+            f.insert_post(course_slug, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postTitle'], form.cleaned_data['postText'])
             return HttpResponseRedirect(reverse('course_forum', args=[course_slug]))
     else:
         course = get_course_if_user_can_view_or_404(course_slug, request)
@@ -617,7 +617,7 @@ def course_forum(request, course_slug):
 def course_forum_post(request, course_slug, post_id):
     f = Forum()
     if request.method == 'POST':
-        form = ForumPostForm(request.POST)
+        form = ForumReplyForm(request.POST)
         if form.is_valid():
             f.save_reply(course_slug, post_id, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
             return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
@@ -651,7 +651,7 @@ def course_forum_post(request, course_slug, post_id):
         list_posts = []
         list_posts.append(f.get_post_detail(post_id))
 
-        return render_to_response('courses/forum.html', {
+        return render_to_response('courses/forum_post.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
             'task_list': tasks[0],
@@ -661,7 +661,7 @@ def course_forum_post(request, course_slug, post_id):
             'is_teacher': is_teacher,
             'group': group,
             'passed': has_passed,
-            'form': ForumPostForm(),
+            'form': ForumReplyForm(),
             'posts': list_posts,
         }, context_instance=RequestContext(request))
 
