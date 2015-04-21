@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Translation sMOOC ES-DE\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-21 09:21+0200\n"
+"POT-Creation-Date: 2015-04-21 11:01+0200\n"
 "PO-Revision-Date: 2015-03-28 18:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -39,7 +39,7 @@ msgstr "Link um Zertifizierung von diesem Kurs anzufordern"
 msgid "Change key of selected %(verbose_name_plural)s"
 msgstr "Change key of selected %(verbose_name_plural)s"
 
-#: api/models.py:29 assets/models.py:78 profile/models.py:46
+#: api/models.py:29 assets/models.py:78 profile/models.py:39
 msgid "User"
 msgstr "Benutzer"
 
@@ -227,9 +227,9 @@ msgid "Your reservation has been modified"
 msgstr "Ihre Belegung wurde geändert"
 
 #: assets/views.py:48 assets/views.py:104 assets/views.py:136
-#: courses/views.py:338 courses/views.py:406 courses/views.py:504
-#: courses/views.py:544 courses/views.py:597 courses/views.py:636
-#: courses/views.py:675 courses/views.py:714 courses/views.py:766
+#: courses/views.py:338 courses/views.py:407 courses/views.py:505
+#: courses/views.py:546 courses/views.py:599 courses/views.py:641
+#: courses/views.py:680 courses/views.py:719 courses/views.py:771
 #: courses/templates/courses/transcript_course.html:6 peerreview/views.py:53
 #: peerreview/views.py:112 peerreview/views.py:163
 msgid "You are not enrolled in this course"
@@ -404,7 +404,7 @@ msgstr "Name"
 msgid "Last name:"
 msgstr "Nachname"
 
-#: auth_handlers/dbauth/templates/dbauth/profile.html:11 profile/models.py:52
+#: auth_handlers/dbauth/templates/dbauth/profile.html:11 profile/models.py:45
 msgid "Organization"
 msgstr "Organization"
 
@@ -969,7 +969,7 @@ msgstr "Hauptautor"
 msgid "Students"
 msgstr "Studenten"
 
-#: courses/models.py:104 courses/models.py:762 profile/models.py:109
+#: courses/models.py:104 courses/models.py:762 profile/models.py:102
 #: profile/templates/profile/user.html:30
 #: teacheradmin/templates/teacheradmin/units.html:239
 msgid "Language"
@@ -1505,7 +1505,7 @@ msgstr "Ihr Kurs \"%s\" wurde ergestellt."
 msgid "The course was successfully created"
 msgstr "Der course wurde erfolgreich ergestellt"
 
-#: courses/views.py:999
+#: courses/views.py:1004
 #, python-format
 msgid ""
 "We are cloning the activity from %(course)s. You will receive an email soon"
@@ -2259,7 +2259,7 @@ msgstr "Ort"
 msgid "Languages"
 msgstr "Sprachen"
 
-#: courses/templates/courses/group.html:56 profile/models.py:95
+#: courses/templates/courses/group.html:56 profile/models.py:88
 #: profile/templates/profile/include.userheader.html:38
 msgid "Karma"
 msgstr "Karma"
@@ -3248,107 +3248,107 @@ msgstr "Permanent link"
 msgid "Write a message..."
 msgstr "Möchten Sie uns eine Nachricht schreiben?"
 
-#: profile/models.py:33
+#: profile/models.py:26
 msgid "Organization name"
 msgstr "Organisationsname"
 
-#: profile/models.py:38
+#: profile/models.py:31
 msgid "Organization logo"
 msgstr "Organisationslogo"
 
-#: profile/models.py:48
+#: profile/models.py:41
 msgid "Last announcement viewed"
 msgstr "Angeschaute Ankündigungen"
 
-#: profile/models.py:56
+#: profile/models.py:49
 msgid "Male"
 msgstr "männlich"
 
-#: profile/models.py:57
+#: profile/models.py:50
 msgid "Female"
 msgstr "weiblich"
 
-#: profile/models.py:61 settings/common.py:120
+#: profile/models.py:54 settings/common.py:120
 msgid "Spanish"
 msgstr "Spanisch"
 
-#: profile/models.py:62 settings/common.py:119
+#: profile/models.py:55 settings/common.py:119
 msgid "English"
 msgstr "Englisch"
 
-#: profile/models.py:63 settings/common.py:123
+#: profile/models.py:56 settings/common.py:123
 msgid "French"
 msgstr "Französich"
 
-#: profile/models.py:64
+#: profile/models.py:57
 msgid "Deutsch"
 msgstr ""
 
-#: profile/models.py:65 settings/common.py:121
+#: profile/models.py:58 settings/common.py:121
 msgid "Italian"
 msgstr "Italienisch"
 
-#: profile/models.py:66 settings/common.py:122
+#: profile/models.py:59 settings/common.py:122
 msgid "Portuguese"
 msgstr "Portugesisch"
 
-#: profile/models.py:68 profile/templates/profile/user.html:40
+#: profile/models.py:61 profile/templates/profile/user.html:40
 msgid "Gender"
 msgstr "Geschlecht"
 
-#: profile/models.py:73
+#: profile/models.py:66
 msgid "Personal website"
 msgstr "Persönliche Website"
 
-#: profile/models.py:77
+#: profile/models.py:70
 msgid "Twitter URL"
 msgstr ""
 
-#: profile/models.py:81
+#: profile/models.py:74
 msgid "Facebook URL"
 msgstr ""
 
-#: profile/models.py:85
+#: profile/models.py:78
 msgid "LinkedIn URL"
 msgstr ""
 
-#: profile/models.py:89
+#: profile/models.py:82
 msgid "Birthdate"
 msgstr "Geburtsdatum"
 
-#: profile/models.py:92
+#: profile/models.py:85
 msgid "Biography"
 msgstr "Bio"
 
-#: profile/models.py:97
+#: profile/models.py:90
 msgid "Postal code"
 msgstr "Postleitzahl"
 
-#: profile/models.py:101
+#: profile/models.py:94
 msgid "City"
 msgstr "Wohnort"
 
-#: profile/models.py:105
+#: profile/models.py:98
 msgid "Country"
 msgstr "Land"
 
-#: profile/models.py:114
+#: profile/models.py:107
 msgid "Middle name"
 msgstr "zweiter Vorname"
 
-#: profile/models.py:118
+#: profile/models.py:111
 msgid "Interests"
 msgstr "Interessen"
 
-#: profile/models.py:122
+#: profile/models.py:115
 msgid "Global ID"
 msgstr "Global ID"
 
-#: profile/models.py:129
+#: profile/models.py:121
 msgid "User profile"
 msgstr "Benutzerprofil"
 
-#: profile/models.py:130
+#: profile/models.py:122
 msgid "User profiles"
 msgstr "Benutzerprofile"
 

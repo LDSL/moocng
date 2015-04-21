@@ -15,14 +15,12 @@ class CommunityShareBase(object):
 		self.col_prefix=prefix
 		self.col_post = '%s_post' % self.col_prefix
 
-	def get_posts(self, case, id, user, page):
+	def get_posts(self, idsQuery, page, show_children=False):
 	    postCollection = get_db().get_collection(self.col_post)
-	    idsUsers=[{"id_user": id}]
-	    if(case == 0 and user):
-	        for following in user["following"]:
-	                idsUsers.append({"id_user": following})
-	        
-	    posts = postCollection.find({"$and": [{"$or": idsUsers, }, {"$or": [ {"is_child": {"$exists": False} }, {"is_child": False} ] } ] })[page:page+10].sort("date",pymongo.DESCENDING)
+	    if not show_children:
+	    	posts = postCollection.find({"$and": [{"$or": idsQuery, }, {"$or": [ {"is_child": {"$exists": False} }, {"is_child": False} ] } ] })[page:page+10].sort("date",pymongo.DESCENDING)
+	    else:
+	    	posts = postCollection.find({"$or": idsQuery, })[page:page+10].sort("date",pymongo.DESCENDING)
 	    posts_list = []
 	    for post in posts:
 	        if len(post['children']) > 0:
@@ -116,6 +114,13 @@ class Microblog(CommunityShareBase):
 	def update_following_blog_user(self, id, following):
 	    get_db().get_collection(self.col_user).update({"id_user": id}, {"$set": {"following": following}})
 
+	def get_posts(self, case, id, user, page):
+	    idsUsers=[{"id_user": id}]
+	    if(case == 0 and user):
+	        for following in user["following"]:
+	                idsUsers.append({"id_user": following})
+	    return super(Microblog,self).get_posts(idsUsers, page)
+
 	def insert_post(self, id_user, first_name, last_name, username, avatar, postText):
 		post = { 
 			"id_user": id_user,
@@ -198,7 +203,18 @@ class Forum(CommunityShareBase):
 		}
 		get_db().get_collection(self.col_category).insert(category)
 
-	def insert_post(self, category_slug, id_user, first_name, last_name, username, avatar, postText):
+	def get_posts(self, category_slug, page):
+	    idsQuery=[{"category_slug": category_slug}]
+	    return super(Forum,self).get_posts(idsQuery, page)
+
+	def get_post_detail(self, post_id):
+		postCollection = get_db().get_collection(self.col_post)
+		post = postCollection.find_one({'_id': ObjectId(post_id)})
+		if len(post['children']) > 0:
+			self._proccess_post_children(post)
+		return post
+
+	def insert_post(self, category_slug, id_user, first_name, last_name, username, avatar, postTitle, postText):
 		post = { 
 			"category_slug": category_slug,
 			"id_user": id_user,
@@ -207,6 +223,7 @@ class Forum(CommunityShareBase):
 			"username": "@%s" % (username),
 			"avatar": avatar,
 			"date": datetime.utcnow().isoformat(),
+			"title": urlize(escape(postTitle)),
 			"text": urlize(escape(postText)),
 			"children": [],
 			"favourite": [],
@@ -214,3 +231,29 @@ class Forum(CommunityShareBase):
 		}
 		#get_db().get_collection(self.col_post).insert(post)
 		super(Forum,self).insert_post(post)
+
+	def save_reply(self, category_slug, post_id, id_user, first_name, last_name, username, avatar, postText):
+	    postCollection = get_db().get_collection(self.col_post)
+	    post_orig = postCollection.find_one({"_id":ObjectId(post_id)})
+	    if post_orig:
+	    	post = {
+	    				"category_slug": category_slug,
+						"id_user": id_user, 
+						"first_name": first_name,
+						"last_name": last_name,
+						"username": "@%s" % (username),
+						"avatar": avatar,
+						"date": datetime.utcnow().isoformat(),
+						"text": urlize(escape(postText)),
+						"children": [],
+						"favourite": [],
+						"shared": 0,
+						"is_child": True,
+
+					}
+	        reply_id = postCollection.insert(post)
+	        post_orig["children"].append(reply_id)
+	        postCollection.update({'_id': ObjectId(post_id)}, {"$set": {"children": post_orig["children"]}})
+	        return True
+	    else:
+	        return False

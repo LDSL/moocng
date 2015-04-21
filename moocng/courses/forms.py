@@ -100,3 +100,6 @@ class ActivityForm(forms.Form):
 
 class CourseRatingForm(forms.Form):
     value = forms.ChoiceField(choices=COURSE_RATING_CHOICES, widget=forms.widgets.RadioSelect)
+
+class ForumPostForm(forms.Form):
+    postText = forms.CharField(required=True, max_length="500", label="", widget=forms.Textarea(attrs={'placeholder': _('Write a message...')}))
