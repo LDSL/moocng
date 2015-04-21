@@ -86,7 +86,7 @@ class Command(BaseCommand):
             course_file = StringIO.StringIO()
 
             course_csv = csv.writer(course_file, quoting=csv.QUOTE_ALL)
-            headers = ["email", "mark"]
+            headers = ["first_name", "last_name", "email", "mark"]
 
             course_csv.writerow(headers)
 
