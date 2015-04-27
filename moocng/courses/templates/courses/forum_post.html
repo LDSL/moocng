@@ -1,0 +1,72 @@
+{% extends "courses/base_course.html" %}
+{% load i18n enrollment_tags %}
+{% block content %}
+
+<div class="userposts">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
+				<div class="panel">
+					<div class="header">
+						<h3>{% trans "Posts" %}</h3>
+						{% if is_teacher or user.is_staff %}
+						<input class="addButton pull-right" type="button" value="{% trans "NEW POST" %}">
+						{% endif %}
+					</div>
+					<div class="content">
+						<div class="posts">
+							{% for post in posts %}
+							<div class="post">
+								<div class="cell">
+									<img class="gravatar" src={{ post.avatar}}>
+								</div>
+								<div class="cell" style="padding-top: 15px; ">
+									<a href={{post.username|slice:"1:"}}><span class="namePost">{{post.first_name}} {{post.last_name}}</span></a>
+									<span class="emailPost">{{post.username}}</span>
+									
+									<span class="datePost">
+										{% if post.original_date %}
+											{{post.original_date}}
+										{% else %}
+											{{post.date}}
+										{% endif %}
+
+									</span>
+									{% autoescape off %}
+									<p class="postText">{{post.text}}</p>
+									{% endautoescape %}
+
+									{% if post.id_original_post %}
+									<div class="tools" id={{post.id_original_post}}>
+									{% else %}
+									<div class="tools" id={{post.id}}>
+									{% endif %}
+										<span class="reply">{% trans "Reply" %}</span>
+										<form class="postReply" method="post">
+											{% csrf_token %}
+											{{ form }}
+											<input class="postButton" type="submit" value="{% trans "Send" %}">
+											<span class="cancelPost">{% trans "Cancel" %}</span>
+										</form>								
+										<!-- <span class="favourite">0</span> -->
+									</div>
+								</div>
+								{% if post.replies|length > 0 %}
+								<div class="replies">
+									{% for reply in post.replies %}
+										{% include "courses/forum_reply.html" %}
+									{% endfor %}
+								</div>
+								{% endif %}
+							</div>
+							<div class="clearfix"></div>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

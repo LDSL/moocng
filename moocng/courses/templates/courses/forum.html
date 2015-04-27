@@ -61,30 +61,37 @@
 						<div class="posts">
 							{% for post in posts %}
 								<div class="row post">
-									<a href="{{ post.id }}">
-										<div class="col-lg-12 col-md-8 col-sm-8 col-mob-4 header">
-											<div class="cell">
-												<img class="gravatar" src={{ post.avatar}}>
-											</div>
-											<div class="cell">
+									<div class="col-lg-2 col-md-2 col-sm-1 col-mob-1">
+										<img class="headerGravatar" src={{ post.avatar }}&s=128>
+									</div>
+									<div class="col-lg-10 col-md-6 col-sm-7 col-mob-3 relative">
+										<a href="{{ post.id }}" class="block">
 											{% autoescape off %}
 												<h4>{{ post.title }}</h4>
 												<p>{{ post.text }}</p>
 											{% endautoescape %}
+											<div class="repliesLength">
+												<img src="{{ STATIC_URL }}img/ECO_icon_comentar_foro.svg">
+												{{ post.replies|length }}
 											</div>
-										</div>
-										<div class="col-lg-4 col-md-4 col-sm-8 col-mob-4 info">
-											<h5>{% trans "Last reply" %}</h5>
-											<span class="emailPost">{{post.username}}</span>
-											<span class="datePost">
-											{% if post.original_date %}
-												{{post.original_date}}
+										</a>
+									</div>
+									{% if post.replies|length %}
+									<div class="col-lg-4 col-md-4 col-sm-8 col-mob-4 info">
+										<h5>{% trans "Last reply" %}</h5>
+										{% with post.replies|last as lastpost %}
+										<span class="userPost">{{ lastpost.username }}</span>
+										<span class="datePost">[
+											{% if lastpost.original_date %}
+												{{ lastpost.original_date }}
 											{% else %}
-												{{post.date}}
+												{{ lastpost.date }}
 											{% endif %}
-										</span>
-										</div>
-									</a>
+										]</span>
+										<p>{{ lastpost.text }}</p>
+										{% endwith %}
+									</div>
+									{% endif %}
 								</div>
 							{% endfor %}
 						</div>

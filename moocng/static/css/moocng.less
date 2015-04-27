@@ -125,6 +125,14 @@ ul.unstyled {
 	display: inline-block;
 }
 
+.block {
+	display: block;
+}
+
+.relative {
+	position: relative;
+}
+
 .bottom-line {
 	border-bottom: 1px solid @neutral_light_1;
 	padding: 19px 0 0 0;
@@ -4764,13 +4772,96 @@ ul.rating {
 				}
 			}
 
-			.cell{
+			.cell {
 				display:table-cell;
 				vertical-align: -webkit-baseline-middle;
+				vertical-align: top;
+				padding-top: 15px;
+
+				&:first-child {
+					padding-top: 0;
+				}
+			}
+
+			&, .cell {
+
+				.headerGravatar {
+					height: 128px;
+					margin: 12px 12px 8px;
+				}
 
 				.gravatar{
-					height:50px;
-					margin:20px;
+					height: 50px;
+					margin: 20px;
+				}
+
+				h4 {
+					font-size: 22px;
+					line-height: 24px;
+					font-weight: 300;
+					color: @highlight;
+					margin-top: 20px;
+
+					& + p {
+						font-size: 14px;
+						line-height: 18px;
+						font-weight: 400;
+						color: @neutral_medium_1;
+						margin-top: 10px;
+						.line-clamp(20px,4,@white);
+					}
+				}
+
+				.repliesLength {
+					position: absolute;
+					right: 20px;
+					top: 15px;
+				}
+
+				.info {
+					background-color: @neutral_light_4;
+					border-left: @neutral_light_2;
+					position: relative;
+					height: 100%;
+					padding: 15px 20px 20px;
+					margin: 0;
+
+					&:before {
+						content: "";
+						display: block;
+						position: absolute;
+						top: 15px;
+						left: -10px;
+						width: 0;
+						height: 0;
+						border-style: solid;
+						border-width: 10px 10px 10px 0;
+						border-color: transparent @neutral_light_4 transparent transparent;
+						filter: dropshadow(-1px 0 0 @neutral_light_2);
+					}
+
+					h5 {
+						font-size: 12px;
+						line-height: 16px;
+						font-weight: 400;
+						text-transform: uppercase;
+						color: @neutral_medium_1;
+						margin: 4px 0 6px;
+					}
+
+					.userPost {
+						font-size: 12px;
+						color: @highlight;
+					}
+
+					p {
+						color: @neutral_intense;
+						font-size: 13px;
+						line-height: 16px;
+						margin: 10px 0;
+
+						.line-clamp(16px,3,@neutral_light_4);
+					}
 				}
 
 				.shared{
@@ -4778,8 +4869,6 @@ ul.rating {
 					color: @neutral_medium_1;
 					margin-bottom: 17px;
 					display: inline-block;
-
-					
 				}
 
 				.sharedImage{
