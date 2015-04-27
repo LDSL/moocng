@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: moocng 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-21 09:21+0200\n"
+"POT-Creation-Date: 2015-04-27 12:48+0200\n"
 "PO-Revision-Date: 2015-03-10 09:07+0100\n"
 "Last-Translator: Raúl Yeguas <raul.yeguas@geographica.gs>\n"
 "Language-Team: es_ES <es_ES@li.org>\n"
@@ -146,7 +146,7 @@ msgstr "Reservado para"
 msgid "Asset"
 msgstr "Recurso"
 
-#: assets/models.py:86 assets/models.py:88 courses/models.py:469
+#: assets/models.py:86 assets/models.py:88 courses/models.py:470
 msgid "Datetime"
 msgstr "Fecha y hora"
 
@@ -577,8 +577,8 @@ msgid "Color"
 msgstr "Colorear"
 
 #: badges/models.py:163 contact/email.py:30 contact/forms.py:37
-#: courses/models.py:409 courses/models.py:432 courses/models.py:467
-#: courses/models.py:509 externalapps/models.py:50 teacheradmin/models.py:38
+#: courses/models.py:410 courses/models.py:433 courses/models.py:468
+#: courses/models.py:510 externalapps/models.py:50 teacheradmin/models.py:38
 #: teacheradmin/models.py:59 teacheradmin/models.py:65
 #: teacheradmin/templates/teacheradmin/stats.html:51
 #: teacheradmin/templates/teacheradmin/stats.html:92
@@ -702,7 +702,7 @@ msgstr "Aún no has obtenido ninguna medalla."
 msgid "This category doesn't have an icon"
 msgstr "Esta categoría no tiene un icono asociado"
 
-#: categories/models.py:12 courses/models.py:70 courses/models.py:465
+#: categories/models.py:12 courses/models.py:70 courses/models.py:466
 msgid "Slug"
 msgstr "Slug"
 
@@ -794,8 +794,8 @@ msgstr "Debe aceptar los Términos de Uso"
 msgid "Other"
 msgstr "Otro"
 
-#: contact/models.py:23 courses/models.py:386 courses/models.py:464
-#: courses/models.py:508 courses/models.py:605 peerreview/models.py:90
+#: contact/models.py:23 courses/models.py:387 courses/models.py:465
+#: courses/models.py:509 courses/models.py:606 peerreview/models.py:90
 #: teacheradmin/templates/teacheradmin/units.html:100
 #: teacheradmin/templates/teacheradmin/units.html:151
 msgid "Title"
@@ -954,7 +954,7 @@ msgstr "Profesor propietario"
 msgid "Students"
 msgstr "Alumnos"
 
-#: courses/models.py:104 courses/models.py:762 profile/models.py:109
+#: courses/models.py:104 courses/models.py:763 profile/models.py:109
 #: profile/templates/profile/user.html:30
 #: teacheradmin/templates/teacheradmin/units.html:239
 msgid "Language"
@@ -964,13 +964,13 @@ msgstr "Idioma"
 msgid "Hashtag"
 msgstr "Hashtag"
 
-#: courses/models.py:116 courses/models.py:611 courses/models.py:801
+#: courses/models.py:116 courses/models.py:612 courses/models.py:802
 #: teacheradmin/templates/teacheradmin/units.html:155
 #: teacheradmin/templates/teacheradmin/units.html:291
 msgid "Content type"
 msgstr "Tipo de contenido"
 
-#: courses/models.py:121 courses/models.py:616 courses/models.py:806
+#: courses/models.py:121 courses/models.py:617 courses/models.py:807
 msgid "Content id"
 msgstr "Id del contenido"
 
@@ -1002,7 +1002,7 @@ msgstr "Medalla de completado de curso"
 msgid "Enrollment method"
 msgstr "Método de matriculación"
 
-#: courses/models.py:155 courses/models.py:535
+#: courses/models.py:155 courses/models.py:536
 #: courses/templates/courses/home_as_grid.html:33
 #: courses/templates/courses/home_as_list.html:50
 #: courses/templates/courses/overview.html:285
@@ -1011,13 +1011,13 @@ msgstr "Método de matriculación"
 msgid "Draft"
 msgstr "Borrador"
 
-#: courses/models.py:156 courses/models.py:537
+#: courses/models.py:156 courses/models.py:538
 #: teacheradmin/templates/teacheradmin/units.html:40
 #: teacheradmin/templates/teacheradmin/units.html:87
 msgid "Published"
 msgstr "Publicado"
 
-#: courses/models.py:157 courses/models.py:536
+#: courses/models.py:157 courses/models.py:537
 #: teacheradmin/templates/teacheradmin/units.html:39
 #: teacheradmin/templates/teacheradmin/units.html:90
 msgid "Hidden"
@@ -1027,7 +1027,7 @@ msgstr "Oculto"
 msgid "Always Open"
 msgstr "Siempre abierto"
 
-#: courses/models.py:162 courses/models.py:541
+#: courses/models.py:162 courses/models.py:542
 #: teacheradmin/templates/teacheradmin/units.html:85
 msgid "Status"
 msgstr "Estado"
@@ -1052,7 +1052,7 @@ msgstr ""
 msgid "Background"
 msgstr "Fondo"
 
-#: courses/models.py:188 courses/models.py:399
+#: courses/models.py:188 courses/models.py:400
 msgid "Static page"
 msgstr "Página estática"
 
@@ -1096,77 +1096,77 @@ msgstr "Puede listar cursos de un usuario"
 msgid "Can list passed courses of an user"
 msgstr "Puede listar los cursos aprobados"
 
-#: courses/models.py:393 templates/base.html:47
+#: courses/models.py:394 templates/base.html:47
 msgid "Body"
 msgstr "Cuerpo"
 
-#: courses/models.py:400
+#: courses/models.py:401
 msgid "Static pages"
 msgstr "Páginas estáticas"
 
-#: courses/models.py:408
+#: courses/models.py:409
 msgid "Teacher"
 msgstr "Profesor"
 
-#: courses/models.py:412
+#: courses/models.py:413
 msgid "course teacher"
 msgstr "profesor del curso"
 
-#: courses/models.py:413
+#: courses/models.py:414
 msgid "course teachers"
 msgstr "profesores de los cursos"
 
-#: courses/models.py:431
+#: courses/models.py:432
 msgid "Student"
 msgstr "Alumno"
 
-#: courses/models.py:435
+#: courses/models.py:436
 msgid "First time in this course"
 msgstr "Primera vez en este curso"
 
-#: courses/models.py:436
+#: courses/models.py:437
 msgid "No cloned"
 msgstr "No clonado"
 
-#: courses/models.py:437
+#: courses/models.py:438
 msgid "Cloned"
 msgstr "Clonado"
 
-#: courses/models.py:439
+#: courses/models.py:440
 msgid "Old course status"
 msgstr "Estado del curso anterior"
 
-#: courses/models.py:443 courses/templates/courses/base_course.html:29
+#: courses/models.py:444 courses/templates/courses/base_course.html:29
 #: courses/templates/courses/base_course_oldcss.html:29
 #: courses/templates/courses/progress.html:14
 msgid "Progress"
 msgstr "Progreso"
 
-#: courses/models.py:445
+#: courses/models.py:446
 msgid "Rate"
 msgstr "Valorar"
 
-#: courses/models.py:447
+#: courses/models.py:448
 msgid "Enrollment timestamp"
 msgstr "Método de matriculación"
 
-#: courses/models.py:449
+#: courses/models.py:450
 msgid "Latitude"
 msgstr "Latitud"
 
-#: courses/models.py:451
+#: courses/models.py:452
 msgid "Longitude"
 msgstr "Longitud"
 
-#: courses/models.py:455
+#: courses/models.py:456
 msgid "course student"
 msgstr "curso estudiante"
 
-#: courses/models.py:456
+#: courses/models.py:457
 msgid "course students"
 msgstr "curso estudiantes"
 
-#: courses/models.py:466
+#: courses/models.py:467
 #: courses/templates/admin/courses/question/options.html:151
 #: teacheradmin/models.py:78
 #: teacheradmin/templates/teacheradmin/emails.html:93
@@ -1174,30 +1174,30 @@ msgstr "curso estudiantes"
 msgid "Content"
 msgstr "Contenido"
 
-#: courses/models.py:474
+#: courses/models.py:475
 msgid "announcement"
 msgstr "comunicado"
 
-#: courses/models.py:475
+#: courses/models.py:476
 msgid "announcements"
 msgstr "comunicados"
 
-#: courses/models.py:512 teacheradmin/templates/teacheradmin/units.html:41
+#: courses/models.py:513 teacheradmin/templates/teacheradmin/units.html:41
 #: teacheradmin/templates/teacheradmin/units.html:106
 msgid "Normal"
 msgstr "Normal"
 
-#: courses/models.py:513 teacheradmin/templates/teacheradmin/units.html:42
+#: courses/models.py:514 teacheradmin/templates/teacheradmin/units.html:42
 #: teacheradmin/templates/teacheradmin/units.html:107
 msgid "Homework"
 msgstr "Tareas"
 
-#: courses/models.py:514 teacheradmin/templates/teacheradmin/units.html:43
+#: courses/models.py:515 teacheradmin/templates/teacheradmin/units.html:43
 #: teacheradmin/templates/teacheradmin/units.html:108
 msgid "Exam"
 msgstr "Examen"
 
-#: courses/models.py:516 courses/models.py:914
+#: courses/models.py:517 courses/models.py:915
 #: courses/templates/admin/courses/question/options.html:122
 #: teacheradmin/templates/teacheradmin/question.html:87
 #: teacheradmin/templates/teacheradmin/question.html:118
@@ -1206,11 +1206,11 @@ msgstr "Examen"
 msgid "Type"
 msgstr "Tipo"
 
-#: courses/models.py:518
+#: courses/models.py:519
 msgid "Start"
 msgstr "Fecha de inicio"
 
-#: courses/models.py:520
+#: courses/models.py:521
 msgid ""
 "Until this date is reached, no contents of this module will be shown to the "
 "students."
@@ -1218,11 +1218,11 @@ msgstr ""
 "Mientras no se alcance esta fecha, no se mostrarán los contenidos de este "
 "módulo a los alumnos."
 
-#: courses/models.py:523
+#: courses/models.py:524
 msgid "Deadline"
 msgstr "Fecha límite"
 
-#: courses/models.py:525
+#: courses/models.py:526
 msgid ""
 "Until this date is reached, the students will be able to modify their "
 "answers, but won't see the solution"
@@ -1230,21 +1230,21 @@ msgstr ""
 "Mientras no se alcance esta fecha, los alumnos podrán modificar sus "
 "respuestas, pero no ver las soluciones."
 
-#: courses/models.py:529 courses/models.py:607
+#: courses/models.py:530 courses/models.py:608
 #: teacheradmin/templates/teacheradmin/units.html:112
 #: teacheradmin/templates/teacheradmin/units.html:167
 msgid "Weight"
 msgstr "Peso"
 
-#: courses/models.py:550 teacheradmin/templates/teacheradmin/units.html:37
+#: courses/models.py:551 teacheradmin/templates/teacheradmin/units.html:37
 msgid "unit"
 msgstr "módulo"
 
-#: courses/models.py:551
+#: courses/models.py:552
 msgid "units"
 msgstr "módulos"
 
-#: courses/models.py:606 teacheradmin/templates/teacheradmin/stats.html:41
+#: courses/models.py:607 teacheradmin/templates/teacheradmin/stats.html:41
 #: teacheradmin/templates/teacheradmin/stats.html:93
 #: teacheradmin/templates/teacheradmin/stats.html:95
 #: teacheradmin/templates/teacheradmin/stats.html:131
@@ -1252,27 +1252,27 @@ msgstr "módulos"
 msgid "Unit"
 msgstr "Módulo"
 
-#: courses/models.py:620 courses/templates/courses/classroom.html:220
+#: courses/models.py:621 courses/templates/courses/classroom.html:220
 #: teacheradmin/templates/teacheradmin/units.html:46
 #: teacheradmin/templates/teacheradmin/units.html:180
 msgid "Instructor's comments"
 msgstr "Comentarios del profesor"
 
-#: courses/models.py:623 courses/templates/courses/classroom.html:224
+#: courses/models.py:624 courses/templates/courses/classroom.html:224
 #: teacheradmin/templates/teacheradmin/units.html:47
 #: teacheradmin/templates/teacheradmin/units.html:176
 msgid "Supplementary material"
 msgstr "Material suplementario"
 
-#: courses/models.py:629 teacheradmin/templates/teacheradmin/units.html:48
+#: courses/models.py:630 teacheradmin/templates/teacheradmin/units.html:48
 msgid "nugget"
 msgstr "píldora"
 
-#: courses/models.py:630
+#: courses/models.py:631
 msgid "nuggets"
 msgstr "píldoras"
 
-#: courses/models.py:752 courses/models.py:779 courses/models.py:800
+#: courses/models.py:753 courses/models.py:780 courses/models.py:801
 #: peerreview/models.py:35 teacheradmin/templates/teacheradmin/stats.html:42
 #: teacheradmin/templates/teacheradmin/stats.html:132
 #: teacheradmin/templates/teacheradmin/stats.html:134
@@ -1280,72 +1280,72 @@ msgstr "píldoras"
 msgid "Nugget"
 msgstr "Píldora"
 
-#: courses/models.py:754
+#: courses/models.py:755
 msgid "VTT file"
 msgstr "A rellenar"
 
-#: courses/models.py:756
+#: courses/models.py:757
 msgid "Transcription type"
 msgstr "Descripción"
 
-#: courses/models.py:767
+#: courses/models.py:768
 msgid "transcription"
 msgstr "Mis notas"
 
-#: courses/models.py:768
+#: courses/models.py:769
 msgid "transcriptions"
 msgstr "Mis notas"
 
-#: courses/models.py:780
+#: courses/models.py:781
 msgid "Attachment"
 msgstr "Adjunto"
 
-#: courses/models.py:787
+#: courses/models.py:788
 msgid "attachment"
 msgstr "adjunto"
 
-#: courses/models.py:788
+#: courses/models.py:789
 msgid "attachments"
 msgstr "adjuntos"
 
-#: courses/models.py:811 teacheradmin/templates/teacheradmin/units.html:305
+#: courses/models.py:812 teacheradmin/templates/teacheradmin/units.html:305
 msgid "Solution text"
 msgstr "Texto con la solución"
 
-#: courses/models.py:812
+#: courses/models.py:813
 msgid "If the solution video is specified then this text will be ignored."
 msgstr ""
 "Si se especifica el vídeo con la solución entonces este texto será ignorado."
 
-#: courses/models.py:816
+#: courses/models.py:817
 msgid "Last frame of the nugget's video"
 msgstr "Última imagen del vídeo de la píldora"
 
-#: courses/models.py:819
+#: courses/models.py:820
 msgid "Use the last frame of the video"
 msgstr "Usar la última imagen del vídeo"
 
-#: courses/models.py:820
+#: courses/models.py:821
 msgid ""
 "Chooses if the nugget's video last frame is used, or a white canvas instead."
 msgstr ""
 "Determina si se hace uso del último cuadro del vídeo de la píldora, o si en "
 "su lugar se usa un lienzo en blanco."
 
-#: courses/models.py:827
+#: courses/models.py:828
 msgid "question"
 msgstr "pregunta"
 
-#: courses/models.py:828
+#: courses/models.py:829
 msgid "questions"
 msgstr "preguntas"
 
-#: courses/models.py:840
+#: courses/models.py:841
 #, python-brace-format
 msgid "{0} - Question {1}"
 msgstr "{0} - Pregunta {1}"
 
-#: courses/models.py:902 courses/templates/courses/classroom.html:335
+#: courses/models.py:903 courses/templates/courses/classroom.html:335
 #: teacheradmin/templates/teacheradmin/question.html:36
 #: teacheradmin/templates/teacheradmin/question.html:50
 #: teacheradmin/templates/teacheradmin/question.html:74
@@ -1353,38 +1353,38 @@ msgstr "{0} - Pregunta {1}"
 msgid "Question"
 msgstr "Pregunta"
 
-#: courses/models.py:917
+#: courses/models.py:918
 #: courses/templates/admin/courses/question/options.html:150
 #: teacheradmin/templates/teacheradmin/question.html:76
 #: teacheradmin/templates/teacheradmin/question.html:150
 msgid "Solution"
 msgstr "Solución"
 
-#: courses/models.py:918
+#: courses/models.py:919
 msgid "Label text"
 msgstr "Texto de la etiqueta"
 
-#: courses/models.py:921
+#: courses/models.py:922
 msgid "Solution feedback for the student"
 msgstr "Ayuda para el estudiante"
 
-#: courses/models.py:923
+#: courses/models.py:924
 msgid "Order"
 msgstr "Orden"
 
-#: courses/models.py:925
+#: courses/models.py:926
 msgid "Group name"
 msgstr "Nombre del curso"
 
-#: courses/models.py:930
+#: courses/models.py:931
 msgid "option"
 msgstr "opción"
 
-#: courses/models.py:931
+#: courses/models.py:932
 msgid "options"
 msgstr "opciones"
 
-#: courses/models.py:935
+#: courses/models.py:936
 #, python-brace-format
 msgid "{0}.{1} ({2}: {3}) at {4} x {5}"
 msgstr "{0} . {1} ( {2} : {3} ) a {4} x {5}"
@@ -1652,6 +1652,7 @@ msgstr "Nombre o correo electrónico"
 
 #: courses/templates/courses/add.html:42
 #: courses/templates/courses/classroom.html:117
+#: courses/templates/courses/forum_post.html:48
 #: peerreview/templates/peerreview/review_review.html:63
 #: profile/templates/profile/post.html:40
 #: profile/templates/profile/posts.html:137
@@ -1665,6 +1666,7 @@ msgstr "Enviar"
 #: courses/templates/courses/add.html:43
 #: courses/templates/courses/classroom.html:115
 #: courses/templates/courses/classroom.html:138
+#: courses/templates/courses/forum_post.html:49
 #: peerreview/templates/peerreview/review_review.html:61
 #: profile/templates/profile/post.html:41
 #: profile/templates/profile/posts.html:138
@@ -2205,6 +2207,29 @@ msgstr ""
 #: courses/templates/courses/forum.html:10
 msgid "Forum under construction"
 msgstr "Foro en construcción"
+
+#: courses/templates/courses/forum_post.html:11
+#: profile/templates/profile/include.userheader.html:59
+#: profile/templates/profile/posts.html:128
+#: profile/templates/profile/timeline.html:14
+msgid "Posts"
+msgstr "Artículos"
+
+#: courses/templates/courses/forum_post.html:13
+#: profile/templates/profile/posts.html:130
+#: profile/templates/profile/posts_search.html:127
+msgid "NEW POST"
+msgstr "NUEVO ARTÍCULO"
+
+#: courses/templates/courses/forum_post.html:44
+#: profile/templates/profile/post.html:36
+#: profile/templates/profile/reply.html:32
+#: profile/templates/profile/timeline.html:84
+#: profile/templates/profile/timeline.html:130
+#: profile/templates/profile/timeline.html:175
+#: profile/templates/profile/timeline.html:230
+msgid "Reply"
+msgstr "Responder"
 
 #: courses/templates/courses/group.html:14
 msgid "Go to group's forum"
@@ -3339,12 +3364,6 @@ msgstr "Sección de grupos en construcción"
 msgid "Badges"
 msgstr "Medallas"
 
-#: profile/templates/profile/include.userheader.html:59
-#: profile/templates/profile/posts.html:128
-#: profile/templates/profile/timeline.html:14
-msgid "Posts"
-msgstr "Artículos"
-
 #: profile/templates/profile/include.userheader.html:73
 #: profile/templates/profile/timeline.html:49
 msgid "Timeline"
@@ -3360,15 +3379,6 @@ msgstr "Grupos"
 #: profile/templates/profile/timeline.html:219
 msgid "Shared by"
 msgstr "Compartido por"
-
-#: profile/templates/profile/post.html:36
-#: profile/templates/profile/reply.html:32
-#: profile/templates/profile/timeline.html:84
-#: profile/templates/profile/timeline.html:130
-#: profile/templates/profile/timeline.html:175
-#: profile/templates/profile/timeline.html:230
-msgid "Reply"
-msgstr "Responder"
 
 #: profile/templates/profile/posts.html:13
 #: profile/templates/profile/posts.html:56
@@ -3405,11 +3415,6 @@ msgstr "FAVORITOS"
 #: profile/templates/profile/posts_search.html:113
 msgid "LISTS"
 msgstr "LISTAS"
-
-#: profile/templates/profile/posts.html:130
-#: profile/templates/profile/posts_search.html:127
-msgid "NEW POST"
-msgstr "NUEVO ARTÍCULO"
 
 #: profile/templates/profile/posts.html:152
 #: profile/templates/profile/posts_search.html:149
