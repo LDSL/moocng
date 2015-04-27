@@ -301,7 +301,8 @@ class Course(Sortable):
         # If you change it, you should change the actives method in CourseQuerySet class
         today = datetime.date.today()
         return (self.is_public and
-                (not self.end_date or
+                (self.status == 'o' or
+                 not self.end_date or
                  not self.start_date and self.end_date >= today or
                  self.start_date and self.start_date <= today and self.end_date >= today))
 
