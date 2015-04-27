@@ -120,8 +120,8 @@ if (_.isUndefined(window.MOOC)) {
                     /^(\d+)$/
                 ],
                 'prezi': [
-                    /prezi\.com\/([a-zA-Z\d\-]+)\/.*/,
-                    /^([a-zA-Z\d\-]+)$/ // Can't use \w because can't accept the _ char
+                    /prezi\.com\/([a-zA-Z\d\-\_]+)\/.*/,
+                    /^([a-zA-Z\d\-\_]+)$/ // Can't use \w because can't accept the _ char
                 ]
             };
 
