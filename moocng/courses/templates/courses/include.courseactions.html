@@ -86,7 +86,7 @@
 					{% if feature_forum %}
 					<li class="noLowRes">
 						{% url course_forum course.slug as url_forum %}
-						<a href="{{ url_forum }}" {% if request.path == url_forum %} class="selected"{% endif %}>
+						<a href="{{ url_forum }}" {% if url_forum in request.path %} class="selected"{% endif %}>
 							{% trans "Forum" %}
 						</a>
 					</li>
@@ -137,7 +137,7 @@
 							{% if feature_forum %}
 							<li class="onlyLowRes">
 								{% url course_forum course.slug as url_forum %}
-								<a href="{{ url_forum }}" {% if request.path == url_forum %} class="selected"{% endif %}>
+								<a href="{{ url_forum }}" {% if url_forum in request.path %} class="selected"{% endif %}>
 									{% trans "Forum" %}
 								</a>
 							</li>

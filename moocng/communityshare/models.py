@@ -260,3 +260,19 @@ class Forum(CommunityShareBase):
 	        return True
 	    else:
 	        return False
+
+	def post_vote(self, post_id, id_user, vote=1):
+		postCollection = get_db().get_collection(self.col_post)
+		post = postCollection.find_one({"_id": ObjectId(post_id)})
+		if post:
+			if "votes" in post:
+				post["votes"] = post["votes"] + vote
+			else:
+				post["votes"] = vote
+				post["voters"] = []
+
+			post["voters"].append({"id_user": id_user, "vote": vote})
+			postCollection.update({"_id": ObjectId(post_id)}, {"$set": {"votes": post["votes"], "voters": post["voters"]}})
+			return post["votes"]
+		else:
+			return False

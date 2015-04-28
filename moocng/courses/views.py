@@ -31,6 +31,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
+from django.utils import simplejson
 from datetime import date
 import requests
 from jsonrpc_requests import Server, TransportError
@@ -671,6 +672,11 @@ def course_forum_reply(request, course_slug, post_id, reply_id):
         if form.is_valid():
             f.save_reply(course_slug, reply_id, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
             return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
+
+def course_forum_vote(request, course_slug, post_id, reply_id, vote):
+    f = Forum()
+    votes = f.post_vote(reply_id, request.user.id, vote)
+    return HttpResponse(simplejson.dumps(votes), mimetype='application/json')
 
 def course_forum_load_more(request, course_slug, page, query, search=False, hashtag=False):
     f = Forum()

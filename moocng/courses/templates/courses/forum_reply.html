@@ -28,9 +28,15 @@
 			<!-- <span class="favourite">0</span> -->
 			<span class="karma">
 				<img src="{{ STATIC_URL }}img/ECO_icon_info_karma.svg">
-				0
-				<a href="#"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_up_black.svg" alt="{% trans "Vote +1" %}"  title="{% trans "Vote +1" %}"></a>
-				<a href="#"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_down_black.svg" alt="{% trans "Vote -1" %}" title="{% trans "Vote -1" %}"></a>
+				<span>
+					{% if reply.votes %}
+						{{ reply.votes }}
+					{% else %}
+						0
+					{% endif %}
+				</span>
+				<a href="/course/{{ course.slug }}/forum/{{ post.id }}/upvote/{{ reply.id}}"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_up_black.svg" alt="{% trans "Vote +1" %}"  title="{% trans "Vote +1" %}"></a>
+				<a href="/course/{{ course.slug }}/forum/{{ post.id }}/downvote/{{ reply.id}}"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_down_black.svg" alt="{% trans "Vote -1" %}" title="{% trans "Vote -1" %}"></a>
 			</span>
 		</div>
 		{% if reply.replies|length > 0 %}
