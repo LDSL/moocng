@@ -102,7 +102,7 @@ class CourseRatingForm(forms.Form):
     value = forms.ChoiceField(choices=COURSE_RATING_CHOICES, widget=forms.widgets.RadioSelect)
 
 class ForumPostForm(forms.Form):
-    postTitle = forms.CharField(required=True, max_length="140", label="", widget=forms.Textarea(attrs={'placeholder': _('Title')}))
+    postTitle = forms.CharField(required=True, max_length="140", label="", widget=forms.TextInput(attrs={'placeholder': _('Title')}))
     postText = forms.CharField(required=True, max_length="500", label="", widget=forms.Textarea(attrs={'placeholder': _('Write a message...')}))
 
 class ForumReplyForm(forms.Form):

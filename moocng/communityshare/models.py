@@ -52,13 +52,12 @@ class CommunityShareBase(object):
 	    hashtagged = re.sub(r'(?:(?<=\s)|^)#(\w*[A-Za-z_]+\w*)', self._hashtag_to_link, text)
 	    return hashtagged
 
-	def _processPost(post, from_zone, to_zone):
+	def _processPost(self, post, from_zone, to_zone):
 	    post["date"] = datetime.strptime(post.get("date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
 	    if("original_date" in post):
 	        post["original_date"] = datetime.strptime(post.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
 	    post["id"] = post.pop("_id")
-	    post["text"] = _proccess_hashtags(post["text"])
-	    listPost.append(post)
+	    post["text"] = self._proccess_hashtags(post["text"])
 
 	def _processPostList(self, posts):
 	    listPost = []
@@ -210,6 +209,9 @@ class Forum(CommunityShareBase):
 	def get_post_detail(self, post_id):
 		postCollection = get_db().get_collection(self.col_post)
 		post = postCollection.find_one({'_id': ObjectId(post_id)})
+		from_zone = tz.tzutc()
+		to_zone = tz.tzlocal()
+		self._processPost(post, from_zone, to_zone)
 		if len(post['children']) > 0:
 			self._proccess_post_children(post)
 		return post
@@ -253,7 +255,7 @@ class Forum(CommunityShareBase):
 					}
 	        reply_id = postCollection.insert(post)
 	        post["_id"] = reply_id
-	        post_orig["children"].append(reply)
+	        post_orig["children"].append(reply_id)
 	        postCollection.update({'_id': ObjectId(post_id)}, {"$set": {"children": post_orig["children"]}})
 	        return True
 	    else:

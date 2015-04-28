@@ -91,6 +91,10 @@
 										<p>{{ lastpost.text }}</p>
 										{% endwith %}
 									</div>
+									{% else %}
+									<div class="col-lg-4 col-md-4 col-sm-8 col-mob-4 info">
+										<h5>{% trans "There is no replies yet" %}</h5>
+									</div>
 									{% endif %}
 								</div>
 							{% endfor %}

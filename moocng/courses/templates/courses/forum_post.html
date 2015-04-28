@@ -8,14 +8,10 @@
 			<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
 				<div class="panel">
 					<div class="header">
-						<h3>{% trans "Posts" %}</h3>
-						{% if is_teacher or user.is_staff %}
-						<input class="addButton pull-right" type="button" value="{% trans "NEW POST" %}">
-						{% endif %}
+						<h3>{{ post.title }}</h3>
 					</div>
 					<div class="content">
 						<div class="posts">
-							{% for post in posts %}
 							<div class="post">
 								<div class="cell">
 									<img class="gravatar" src={{ post.avatar}}>
@@ -24,23 +20,12 @@
 									<a href={{post.username|slice:"1:"}}><span class="namePost">{{post.first_name}} {{post.last_name}}</span></a>
 									<span class="emailPost">{{post.username}}</span>
 									
-									<span class="datePost">
-										{% if post.original_date %}
-											{{post.original_date}}
-										{% else %}
-											{{post.date}}
-										{% endif %}
-
-									</span>
+									<span class="datePost">[{{post.date}}]</span>
 									{% autoescape off %}
 									<p class="postText">{{post.text}}</p>
 									{% endautoescape %}
 
-									{% if post.id_original_post %}
-									<div class="tools" id={{post.id_original_post}}>
-									{% else %}
 									<div class="tools" id={{post.id}}>
-									{% endif %}
 										<span class="reply">{% trans "Reply" %}</span>
 										<form class="postReply" method="post">
 											{% csrf_token %}
@@ -49,6 +34,12 @@
 											<span class="cancelPost">{% trans "Cancel" %}</span>
 										</form>								
 										<!-- <span class="favourite">0</span> -->
+										<span class="karma">
+											<img src="{{ STATIC_URL }}img/ECO_icon_info_karma.svg">
+											0
+											<a href="#"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_up_black.svg" alt="{% trans "Vote +1" %}"  title="{% trans "Vote +1" %}"></a>
+											<a href="#"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_down_black.svg" alt="{% trans "Vote -1" %}" title="{% trans "Vote -1" %}"></a>
+										</span>
 									</div>
 								</div>
 								{% if post.replies|length > 0 %}
@@ -60,7 +51,6 @@
 								{% endif %}
 							</div>
 							<div class="clearfix"></div>
-							{% endfor %}
 						</div>
 					</div>
 				</div>
@@ -68,5 +58,14 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+	$(".reply").click(function(){
+		$(this).parent().parent().parent().toggleClass('open');
+	});
+
+	$(".cancelPost").click(function(){
+		$(this).parent().parent().parent().parent().toggleClass('open');
+	});
+</script>
 
 {% endblock %}

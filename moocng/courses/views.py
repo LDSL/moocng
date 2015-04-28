@@ -648,8 +648,7 @@ def course_forum_post(request, course_slug, post_id):
             has_passed= False
 
         f = Forum()
-        list_posts = []
-        list_posts.append(f.get_post_detail(post_id))
+        post = f.get_post_detail(post_id)
 
         return render_to_response('courses/forum_post.html', {
             'course': course,
@@ -662,8 +661,16 @@ def course_forum_post(request, course_slug, post_id):
             'group': group,
             'passed': has_passed,
             'form': ForumReplyForm(),
-            'posts': list_posts,
+            'post': post,
         }, context_instance=RequestContext(request))
+
+def course_forum_reply(request, course_slug, post_id, reply_id):
+    f = Forum()
+    if request.method == 'POST':
+        form = ForumReplyForm(request.POST)
+        if form.is_valid():
+            f.save_reply(course_slug, reply_id, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
+            return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
 
 def course_forum_load_more(request, course_slug, page, query, search=False, hashtag=False):
     f = Forum()

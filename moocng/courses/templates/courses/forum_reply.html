@@ -12,25 +12,13 @@
 		<a href={{reply.username|slice:"1:"}}><span class="namePost">{{reply.first_name}} {{reply.last_name}}</span></a>
 		<span class="emailPost">{{reply.username}}</span>
 		
-		<span class="datePost">
-			{% if reply.original_date %}
-				{{reply.original_date}}
-			{% else %}
-				{{reply.date}}
-			{% endif %}
-
-		</span>
+		<span class="datePost">[{{reply.date}}]</span>
 		{% autoescape off %}
 		<p class="postText">{{reply.text}}</p>
 		{% endautoescape %}
-
-		{% if reply.id_original_post %}
-		<div class="tools" id={{reply.id_original_post}}>
-		{% else %}
 		<div class="tools" id={{reply.id}}>
-		{% endif %}
 			<span class="reply">{% trans "Reply" %}</span>
-			<form class="postReply" method="post" action="/user/reply/{{reply.id}}">
+			<form class="postReply" method="post" action="/course/{{ course.slug }}/forum/{{ post.id }}/reply/{{ reply.id }}">
 				{% csrf_token %}
 				{{ form }}
 				<input class="postButton" type="submit" value="{% trans "Send" %}">
@@ -38,11 +26,17 @@
 			</form>
 			
 			<!-- <span class="favourite">0</span> -->
+			<span class="karma">
+				<img src="{{ STATIC_URL }}img/ECO_icon_info_karma.svg">
+				0
+				<a href="#"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_up_black.svg" alt="{% trans "Vote +1" %}"  title="{% trans "Vote +1" %}"></a>
+				<a href="#"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_down_black.svg" alt="{% trans "Vote -1" %}" title="{% trans "Vote -1" %}"></a>
+			</span>
 		</div>
 		{% if reply.replies|length > 0 %}
 		<div class="subreplies">
 			{% for subreply in reply.replies %}
-				{% with "profile/reply.html" as filename %}
+				{% with "courses/forum_reply.html" as filename %}
 					{% with subreply as reply %}
 						{% include filename %}
 					{% endwith %}
