@@ -259,7 +259,7 @@ class Forum(CommunityShareBase):
 	        post["_id"] = reply_id
 	        post_orig["children"].append(reply_id)
 	        postCollection.update({'_id': ObjectId(post_id)}, {"$set": {"children": post_orig["children"]}})
-	        return True
+	        return reply_id
 	    else:
 	        return False
 

@@ -1,5 +1,6 @@
 {% load i18n %}
 <div class="replyPost">
+	<div class="bookmarkHandler" id="{{reply.id}}"></div>
 	<div class="cell">
 		<img class="gravatar" src={{ reply.avatar }}>
 	</div>
@@ -9,14 +10,14 @@
 		<a href="{{reply.id_user}}"><span class="shared">{% trans "Shared by"%} {{reply.shared_by}}</span></a>
 		<div class="clearfix"></div>
 		{% endif %}
-		<a href={{reply.username|slice:"1:"}}><span class="namePost">{{reply.first_name}} {{reply.last_name}}</span></a>
-		<span class="emailPost">{{reply.username}}</span>
+		<a href={% url profile_user post.username %}><span class="namePost">{{reply.first_name}} {{reply.last_name}}</span></a>
+		<span class="emailPost">@{{reply.username}}</span>
 		
 		<span class="datePost">[{{reply.date}}]</span>
 		{% autoescape off %}
 		<p class="postText">{{reply.text|linebreaks}}</p>
 		{% endautoescape %}
-		<div class="tools" id={{reply.id}}>
+		<div class="tools" data-id="{{reply.id}}">
 			<span class="reply">{% trans "Reply" %}</span>
 			<form class="postReply" method="post" action="/course/{{ course.slug }}/forum/{{ post.id }}/reply/{{ reply.id }}">
 				{% csrf_token %}

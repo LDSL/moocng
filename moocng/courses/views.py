@@ -671,8 +671,11 @@ def course_forum_reply(request, course_slug, post_id, reply_id):
     if request.method == 'POST':
         form = ForumReplyForm(request.POST)
         if form.is_valid():
-            f.save_reply(course_slug, reply_id, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
-            return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
+            reply_id = f.save_reply(course_slug, reply_id, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
+            if reply_id is not False:
+                return HttpResponseRedirect('{0}#{1}'.format(reverse('course_forum_post', args=[course_slug, post_id]), reply_id))
+            else:
+                return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
 
 def course_forum_vote(request, course_slug, post_id, reply_id, vote):
     f = Forum()

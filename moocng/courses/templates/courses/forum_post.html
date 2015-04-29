@@ -12,22 +12,22 @@
 					</div>
 					<div class="content">
 						<div class="posts">
-							<div class="post">
+							<div class="post" id="{{reply.id}}">
 								<div class="cell">
 									<img class="gravatar" src={{ post.avatar}}>
 								</div>
 								<div class="cell" style="padding-top: 15px; ">
-									<a href={{post.username|slice:"1:"}}><span class="namePost">{{post.first_name}} {{post.last_name}}</span></a>
-									<span class="emailPost">{{post.username}}</span>
+									<a href={% url profile_user post.username %}><span class="namePost">{{post.first_name}} {{post.last_name}}</span></a>
+									<span class="emailPost">@{{post.username}}</span>
 									
 									<span class="datePost">[{{post.date}}]</span>
 									{% autoescape off %}
 									<p class="postText">{{post.text|linebreaks}}</p>
 									{% endautoescape %}
 
-									<div class="tools" id={{post.id}}>
+									<div class="tools" data-id="{{post.id}}">
 										<span class="reply">{% trans "Reply" %}</span>
-										<form class="postReply" method="post">
+										<form class="postReply" method="post" action="/course/{{ course.slug }}/forum/{{ post.id }}/reply/{{ post.id }}">
 											{% csrf_token %}
 											{{ form }}
 											<input class="postButton" type="submit" value="{% trans "Send" %}">
