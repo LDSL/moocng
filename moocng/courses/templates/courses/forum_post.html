@@ -34,8 +34,13 @@
 											<span class="cancelPost">{% trans "Cancel" %}</span>
 										</form>								
 										<!-- <span class="favourite">0</span> -->
-										<span class="karma">
-											<img src="{{ STATIC_URL }}img/ECO_icon_info_karma.svg">
+										<span class="karma
+												{% if post.user_vote > 0 %}
+													upvoted
+												{% elif post.user_vote < 0 %}
+													downvoted
+												{% endif %}
+											">
 											<span>
 												{% if post.votes %}
 													{{ post.votes }}
@@ -43,8 +48,10 @@
 													0
 												{% endif %}
 											</span>
-											<a href="/course/{{ course.slug }}/forum/{{ post.id }}/upvote/{{ post.id }}"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_up_black.svg" alt="{% trans "Vote +1" %}"  title="{% trans "Vote +1" %}"></a>
-											<a href="/course/{{ course.slug }}/forum/{{ post.id }}/downvote/{{ post.id }}"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_down_black.svg" alt="{% trans "Vote -1" %}" title="{% trans "Vote -1" %}"></a>
+											{% if post.username != user.username %}
+												<a href="/course/{{ course.slug }}/forum/{{ post.id }}/upvote/{{ post.id }}"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_up_black.svg" alt="{% trans "Vote +1" %}"  title="{% trans "Vote +1" %}"></a>
+												<a href="/course/{{ course.slug }}/forum/{{ post.id }}/downvote/{{ post.id }}"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_down_black.svg" alt="{% trans "Vote -1" %}" title="{% trans "Vote -1" %}"></a>
+											{% endif %}
 										</span>
 									</div>
 								</div>
@@ -82,7 +89,18 @@
 			target = e.target.parentElement;
 		}
 		$.get(target.href, function(result){
-			$(target).parent().find('span').html(result);
+			if(result !== false){
+				var karma_elem = $(target).parent();
+				karma_elem.find('span').html(result);
+				if(result === 1) {
+					karma_elem.addClass('upvoted');
+				}else if(result === -1) {
+					karma_elem.addClass('downvoted');
+				}else{
+					karma_elem.removeClass('upvoted');
+					karma_elem.removeClass('downvoted');
+				}
+			}
 		});
 	});
 </script>

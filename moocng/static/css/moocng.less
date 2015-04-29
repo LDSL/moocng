@@ -4948,20 +4948,36 @@ ul.rating {
 					}
 
 					.karma {
-						img {
+						&:before {
+							content: url('/static/img/ECO_icon_karma.svg');
+							display: inline-block;
 							vertical-align: middle;
 							position: relative;
-							top: -3px;
+							top: 4px;
 							margin-right: 5px;
+						}
+
+						&.upvoted:before {
+							content: url('/static/img/ECO_icon_karma_up.svg');
+						}
+
+						&.downvoted:before {
+							content: url('/static/img/ECO_icon_karma_down.svg');
 						}
 
 						a {
 							background-color: @neutral_light_3;
-							padding-left: 5px;
+							padding: 0 5px 5px;
 							margin: 0 5px;
+							position: relative;
+							top: -3px;
 
 							&:first-of-type {
 								margin-left: 10px;
+							}
+
+							img {
+								vertical-align: middle;
 							}
 						}
 					}

@@ -206,14 +206,14 @@ class Forum(CommunityShareBase):
 	    idsQuery=[{"category_slug": category_slug}]
 	    return super(Forum,self).get_posts(idsQuery, page)
 
-	def get_post_detail(self, post_id):
+	def get_post_detail(self, post_id, user_id=None):
 		postCollection = get_db().get_collection(self.col_post)
 		post = postCollection.find_one({'_id': ObjectId(post_id)})
 		from_zone = tz.tzutc()
 		to_zone = tz.tzlocal()
-		self._processPost(post, from_zone, to_zone)
+		self._processPost(post, from_zone, to_zone, user_id)
 		if len(post['children']) > 0:
-			self._proccess_post_children(post)
+			self._proccess_post_children(post, user_id)
 		return post
 
 	def insert_post(self, category_slug, id_user, first_name, last_name, username, avatar, postTitle, postText):
@@ -222,16 +222,17 @@ class Forum(CommunityShareBase):
 			"id_user": id_user,
 			"first_name": first_name,
 			"last_name":last_name,
-			"username": "@%s" % (username),
+			"username": username,
 			"avatar": avatar,
 			"date": datetime.utcnow().isoformat(),
 			"title": urlize(escape(postTitle)),
 			"text": urlize(escape(postText)),
 			"children": [],
 			"favourite": [],
+			"votes": 0,
+			"voters": [],
 			"shared": 0,
 		}
-		#get_db().get_collection(self.col_post).insert(post)
 		super(Forum,self).insert_post(post)
 
 	def save_reply(self, category_slug, post_id, id_user, first_name, last_name, username, avatar, postText):
@@ -243,15 +244,16 @@ class Forum(CommunityShareBase):
 						"id_user": id_user, 
 						"first_name": first_name,
 						"last_name": last_name,
-						"username": "@%s" % (username),
+						"username": username,
 						"avatar": avatar,
 						"date": datetime.utcnow().isoformat(),
 						"text": urlize(escape(postText)),
 						"children": [],
 						"favourite": [],
+						"votes": 0,
+						"voters": [],
 						"shared": 0,
 						"is_child": True,
-
 					}
 	        reply_id = postCollection.insert(post)
 	        post["_id"] = reply_id
@@ -265,14 +267,47 @@ class Forum(CommunityShareBase):
 		postCollection = get_db().get_collection(self.col_post)
 		post = postCollection.find_one({"_id": ObjectId(post_id)})
 		if post:
-			if "votes" in post:
+			user_voted = [x for x in post["voters"] if id_user == x["id_user"]]
+			user_vote = 0
+			for hist_vote in user_voted:
+				user_vote += hist_vote["vote"]
+			if user_vote != vote:
 				post["votes"] = post["votes"] + vote
+				post["voters"].append({"id_user": id_user, "vote": vote})
+				postCollection.update({"_id": ObjectId(post_id)}, {"$set": {"votes": post["votes"], "voters": post["voters"]}})
+				return post["votes"]
 			else:
-				post["votes"] = vote
-				post["voters"] = []
-
-			post["voters"].append({"id_user": id_user, "vote": vote})
-			postCollection.update({"_id": ObjectId(post_id)}, {"$set": {"votes": post["votes"], "voters": post["voters"]}})
-			return post["votes"]
+				return False
 		else:
 			return False
+
+	def _processPost(self, post, from_zone, to_zone, id_user=None):
+		super(Forum, self)._processPost(post, from_zone, to_zone)
+		if id_user:
+			user_voted = [x for x in post["voters"] if id_user == x["id_user"]]
+			post["user_vote"] = 0
+			for user_vote in user_voted:
+				post["user_vote"] += user_vote["vote"]
+
+	def _proccess_post_children(self, post, id_user=None):
+	    postCollection = get_db().get_collection(self.col_post)
+	    from_zone = tz.tzutc()
+	    to_zone = tz.tzlocal()
+	    post['replies'] = []
+	    for child in post['children']:
+	        post_child = postCollection.find({'_id': child}).limit(1)[0]
+	        if post_child and len(post_child['children']) > 0:
+	            self._proccess_post_children(post_child)
+
+	        post_child["date"] = datetime.strptime(post_child.get("date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
+	        if("original_date" in post_child):
+	            post_child["original_date"] = datetime.strptime(post_child.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
+	        post_child["id"] = post_child.pop("_id")
+	        post_child["text"] = self._proccess_hashtags(post_child["text"])
+	        if id_user:
+				user_voted = [x for x in post_child["voters"] if id_user == x["id_user"]]
+				post_child["user_vote"] = 0
+				for user_vote in user_voted:
+					post_child["user_vote"] += user_vote["vote"]
+
+	        post['replies'].append(post_child)

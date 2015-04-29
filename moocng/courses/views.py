@@ -649,7 +649,7 @@ def course_forum_post(request, course_slug, post_id):
             has_passed= False
 
         f = Forum()
-        post = f.get_post_detail(post_id)
+        post = f.get_post_detail(post_id, request.user.id)
 
         return render_to_response('courses/forum_post.html', {
             'course': course,
