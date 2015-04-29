@@ -4957,12 +4957,24 @@ ul.rating {
 							margin-right: 5px;
 						}
 
-						&.upvoted:before {
-							content: url('/static/img/ECO_icon_karma_up.svg');
+						&.upvoted{
+							a[data-vote="1"]{
+								display: none;
+							}
+
+							&:before {
+								content: url('/static/img/ECO_icon_karma_up.svg');
+							}
 						}
 
-						&.downvoted:before {
-							content: url('/static/img/ECO_icon_karma_down.svg');
+						&.downvoted{
+							a[data-vote="-1"]{
+								display: none;
+							}
+
+							&:before {
+								content: url('/static/img/ECO_icon_karma_down.svg');
+							}
 						}
 
 						a {

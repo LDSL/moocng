@@ -41,8 +41,8 @@
 					{% endif %}
 				</span>
 				{% if reply.username != user.username %}
-					<a href="/course/{{ course.slug }}/forum/{{ post.id }}/upvote/{{ reply.id}}"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_up_black.svg" alt="{% trans "Vote +1" %}"  title="{% trans "Vote +1" %}"></a>
-					<a href="/course/{{ course.slug }}/forum/{{ post.id }}/downvote/{{ reply.id}}"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_down_black.svg" alt="{% trans "Vote -1" %}" title="{% trans "Vote -1" %}"></a>
+					<a href="/course/{{ course.slug }}/forum/{{ post.id }}/upvote/{{ reply.id}}" data-vote="1"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_up_black.svg" alt="{% trans "Vote +1" %}"  title="{% trans "Vote +1" %}"></a>
+					<a href="/course/{{ course.slug }}/forum/{{ post.id }}/downvote/{{ reply.id}}" data-vote="-1"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_down_black.svg" alt="{% trans "Vote -1" %}" title="{% trans "Vote -1" %}"></a>
 				{% endif %}
 			</span>
 		</div>
