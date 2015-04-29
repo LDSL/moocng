@@ -297,7 +297,7 @@ class Forum(CommunityShareBase):
 	    for child in post['children']:
 	        post_child = postCollection.find({'_id': child}).limit(1)[0]
 	        if post_child and len(post_child['children']) > 0:
-	            self._proccess_post_children(post_child)
+	            self._proccess_post_children(post_child, id_user)
 
 	        post_child["date"] = datetime.strptime(post_child.get("date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
 	        if("original_date" in post_child):

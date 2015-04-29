@@ -91,10 +91,12 @@
 		$.get(target.href, function(result){
 			if(result !== false){
 				var karma_elem = $(target).parent();
-				karma_elem.find('span').html(result);
-				if(result === 1) {
+				var votes_elem = karma_elem.find('span');
+				var former_votes = parseInt(votes_elem.html());
+				votes_elem.html(result);
+				if(result > former_votes) {
 					karma_elem.addClass('upvoted');
-				}else if(result === -1) {
+				}else if(result > former_votes) {
 					karma_elem.addClass('downvoted');
 				}else{
 					karma_elem.removeClass('upvoted');
