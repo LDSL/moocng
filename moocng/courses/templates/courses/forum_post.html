@@ -22,7 +22,7 @@
 									
 									<span class="datePost">[{{post.date}}]</span>
 									{% autoescape off %}
-									<p class="postText">{{post.text}}</p>
+									<p class="postText">{{post.text|linebreaks}}</p>
 									{% endautoescape %}
 
 									<div class="tools" id={{post.id}}>

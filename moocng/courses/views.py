@@ -621,6 +621,7 @@ def course_forum_post(request, course_slug, post_id):
         form = ForumReplyForm(request.POST)
         if form.is_valid():
             f.save_reply(course_slug, post_id, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
+            print form.cleaned_data["postText"]
             return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
     else:
         course = get_course_if_user_can_view_or_404(course_slug, request)

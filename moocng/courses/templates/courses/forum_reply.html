@@ -14,7 +14,7 @@
 		
 		<span class="datePost">[{{reply.date}}]</span>
 		{% autoescape off %}
-		<p class="postText">{{reply.text}}</p>
+		<p class="postText">{{reply.text|linebreaks}}</p>
 		{% endautoescape %}
 		<div class="tools" id={{reply.id}}>
 			<span class="reply">{% trans "Reply" %}</span>
