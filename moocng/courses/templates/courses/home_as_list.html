@@ -7,7 +7,7 @@
         {% if theme.top_banner %}
             <div class="main_banner" style="background-image: url('{{ theme.top_banner }}');">
             	<div class="color_back">
-					<h2><strong>UNED</strong><em>COMA</em></h2>
+					<h2><strong>UNED</strong> <em>MOOC</em></h2>
 					<h1>{% trans "Entorno de formación abierta de la UNED donde podrás acceder a Cursos Masivos Online y Abiertos" %}</h1>
 					{% if not user.is_authenticated %}
 						<a class="button" href="{% url login %}">{% trans "Enter now" %}</a>
