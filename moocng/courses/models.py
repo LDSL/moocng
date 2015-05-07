@@ -297,14 +297,25 @@ class Course(Sortable):
         return self.status in ['p', 'o', 'h']
 
     @property
+    def is_always_open(self):
+        return self.status == 'o'
+
+    @property
     def is_active(self):
         # If you change it, you should change the actives method in CourseQuerySet class
         today = datetime.date.today()
         return (self.is_public and
-                (self.status == 'o' or
-                 not self.end_date or
+                (not self.end_date or
                  not self.start_date and self.end_date >= today or
                  self.start_date and self.start_date <= today and self.end_date >= today))
+
+    @property
+    def is_deactivated(self):
+        today = datetime.date.today()
+        return not (self.is_public and
+                    (self.status == 'o' or
+                    not self.end_date or
+                    self.end_date >= today))
 
     @property
     def is_outdated(self):
