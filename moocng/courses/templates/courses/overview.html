@@ -170,6 +170,12 @@
 								{% endfor %}
 								</ul></dd>
 							{% endif %}
+							{% with total_students=course.students.count %}
+							{% if total_students > 0 %}
+								<img src="{{ STATIC_URL }}img/ECO_icon_tarea_equipo.svg"><dt>{% trans "Enrolled students" %}</dt>
+								<dd>{{ total_students }}</dd>
+							{% endif %}
+							{% endwith %}
 							{% if course.ects > 0 %}
 								<img src="{{ STATIC_URL }}img/ECO_icon_info_creditos.svg"><dt>{% trans "Certified Credits" %}</dt><dd>{{ course.ects|safe }}</dd>
 							{% endif %}
