@@ -87,6 +87,7 @@
 					     credit
 					    {% endif %}
 					  </span>
+					  {% endif %}
 					  {% with total_students=course.students.count %}
 					  {% if total_students > 0 %}
 					  <span class="ects"><img src="{{ STATIC_URL }}img/ECO_icon_tarea_equipo_white.svg">{{ total_students }}
@@ -98,7 +99,6 @@
 					  </span>
 					  {% endif %}
 					  {% endwith %}
-					  {% endif %}
 					  <div class="desc line-clamp">{{ course.description|safe|truncatewords_html:60 }}</div>
 					</div>
 			      </div>
