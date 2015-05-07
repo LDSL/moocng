@@ -40,7 +40,7 @@ def ListRecords(request, num="1"):
 	for course in courses:
 		record = SubElement(listRecords, 'record')
 		header = SubElement(record, 'header')
-		if not course.is_active:
+		if course.is_deactivated:
 			header.set('status', 'deleted')
 		identifier = SubElement(header, 'identifier') 
 		identifier.text = '.'.join(settings.API_URI.split(".")[::-1]) + ":" + str(course.id)
