@@ -1,0 +1,53 @@
+{% extends "teacheradmin/base_teacheradmin.html" %}
+
+{% load i18n %}
+
+{% block nav-teacheradmin-lists %}active{% endblock %}
+
+{% block mainclass %}teacheradmin-list{% endblock %}
+
+{% block extraheader %}
+    {{ form.media }}
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
+    <script type="text/javascript" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+{% endblock %}
+
+{% block extrajs %}
+
+{% endblock %}
+
+{% block section %}
+<section>
+	<table id="table">
+		<thead>
+			<tr>
+				{% for header in headers %}
+				<th>{{ header }}</th>
+				{% endfor %}
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+				{% for header in headers %}
+				<th>{{ header }}</th>
+				{% endfor %}
+			</tr>
+		</tfoot>
+		<tbody>
+			{% for element in elements %}
+			<tr>
+				{% for item in element %}
+				<td>{{ item }}</td>
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+</section>
+<script type="text/javascript">
+	$(document).ready(function() {
+    	$('#table').DataTable();
+	} );
+</script>
+{% endblock %}

@@ -16,6 +16,7 @@
 
 {% block section %}
 <section>
-	<p>{% trans "Students list" %} <br><a href="{% url teacheradmin_lists_coursestudents course.slug%}" class="btn">Download CSV</a></p>
+	<p>{% trans "Students list" %} <br><a href="{% url teacheradmin_lists_coursestudents course.slug %}" class="btn">{% trans 'View table' %}</a><a href="{% url teacheradmin_lists_coursestudents_csv course.slug %}" class="btn">{% trans 'Download CSV' %}</a></p>
+	<p>{% trans "Student marks list" %} <br><a href="{% url teacheradmin_lists_coursestudentsmarks course.slug %}" class="btn">{% trans 'View table' %}</a><a href="{% url teacheradmin_lists_coursestudentsmarks_csv course.slug %}" class="btn">{% trans 'Download CSV' %}</a></p>
 </section>
 {% endblock %}

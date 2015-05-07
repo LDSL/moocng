@@ -41,6 +41,7 @@ def can_user_view_course(course, user):
     .. versionadded:: 0.1
     """
     if course.is_active:
+        print 'The course is active'
         return True, 'active'
 
     if user.is_superuser:
@@ -59,10 +60,15 @@ def can_user_view_course(course, user):
 
     # at this point you don't have permissions to see a course unless is always open
     if course.is_public:
-        if(course.is_outdated):
+        if course.is_outdated:
+            print 'The course is outdated'
             return False, 'not_active_outdated'
-        else:
+        elif course.is_always_open:
+            print 'The course is always open'
             return True, 'is_always_open'
+        else:
+            print 'The course is no active yet'
+            return False, 'not_active_yet'
     return False, 'not_active'
 
 
