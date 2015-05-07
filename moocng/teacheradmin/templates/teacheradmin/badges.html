@@ -29,7 +29,7 @@
         });
 
         $("input[type='radio']").click(function(){
-            if($(this).val() == 0){
+            if($(this).val() != 1){
                 $(".divPills").fadeOut();
             }else{
                 $(".divPills").fadeIn();
@@ -92,6 +92,12 @@
             <label>
                 <input {% if badge.criteria_type == 1 %} checked="checked" {% endif %} type="radio" value="1" name="criteriaType">
                 {% trans 'Peer review' %}
+            </label>
+
+            <label>
+                <input {% if badge.criteria_type == 2 %} checked="checked" {% endif %} type="radio" value="2" name="criteriaType">
+                {% trans 'Unique unit' %}
+            </label>
             
             
             

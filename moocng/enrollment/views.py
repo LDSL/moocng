@@ -16,36 +16,50 @@ def free_enrollment(request, course_slug):
     course, permission = get_course_if_user_can_view_and_permission(course_slug, request)
     if permission:
         if request.method == 'POST':
-            groupNames = {
-                'es': 'Grupo',
-                'en': 'Group',
-                'fr': 'Groupe',
-                'pt': 'Grupo',
-                'de': 'Gruppe',
-                'it': 'Gruppo'
-            }
-            groupCollection = mongodb.get_db().get_collection('groups')
-            groups = groupCollection.find({ 'id_course': course.id}).sort("size",pymongo.ASCENDING)
-            if(groups and groups.count() > 0):
-                group = groups[0]
-                new_member =    {"id_user": request.user.id, "username": request.user.username, 
-                                "first_name":request.user.first_name, "last_name":request.user.last_name, 
-                                "email": request.user.email, "karma": request.user.get_profile().karma, "countries": "", 
-                                "languages": ""}
+            if course.has_groups:
+                groupNames = {
+                    'es': 'Grupo',
+                    'en': 'Group',
+                    'fr': 'Groupe',
+                    'pt': 'Grupo',
+                    'de': 'Gruppe',
+                    'it': 'Gruppo'
+                }
 
-                if(len(group["members"]) <= course.group_max_size + (course.group_max_size * settings.GROUPS_UPPER_THRESHOLD / 100)):
-                    group["members"].append(new_member)
-                    if "size" in group:
-                        group["size"] += 1
-                    else:
-                        group["size"] = len(group["members"])
-
-                    groupCollection.update({'_id': ObjectId(group["_id"])}, {"$set": {"members": group["members"], "size": group["size"]}})
-
+                if request.user.get_profile().language and request.user.get_profile().language in groupNames:
+                    language = request.user.get_profile().language
                 else:
-                    group = {"id_course": course.id, "name": groupNames[settings.DEFAULT_LANGUAGE] + str(groups.count()+1), "size": 1, "members": []}
-                    group["members"].append(new_member)
-                    groupCollection.insert(group)
+                    language = request.LANGUAGE_CODE
+
+                print 'Language = %s' % (language)
+
+                groupCollection = mongodb.get_db().get_collection('groups')
+                groups = groupCollection.find({ 'id_course': course.id, 'lang': language }).sort("size",pymongo.ASCENDING)
+                if groups:
+                    new_member = {"id_user": request.user.id, "username": request.user.username, 
+                                  "first_name":request.user.first_name, "last_name":request.user.last_name, 
+                                  "email": request.user.email, "karma": request.user.get_profile().karma, "country": request.user.get_profile().country, 
+                                  "language": language}
+                    if groups.count() > 0:
+                        group = groups[0]
+
+                        if(len(group["members"]) <= course.group_max_size):
+                            group["members"].append(new_member)
+                            if "size" in group:
+                                group["size"] += 1
+                            else:
+                                group["size"] = len(group["members"])
+
+                            groupCollection.update({'_id': ObjectId(group["_id"])}, {"$set": {"members": group["members"], "size": group["size"]}})
+
+                        else:
+                            group = {"id_course": course.id, "name": groupNames[language] + str(groups.count()+1), "hashtag": course.hashtag+groupNames[language] + str(groups.count()+1) ,"lang": language, "size": 1, "members": []}
+                            group["members"].append(new_member)
+                            groupCollection.insert(group)
+                    else:
+                        group = {"id_course": course.id, "name": groupNames[language] + str(groups.count()+1), "hashtag": course.hashtag+groupNames[language] + str(groups.count()+1), "lang": language, "size": 1, "members": []}
+                        group["members"].append(new_member)
+                        groupCollection.insert(group)
            
             user = request.user
             lat = request.POST["latitude"]
@@ -73,19 +87,19 @@ def free_enrollment(request, course_slug):
 def free_unenrollment(request, course_slug):
     course, permission = get_course_if_user_can_view_and_permission(course_slug, request)
     if request.method == 'POST':
+        if course.has_groups:
+            groupCollection = mongodb.get_db().get_collection('groups')
+            group = groupCollection.find_one( { 'id_course': course.id, 'members.id_user':request.user.id } )
+            if(group):
+                for m in group["members"]:
+                    if(m["id_user"] == request.user.id):
+                        group["members"].remove(m)
+                        if "size" in group:
+                            group["size"] -= 1
+                        else:
+                            group["size"] = len(group["members"])
 
-        groupCollection = mongodb.get_db().get_collection('groups')
-        group = groupCollection.find_one( { 'id_course': course.id, 'members.id_user':request.user.id } )
-        if(group):
-            for m in group["members"]:
-                if(m["id_user"] == request.user.id):
-                    group["members"].remove(m)
-                    if "size" in group:
-                        group["size"] -= 1
-                    else:
-                        group["size"] = len(group["members"])
-
-            groupCollection.update({'_id': ObjectId(group["_id"])}, {"$set": {"members": group["members"], "size": group["size"]}})
+                groupCollection.update({'_id': ObjectId(group["_id"])}, {"$set": {"members": group["members"], "size": group["size"]}})
 
         user = request.user
         course.students.through.objects.get(student=user,

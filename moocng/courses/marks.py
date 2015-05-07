@@ -32,10 +32,9 @@ def calculate_question_mark(kq, question, user):
         'user_id': user.id,
         'question_id': question.id
     })
-    print '  --> calculate_question_mark'
+
     if user_answer:
-        mark = question.is_correct(user_answer) 
-        print 'devuelvo nota! ' + str(mark)
+        mark = question.is_correct(user_answer)
         return mark
     return 0.0
 
@@ -81,8 +80,6 @@ def calculate_kq_mark(kq, user):
     """
     from moocng.peerreview.models import PeerReviewAssignment
     mark = relative_mark = 0
-
-    print '  --> calculate_kq_mark'
 
     try:
         question = kq.question_set.get()
@@ -214,14 +211,13 @@ def get_unit_relative_mark(unit, user, db=None):
 def get_kq_mark(kq, user, db=None):
     data_unit = {   'user_id': user.pk,
                     'kq_id': kq.pk }
-    print data_unit
     db = db or get_db()
     mark_kq_item = db.get_collection('marks_kq').find(data_unit).limit(1)
     if mark_kq_item and mark_kq_item.count() > 0:
         mark_kq = mark_kq_item[0]['mark']
     else:
         mark_kq = 0
-    print mark_kq
+    
     return mark_kq
 
 def get_kq_relative_mark(kq, user, db=None):

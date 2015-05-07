@@ -1,0 +1,117 @@
+{% extends "courses/base_course.html" %}
+{% load i18n enrollment_tags %}
+{% block content %}
+
+<div class="userposts">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
+				<div class="panel">
+					<div class="header">
+						<h3>{{ post.title }}</h3>
+					</div>
+					<div class="content">
+						<div class="posts">
+							<div class="post" id="{{reply.id}}">
+								<div class="cell">
+									<img class="gravatar" src={{ post.avatar}}>
+								</div>
+								<div class="cell" style="padding-top: 15px; ">
+									<a href={% url profile_user post.username %}><span class="namePost">{{post.first_name}} {{post.last_name}}</span></a>
+									<span class="emailPost">@{{post.username}}</span>
+									
+									<span class="datePost">[{{post.date}}]</span>
+									{% autoescape off %}
+									<p class="postText">{{post.text|linebreaks}}</p>
+									{% endautoescape %}
+
+									<div class="tools" data-id="{{post.id}}">
+										<span class="reply">{% trans "Reply" %}</span>
+										<form class="postReply" method="post" action="/course/{{ course.slug }}/forum/{{ post.id }}/reply/{{ post.id }}">
+											{% csrf_token %}
+											{{ form }}
+											<input class="postButton" type="submit" value="{% trans "Send" %}">
+											<span class="cancelPost">{% trans "Cancel" %}</span>
+										</form>								
+										<!-- <span class="favourite">0</span> -->
+										<span class="karma
+												{% if post.user_vote > 0 %}
+													upvoted
+												{% elif post.user_vote < 0 %}
+													downvoted
+												{% endif %}
+											">
+											<span>
+												{% if post.votes %}
+													{{ post.votes }}
+												{% else %}
+													0
+												{% endif %}
+											</span>
+											{% if post.username != user.username %}
+												<a href="/course/{{ course.slug }}/forum/{{ post.id }}/upvote/{{ post.id }}" data-vote="1"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_up_black.svg" alt="{% trans "Vote +1" %}"  title="{% trans "Vote +1" %}"></a>
+												<a href="/course/{{ course.slug }}/forum/{{ post.id }}/downvote/{{ post.id }}" data-vote="-1"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_down_black.svg" alt="{% trans "Vote -1" %}" title="{% trans "Vote -1" %}"></a>
+											{% endif %}
+										</span>
+									</div>
+								</div>
+								{% if post.replies|length > 0 %}
+								<div class="replies">
+									{% for reply in post.replies %}
+										{% include "courses/forum_reply.html" %}
+									{% endfor %}
+								</div>
+								{% endif %}
+							</div>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(".reply").click(function(e){
+		e.preventDefault();
+		$(this).parent().parent().parent().toggleClass('open');
+	});
+
+	$(".cancelPost").click(function(e){
+		e.preventDefault();
+		$(this).parent().parent().parent().parent().toggleClass('open');
+	});
+
+	$(".karma a").click(function(e){
+		e.preventDefault();
+		var target = e.target;
+		if (!target.href) {
+			target = e.target.parentElement;
+		}
+		$.get(target.href, function(result){
+			if(result !== false){
+				var karma_elem = $(target).parent();
+				var votes_elem = karma_elem.find('span');
+				var vote = $(target).data('vote');
+				if(karma_elem.hasClass('upvoted') && vote === -1){
+					vote = 0;
+				} else if (karma_elem.hasClass('downvoted') && vote === 1) {
+					vote = 0;
+				}
+				
+				votes_elem.html(result);
+				switch(vote){
+					case 1: karma_elem.addClass('upvoted');
+							break;
+					case 0: karma_elem.removeClass('upvoted');
+							karma_elem.removeClass('downvoted');
+							break;
+					case -1: karma_elem.addClass('downvoted');
+							break;
+				}
+			}
+		});
+	});
+</script>
+
+{% endblock %}

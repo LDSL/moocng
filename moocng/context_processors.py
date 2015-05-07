@@ -89,6 +89,11 @@ def certificate_url(request):
 def extra_settings(request):
 
     try:
+        site_url = settings.SITE_URL
+    except AttributeError:
+        site_url = ''
+
+    try:
         sandbox = settings.ALLOW_PUBLIC_COURSE_CREATION
     except AttributeError:
         sandbox = ''
@@ -189,6 +194,11 @@ def extra_settings(request):
         forum_url = '#'
 
     try:
+        forum_category_url = settings.FORUM_CATEGORY_URL
+    except AttributeError:
+        forum_category_url = '#'
+
+    try:
         show_email = settings.SHOW_EMAIL
     except AttributeError:
         show_email = False
@@ -197,8 +207,14 @@ def extra_settings(request):
         max_file_size = settings.ATTACHMENTS_MAX_SIZE
     except AttributeError:
         max_file_size = 5
+        
+    try:
+        profile_provider_url = settings.PROFILE_SERVICE_URL
+    except AttributeError:
+        profile_provider_url = None
 
     context = {
+        'site_url': site_url,
         'sandbox': sandbox,
         'mathjax_enabled': mathjax_enabled,
         'feature_teams': feature_teams,
@@ -219,8 +235,10 @@ def extra_settings(request):
         'feature_social': feature_social,
         'feature_ects': feature_ects,
         'forum_url': forum_url,
+        'forum_category_url': forum_category_url,
         'show_email': show_email,
-        'max_file_size': max_file_size
+        'max_file_size': max_file_size,
+        'profile_provider_url': profile_provider_url
     }
 
     return context

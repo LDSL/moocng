@@ -2,16 +2,113 @@
 {% load i18n %}
 {% block content %}
 
-<div class="container">
-	<div class="row">
-		<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
-			<div class="dash-box mb-60 mt-20">
-				<div class="title">
-					{% trans "Forum under construction" %}
+<script type="text/javascript">
+	$(document).ready(function () {
+		$(".addButton").click(function(){
+			$(".postFrom").toggle();
+			$(this).hide();
+		});
+
+		$(".cancelPost").click(function(){
+			$(".postFrom").toggle();
+			$(".addButton").show();
+		});
+
+		$(".reply").click(function(){
+			$(this).parent().parent().parent().toggleClass('open');
+		});
+
+		var load = true;
+		var page = 10;
+		$(window).scroll(function() {
+		    if($(window).scrollTop() + $(window).height() == $(document).height() && load) {
+		   		load = false;	
+		        $.ajax({
+					url : "/course/{{course.slug}}/forum/loadMorePosts/" + page,
+			    	success: function(response) {
+			    		if(response.trim() != ""){
+			    			$(".posts").append(response)
+			    			page += 10;
+			    			load = true;
+			    		}
+			    	}
+				});
+		    }
+		});
+	});
+</script>
+
+<div class="userposts">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
+				<div class="panel">
+					<div class="header">
+						<h3>{% trans "Posts" %}</h3>
+						{% if is_teacher or user.is_staff %}
+						<input class="addButton pull-right" type="button" value="{% trans "NEW POST" %}">
+						{% endif %}
+					</div>
+					{% if is_teacher or user.is_staff %}
+					<form class="postFrom" method="post">
+						{% csrf_token %}
+						 {{ form }}
+						<input class="postButton" type="submit" value="{% trans "Send" %}">
+						<span class="cancelPost">{% trans "Cancel" %}</span>
+					</form>
+					{% endif %}
+					<div class="content">
+						<div class="posts">
+							{% for post in posts %}
+								<div class="row post">
+									<div class="col-lg-2 col-md-2 col-sm-1 col-mob-1">
+										<img class="headerGravatar" src={{ post.avatar }}&s=128>
+									</div>
+									<div class="col-lg-10 col-md-6 col-sm-7 col-mob-3 relative">
+										<a href="{{ post.id }}" class="block">
+											{% autoescape off %}
+												<h4>{{ post.title }}</h4>
+												<p>{{ post.text }}</p>
+											{% endautoescape %}
+											<div class="repliesLength">
+												<img src="{{ STATIC_URL }}img/ECO_icon_comentar_foro.svg">
+												{{ post.replies|length }}
+											</div>
+										</a>
+									</div>
+									{% if post.replies|length %}
+									<div class="col-lg-4 col-md-4 col-sm-8 col-mob-4 info">
+										<h5>{% trans "Last reply" %}</h5>
+										{% with post.replies|last as lastpost %}
+										<span class="userPost">{{ lastpost.username }}</span>
+										<span class="datePost">[
+											{% if lastpost.original_date %}
+												{{ lastpost.original_date }}
+											{% else %}
+												{{ lastpost.date }}
+											{% endif %}
+										]</span>
+										<p>{{ lastpost.text }}</p>
+										{% endwith %}
+									</div>
+									{% else %}
+									<div class="col-lg-4 col-md-4 col-sm-8 col-mob-4 info">
+										<h5>{% trans "There is no replies yet" %}</h5>
+									</div>
+									{% endif %}
+								</div>
+							{% endfor %}
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+
+	<div class="modal hide">
+		{% trans "This post has already been shared" %}	
+	</div>
+
 </div>
 
 {% endblock %}

@@ -110,7 +110,7 @@
 										{% for post in posts_list %}
 										<li>
 											{% url profile_posts post.username|cut:"@" as author_profile_url %}
-											<a href="{{ author_profile_url }}"><img src="{{ post.gravatar }}"></a>
+											<a href="{{ author_profile_url }}"><img src="{{ post.avatar }}"></a>
 											<div>
 												<a href="{{ author_profile_url }}"><h5>{{ post.first_name }} {{ post.last_name }} <span>{{ post.username }}</span></h5></a>
 												<p class="date">

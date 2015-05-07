@@ -16,11 +16,6 @@ from django.template import RequestContext
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 
-
-from moocng.profile.models import (	UserProfile, get_blog_user, get_posts, 
-									insert_post, count_posts, update_following_blog_user, 
-									insert_blog_user, save_retweet, get_num_followers, search_posts)
-
 from moocng.courses.security import (get_courses_available_for_user,
 									get_courses_user_is_enrolled,
 									get_course_progress_for_user)
@@ -30,9 +25,9 @@ from moocng.badges.utils import (get_user_badges_group_by_course)
 from moocng.slug import unique_slugify
 from moocng.utils import use_cache
 from moocng.profile.forms import (PostForm)
-from moocng.mongodb import get_micro_blog_db
 from moocng.mongodb import get_db
 from moocng.portal.templatetags.gravatar import (gravatar_for_email)
+from moocng.communityshare.models import Microblog
 import pymongo
 import json
 from bson import json_util
@@ -125,7 +120,7 @@ def profile_user(request, id):
 
 	if(not id):
 		if(not request.user.id):
-			return HttpResponseRedirect("/auth/login")
+			return HttpResponseRedirect('/auth/login')
 		id = request.user.id
 		user =  request.user
 	else:
@@ -135,16 +130,17 @@ def profile_user(request, id):
 	courses = get_courses_user_is_enrolled(user)
 
 	return render_to_response('profile/user.html', {
-		"id":id,
-		"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
+		'id': id,
+		'badges_count': get_db().get_collection('badge').find({'id_user': id}).count(),
 		'request': request,
 		'courses': courses,
 		'is_user': True,
-		"user_view_profile": user,
+		'user_view_profile': user,
 		}, context_instance=RequestContext(request))
 
 # @login_required
-def profile_posts(request, id):
+def profile_posts(request, id, api=False):
+	m = Microblog()
 	if(not id):
 		if(not request.user.id):
 			return HttpResponseRedirect("/auth/login")
@@ -157,26 +153,13 @@ def profile_posts(request, id):
 	if request.method == 'POST':
 		form = PostForm(request.POST)
 		if form.is_valid():
-			insert_post({
-							"id_user": request.user.id, 
-							"first_name": request.user.first_name,
-							"last_name":request.user.last_name,
-							"username": "@" + request.user.username,
-							"gravatar": "http:" + gravatar_for_email(request.user.email),
-							"date": datetime.utcnow().isoformat(),
-							"text": urlize(escape(form.cleaned_data['postText'])),
-							"children": [],
-							"favourite": [],
-							"shared": 0
-
-						})
-
+			m.insert_post(request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
 			return HttpResponseRedirect("/user/posts")
 	
 	else:
 		case = _getCase(request,id)
 
-		blog_user = get_blog_user(request.user.id)
+		blog_user = m.get_blog_user(request.user.id)
 		if(blog_user and id in blog_user["following"]):
 			following = "true"
 		else:
@@ -184,31 +167,42 @@ def profile_posts(request, id):
 
 		followingCount = 0
 		if(request.user.id != id):
-			blog_user = get_blog_user(id)
+			blog_user = m.get_blog_user(id)
 			if(blog_user):
 				followingCount = len(blog_user["following"])
 		elif(blog_user):
 			followingCount = len(blog_user["following"])
 
-
-		listPost = get_posts(case, id, blog_user, 0)
+		listPost = m.get_posts(case, id, blog_user, 0)
 		
-		return render_to_response('profile/posts.html', {
-			"id":id,
-			"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
-			# "email":"@" + request.user.email.split("@")[0],
-			'request': request,
-			'form': PostForm(),
-			'totalPost': count_posts(id),
-			'posts': listPost,
-			'case': case,
-			"user_view_profile": user,
-			"following": following,
-			"followingCount": followingCount,
-			"followerCount": get_num_followers(id)
-			}, context_instance=RequestContext(request))
+		if not api:
+			return render_to_response('profile/posts.html', {
+				"id":id,
+				"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
+				# "email":"@" + request.user.email.split("@")[0],
+				'request': request,
+				'form': PostForm(),
+				'totalPost': m.count_posts(id),
+				'posts': listPost,
+				'case': case,
+				"user_view_profile": user,
+				"following": following,
+				"followingCount": followingCount,
+				"followerCount": m.get_num_followers(id)
+				}, context_instance=RequestContext(request))
+		else:
+			response = {
+				"id": id,
+				"user": '@%s' % (user.username),
+				"following": following,
+				"followingCount": followingCount,
+				"followerCount": m.get_num_followers(id),
+				"posts": listPost
+			}
+			return HttpResponse(json_util.dumps(response), mimetype='application/json')
 
-def profile_posts_search(request, query, hashtag=False):
+def profile_posts_search(request, query, hashtag=False, api=False):
+	m = Microblog()
 	if(not request.user.id):
 		return HttpResponseRedirect("/auth/login")
 	id = request.user.id
@@ -217,26 +211,13 @@ def profile_posts_search(request, query, hashtag=False):
 	if request.method == 'POST':
 		form = PostForm(request.POST)
 		if form.is_valid():
-			insert_post({
-							"id_user": request.user.id, 
-							"first_name": request.user.first_name,
-							"last_name":request.user.last_name,
-							"username": "@" + request.user.username,
-							"gravatar": "http:" + gravatar_for_email(request.user.email),
-							"date": datetime.utcnow().isoformat(),
-							"text": urlize(escape(form.cleaned_data['postText'])),
-							"children": [],
-							"favourite": [],
-							"shared": 0
-
-						})
-
+			m.insert_post(request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
 			return HttpResponseRedirect("/user/posts")
 	
 	else:
 		case = _getCase(request,id)
 
-		blog_user = get_blog_user(request.user.id)
+		blog_user = m.get_blog_user(request.user.id)
 		if(blog_user and id in blog_user["following"]):
 			following = "true"
 		else:
@@ -244,7 +225,7 @@ def profile_posts_search(request, query, hashtag=False):
 
 		followingCount = 0
 		if(request.user.id != id):
-			blog_user = get_blog_user(id)
+			blog_user = m.get_blog_user(id)
 			if(blog_user):
 				followingCount = len(blog_user["following"])
 		elif(blog_user):
@@ -254,40 +235,49 @@ def profile_posts_search(request, query, hashtag=False):
 			search_query = '#%s' % (query)
 		else:
 			search_query = query
-		listPost = search_posts(search_query, 0)
+		listPost = m.search_posts(search_query, 0)
 		
-		return render_to_response('profile/posts_search.html', {
-			"id":id,
-			"badges": get_db().get_collection('badge').find({"id_user": id}).count(),
-			# "email":"@" + request.user.email.split("@")[0],
-			'request': request,
-			'form': PostForm(),
-			'totalPost': count_posts(id),
-			'posts': listPost,
-			'case': case,
-			"user_view_profile": user,
-			"following": following,
-			"followingCount": followingCount,
-			"followerCount": get_num_followers(id),
-			"query": query,
-			"is_hashtag": hashtag,
-			}, context_instance=RequestContext(request))
+		if not api:
+			return render_to_response('profile/posts_search.html', {
+				"id":id,
+				"badges": get_db().get_collection('badge').find({"id_user": id}).count(),
+				# "email":"@" + request.user.email.split("@")[0],
+				'request': request,
+				'form': PostForm(),
+				'totalPost': m.count_posts(id),
+				'posts': listPost,
+				'case': case,
+				"user_view_profile": user,
+				"following": following,
+				"followingCount": followingCount,
+				"followerCount": m.get_num_followers(id),
+				"query": query,
+				"is_hashtag": hashtag,
+				}, context_instance=RequestContext(request))
+		else:
+			response = {
+				"query": query,
+				"is_hashtag": hashtag,		
+				"posts": listPost
+			}
+			return HttpResponse(json_util.dumps(response), mimetype='application/json')
 
 
 # @login_required
 def load_more_posts(request, page, query, search=False, hashtag=False):
+	m = Microblog()
 	page = int(page)
 	listPost = None
 	if search and query:
 		if hashtag:
 			query = "#%s" % (query)
-		listPost = search_posts(query, page)
+		listPost = m.search_posts(query, page)
 	else:
 		if(not query):
 			id = request.user.id
 		else:
 			id = int(query)
-		listPost = get_posts(0, id, get_blog_user(request.user.id), page)
+		listPost = m.get_posts(0, id, m.get_blog_user(request.user.id), page)
 
 	return render_to_response('profile/post.html', {
 			'request': request,
@@ -297,28 +287,39 @@ def load_more_posts(request, page, query, search=False, hashtag=False):
 @login_required
 def user_follow(request, id, follow):
 	id = int(id)
-	user = get_blog_user(request.user.id) 
+	m = Microblog()
+	user = m.get_blog_user(request.user.id) 
 
 	if(follow == "0"):
 		if(user):
 			if(not id in user["following"]):
 				user["following"].append(id)
-				update_following_blog_user(request.user.id, user["following"])
+				m.update_following_blog_user(request.user.id, user["following"])
 		else:
-			insert_blog_user({
+			m.insert_blog_user({
 									"id_user": request.user.id, 
 									"following": [id]
 								  })
 	
 	elif(follow == "1" and user):
 		user["following"].remove(id)
-		update_following_blog_user(request.user.id, user["following"] )
+		m.update_following_blog_user(request.user.id, user["following"] )
 
 	return HttpResponse("true")
 
 @login_required
 def retweet(request, id):
-	return HttpResponse(save_retweet(request,id))
+	m = Microblog()
+	return HttpResponse(m.save_retweet(id, request.user.id, request.user.username))
+
+@login_required
+def reply(request, id):
+	if request.method == 'POST':
+		m = Microblog()
+		form = PostForm(request.POST)
+		if form.is_valid():
+			m.save_reply(id, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
+			return HttpResponseRedirect("/user/posts")
 
 def _getCase(request, id):
 	if(not request.user or not request.user.id):

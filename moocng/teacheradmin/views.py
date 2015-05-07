@@ -502,6 +502,10 @@ def teacheradmin_info(request, course_slug):
         'form': form,
         'static_page_form': static_page_form,
         'external_apps': external_apps,
+        'thumb_rec_height': course.THUMBNAIL_HEIGHT,
+        'thumb_rec_width': course.THUMBNAIL_WIDTH,
+        'back_rec_height': course.BACKGROUND_HEIGHT,
+        'back_rec_width': course.BACKGROUND_WIDTH,
     }, context_instance=RequestContext(request))
 
 
@@ -598,7 +602,7 @@ def teacheradmin_badges(request, course_slug, badge_id=None):
         badge_note = request.POST['noteBadge']
         badge_color = request.POST['colorBadge']
         criteria_type = int(request.POST["criteriaType"])
-        if(criteria_type == 0):
+        if(criteria_type != 1):
             criteria = request.POST["unitBadge"]
         else:
             criteria = ','.join(request.POST.getlist('pillsBadge'))

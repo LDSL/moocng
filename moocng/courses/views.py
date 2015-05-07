@@ -31,6 +31,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
+from django.utils import simplejson
 from datetime import date
 import requests
 from jsonrpc_requests import Server, TransportError
@@ -56,10 +57,11 @@ from moocng.courses.security import (get_course_if_user_can_view_or_404,
                                      get_course_rating_for_user,
                                      get_course_if_user_can_view_and_permission)
 from moocng.courses.tasks import clone_activity_user_course_task
-from moocng.courses.forms import CourseRatingForm
+from moocng.courses.forms import CourseRatingForm, ForumPostForm, ForumReplyForm
 from moocng.slug import unique_slugify
 from moocng.utils import use_cache
-from moocng.profile.models import search_posts
+from moocng.communityshare.models import Microblog, Forum
+from moocng.portal.templatetags.gravatar import gravatar_for_email
 
 import hashlib
 import time
@@ -183,39 +185,11 @@ def course_add(request):
             messages.error(request, _('The name can\'t be an empty string'))
             return HttpResponseRedirect(reverse('course_add'))
 
-        slug = None
-        if slug is not None:
-            course = Course(name=name, owner=owner, description=_('To fill'), forum_slug=slug)
-        else:
-            course = Course(name=name, owner=owner, description=_('To fill'))
+        course = Course(name=name, owner=owner, description=_('To fill'))
         course_slug = unique_slugify(course, name)
-
-        # Create forum categories
-        data = {
-            "name": name,
-            "description": "",
-            "bgColor": "#DDD",
-            "color": "#F00",
-            "course_slug": course_slug
-        }
-        timestamp = int(round(time.time() * 1000))
-        authhash = hashlib.md5(settings.FORUM_API_SECRET + str(timestamp)).hexdigest()
-        headers = {
-            'Content-Type': 'application/json',
-            'auth-hash': authhash,
-            'auth-timestamp': timestamp
-        }
         
-        if settings.FEATURE_FORUM:
-            try:
-                r = requests.post(settings.FORUM_URL + '/api2/categories', data=json.dumps(data), headers=headers)
-                slug = r.json()['slug']
-                course = Course(name=name, owner=owner, description=_('To fill'), forum_slug=slug)
-
-            except:
-                print "Error creating course forum category"
-                print "Unexpected error:", sys.exc_info()[0]
-
+        f = Forum()
+        f.insert_forum_category(course.name, course_slug)
         course.save()
 
         CourseTeacher.objects.create(course=course, teacher=owner)
@@ -316,7 +290,7 @@ def course_overview(request, course_slug):
         'passed': has_passed,
     }, context_instance=RequestContext(request))
 
-@login_required
+
 def course_classroom(request, course_slug):
 
     """
@@ -329,6 +303,9 @@ def course_classroom(request, course_slug):
 
     .. versionadded:: 0.1
     """
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
+
     course = get_course_if_user_can_view_or_404(course_slug, request)
     is_enrolled = course.students.filter(id=request.user.id).exists()
     if not is_enrolled:
@@ -336,8 +313,9 @@ def course_classroom(request, course_slug):
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
     is_ready, ask_admin = is_course_ready(course)
+    is_teacher = is_teacher_test(request.user, course)
 
-    if not is_ready and not request.user.is_superuser:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -396,6 +374,7 @@ def course_dashboard(request, course_slug):
 
     .. versionadded:: 0.1
     """
+    m = Microblog()
     course = get_course_if_user_can_view_or_404(course_slug, request)
     is_enrolled = course.students.filter(id=request.user.id).exists()
     if not is_enrolled:
@@ -406,7 +385,7 @@ def course_dashboard(request, course_slug):
     is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher :
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser :
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -461,7 +440,7 @@ def course_dashboard(request, course_slug):
         rating_formset = CourseRatingFormSet()
 
     group = get_group_by_user_and_course(request.user.id, course.id)
-    posts_list = search_posts(course.hashtag, 0)
+    posts_list = m.search_posts(course.hashtag, 0)
 
     if is_enrolled:
         has_passed= has_user_passed_course(request.user, course)
@@ -504,7 +483,7 @@ def course_syllabus(request, course_slug):
     is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -534,6 +513,7 @@ def course_syllabus(request, course_slug):
 
 @login_required
 def course_group(request, course_slug):
+    m = Microblog()
     course = get_course_if_user_can_view_or_404(course_slug, request)
     is_enrolled = course.students.filter(id=request.user.id).exists()
     if not is_enrolled:
@@ -544,7 +524,7 @@ def course_group(request, course_slug):
     is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -564,6 +544,8 @@ def course_group(request, course_slug):
             if(len(g["members"]) <= course.group_max_size + (course.group_max_size * settings.GROUPS_UPPER_THRESHOLD / 100)):
                 groups.append(g)
 
+    posts_list = m.search_posts(group["hashtag"], 0)
+
     if is_enrolled:
         has_passed= has_user_passed_course(request.user, course)
     else:
@@ -579,47 +561,142 @@ def course_group(request, course_slug):
         'is_teacher': is_teacher,
         'group': group,
         'groups':groups,
+        'posts_list': posts_list,
         'passed': has_passed,
     }, context_instance=RequestContext(request))
 
 @login_required
 def course_forum(request, course_slug):
-    course = get_course_if_user_can_view_or_404(course_slug, request)
-    is_enrolled = course.students.filter(id=request.user.id).exists()
-    if not is_enrolled:
-        messages.error(request, _('You are not enrolled in this course'))
-        return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
+    f = Forum()
+    if request.method == 'POST':
+        form = ForumPostForm(request.POST)
+        if form.is_valid():
+            f.insert_post(course_slug, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postTitle'], form.cleaned_data['postText'])
+            return HttpResponseRedirect(reverse('course_forum', args=[course_slug]))
+    else:
+        course = get_course_if_user_can_view_or_404(course_slug, request)
+        is_enrolled = course.students.filter(id=request.user.id).exists()
+        if not is_enrolled:
+            messages.error(request, _('You are not enrolled in this course'))
+            return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
-    is_ready, ask_admin = is_course_ready(course)
-    is_teacher = is_teacher_test(request.user, course)
+        is_ready, ask_admin = is_course_ready(course)
+        is_teacher = is_teacher_test(request.user, course)
 
-    # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
-        return render_to_response('courses/no_content.html', {
+        # if not is_ready and not request.user.is_superuser:
+        if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
+            return render_to_response('courses/no_content.html', {
+                'course': course,
+                'is_enrolled': is_enrolled,
+                'ask_admin': ask_admin,
+            }, context_instance=RequestContext(request))
+
+        tasks = get_tasks_available_for_user(course, request.user)
+        group = get_group_by_user_and_course(request.user.id, course.id)
+
+        if is_enrolled:
+            has_passed= has_user_passed_course(request.user, course)
+        else:
+            has_passed= False
+
+        list_posts = f.get_posts(course.slug, 0)
+
+        return render_to_response('courses/forum.html', {
             'course': course,
-            'is_enrolled': is_enrolled,
-            'ask_admin': ask_admin,
+            'progress': get_course_progress_for_user(course, request.user),
+            'task_list': tasks[0],
+            'tasks_done': tasks[1],
+            'is_enrolled' : is_enrolled,  
+            'is_ready' : is_ready,
+            'is_teacher': is_teacher,
+            'group': group,
+            'passed': has_passed,
+            'form': ForumPostForm(),
+            'posts': list_posts,
         }, context_instance=RequestContext(request))
 
-    tasks = get_tasks_available_for_user(course, request.user)
-    group = get_group_by_user_and_course(request.user.id, course.id)
-
-    if is_enrolled:
-        has_passed= has_user_passed_course(request.user, course)
+def course_forum_post(request, course_slug, post_id):
+    f = Forum()
+    if request.method == 'POST':
+        form = ForumReplyForm(request.POST)
+        if form.is_valid():
+            f.save_reply(course_slug, post_id, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
+            print form.cleaned_data["postText"]
+            return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
     else:
-        has_passed= False
+        course = get_course_if_user_can_view_or_404(course_slug, request)
+        is_enrolled = course.students.filter(id=request.user.id).exists()
+        if not is_enrolled:
+            messages.error(request, _('You are not enrolled in this course'))
+            return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
-    return render_to_response('courses/forum.html', {
-        'course': course,
-        'progress': get_course_progress_for_user(course, request.user),
-        'task_list': tasks[0],
-        'tasks_done': tasks[1],
-        'is_enrolled' : is_enrolled,  
-        'is_ready' : is_ready,
-        'is_teacher': is_teacher,
-        'group': group,
-        'passed': has_passed,
-    }, context_instance=RequestContext(request))
+        is_ready, ask_admin = is_course_ready(course)
+        is_teacher = is_teacher_test(request.user, course)
+
+        # if not is_ready and not request.user.is_superuser:
+        if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
+            return render_to_response('courses/no_content.html', {
+                'course': course,
+                'is_enrolled': is_enrolled,
+                'ask_admin': ask_admin,
+            }, context_instance=RequestContext(request))
+
+        tasks = get_tasks_available_for_user(course, request.user)
+        group = get_group_by_user_and_course(request.user.id, course.id)
+
+        if is_enrolled:
+            has_passed= has_user_passed_course(request.user, course)
+        else:
+            has_passed= False
+
+        f = Forum()
+        post = f.get_post_detail(post_id, request.user.id)
+
+        return render_to_response('courses/forum_post.html', {
+            'course': course,
+            'progress': get_course_progress_for_user(course, request.user),
+            'task_list': tasks[0],
+            'tasks_done': tasks[1],
+            'is_enrolled' : is_enrolled,  
+            'is_ready' : is_ready,
+            'is_teacher': is_teacher,
+            'group': group,
+            'passed': has_passed,
+            'form': ForumReplyForm(),
+            'post': post,
+        }, context_instance=RequestContext(request))
+
+def course_forum_reply(request, course_slug, post_id, reply_id):
+    f = Forum()
+    if request.method == 'POST':
+        form = ForumReplyForm(request.POST)
+        if form.is_valid():
+            reply_id = f.save_reply(course_slug, reply_id, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
+            if reply_id is not False:
+                return HttpResponseRedirect('{0}#{1}'.format(reverse('course_forum_post', args=[course_slug, post_id]), reply_id))
+            else:
+                return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
+
+def course_forum_vote(request, course_slug, post_id, reply_id, vote):
+    f = Forum()
+    votes = f.post_vote(reply_id, request.user.id, vote)
+    return HttpResponse(simplejson.dumps(votes), mimetype='application/json')
+
+def course_forum_load_more(request, course_slug, page, query, search=False, hashtag=False):
+    f = Forum()
+    page = int(page)
+    listPost = None
+    if search and query:
+        if hashtag:
+            query = "#%s" % (query)
+        listPost = f.search_posts(query, page)
+    else:
+        listPost = f.get_posts(course_slug, page)
+
+    return render_to_response('courses/forum_post.html', {
+            'request': request,
+            'posts': listPost
+            }, context_instance=RequestContext(request))
 
 @login_required
 def course_calendar(request, course_slug):
@@ -632,7 +709,7 @@ def course_calendar(request, course_slug):
     is_ready, ask_admin = is_course_ready(course)
     is_teacher = is_teacher_test(request.user, course)
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
@@ -671,7 +748,7 @@ def course_wiki(request, course_slug):
     is_ready, ask_admin = is_course_ready(course)
     is_teacher = is_teacher_test(request.user, course)
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
@@ -718,7 +795,7 @@ def course_teachers(request, course_slug):
         has_passed= False
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
@@ -760,10 +837,11 @@ def course_progress(request, course_slug):
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
     is_ready, ask_admin = is_course_ready(course)
-
+    is_teacher = is_teacher_test(request.user, course)
+    
     tasks = get_tasks_available_for_user(course, request.user)
 
-    if not is_ready:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
@@ -996,6 +1074,7 @@ def clone_activity(request, course_slug):
 
 @login_required
 def create_course_groups(request,id):
+    print "Create course groups id: %s" % (id)
     create_groups(id)
     return HttpResponse("true")
 

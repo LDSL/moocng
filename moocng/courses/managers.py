@@ -4,8 +4,9 @@ from django.conf import settings
 from django.db import models
 from django.db.models import Q
 from django.db.models.query import QuerySet
+from modeltranslation.manager import MultilingualQuerySet
 
-class CourseQuerySet(QuerySet):
+class CourseQuerySet(MultilingualQuerySet):
 
     def by_status(self, status):
         return self.filter(status=status)
@@ -59,7 +60,7 @@ class CourseManager(models.Manager):
         return self.get(slug=slug)
 
 
-class UnitQuerySet(QuerySet):
+class UnitQuerySet(MultilingualQuerySet):
 
     def scorables(self):
         if not settings.COURSES_USING_OLD_TRANSCRIPT:
@@ -73,7 +74,10 @@ class UnitManager(models.Manager):
         return UnitQuerySet(self.model, using=self._db)
 
     def scorables(self):
-        return self.get_query_set().scorables()
+        #return self.get_query_set().scorables()
+        if not settings.COURSES_USING_OLD_TRANSCRIPT:
+            return self.exclude(unittype='n', weight=0)
+        return self.all()
 
     def get_by_natural_key(self, course_slug, title):
         return self.get(title=title, course__slug=course_slug)

@@ -1,0 +1,62 @@
+{% load i18n %}
+<div class="replyPost">
+	<div class="bookmarkHandler" id="{{reply.id}}"></div>
+	<div class="cell">
+		<img class="gravatar" src={{ reply.avatar }}>
+	</div>
+	<div class="cell" style="padding-top: 15px; ">
+		{% if reply.id_original_post %}
+		<img class="sharedImage" src="/static/img/ECO_icon_republicado.svg">
+		<a href="{{reply.id_user}}"><span class="shared">{% trans "Shared by"%} {{reply.shared_by}}</span></a>
+		<div class="clearfix"></div>
+		{% endif %}
+		<a href={% url profile_user post.username %}><span class="namePost">{{reply.first_name}} {{reply.last_name}}</span></a>
+		<span class="emailPost">@{{reply.username}}</span>
+		
+		<span class="datePost">[{{reply.date}}]</span>
+		{% autoescape off %}
+		<div class="postText">{{reply.text|linebreaks}}</div>
+		{% endautoescape %}
+		<div class="tools" data-id="{{reply.id}}">
+			<span class="reply">{% trans "Reply" %}</span>
+			<form class="postReply" method="post" action="/course/{{ course.slug }}/forum/{{ post.id }}/reply/{{ reply.id }}">
+				{% csrf_token %}
+				{{ form }}
+				<input class="postButton" type="submit" value="{% trans "Send" %}">
+				<span class="cancelPost">{% trans "Cancel" %}</span>
+			</form>
+			
+			<!-- <span class="favourite">0</span> -->
+			<span class="karma
+					{% if reply.user_vote > 0 %}
+						upvoted
+					{% elif reply.user_vote < 0 %}
+						downvoted
+					{% endif %}
+				">
+				<span>
+					{% if reply.votes %}
+						{{ reply.votes }}
+					{% else %}
+						0
+					{% endif %}
+				</span>
+				{% if reply.username != user.username %}
+					<a href="/course/{{ course.slug }}/forum/{{ post.id }}/upvote/{{ reply.id}}" data-vote="1"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_up_black.svg" alt="{% trans "Vote +1" %}"  title="{% trans "Vote +1" %}"></a>
+					<a href="/course/{{ course.slug }}/forum/{{ post.id }}/downvote/{{ reply.id}}" data-vote="-1"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_down_black.svg" alt="{% trans "Vote -1" %}" title="{% trans "Vote -1" %}"></a>
+				{% endif %}
+			</span>
+		</div>
+		{% if reply.replies|length > 0 %}
+		<div class="subreplies">
+			{% for subreply in reply.replies %}
+				{% with "courses/forum_reply.html" as filename %}
+					{% with subreply as reply %}
+						{% include filename %}
+					{% endwith %}
+				{% endwith %}
+			{% endfor %}
+		</div>
+		{% endif %}
+	</div>
+</div>

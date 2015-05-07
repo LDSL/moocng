@@ -1,0 +1,59 @@
+{% load i18n %}
+<div class="replyPost">
+	<div class="cell">
+		<img class="gravatar" src={{ reply.avatar }}>
+	</div>
+	<div class="cell" style="padding-top: 15px; ">
+		{% if reply.id_original_post %}
+		<img class="sharedImage" src="/static/img/ECO_icon_republicado.svg">
+		<a href="{{reply.id_user}}"><span class="shared">{% trans "Shared by"%} {{reply.shared_by}}</span></a>
+		<div class="clearfix"></div>
+		{% endif %}
+		<a href={{reply.username|slice:"1:"}}><span class="namePost">{{reply.first_name}} {{reply.last_name}}</span></a>
+		<span class="emailPost">{{reply.username}}</span>
+		
+		<span class="datePost">
+			{% if reply.original_date %}
+				{{reply.original_date}}
+			{% else %}
+				{{reply.date}}
+			{% endif %}
+
+		</span>
+		{% autoescape off %}
+		<p class="postText">{{reply.text}}</p>
+		{% endautoescape %}
+
+		{% if reply.id_original_post %}
+		<div class="tools" id={{reply.id_original_post}}>
+		{% else %}
+		<div class="tools" id={{reply.id}}>
+		{% endif %}
+			<span class="reply">{% trans "Reply" %}</span>
+			<form class="postReply" method="post" action="/user/reply/{{reply.id}}">
+				{% csrf_token %}
+				{{ form }}
+				<input class="postButton" type="submit" value="{% trans "Send" %}">
+				<span class="cancelPost">{% trans "Cancel" %}</span>
+			</form>
+			{% if reply.id_user != request.user.id %}
+					<span title="Retweet" class="retweet">{{reply.shared}}</span>
+			{% else %}
+				<span title="Retweet" class="noRetweet" style="cursor: inherit;">{{reply.shared}}</span>
+			{% endif %}
+			
+			<!-- <span class="favourite">0</span> -->
+		</div>
+		{% if reply.replies|length > 0 %}
+		<div class="subreplies">
+			{% for subreply in reply.replies %}
+				{% with "profile/reply.html" as filename %}
+					{% with subreply as reply %}
+						{% include filename %}
+					{% endwith %}
+				{% endwith %}
+			{% endfor %}
+		</div>
+		{% endif %}
+	</div>
+</div>
