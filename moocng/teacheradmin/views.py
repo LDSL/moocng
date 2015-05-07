@@ -31,6 +31,7 @@ from moocng.courses.models import (Course, CourseTeacher, KnowledgeQuantum,
                                    Option, Announcement, Unit, Attachment, Language,
                                    Transcription, get_transcription_types_choices)
 from moocng.courses.utils import UNIT_BADGE_CLASSES, get_course_students_csv
+from moocng.courses.marks import calculate_course_mark
 from moocng.categories.models import Category
 from moocng.media_contents import get_media_content_types_choices
 from moocng.mongodb import get_db
@@ -827,12 +828,54 @@ def teacheradmin_lists(request, course_slug):
     }, context_instance=RequestContext(request))
 
 @is_teacher_or_staff
-def teacheradmin_lists_coursestudents(request, course_slug):
+def teacheradmin_lists_coursestudents(request, course_slug, format=None):
     course = get_object_or_404(Course, slug=course_slug)
-    students_list = get_course_students_csv(course)
-    
-    response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="%s.csv"' % (course_slug)
-    response.write(students_list)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
 
-    return response
+    if format is None:
+        headers = [_(u"First name"), _(u"Last name"), _(u"Email")]
+        elements = []
+        for student in course.students.all():
+            element = [student.first_name, student.last_name, student.email]
+            elements.append(element)
+        return render_to_response('teacheradmin/list_table.html', {
+            'course': course,
+            'is_enrolled': is_enrolled,
+            'headers': headers,
+            'elements': elements,
+        }, context_instance=RequestContext(request))
+
+    elif format == 'csv':
+        students_list = get_course_students_csv(course)
+    
+        response = HttpResponse(mimetype='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="%s.csv"' % (course_slug)
+        response.write(students_list)
+        return response
+
+@is_teacher_or_staff
+def teacheradmin_lists_coursestudentsmarks(request, course_slug, format=None):
+    course = get_object_or_404(Course, slug=course_slug)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+    
+    if format is None:
+        headers = [_(u"First name"), _(u"Last name"), _(u"Email"), _(u"Course mark")]
+        elements = []
+        for student in course.students.all():
+            mark, mark_info = calculate_course_mark(course, student)
+            element = [student.first_name, student.last_name, student.email, "%.2f" % mark]
+            elements.append(element)
+        return render_to_response('teacheradmin/list_table.html', {
+            'course': course,
+            'is_enrolled': is_enrolled,
+            'headers': headers,
+            'elements': elements,
+        }, context_instance=RequestContext(request))
+
+    elif format == 'csv':
+        students_list = get_course_students_csv(course)
+    
+        response = HttpResponse(mimetype='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="%s.csv"' % (course_slug)
+        response.write(students_list)
+        return response
