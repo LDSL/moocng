@@ -34,12 +34,14 @@ if (_.isUndefined(window.MOOC)) {
                 var chart = nv.models.pieChart()
                         .x(function (d) { return d.key; }) // label
                         .y(function (d) { return d.y; }) // value
-                        .values(function(d) { return d; })
                         .showLegend(true)
-                        .showLabels(false);
+                        .showLabels(true)
+                        .labelType("percent")
+                        .pieLabelsOutside(false)
+                        .labelThreshold(.02);
 
                 d3.select(viewport).append("svg")
-                    .datum([data])
+                    .datum(data)
                     .transition().duration(1200)
                     .call(chart);
 
@@ -148,8 +150,8 @@ if (_.isUndefined(window.MOOC)) {
             aux = {
                 0: MOOC.trans.enrolled,
                 1: MOOC.trans.started,
-                2: MOOC.trans.completed,
-                3: MOOC.trans.passed
+                2: MOOC.trans.passed,
+                3: MOOC.trans.completed
             };
 
             renderLine(

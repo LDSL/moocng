@@ -41,6 +41,14 @@
     margin: 0;
 }
 
+.fleft {
+    float: left;
+}
+
+.fright {
+    float: right;
+}
+
 .cleaner {
     display: block;
     clear: both;
@@ -1143,5 +1151,15 @@ footer {
 .unavailable {
     input {
         background-color: @neutral_light_2;
+    }
+}
+
+#table {
+    .indented {
+        background-color: @neutral_light_3;
+
+        td:first-of-type {
+            padding-left: 20px;
+        }
     }
 }

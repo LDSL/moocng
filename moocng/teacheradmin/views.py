@@ -31,7 +31,7 @@ from moocng.courses.models import (Course, CourseTeacher, KnowledgeQuantum,
                                    Option, Announcement, Unit, Attachment, Language,
                                    Transcription, get_transcription_types_choices)
 from moocng.courses.utils import UNIT_BADGE_CLASSES, get_course_students_csv
-from moocng.courses.marks import calculate_course_mark
+from moocng.courses.marks import calculate_course_mark, get_units_info_from_course, get_kqs_info_from_unit
 from moocng.categories.models import Category
 from moocng.media_contents import get_media_content_types_choices
 from moocng.mongodb import get_db
@@ -833,10 +833,10 @@ def teacheradmin_lists_coursestudents(request, course_slug, format=None):
     is_enrolled = course.students.filter(id=request.user.id).exists()
 
     if format is None:
-        headers = [_(u"First name"), _(u"Last name"), _(u"Email")]
+        headers = [_(u"First name"), _(u"Last name"), _(u"Email"), _(u"Date joined"), _(u"Last login"), _(u"View details")]
         elements = []
         for student in course.students.all():
-            element = [student.first_name, student.last_name, student.email]
+            element = [student.first_name, student.last_name, student.email, student.date_joined.strftime('%d/%m/%Y'), student.last_login.strftime('%d/%m/%Y'), {"caption": _(u"Go"), "link": reverse('teacheradmin_lists_coursestudents_detail', args=[course.slug, student.username])}]
             elements.append(element)
         return render_to_response('teacheradmin/list_table.html', {
             'course': course,
@@ -859,11 +859,11 @@ def teacheradmin_lists_coursestudentsmarks(request, course_slug, format=None):
     is_enrolled = course.students.filter(id=request.user.id).exists()
     
     if format is None:
-        headers = [_(u"First name"), _(u"Last name"), _(u"Email"), _(u"Course mark")]
+        headers = [_(u"First name"), _(u"Last name"), _(u"Email"), _(u"Course mark"), _(u"View details")]
         elements = []
         for student in course.students.all():
             mark, mark_info = calculate_course_mark(course, student)
-            element = [student.first_name, student.last_name, student.email, "%.2f" % mark]
+            element = [student.first_name, student.last_name, student.email, "%.2f" % mark, {"caption": _(u"Go"), "link": reverse('teacheradmin_lists_coursestudents_detail', args=[course.slug, student.username])}]
             elements.append(element)
         return render_to_response('teacheradmin/list_table.html', {
             'course': course,
@@ -879,3 +879,38 @@ def teacheradmin_lists_coursestudentsmarks(request, course_slug, format=None):
         response['Content-Disposition'] = 'attachment; filename="%s.csv"' % (course_slug)
         response.write(students_list)
         return response
+
+@is_teacher_or_staff
+def teacheradmin_lists_coursestudents_detail(request, course_slug, username, format=None):
+    course = get_object_or_404(Course, slug=course_slug)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+    student = get_object_or_404(User, username=username)
+    mark, mark_info = calculate_course_mark(course, student)
+    units = get_units_info_from_course(course, student)
+    headers = [_(u"Title"), _(u"Mark"), _(u"Relative mark")]
+    elements = []
+    for unitmark in units:
+        unit = get_object_or_404(Unit, pk=unitmark["unit_id"])
+        element = {"title": unit.title, "mark": "%.2f" % unitmark["mark"], "relative_mark": "%.2f" % unitmark["relative_mark"], "order": unit.order}
+        element["kqs"] = []
+        kqs = get_kqs_info_from_unit(unit, student)
+        for kqmark in kqs:
+            try:
+                kq = KnowledgeQuantum.objects.get(pk=kqmark["kq_id"])
+                element_kq = {"title": kq.title, "mark": "%.2f" % kqmark["mark"], "relative_mark": "%.2f" % kqmark["relative_mark"], "order": kq.order}
+                element["kqs"].append(element_kq)
+            except:
+                pass
+        element["kqs"].sort(key=lambda x: x["order"], reverse=False)
+
+        elements.append(element)
+    elements.sort(key=lambda x: x["order"], reverse=False)
+
+    return render_to_response('teacheradmin/lists_student_detail.html', {
+        'course': course,
+        'is_enrolled': is_enrolled,
+        'student': student,
+        'course_mark': "%.2f" % mark,
+        'headers': headers,
+        'elements': elements,
+    }, context_instance=RequestContext(request))

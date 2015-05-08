@@ -23,7 +23,7 @@ urlpatterns = patterns(
     url(r'^user/calendar/$', 'profile_calendar',
         name='profile_calendar'),
    
-    url(r'^user/profile/(?P<id>[-\w.]*)$', 'profile_user',
+    url(r'^user/profile/(?P<id>[-\+\w.]*)$', 'profile_user',
         name='profile_user'),
 
     url(r'^user/profile/$', 'profile_user',
