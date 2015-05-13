@@ -22,6 +22,8 @@ urlpatterns = patterns('moocng.teacheradmin.views',
 
     url(r'^stats/$', 'teacheradmin_stats', name='teacheradmin_stats'),
 
+    url(r'^stats/students/$', 'teacheradmin_stats_students', name='teacheradmin_stats_students'),
+
     url(r'^stats/units/$', 'teacheradmin_stats_units',
         name='teacheradmin_stats_units'),
 

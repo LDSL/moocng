@@ -236,6 +236,147 @@ if (_.isUndefined(window.MOOC)) {
         }
     });
 
+    MOOC.views.Students = Backbone.View.extend({
+        initialize: function () {
+            _.bindAll(this, "render", "destroy");
+            this.template = $("#students-tpl").text();
+        },
+
+        render: function () {
+            var data = this.model.getData(),
+                chartData,
+                unitsNav,
+                aux;
+            this.$el.html(this.template);
+
+            if (!_.isUndefined(data.passed)) {
+                this.$el.find("#passed").removeClass("hide");
+                renderPie(
+                    this.$el.find("#passed .viewport")[0],
+                    [MOOC.trans.notPassed, MOOC.trans.passed],
+                    [data.enrolled - data.passed, data.passed]
+                );
+            } else {
+                // Just two pies
+                this.$el.find("#started").removeClass("span3").addClass("span5");
+                this.$el.find("#completed").removeClass("span3").addClass("span5");
+            }
+
+            renderPie(
+                this.$el.find("#started .viewport")[0],
+                [MOOC.trans.notStarted, MOOC.trans.started],
+                [data.enrolled - data.started, data.started]
+            );
+
+            renderPie(
+                this.$el.find("#completed .viewport")[0],
+                [MOOC.trans.notCompleted, MOOC.trans.completed],
+                [data.enrolled - data.completed, data.completed]
+            );
+
+            chartData = [{
+                key: MOOC.trans.evolution,
+                values: [
+                    { x: 0, y: data.enrolled },
+                    { x: 1, y: data.started },
+                    { x: 2, y: data.completed }
+                ]
+            }];
+
+            // If the course has no threshold then there is no passed field
+            if (!_.isUndefined(data.passed)) {
+                chartData[0].values.push({ x: 3, y: data.passed });
+            }
+
+            aux = {
+                0: MOOC.trans.enrolled,
+                1: MOOC.trans.started,
+                2: MOOC.trans.passed,
+                3: MOOC.trans.completed
+            };
+
+            renderLine(
+                this.$el.find("#tendencies .viewport")[0],
+                chartData,
+                [0, data.enrolled],
+                function (chart) {
+                    chart.xAxis
+                        .tickSubdivide(false)
+                        .tickFormat(function (t) {
+                            return aux[t];
+                        })
+                        .rotateLabels(-30);
+                    return chart;
+                }
+            );
+
+            chartData = [{
+                key: MOOC.trans.started,
+                values: []
+            }, {
+                key: MOOC.trans.completed,
+                values: []
+            }];
+
+            // If the course doesn't have a passed field then the units doesn't
+            // have it either
+            if (!_.isUndefined(data.passed)) {
+                chartData.push({
+                    key: MOOC.trans.passed,
+                    values: []
+                });
+            }
+
+            unitsNav = this.$el.find("#units-navigation");
+
+            this.model.get("units").each(function (unit, idx) {
+                var title = unit.get("title");
+
+                chartData[0].values.push({
+                    x: title,
+                    y: unit.get("started")
+                });
+                chartData[1].values.push({
+                    x: title,
+                    y: unit.get("completed")
+                });
+                if (chartData.length > 2) {
+                    chartData[2].values.push({
+                        x: title,
+                        y: unit.get("passed")
+                    });
+                }
+
+                unitsNav.append("<li><a href='#unit" + unit.get("id") + "'>" + MOOC.trans.unit + " " + idx + ": " + title + "</a></li>");
+            });
+
+            if (unitsNav.find("li").length === 0) {
+                unitsNav.prev().addClass("disabled").click(function (evt) {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                });
+            }
+
+            renderMultiBar(
+                this.$el.find("#units .viewport")[0],
+                chartData,
+                function (chart) {
+                    chart.xAxis.tickFormat(function (t) {
+                        if (t.length > 15) {
+                            return t.substring(0, 12) + "...";
+                        }
+                        return t;
+                    });
+                    return chart;
+                }
+            );
+        },
+
+        destroy: function () {
+            this.$el.html("");
+        }
+    });
+
     MOOC.views.Unit = Backbone.View.extend({
         initialize: function () {
             _.bindAll(this, "render", "destroy");

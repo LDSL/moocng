@@ -15,6 +15,8 @@
 
 from datetime import datetime
 
+from django.conf import settings
+
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.exceptions import ValidationError
@@ -27,12 +29,13 @@ from django.template.defaultfilters import slugify
 from django.utils import simplejson
 from django.utils.translation import ugettext as _
 
-from moocng.courses.models import (Course, CourseTeacher, KnowledgeQuantum,
+from moocng.courses.models import (Course, CourseTeacher, CourseStudent, KnowledgeQuantum,
                                    Option, Announcement, Unit, Attachment, Language,
                                    Transcription, get_transcription_types_choices)
 from moocng.courses.utils import UNIT_BADGE_CLASSES, get_course_students_csv
 from moocng.courses.marks import calculate_course_mark, get_units_info_from_course, get_kqs_info_from_unit
 from moocng.categories.models import Category
+from moocng.profile.models import UserProfile
 from moocng.media_contents import get_media_content_types_choices
 from moocng.mongodb import get_db
 from moocng.portal.templatetags.gravatar import gravatar_img_for_email
@@ -88,6 +91,41 @@ def teacheradmin_stats(request, course_slug):
         return HttpResponseRedirect(reverse('teacheradmin_info',
                                             args=[course_slug]))
 
+
+@is_teacher_or_staff
+def teacheradmin_stats_students(request, course_slug):
+    course = get_object_or_404(Course, slug=course_slug)
+    data = {
+        "enrolled": course.students.count(),
+        "byCountry": {},
+        "byLanguage": {},
+        "byGender": {},
+        "byAge": {},
+        "byLocations": []
+    }
+
+    data["byGender"]["male"] = CourseStudent.objects.filter(course=course,student__userprofile__gender='male').count()
+    data["byGender"]["female"] = CourseStudent.objects.filter(course=course,student__userprofile__gender='female').count()
+    data["byGender"]["unknown"] = data["enrolled"] - data["byGender"]["male"] - data["byGender"]["female"]
+
+    total_language = 0
+    for lang in settings.LANGUAGES:
+        data["byLanguage"][lang[0]] = CourseStudent.objects.filter(course=course,student__userprofile__language=lang[0]).count()
+        total_language += data["byLanguage"][lang[0]]
+    data["byLanguage"]["unknown"] = data["enrolled"] - total_language
+
+    total_country = 0
+    for elem in UserProfile.objects.all().distinct("country"):
+        if elem.country is not None and elem.country is not "":
+            data["byCountry"][elem.country] = CourseStudent.objects.filter(course=course,student__userprofile__country=elem.country).count()
+            total_country += data["byCountry"][elem.country]
+    data["byCountry"]["unknown"] = data["enrolled"] - total_country
+
+    for student in CourseStudent.objects.filter(course=course):
+        if student.pos_lat:
+            data["byLocations"].append({"lon": student.pos_lon, "lat": student.pos_lat})
+
+    return HttpResponse(simplejson.dumps(data), mimetype='application/json')
 
 @is_teacher_or_staff
 def teacheradmin_stats_units(request, course_slug):

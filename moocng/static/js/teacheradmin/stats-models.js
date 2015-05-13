@@ -159,4 +159,66 @@ if (_.isUndefined(window.MOOC)) {
         }
     });
 
+    MOOC.models.Students = Backbone.Model.extend({
+        defaults: function () {
+            return {
+                enrolled: -1,
+                byCountry: [],
+                byLanguage: [],
+                byGender: [],
+                byAge: [],
+                byLocations: [],
+            };
+        },
+
+        getData: function () {
+            var result = {
+                enrolled: this.get("enrolled"),
+                byCountry: this.get("byCountry"),
+                byLanguage: this.get("byLanguage"),
+                byGender: this.get("byGender"),
+                byAge: this.get("byAge"),
+                byLocations: this.get("byLocations")
+            };
+
+            if (this.get("passed") >= 0) {
+                result.passed = this.get("passed");
+            }
+
+            return result;
+        }
+    });
+
+    MOOC.models.Teachers = Backbone.Model.extend({
+        defaults: function () {
+            return {
+                total: -1,
+                byOrganization: [],
+                byCountry: [],
+                byLanguage: [],
+                bySex: [],
+                byAge: [],
+                byLocations: [],
+            };
+        },
+
+        getData: function () {
+            var result = {
+                total: this.get("total"),
+                byOrganization: this.get("byOrganization"),
+                byCountry: this.get("byCountry"),
+                byLanguage: this.get("byLanguage"),
+                bySex: this.get("bySex"),
+                byAge: this.get("byAge"),
+                byLocations: this.get("byLocations")
+            };
+
+            if (this.get("passed") >= 0) {
+                result.passed = this.get("passed");
+            }
+
+            return result;
+        }
+    });
+
 }(jQuery, Backbone, _));
