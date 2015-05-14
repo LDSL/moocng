@@ -160,9 +160,16 @@ if (_.isUndefined(window.MOOC)) {
     });
 
     MOOC.models.Students = Backbone.Model.extend({
+        url: function () {
+            return MOOC.ajax.getAbsoluteUrl("students/");
+        },
+
         defaults: function () {
             return {
                 enrolled: -1,
+                passed: -1,
+                started: -1,
+                completed: -1,
                 byCountry: [],
                 byLanguage: [],
                 byGender: [],
@@ -174,6 +181,9 @@ if (_.isUndefined(window.MOOC)) {
         getData: function () {
             var result = {
                 enrolled: this.get("enrolled"),
+                passed: this.get("passed"),
+                started: this.get("started"),
+                completed: this.get("completed"),
                 byCountry: this.get("byCountry"),
                 byLanguage: this.get("byLanguage"),
                 byGender: this.get("byGender"),
@@ -190,15 +200,18 @@ if (_.isUndefined(window.MOOC)) {
     });
 
     MOOC.models.Teachers = Backbone.Model.extend({
+        url: function () {
+            return MOOC.ajax.getAbsoluteUrl("teachers/");
+        },
+
         defaults: function () {
             return {
                 total: -1,
                 byOrganization: [],
                 byCountry: [],
                 byLanguage: [],
-                bySex: [],
+                byGender: [],
                 byAge: [],
-                byLocations: [],
             };
         },
 
@@ -208,9 +221,8 @@ if (_.isUndefined(window.MOOC)) {
                 byOrganization: this.get("byOrganization"),
                 byCountry: this.get("byCountry"),
                 byLanguage: this.get("byLanguage"),
-                bySex: this.get("bySex"),
-                byAge: this.get("byAge"),
-                byLocations: this.get("byLocations")
+                byGender: this.get("byGender"),
+                byAge: this.get("byAge")
             };
 
             if (this.get("passed") >= 0) {

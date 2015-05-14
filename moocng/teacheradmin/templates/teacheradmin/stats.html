@@ -47,12 +47,13 @@
 
 {% block section %}
 <script id="course-tpl" type="text/template">
-<ul class="breadcrumb">
+<ul class="nav bar">
   <li><a href="#course" class="active">{% trans "Course" %}</a></li>
   <li><a href="#students">{% trans "Students" %}</a></li>
   <li><a href="#teachers">{% trans "Teachers" %}</a></li>
 </ul>
 <h2>{% trans "General statistics of the course" %}</h2>
+<h4>{% trans "Total number of students" %}: <%= enrolled %></h4>
 <h3>{% trans "Students that have..." %}</h3>
 <div class="row">
     <div class="span3" id="started">
@@ -90,12 +91,13 @@
 </script>
 
 <script id="students-tpl" type="text/template">
-<ul class="breadcrumb">
+<ul class="nav bar">
   <li><a href="#course">{% trans "Course" %}</a></li>
   <li><a href="#students" class="active">{% trans "Students" %}</a></li>
   <li><a href="#teachers">{% trans "Teachers" %}</a></li>
 </ul>
-<h2>{% trans "General statistics of the course" %}</h2>
+<h2>{% trans "General statistics of the students" %}</h2>
+<h4>{% trans "Total number of students" %}: <%= enrolled %></h4>
 <h3>{% trans "Students that have..." %}</h3>
 <div class="row">
     <div class="span3" id="started">
@@ -111,71 +113,62 @@
         <div class="pie viewport"></div>
     </div>
 </div>
-<h3>{% trans "Students evolution..." %}</h3>
+<h3>{% trans "Demographic statistics" %}</h3>
 <div class="row">
-    <div class="span10" id="tendencies">
-        <h4>{% trans "...in general"%}</h4>
-        <div class="viewport"></div>
+    <div class="span3" id="country">
+        <h4>{% trans "Students by country"%}</h4>
+        <div class="pie viewport"></div>
     </div>
-</div>
-<div class="row">
-    <div class="span10" id="units">
-        <h4 class="inlineb">{% trans "...per unit"%}</h4>
-        <div class="btn-group inlineb stats-navigation">
-            <a class="btn dropdown-toggle btn-small" data-toggle="dropdown" href="#">
-                {% trans "All units" %} <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu" id="units-navigation"></ul>
-        </div>
-        <div class="viewport"></div>
+    <div class="span3" id="language">
+        <h4>{% trans "Students by language"%}</h4>
+        <div class="pie viewport"></div>
+    </div>
+    <div class="span3" id="gender">
+        <h4>{% trans "Students by gender"%}</h4>
+        <div class="pie viewport"></div>
+    </div>
+    <div class="span3" id="age">
+        <h4>{% trans "Students by age"%}</h4>
+        <div class="pie viewport"></div>
     </div>
 </div>
 </script>
 
 <script id="teachers-tpl" type="text/template">
-<ul class="breadcrumb">
+<ul class="nav bar">
   <li><a href="#course">{% trans "Course" %}</a></li>
   <li><a href="#students">{% trans "Students" %}</a></li>
   <li><a href="#teachers" class="active">{% trans "Teachers" %}</a></li>
 </ul>
-<h2>{% trans "General statistics of the course" %}</h2>
-<h3>{% trans "Students that have..." %}</h3>
+<h2>{% trans "General statistics of the teachers" %}</h2>
+<h4>{% trans "Total number of teachers" %}: <%= total %></h4>
+<h3>{% trans "Demographic statistics" %}</h3>
 <div class="row">
-    <div class="span3" id="started">
-        <h4>{% trans "...started the course"%}</h4>
+    <div class="span3" id="country">
+        <h4>{% trans "Teachers by country"%}</h4>
         <div class="pie viewport"></div>
     </div>
-    <div class="span3" id="completed">
-        <h4>{% trans "...completed the course"%}</h4>
+    <div class="span3" id="language">
+        <h4>{% trans "Teachers by language"%}</h4>
         <div class="pie viewport"></div>
     </div>
-    <div class="span3 hide" id="passed">
-        <h4>{% trans "...passed the course"%}</h4>
+    <div class="span3" id="gender">
+        <h4>{% trans "Teachers by gender"%}</h4>
         <div class="pie viewport"></div>
     </div>
-</div>
-<h3>{% trans "Students evolution..." %}</h3>
-<div class="row">
-    <div class="span10" id="tendencies">
-        <h4>{% trans "...in general"%}</h4>
-        <div class="viewport"></div>
-    </div>
-</div>
-<div class="row">
-    <div class="span10" id="units">
-        <h4 class="inlineb">{% trans "...per unit"%}</h4>
-        <div class="btn-group inlineb stats-navigation">
-            <a class="btn dropdown-toggle btn-small" data-toggle="dropdown" href="#">
-                {% trans "All units" %} <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu" id="units-navigation"></ul>
-        </div>
-        <div class="viewport"></div>
+    <div class="span3" id="age">
+        <h4>{% trans "Teachers by age"%}</h4>
+        <div class="pie viewport"></div>
     </div>
 </div>
 </script>
 
 <script id="unit-tpl" type="text/template">
+<ul class="nav bar">
+  <li><a href="#course" class="active">{% trans "Course" %}</a></li>
+  <li><a href="#students">{% trans "Students" %}</a></li>
+  <li><a href="#teachers">{% trans "Teachers" %}</a></li>
+</ul>
 <ul class="breadcrumb">
   <li><a href="#">{% trans "Course" %}</a> <span class="divider">/</span></li>
   <li class="active">{% trans "Unit" %}</li>
@@ -214,6 +207,11 @@
 </script>
 
 <script id="kq-tpl" type="text/template">
+<ul class="nav bar">
+  <li><a href="#course" class="active">{% trans "Course" %}</a></li>
+  <li><a href="#students">{% trans "Students" %}</a></li>
+  <li><a href="#teachers">{% trans "Teachers" %}</a></li>
+</ul>
 <ul class="breadcrumb">
   <li><a href="#">{% trans "Course" %}</a> <span class="divider">/</span></li>
   <li><a id="go-back" href="#">{% trans "Unit" %}</a> <span class="divider">/</span></li>
