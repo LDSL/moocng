@@ -22,6 +22,9 @@ urlpatterns = patterns('moocng.teacheradmin.views',
 
     url(r'^stats/$', 'teacheradmin_stats', name='teacheradmin_stats'),
 
+    url(r'^stats/students/$', 'teacheradmin_stats_students', name='teacheradmin_stats_students'),
+    url(r'^stats/teachers/$', 'teacheradmin_stats_teachers', name='teacheradmin_stats_teachers'),
+
     url(r'^stats/units/$', 'teacheradmin_stats_units',
         name='teacheradmin_stats_units'),
 
@@ -117,4 +120,8 @@ urlpatterns = patterns('moocng.teacheradmin.views',
     url(r'^lists/coursestudents/csv$', 'teacheradmin_lists_coursestudents', {'format':'csv'}, name='teacheradmin_lists_coursestudents_csv'),
     url(r'^lists/coursestudentsmarks$', 'teacheradmin_lists_coursestudentsmarks', name='teacheradmin_lists_coursestudentsmarks'),
     url(r'^lists/coursestudentsmarks/csv$', 'teacheradmin_lists_coursestudentsmarks', {'format':'csv'}, name='teacheradmin_lists_coursestudentsmarks_csv'),
+    url(r'^lists/courseteachers$', 'teacheradmin_lists_courseteachers', name='teacheradmin_lists_courseteachers'),
+    url(r'^lists/courseteachers/csv$', 'teacheradmin_lists_courseteachers', {'format':'csv'}, name='teacheradmin_lists_courseteachers_csv'),
+
+    url(r'^lists/coursestudents/(?P<username>[-\+\w.]*)/$', 'teacheradmin_lists_coursestudents_detail', name='teacheradmin_lists_coursestudents_detail'),
 )

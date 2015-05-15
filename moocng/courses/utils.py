@@ -558,6 +558,23 @@ def get_course_students_csv(course):
 
     return course_file.getvalue()
 
+def get_course_teachers_csv(course):
+    course_file = StringIO.StringIO()
+
+    course_csv = csv.writer(course_file, quoting=csv.QUOTE_ALL)
+    headers = ["first_name", "last_name", "email"]
+    course_csv.writerow(headers)
+
+    h = HTMLParser()
+    for teacher in course.teachers.all():
+        row = []
+        for field in headers:
+            fieldvalue = getattr(teacher, field)
+            row.append(h.unescape(fieldvalue).encode("utf-8", "replace"))
+        course_csv.writerow(row)
+
+    return course_file.getvalue()
+
 def create_kq_activity(kq, user):
     activityCollection = mongodb.get_db().get_collection('activity')
     kq_activity = {
