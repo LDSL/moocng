@@ -10,7 +10,7 @@
     {% compress css %}
     <link rel="stylesheet" href="{{ STATIC_URL }}css/nv.d3-1.7.1.min.css" />
     {% endcompress %}
-    <link rel="stylesheet" href="//cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/leaflet.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}css/MarkerCluster.Default.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}css/MarkerCluster.css" />
 {% endblock %}
@@ -23,7 +23,7 @@
     <!-- stats-views.js is not compressed because we want to let it be
     overwritten if anyone wants to use different visualizations -->
     <script src="{{ STATIC_URL }}js/teacheradmin/stats-views.js" type="text/javascript"></script>
-    <script src="//cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src="{{ STATIC_URL }}js/libs/leaflet.js"></script>
     <script src="{{ STATIC_URL }}js/libs/leaflet.markercluster.js" type="text/javascript"></script>
 {% compress js %}
     <script src="{{ STATIC_URL }}js/teacheradmin/stats-routes.js" type="text/javascript"></script>
