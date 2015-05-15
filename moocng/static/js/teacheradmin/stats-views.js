@@ -374,6 +374,15 @@ if (_.isUndefined(window.MOOC)) {
                 Object.keys(data.byAge),
                 ageValues
             );
+
+            var orgValues = Object.keys(data.byOrganization).map(function (key) {
+                return data.byOrganization[key];
+            });
+            renderPie(
+                this.$el.find("#organization .viewport")[0],
+                Object.keys(data.byOrganization),
+                orgValues
+            );
         },
 
         destroy: function () {

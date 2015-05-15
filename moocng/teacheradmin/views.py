@@ -201,7 +201,7 @@ def teacheradmin_stats_teachers(request, course_slug):
             "91-100": 0,
             "+100": 0,
         },
-        "byOrganizations": {}
+        "byOrganization": {}
     }
 
     data["byGender"]["male"] = CourseTeacher.objects.filter(course=course,teacher__userprofile__gender='male').count()
@@ -255,17 +255,17 @@ def teacheradmin_stats_teachers(request, course_slug):
         total_unknown_org = 0
         if len(organizations):
             for v in organizations:
-                if v.name not in data["byOrganizations"]:
-                    data["byOrganizations"][v.name] = 1
+                if v.name not in data["byOrganization"]:
+                    data["byOrganization"][v.name] = 1
                 else:
-                    data["byOrganizations"][v.name] += 1
+                    data["byOrganization"][v.name] += 1
         else:
             total_unknown_org += 1
 
     if total_unknown_age > 0:
         data["byAge"]["unknown"] = total_unknown_age
     if total_unknown_org > 0:
-        data["byOrganizations"]["unknown"] = total_unknown_org
+        data["byOrganization"]["unknown"] = total_unknown_org
 
     return HttpResponse(simplejson.dumps(data), mimetype='application/json')
 
