@@ -264,6 +264,31 @@ def get_tasks_available_for_user(course, user, is_overview=False):
                 tasks.append(task)
     return tasks, numdone, next_task
 
+def get_tasks_published(course, is_overview=False):
+    tasks = []
+
+    for u in course.unit_set.filter(Q(status='p') | Q(status='o') | Q(status='l')):
+        for q in KnowledgeQuantum.objects.filter(unit_id=u.id):
+            t = None
+            ttype = None;
+            if (len(q.question_set.filter()) > 0):
+                t = q.question_set.all()[0]
+                ttype = 'q';
+            else:
+                pr = PeerReviewAssignment.objects.filter(kq=q)
+                if (len(pr) > 0):
+                    t = pr.all()[0]
+                    ttype = 'p'
+            
+            if t is not None:
+                task = {
+                    'title': q.title,
+                    'type': ttype,
+                    'item': t,
+                }
+                tasks.append(task)
+    return tasks
+
 def get_course_progress_for_user(course, user):
     kq_passed = 0
     kq_total = 0

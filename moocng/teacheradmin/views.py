@@ -28,12 +28,14 @@ from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.utils import simplejson
 from django.utils.translation import ugettext as _
+from django.db.models import Q
 
 from moocng.courses.models import (Course, CourseTeacher, CourseStudent, KnowledgeQuantum,
                                    Option, Announcement, Unit, Attachment, Language,
                                    Transcription, get_transcription_types_choices)
-from moocng.courses.utils import UNIT_BADGE_CLASSES, get_course_students_csv
+from moocng.courses.utils import UNIT_BADGE_CLASSES, get_course_students_csv, get_course_teachers_csv
 from moocng.courses.marks import calculate_course_mark, get_units_info_from_course, get_kqs_info_from_unit
+from moocng.courses.security import get_tasks_published
 from moocng.categories.models import Category
 from moocng.profile.models import UserProfile
 from moocng.media_contents import get_media_content_types_choices
@@ -70,10 +72,17 @@ def teacheradmin_stats(request, course_slug):
     stats = stats_course.find_one({'course_id': course.id})
 
     if stats is not None:
+        num_kqs = 0
+        for unit in course.unit_set.filter(Q(status='p') | Q(status='o') | Q(status='l')).all():
+            num_kqs += unit.knowledgequantum_set.count()
+
         data = {
             'enrolled': course.students.count(),
             'started': stats.get('started', -1),
             'completed': stats.get('completed', -1),
+            'num_units': course.unit_set.filter(Q(status='p') | Q(status='o') | Q(status='l')).count(),
+            'num_kqs': num_kqs,
+            'num_tasks': len(get_tasks_published(course))
         }
 
         if course.threshold is not None:
@@ -1094,3 +1103,33 @@ def teacheradmin_lists_coursestudents_detail(request, course_slug, username, for
         'headers': headers,
         'elements': elements,
     }, context_instance=RequestContext(request))
+
+@is_teacher_or_staff
+def teacheradmin_lists_courseteachers(request, course_slug, format=None):
+    course = get_object_or_404(Course, slug=course_slug)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+
+    if format is None:
+        headers = [_(u"First name"), _(u"Last name"), _(u"Email"), _(u"Organization"), _(u"Date joined"), _(u"Last login"), _(u"View details")]
+        elements = []
+
+        teachers_ids = set(teacher.id for teacher in course.teachers.all())
+        for student in course.students.filter(pk__in=teachers_ids):
+            organizations = student.get_profile().organization.all()
+            organization = organizations[0].name if len(organizations) > 0 else ""
+            element = [student.first_name, student.last_name, student.email, organization, student.date_joined.strftime('%d/%m/%Y'), student.last_login.strftime('%d/%m/%Y'), {"caption": _(u"Go"), "link": reverse('teacheradmin_lists_coursestudents_detail', args=[course.slug, student.username])}]
+            elements.append(element)
+        return render_to_response('teacheradmin/list_table.html', {
+            'course': course,
+            'is_enrolled': is_enrolled,
+            'headers': headers,
+            'elements': elements,
+        }, context_instance=RequestContext(request))
+
+    elif format == 'csv':
+        students_list = get_course_teachers_csv(course)
+    
+        response = HttpResponse(mimetype='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="%s.csv"' % (course_slug)
+        response.write(students_list)
+        return response

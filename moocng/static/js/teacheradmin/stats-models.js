@@ -123,6 +123,9 @@ if (_.isUndefined(window.MOOC)) {
                 passed: -1,
                 started: -1,
                 completed: -1,
+                num_units: -1,
+                num_kqs: -1,
+                num_tasks: -1,
 
                 slug: undefined,
                 units: new MOOC.models.UnitList()
@@ -133,7 +136,10 @@ if (_.isUndefined(window.MOOC)) {
             var result = {
                 enrolled: this.get("enrolled"),
                 started: this.get("started"),
-                completed: this.get("completed")
+                completed: this.get("completed"),
+                num_units: this.get("num_units"),
+                num_kqs: this.get("num_kqs"),
+                num_tasks: this.get("num_tasks")
             };
 
             if (this.get("passed") >= 0) {

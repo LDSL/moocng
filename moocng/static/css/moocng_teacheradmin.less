@@ -809,8 +809,17 @@ code {
     width: 100%;
 }
 
-.teacheradmin-stats .pie.viewport svg {
-    height: 250px;
+.teacheradmin-stats .pie.viewport{
+
+    svg {
+        height: 250px;
+    }
+
+    &.taller {
+        svg {
+            height: 400px;
+        }
+    }
 }
 
 .teacheradmin-stats #tendencies .viewport svg,
@@ -1184,4 +1193,4 @@ footer {
     }
 }
 
-#map { height: 300px; width: 100%; margin-bottom: 20px;}
+#map { height: 400px; width: 100%; margin-bottom: 20px;}
