@@ -309,6 +309,16 @@ if (_.isUndefined(window.MOOC)) {
                 Object.keys(data.byAge),
                 ageValues
             );
+
+            var map = L.map('map').setView([50, 0], 3);
+            var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            var osmAttrib='Map data © <a href="http://openstreetmap.org" target="_blank">OpenStreetMap</a> contributors';
+            L.tileLayer(osmUrl, {minZoom: 1, maxZoom: 14, attribution: osmAttrib}).addTo(map);
+            var markers = new L.MarkerClusterGroup();
+            for (var i in data.byLocations){
+                markers.addLayer(new L.Marker(new L.LatLng(data.byLocations[i].lat, data.byLocations[i].lon)));
+            }
+            map.addLayer(markers);
         },
 
         destroy: function () {
