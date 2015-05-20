@@ -40,14 +40,14 @@ def ListRecords(request, num="1"):
 	for course in courses:
 		record = SubElement(listRecords, 'record')
 		header = SubElement(record, 'header')
-		if not course.is_active:
+		if course.is_deactivated:
 			header.set('status', 'deleted')
 		identifier = SubElement(header, 'identifier') 
 		identifier.text = '.'.join(settings.API_URI.split(".")[::-1]) + ":" + str(course.id)
 		datestamp = SubElement(header, 'datestamp')   #TODO
 		if course.start_date:
 			datestamp.text = datetime.datetime.strptime(str(course.start_date), '%Y-%m-%d').isoformat()
-		if len(course.teachers.all()) and len(course.teachers.all()[0].groups.all()) and course.teachers.all()[0].groups.all()[0].name == 'teacher' and settings.API_OFFICIAL_COURSE_TAGVALUE and course.official_course:
+		if course.owner and len(course.owner.groups.all().filter(name='teacher')) and settings.API_OFFICIAL_COURSE_TAGVALUE and course.official_course:
 			setSpec = SubElement(header, 'setSpec')
 			setSpec.text = settings.API_OFFICIAL_COURSE_TAGVALUE
 		metadata = SubElement(record, 'metadata')

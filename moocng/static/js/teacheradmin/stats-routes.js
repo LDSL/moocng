@@ -94,6 +94,34 @@ if (_.isUndefined(window.MOOC)) {
             });
         },
 
+        students: function () {
+            MOOC.ajax.showLoading();
+            MOOC.students.fetch({
+                success: function (units, response, options) {
+                    successHandler(MOOC.views.Students, MOOC.students);
+                },
+                error: function (units, xhr, options) {
+                    cleanView();
+                    MOOC.ajax.hideLoading();
+                    MOOC.ajax.showAlert("generic");
+                }
+            });
+        },
+
+        teachers: function () {
+            MOOC.ajax.showLoading();
+            MOOC.teachers.fetch({
+                success: function (units, response, options) {
+                    successHandler(MOOC.views.Teachers, MOOC.teachers);
+                },
+                error: function (units, xhr, options) {
+                    cleanView();
+                    MOOC.ajax.hideLoading();
+                    MOOC.ajax.showAlert("generic");
+                }
+            });
+        },
+
         unit: function (unit) {
             MOOC.ajax.showLoading();
             var callback = function () {
@@ -179,10 +207,15 @@ if (_.isUndefined(window.MOOC)) {
         MOOC.alertTime = 4000;
         initialData.slug = courseSlug;
         MOOC.course = new MOOC.models.Course(initialData);
+        MOOC.students = new MOOC.models.Students(initialData);
+        MOOC.teachers = new MOOC.models.Teachers(initialData);
         MOOC.viewport = $("#viewport")[0];
 
         MOOC.router = new MOOC.App();
         MOOC.router.route("", "course");
+        MOOC.router.route("course", "course");
+        MOOC.router.route("students", "students");
+        MOOC.router.route("teachers", "teachers");
         MOOC.router.route("unit:unit", "unit");
         MOOC.router.route("unit:unit/kq:kq", "kq");
 

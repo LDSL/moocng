@@ -229,6 +229,7 @@ def course_overview(request, course_slug):
     .. versionadded:: 0.1
     """
     course, permission = get_course_if_user_can_view_and_permission(course_slug, request)
+    print "Permission %s" % (permission)
     
     relatedcourses = get_related_courses_available_for_user(course, request.user)
 

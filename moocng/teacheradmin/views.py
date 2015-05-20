@@ -15,6 +15,8 @@
 
 from datetime import datetime
 
+from django.conf import settings
+
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.exceptions import ValidationError
@@ -26,12 +28,16 @@ from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.utils import simplejson
 from django.utils.translation import ugettext as _
+from django.db.models import Q
 
-from moocng.courses.models import (Course, CourseTeacher, KnowledgeQuantum,
+from moocng.courses.models import (Course, CourseTeacher, CourseStudent, KnowledgeQuantum,
                                    Option, Announcement, Unit, Attachment, Language,
                                    Transcription, get_transcription_types_choices)
-from moocng.courses.utils import UNIT_BADGE_CLASSES, get_course_students_csv
+from moocng.courses.utils import UNIT_BADGE_CLASSES, get_course_students_csv, get_course_teachers_csv
+from moocng.courses.marks import calculate_course_mark, get_units_info_from_course, get_kqs_info_from_unit
+from moocng.courses.security import get_tasks_published
 from moocng.categories.models import Category
+from moocng.profile.models import UserProfile
 from moocng.media_contents import get_media_content_types_choices
 from moocng.mongodb import get_db
 from moocng.portal.templatetags.gravatar import gravatar_img_for_email
@@ -55,7 +61,7 @@ from moocng.badges.models import BadgeByCourse
 import pprint
 
 from django.core import serializers
-
+from dateutil.relativedelta import relativedelta
 
 @is_teacher_or_staff
 def teacheradmin_stats(request, course_slug):
@@ -66,10 +72,17 @@ def teacheradmin_stats(request, course_slug):
     stats = stats_course.find_one({'course_id': course.id})
 
     if stats is not None:
+        num_kqs = 0
+        for unit in course.unit_set.filter(Q(status='p') | Q(status='o') | Q(status='l')).all():
+            num_kqs += unit.knowledgequantum_set.count()
+
         data = {
             'enrolled': course.students.count(),
             'started': stats.get('started', -1),
             'completed': stats.get('completed', -1),
+            'num_units': course.unit_set.filter(Q(status='p') | Q(status='o') | Q(status='l')).count(),
+            'num_kqs': num_kqs,
+            'num_tasks': len(get_tasks_published(course))
         }
 
         if course.threshold is not None:
@@ -87,6 +100,183 @@ def teacheradmin_stats(request, course_slug):
         return HttpResponseRedirect(reverse('teacheradmin_info',
                                             args=[course_slug]))
 
+
+@is_teacher_or_staff
+def teacheradmin_stats_students(request, course_slug):
+    course = get_object_or_404(Course, slug=course_slug)
+    data = {
+        "enrolled": course.students.count(),
+        "byCountry": {},
+        "byLanguage": {},
+        "byGender": {},
+        "byAge": {
+            "0-10": 0,
+            "11-20": 0,
+            "21-30": 0,
+            "31-40": 0,
+            "41-50": 0,
+            "51-60": 0,
+            "61-70": 0,
+            "71-80": 0,
+            "81-90": 0,
+            "91-100": 0,
+            "+100": 0,
+        },
+        "byLocations": []
+    }
+
+    stats_course = get_db().get_collection("stats_course")
+    stats = stats_course.find_one({"course_id": course.id})
+
+    if stats is not None:
+        data["started"] = stats.get("started", -1)
+        data["completed"] = stats.get("completed", -1)
+
+        if course.threshold is not None:
+            data["passed"] = stats.get("passed", -1)
+
+    data["byGender"]["male"] = CourseStudent.objects.filter(course=course,student__userprofile__gender='male').count()
+    data["byGender"]["female"] = CourseStudent.objects.filter(course=course,student__userprofile__gender='female').count()
+    data["byGender"]["unknown"] = data["enrolled"] - data["byGender"]["male"] - data["byGender"]["female"]
+
+    total_language = 0
+    for lang in settings.LANGUAGES:
+        data["byLanguage"][lang[0]] = CourseStudent.objects.filter(course=course,student__userprofile__language=lang[0]).count()
+        total_language += data["byLanguage"][lang[0]]
+    data["byLanguage"]["unknown"] = data["enrolled"] - total_language
+
+    total_country = 0
+    for elem in UserProfile.objects.all().distinct("country"):
+        if elem.country:
+            data["byCountry"][elem.country] = CourseStudent.objects.filter(course=course,student__userprofile__country=elem.country).count()
+            total_country += data["byCountry"][elem.country]
+    data["byCountry"]["unknown"] = data["enrolled"] - total_country
+
+    now = datetime.now()
+    total_unknown_age = 0
+    for student in CourseStudent.objects.filter(course=course):
+        if student.student.get_profile().birthdate:
+            years = relativedelta(now, student.student.get_profile().birthdate).years
+            if years >= 0 and years <= 10:
+                data["byAge"]["0-10"] += 1
+            elif years > 10 and years <= 20:
+                data["byAge"]["11-20"] += 1
+            elif years > 20 and years <= 30:
+                data["byAge"]["21-30"] += 1
+            elif years > 30 and years <= 40:
+                data["byAge"]["31-40"] += 1
+            elif years > 40 and years <= 50:
+                data["byAge"]["41-50"] += 1
+            elif years > 50 and years <= 60:
+                data["byAge"]["51-60"] += 1
+            elif years > 60 and years <= 70:
+                data["byAge"]["61-70"] += 1
+            elif years > 70 and years <= 80:
+                data["byAge"]["71-80"] += 1
+            elif years > 80 and years <= 90:
+                data["byAge"]["81-90"] += 1
+            elif years > 90 and years <= 100:
+                data["byAge"]["91-100"] += 1
+            elif years > 100:
+                data["byAge"]["+100"] += 1
+        else:
+            total_unknown_age += 1
+        if student.pos_lat:
+            data["byLocations"].append({"lon": student.pos_lon, "lat": student.pos_lat})
+    
+    if total_unknown_age > 0:
+        data["byAge"]["unknown"] = total_unknown_age
+
+    return HttpResponse(simplejson.dumps(data), mimetype='application/json')
+
+@is_teacher_or_staff
+def teacheradmin_stats_teachers(request, course_slug):
+    course = get_object_or_404(Course, slug=course_slug)
+    data = {
+        "total": course.teachers.count(),
+        "byCountry": {},
+        "byLanguage": {},
+        "byGender": {},
+        "byAge": {
+            "0-10": 0,
+            "11-20": 0,
+            "21-30": 0,
+            "31-40": 0,
+            "41-50": 0,
+            "51-60": 0,
+            "61-70": 0,
+            "71-80": 0,
+            "81-90": 0,
+            "91-100": 0,
+            "+100": 0,
+        },
+        "byOrganization": {}
+    }
+
+    data["byGender"]["male"] = CourseTeacher.objects.filter(course=course,teacher__userprofile__gender='male').count()
+    data["byGender"]["female"] = CourseTeacher.objects.filter(course=course,teacher__userprofile__gender='female').count()
+    data["byGender"]["unknown"] = data["total"] - data["byGender"]["male"] - data["byGender"]["female"]
+
+    total_language = 0
+    for lang in settings.LANGUAGES:
+        data["byLanguage"][lang[0]] = CourseTeacher.objects.filter(course=course,teacher__userprofile__language=lang[0]).count()
+        total_language += data["byLanguage"][lang[0]]
+    data["byLanguage"]["unknown"] = data["total"] - total_language
+
+    total_country = 0
+    for elem in UserProfile.objects.all().distinct("country"):
+        if elem.country:
+            data["byCountry"][elem.country] = CourseTeacher.objects.filter(course=course,teacher__userprofile__country=elem.country).count()
+            total_country += data["byCountry"][elem.country]
+    data["byCountry"]["unknown"] = data["total"] - total_country
+
+    now = datetime.now()
+    total_unknown_age = 0
+    for teacher in CourseTeacher.objects.filter(course=course):
+        if teacher.teacher.get_profile().birthdate:
+            years = relativedelta(now, teacher.teacher.get_profile().birthdate).years
+            if years >= 0 and years <= 10:
+                data["byAge"]["0-10"] += 1
+            elif years > 10 and years <= 20:
+                data["byAge"]["11-20"] += 1
+            elif years > 20 and years <= 30:
+                data["byAge"]["21-30"] += 1
+            elif years > 30 and years <= 40:
+                data["byAge"]["31-40"] += 1
+            elif years > 40 and years <= 50:
+                data["byAge"]["41-50"] += 1
+            elif years > 50 and years <= 60:
+                data["byAge"]["51-60"] += 1
+            elif years > 60 and years <= 70:
+                data["byAge"]["61-70"] += 1
+            elif years > 70 and years <= 80:
+                data["byAge"]["71-80"] += 1
+            elif years > 80 and years <= 90:
+                data["byAge"]["81-90"] += 1
+            elif years > 90 and years <= 100:
+                data["byAge"]["91-100"] += 1
+            elif years > 100:
+                data["byAge"]["+100"] += 1
+        else:
+            total_unknown_age += 1
+
+        organizations = teacher.teacher.get_profile().organization.all()
+        total_unknown_org = 0
+        if len(organizations):
+            for v in organizations:
+                if v.name not in data["byOrganization"]:
+                    data["byOrganization"][v.name] = 1
+                else:
+                    data["byOrganization"][v.name] += 1
+        else:
+            total_unknown_org += 1
+
+    if total_unknown_age > 0:
+        data["byAge"]["unknown"] = total_unknown_age
+    if total_unknown_org > 0:
+        data["byOrganization"]["unknown"] = total_unknown_org
+
+    return HttpResponse(simplejson.dumps(data), mimetype='application/json')
 
 @is_teacher_or_staff
 def teacheradmin_stats_units(request, course_slug):
@@ -827,12 +1017,122 @@ def teacheradmin_lists(request, course_slug):
     }, context_instance=RequestContext(request))
 
 @is_teacher_or_staff
-def teacheradmin_lists_coursestudents(request, course_slug):
+def teacheradmin_lists_coursestudents(request, course_slug, format=None):
     course = get_object_or_404(Course, slug=course_slug)
-    students_list = get_course_students_csv(course)
-    
-    response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="%s.csv"' % (course_slug)
-    response.write(students_list)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
 
-    return response
+    if format is None:
+        headers = [_(u"First name"), _(u"Last name"), _(u"Email"), _(u"Date joined"), _(u"Last login"), _(u"View details")]
+        elements = []
+        for student in course.students.all():
+            element = [student.first_name, student.last_name, student.email, student.date_joined.strftime('%d/%m/%Y'), student.last_login.strftime('%d/%m/%Y'), {"caption": _(u"Go"), "link": reverse('teacheradmin_lists_coursestudents_detail', args=[course.slug, student.username])}]
+            elements.append(element)
+        return render_to_response('teacheradmin/list_table.html', {
+            'course': course,
+            'is_enrolled': is_enrolled,
+            'headers': headers,
+            'elements': elements,
+        }, context_instance=RequestContext(request))
+
+    elif format == 'csv':
+        students_list = get_course_students_csv(course)
+    
+        response = HttpResponse(mimetype='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="%s.csv"' % (course_slug)
+        response.write(students_list)
+        return response
+
+@is_teacher_or_staff
+def teacheradmin_lists_coursestudentsmarks(request, course_slug, format=None):
+    course = get_object_or_404(Course, slug=course_slug)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+    
+    if format is None:
+        headers = [_(u"First name"), _(u"Last name"), _(u"Email"), _(u"Course mark"), _(u"View details")]
+        elements = []
+        for student in course.students.all():
+            mark, mark_info = calculate_course_mark(course, student)
+            element = [student.first_name, student.last_name, student.email, "%.2f" % mark, {"caption": _(u"Go"), "link": reverse('teacheradmin_lists_coursestudents_detail', args=[course.slug, student.username])}]
+            elements.append(element)
+        return render_to_response('teacheradmin/list_table.html', {
+            'course': course,
+            'is_enrolled': is_enrolled,
+            'headers': headers,
+            'elements': elements,
+        }, context_instance=RequestContext(request))
+
+    elif format == 'csv':
+        students_list = get_course_students_csv(course)
+    
+        response = HttpResponse(mimetype='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="%s.csv"' % (course_slug)
+        response.write(students_list)
+        return response
+
+@is_teacher_or_staff
+def teacheradmin_lists_coursestudents_detail(request, course_slug, username, format=None):
+    course = get_object_or_404(Course, slug=course_slug)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+    student = get_object_or_404(User, username=username)
+    mark, mark_info = calculate_course_mark(course, student)
+    units = get_units_info_from_course(course, student)
+    headers = [_(u"Title"), _(u"Mark"), _(u"Relative mark")]
+    elements = []
+    for unitmark in units:
+        try:
+            unit = Unit.objects.get(pk=unitmark["unit_id"])
+            element = {"title": unit.title, "mark": "%.2f" % unitmark["mark"], "relative_mark": "%.2f" % unitmark["relative_mark"], "order": unit.order}
+            element["kqs"] = []
+            kqs = get_kqs_info_from_unit(unit, student)
+            for kqmark in kqs:
+                try:
+                    kq = KnowledgeQuantum.objects.get(pk=kqmark["kq_id"])
+                    element_kq = {"title": kq.title, "mark": "%.2f" % kqmark["mark"], "relative_mark": "%.2f" % kqmark["relative_mark"], "order": kq.order}
+                    element["kqs"].append(element_kq)
+                except:
+                    pass
+            element["kqs"].sort(key=lambda x: x["order"], reverse=False)
+
+            elements.append(element)
+        except:
+            pass
+    elements.sort(key=lambda x: x["order"], reverse=False)
+
+    return render_to_response('teacheradmin/lists_student_detail.html', {
+        'course': course,
+        'is_enrolled': is_enrolled,
+        'student': student,
+        'course_mark': "%.2f" % mark,
+        'headers': headers,
+        'elements': elements,
+    }, context_instance=RequestContext(request))
+
+@is_teacher_or_staff
+def teacheradmin_lists_courseteachers(request, course_slug, format=None):
+    course = get_object_or_404(Course, slug=course_slug)
+    is_enrolled = course.students.filter(id=request.user.id).exists()
+
+    if format is None:
+        headers = [_(u"First name"), _(u"Last name"), _(u"Email"), _(u"Organization"), _(u"Date joined"), _(u"Last login"), _(u"View details")]
+        elements = []
+
+        teachers_ids = set(teacher.id for teacher in course.teachers.all())
+        for student in course.students.filter(pk__in=teachers_ids):
+            organizations = student.get_profile().organization.all()
+            organization = organizations[0].name if len(organizations) > 0 else ""
+            element = [student.first_name, student.last_name, student.email, organization, student.date_joined.strftime('%d/%m/%Y'), student.last_login.strftime('%d/%m/%Y'), {"caption": _(u"Go"), "link": reverse('teacheradmin_lists_coursestudents_detail', args=[course.slug, student.username])}]
+            elements.append(element)
+        return render_to_response('teacheradmin/list_table.html', {
+            'course': course,
+            'is_enrolled': is_enrolled,
+            'headers': headers,
+            'elements': elements,
+        }, context_instance=RequestContext(request))
+
+    elif format == 'csv':
+        students_list = get_course_teachers_csv(course)
+    
+        response = HttpResponse(mimetype='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="%s.csv"' % (course_slug)
+        response.write(students_list)
+        return response

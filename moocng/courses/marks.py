@@ -208,6 +208,13 @@ def get_unit_relative_mark(unit, user, db=None):
         mark_unit = 0
     return mark_unit
 
+def get_kqs_info_from_unit(unit, user, db=None):
+    db = db or get_db()
+    data_unit = {'user_id': user.pk,
+                   'unit_id': unit.pk}
+    marks_kqs = db.get_collection('marks_kq')
+    return list(marks_kqs.find(data_unit))
+
 def get_kq_mark(kq, user, db=None):
     data_unit = {   'user_id': user.pk,
                     'kq_id': kq.pk }
