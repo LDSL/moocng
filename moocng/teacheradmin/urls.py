@@ -123,5 +123,5 @@ urlpatterns = patterns('moocng.teacheradmin.views',
     url(r'^lists/courseteachers$', 'teacheradmin_lists_courseteachers', name='teacheradmin_lists_courseteachers'),
     url(r'^lists/courseteachers/csv$', 'teacheradmin_lists_courseteachers', {'format':'csv'}, name='teacheradmin_lists_courseteachers_csv'),
 
-    url(r'^lists/coursestudents/(?P<username>[-\+\w.]*)/$', 'teacheradmin_lists_coursestudents_detail', name='teacheradmin_lists_coursestudents_detail'),
+    url(r'^lists/coursestudents/(?P<username>[-\+@\w.]*)/$', 'teacheradmin_lists_coursestudents_detail', name='teacheradmin_lists_coursestudents_detail'),
 )
