@@ -431,7 +431,7 @@ div.button, a.button, input.button {
 	width: 80%;
 	max-height: 70vh;
 	left: 10%;
-	top: -100%;
+	top: -110vh;
 	background: @white;
 	padding: 65px 30px;
 	z-index: 2;
@@ -4768,7 +4768,8 @@ ul.rating {
 	.posts {
 		background-color: @white;
 		.post, .replyPost {
-			//border-bottom: 1px solid @neutral_light_2;
+			border-bottom: 1px solid @neutral_light_2;
+			
 			.bookmarkHandler {
 				position: relative;
 				top: -150px;
@@ -4854,6 +4855,7 @@ ul.rating {
 						border-style: solid;
 						border-width: 10px 10px 10px 0;
 						border-color: transparent @neutral_light_4 transparent transparent;
+				-webkit-filter: drop-shadow(-1px 0 0 @neutral_light_2);
 						filter: drop-shadow(-1px 0 0 @neutral_light_2);
 					}
 

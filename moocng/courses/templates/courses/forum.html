@@ -80,15 +80,17 @@
 									<div class="col-lg-4 col-md-4 col-sm-8 col-mob-4 info">
 										<h5>{% trans "Last reply" %}</h5>
 										{% with post.replies|last as lastpost %}
-										<span class="userPost">{{ lastpost.username }}</span>
-										<span class="datePost">[
-											{% if lastpost.original_date %}
-												{{ lastpost.original_date }}
-											{% else %}
-												{{ lastpost.date }}
-											{% endif %}
-										]</span>
-										<p>{{ lastpost.text }}</p>
+										<a href="{{ post.id }}#{{ lastpost.id }}" class="block">
+											<span class="userPost">{{ lastpost.username }}</span>
+											<span class="datePost">[
+												{% if lastpost.original_date %}
+													{{ lastpost.original_date }}
+												{% else %}
+													{{ lastpost.date }}
+												{% endif %}
+											]</span>
+											<p>{{ lastpost.text }}</p>
+										</a>
 										{% endwith %}
 									</div>
 									{% else %}
