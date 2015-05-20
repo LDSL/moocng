@@ -1079,20 +1079,23 @@ def teacheradmin_lists_coursestudents_detail(request, course_slug, username, for
     headers = [_(u"Title"), _(u"Mark"), _(u"Relative mark")]
     elements = []
     for unitmark in units:
-        unit = get_object_or_404(Unit, pk=unitmark["unit_id"])
-        element = {"title": unit.title, "mark": "%.2f" % unitmark["mark"], "relative_mark": "%.2f" % unitmark["relative_mark"], "order": unit.order}
-        element["kqs"] = []
-        kqs = get_kqs_info_from_unit(unit, student)
-        for kqmark in kqs:
-            try:
-                kq = KnowledgeQuantum.objects.get(pk=kqmark["kq_id"])
-                element_kq = {"title": kq.title, "mark": "%.2f" % kqmark["mark"], "relative_mark": "%.2f" % kqmark["relative_mark"], "order": kq.order}
-                element["kqs"].append(element_kq)
-            except:
-                pass
-        element["kqs"].sort(key=lambda x: x["order"], reverse=False)
+        try:
+            unit = Unit.objects.get(unitmark["unit_id"])
+            element = {"title": unit.title, "mark": "%.2f" % unitmark["mark"], "relative_mark": "%.2f" % unitmark["relative_mark"], "order": unit.order}
+            element["kqs"] = []
+            kqs = get_kqs_info_from_unit(unit, student)
+            for kqmark in kqs:
+                try:
+                    kq = KnowledgeQuantum.objects.get(pk=kqmark["kq_id"])
+                    element_kq = {"title": kq.title, "mark": "%.2f" % kqmark["mark"], "relative_mark": "%.2f" % kqmark["relative_mark"], "order": kq.order}
+                    element["kqs"].append(element_kq)
+                except:
+                    pass
+            element["kqs"].sort(key=lambda x: x["order"], reverse=False)
 
-        elements.append(element)
+            elements.append(element)
+        except:
+            pass
     elements.sort(key=lambda x: x["order"], reverse=False)
 
     return render_to_response('teacheradmin/lists_student_detail.html', {
