@@ -1080,7 +1080,7 @@ def teacheradmin_lists_coursestudents_detail(request, course_slug, username, for
     elements = []
     for unitmark in units:
         try:
-            unit = Unit.objects.get(unitmark["unit_id"])
+            unit = Unit.objects.get(pk=unitmark["unit_id"])
             element = {"title": unit.title, "mark": "%.2f" % unitmark["mark"], "relative_mark": "%.2f" % unitmark["relative_mark"], "order": unit.order}
             element["kqs"] = []
             kqs = get_kqs_info_from_unit(unit, student)
