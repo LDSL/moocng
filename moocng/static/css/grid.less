@@ -4,9 +4,15 @@
 
 .container {
   margin: 0 auto;
+
+  &.full-width {
+    width: 100%;
+  }
 }
 
 .row {
+  margin-left: 0;
+  
   & > * { float: left;}
   
   &:after {
