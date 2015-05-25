@@ -42,6 +42,8 @@ def theme(request):
             'logo_mini': settings.STATIC_URL + u'img/logo_mini.png',
             'subtitle': u'Knowledge for the masses',
             'top_banner': settings.STATIC_URL + u'img/top_banner.jpg',
+            'top_banner_title': u'<strong>OpenMOOC</strong>',
+            'top_banner_subtitle': u'A platform created to facilitate the search for open educational resources',
             'bootstrap_css': settings.STATIC_URL + u'css/bootstrap.min.css',
             'moocng_css': settings.STATIC_URL + u'css/moocng.css',
             'link_tos': u'/tos',
