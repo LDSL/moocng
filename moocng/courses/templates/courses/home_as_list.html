@@ -7,8 +7,10 @@
         {% if theme.top_banner %}
             <div class="main_banner" style="background-image: url('{{ theme.top_banner }}');">
             	<div class="color_back">
-					<h2><strong>ECO</strong> + Open<em>MOOC</em></h2>
-					<h1>{% trans "A platform created to facilitate the search for open educational resources" %}</h1>
+            		{% autoescape off %}
+					<h2>{{ theme.top_banner_title }}</h2>
+					{% endautoescape %}
+					<h1>{% trans theme.top_banner_subtitle %}</h1>
 					{% if not user.is_authenticated %}
 						<a class="button" href="{% url login %}">{% trans "Enter now" %}</a>
 					{% endif %}

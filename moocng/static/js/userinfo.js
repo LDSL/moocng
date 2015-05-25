@@ -1,19 +1,14 @@
-geolocation = null;
-deviceInfo = {
+var geolocation = null;
+var deviceInfo = {
 	type: "unknown",
 	os: "unknown",
 	orientation: "unknown"
 };
-geolocation_advised = false;
-geolocation_allowed = undefined;
-$(function(){
-	// Check geolocation permission
-	if(window.sessionStorage && window.localStorage){
-		geolocation_advised = sessionStorage.getItem('geolocation_advised') == "true";
-		geolocation_allowed = localStorage.getItem('geolocation_allowed');
-	}
+var geolocation_advised = false;
+var geolocation_allowed = undefined;
 
-    // Device Type
+$(function(){
+	// Device Type
     if(device.desktop()){
     	deviceInfo.type = "desktop";
     }else if(device.tablet()){
@@ -45,18 +40,26 @@ $(function(){
 	}
 
 	// Update geolocation
-    if(navigator.geolocation && (geolocation_advised || geolocation_allowed == 'true')){
-        navigator.geolocation.getCurrentPosition(function(position){
-        		localStorage.setItem('geolocation_allowed', true);
-            	geolocation = position;
-        	},function(error){
-        		if (error.code == error.PERMISSION_DENIED)
-        			localStorage.setItem('geolocation_allowed', false);
-        	},{timeout: 2000}
-        );
-    }else{
-    	showGeolocationAdvise();
-    }
+	if(!noGeolocation){
+		// Check geolocation permission
+		if(window.sessionStorage && window.localStorage){
+			geolocation_advised = sessionStorage.getItem('geolocation_advised') == "true";
+			geolocation_allowed = localStorage.getItem('geolocation_allowed');
+		}
+		
+	    if(navigator.geolocation && (geolocation_advised || geolocation_allowed == 'true')){
+	        navigator.geolocation.getCurrentPosition(function(position){
+	        		localStorage.setItem('geolocation_allowed', true);
+	            	geolocation = position;
+	        	},function(error){
+	        		if (error.code == error.PERMISSION_DENIED)
+	        			localStorage.setItem('geolocation_allowed', false);
+	        	},{timeout: 2000}
+	        );
+	    }else{
+	    	showGeolocationAdvise();
+	    }
+	}
 });
 
 function getBrowserName(){
