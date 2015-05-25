@@ -30,7 +30,7 @@
   
   <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400italic,400,700,800' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/grid.css" />
-  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/moocng.css"/>
+  <link rel="stylesheet" type="text/css" href="{{ theme.moocng_css }}"/>
   {% block extracss %}{% endblock %}  
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
@@ -92,6 +92,11 @@
       "footer":  "{% trans 'Come on, enter and learn more!' %}",
     };
   </script>
+  {% if not feature_geolocation %}
+  <script>
+    var noGeolocation = true;
+  </script>
+  {% endif %}
   <script src="{{ STATIC_URL }}js/userinfo.js"></script>
   {% if google_analytics %}
     <script>
@@ -117,8 +122,8 @@
 {% endif %}
     <header>
     <div class="row main-bar">
-      <h1 class="logo"><a href="{% url home %}" class="hide-text"><img src="{{ theme.logo }}" alt="logo {{ site.name }}" />{{ site.name }}</a></h1>
-      <img class="logo-mini" src="{{ STATIC_URL }}img/logo_mini.png" alt="logo {{ site.name }}" />
+      <h1 class="logo"><a href="{% url home %}" class="hide-text"><img src="{{ theme.logo }}" alt="logo {{ site.name }}" />{{ site.name }}. {% trans theme.subtitle %}</a></h1>
+      <img class="logo-mini" src="{{ theme.logo_mini }}" alt="logo {{ site.name }}" />
       <ul class="btn-link pull-left" id="meta-buttons">
         <li><a href="{% url home %}#catalogue" class="btn btn-link">{% trans "Catalogue"%}</a></li>
         {% if feature_teams %}
@@ -189,9 +194,9 @@
 	  		</p>
 	  		<div class="pull-right">
 			    <ul class="inline">
-			      <li><a href="http://ecolearning.eu/privacy-policy/">{% trans "Privacy Policy" %}</a></li>
+			      <li><a href="{{ theme.link_privacy }}">{% trans "Privacy Policy" %}</a></li>
 			      {% if show_tos %}
-			      <li><a href="http://ecolearning.eu/terms-of-use/">{% trans "Terms of Service" %}</a></li>
+			      <li><a href="{{ theme.link_tos }}">{% trans "Terms of Service" %}</a></li>
 			      {% endif %}
 			      <li>Powered by <a>{% trans "Open" %}{% trans "MOOC" %}</a></li>
 			    </ul>

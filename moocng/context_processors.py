@@ -38,17 +38,14 @@ def theme(request):
     context = {
         'theme': {
             'logo': settings.STATIC_URL + u'img/logo.png',
+            'logo_big': settings.STATIC_URL + u'img/logo_big.png',
+            'logo_mini': settings.STATIC_URL + u'img/logo_mini.png',
             'subtitle': u'Knowledge for the masses',
             'top_banner': settings.STATIC_URL + u'img/top_banner.jpg',
-            'top_banner_alt': _('decorative landscape of seville'),
-            'right_banner1': settings.STATIC_URL + u'img/right_banner1.jpg',
-            'right_banner1_alt': _('decorative book stack'),
-            'right_banner2': settings.STATIC_URL + u'img/right_banner2.jpg',
-            'right_banner2_alt': _('decorative laptop'),
             'bootstrap_css': settings.STATIC_URL + u'css/bootstrap.min.css',
             'moocng_css': settings.STATIC_URL + u'css/moocng.css',
-            'cert_banner': settings.STATIC_URL + u'img/cert_banner.png',
-            'cert_banner_alt': _('link to get a certification in this course'),
+            'link_tos': u'/tos',
+            'link_privacy': u'/legal',
         }
     }
 
@@ -213,6 +210,11 @@ def extra_settings(request):
     except AttributeError:
         profile_provider_url = None
 
+    try:
+        feature_geolocation = settings.FEATURE_GEOLOCATION
+    except AttributeError:
+        feature_geolocation = '#'
+
     context = {
         'site_url': site_url,
         'sandbox': sandbox,
@@ -238,7 +240,8 @@ def extra_settings(request):
         'forum_category_url': forum_category_url,
         'show_email': show_email,
         'max_file_size': max_file_size,
-        'profile_provider_url': profile_provider_url
+        'profile_provider_url': profile_provider_url,
+        'feature_geolocation': feature_geolocation
     }
 
     return context

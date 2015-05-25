@@ -32,7 +32,7 @@
   
   <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400italic,400,700,800' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/grid.css" />
-  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/moocng.css" />
+  <link rel="stylesheet" type="text/css" href="{{ theme.moocng_css }}" />
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/libs/jquery-1.7.2.min.js"><&#47;script>');</script>
@@ -54,7 +54,7 @@
 <body>
     <header class="big">
 		<div class="row main-bar">
-			<h1 class="logo"><a href="{% url home %}" class="hide-text"><img src="{{ STATIC_URL }}img/logo_big.png" alt="logo {{ site.name }}" />{{ site.name }}</a></h1>
+			<h1 class="logo"><a href="{% url home %}" class="hide-text"><img src="{{ theme.logo_big }}" alt="logo {{ site.name }}" />{{ site.name }}. {% trans theme.subtitle %}</a></h1>
 			<ul class="btn-link pull-left" id="meta-buttons">
 				<li><a href="#catalogue" class="btn btn-link smooth-link">{% trans "Catalogue"%}</a></li>
 				{% if feature_teams %}
@@ -151,85 +151,9 @@
 		 </div>
       </div>
       {% endif %}
-      <div class="prefoot">
-	<div class="container">
-	  <div class="row">
-	  	{% if institutions %}
-	    <div class="col-lg-7 col-md-5 col-sm-4 col-mob-2">
-	      <p class="text-normal">
-	      	{% spaceless %}
-	      	{% for institution in institutions %}
-	      	{% if forloop.first %}
-	      	{% trans "The" %} <a href="{{institution.url}}" target="_blank">{{institution.name}}</a>
-	      	{% elif forloop.last %}
-	      	{% trans "and the" %} <a href="{{institution.url}}" target="_blank">{{institution.name}}</a>
-	      	{% else %}
-	      	, {% trans "the" %} <a href="{{institution.url}}" target="_blank">{{institution.name}}</a>
-	      	{% endif %}
-	      	{% endfor %}
-	      	{% endspaceless %}
-	      	{% if institutions|length == 1 %}{% trans "cooperates" %}{% else %}{% trans "cooperate" %}{% endif %} {% trans "on the <strong>ECO</strong> platform to encourage the free participation on Open Access Massive Online Courses" %}.
-	      </p>
-	    </div>
-	    {% endif %}
-	    <div class="col-lg-3 col-md-3 col-sm-2 col-mob-1 col-lg-push-1 col-md-push-1">
-	      <ul class="nobullet">
-			{% if feature_sec_catalogue %}
-				<li><a href="#">{% trans "Catalogue of courses" %}</a></li>
-			{% endif %}
-			{% if feature_teams %}
-				<li><a href="#">{% trans "Teams" %}</a></li>
-			{% endif %}
-			{% if feature_sec_about %}
-				<li><a href="#">{% trans "About" %}</a></li>
-			{% endif %}
-			{% if feature_sec_howitworks %}
-				<li><a href="#">{% trans "How it works" %}</a></li>
-			{% endif %}
-	      </ul>
-	    </div>
-	    <div class="col-lg-2 col-md-2 col-sm-2 col-mob-1 col-lg-push-1 col-md-push-1">
-	      <ul class="nobullet">
-			{% if feature_sec_staff %}
-				<li><a href="#">{% trans "Staff" %}</a></li>
-			{% endif %}
-			{% if feature_sec_faq %}
-				<li><a href="#">{% trans "FAQ" %}</a></li>
-			{% endif %}
-			{% if feature_sec_contact %}
-				<li><a href="#">{% trans "Contact" %}</a></li>
-			{% endif %}
-	      </ul>
-	    </div>
-	  </div>
-	  <div class="row mt-20">
-	  	{% if institutions %}
-	    <div class="col-lg-7 col-md-5 col-sm-4 col-mob-2">
-	      <ul class="logos stretch inlineblock">
-	      	{% for institution in institutions %}
-			<li><a href="{{institution.url}}" target="_blank"><img src="{{ STATIC_URL }}img/{{institution.logo}}" alt="{{institution.name}}"></a></li>
-			{% endfor %}
-	      </ul>
-	    </div>
-	    {% endif %}
-	    <div class="col-lg-7 col-md-5 col-sm-4 col-mob-2 col-lg-push-1 col-md-push-1">
-	      <ul class="logos inlineblock">
-		<li><a href="http://ecolearning.eu/" target="_blank"><img src="{{ STATIC_URL }}img/logo-eco.png" alt="ECO"></a></li>
-		<li class="noBorder"><a href="http://ec.europa.eu/cip/" target="_blank"><img src="{{ STATIC_URL }}img/logo-cip.png" alt="CIP"></a></li>
-		<li><a href="http://ec.europa.eu/" target="_blank"><img src="{{ STATIC_URL }}img/logo-ec.png" alt="European Commission"></a></li>
-	      </ul>
-	    </div>
-	  </div>
-	  <div class="row mt-20">
-	    <div class="col-lg-7 col-md-5 col-sm-4 col-mob-2">
-	      <p class="text-small">{% trans "Platform integrated into the" %} <br><a href="http://ecolearning.eu/our-project/" target="_blank"><strong>{% trans "ECO: Elearning, Communication and Open-data" %}</strong></a> {% trans "project" %}</p>
-	    </div>
-	    <div class="col-lg-7 col-md-5 col-sm-4 col-mob-2 col-lg-push-1 col-md-push-1">
-	      <p class="text-tiny">Project funded from the European Community's CIP (Programme under grant agreement nº 21127)</p>
-	    </div>
-	  </div>
-	</div>
-      </div>
+      {% if theme.prefoot_template %}
+      	{% include theme.prefoot_template %}
+      {% endif %}
       <a id="help_button" href="https://ecolearninghelp.zendesk.com/hc/requests/new" target="_blank"><img src="{{ STATIC_URL }}img/ECO_icon_ayudame.svg" alt="{% trans "Get help" %}"></a>
     <div class="footer">
 	<div class="row">
@@ -238,9 +162,9 @@
 	  </p>
 	  <div class="pull-right">
 	    <ul class="inline">
-	      <li><a href="http://ecolearning.eu/privacy-policy/">{% trans "Privacy Policy" %}</a></li>
+	      <li><a href="{{ theme.link_privacy }}">{% trans "Privacy Policy" %}</a></li>
 	      {% if show_tos %}
-	      <li><a href="http://ecolearning.eu/terms-of-use/">{% trans "Terms of Service" %}</a></li>
+	      <li><a href="{{ theme.link_tos }}">{% trans "Terms of Service" %}</a></li>
 	      {% endif %}
 	      <li>{% trans "Powered by" %} <a>OpenMOOC</a></li>
 	    </ul>

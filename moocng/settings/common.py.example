@@ -407,18 +407,18 @@ GOOGLE_ANALYTICS_CODE = ''
 GRAVATAR_URL_PREFIX = '//www.gravatar.com/'
 
 MOOCNG_THEME = {
-    #'logo': u'',
-    #'subtitle': u'',
-    #'top_banner': u'',
-    #'top_banner_alt': _(''),
-    #'right_banner1': u'',
-    #'right_banner1_alt': _(''),
-    #'right_banner2': u'',
-    #'right_banner2_alt': _(''),
+    'logo': STATIC_URL + u'brand/img/logo.png',
+    'logo_big': STATIC_URL + u'brand/img/logo_big.png',
+    'logo_mini': STATIC_URL + u'brand/img/logo_mini.png',
+    'subtitle': u'We don\'t teach, we share knowledge',
+    'top_banner': STATIC_URL + u'brand/img/top_banner.png',
+    'top_banner_title': u'<strong>OpenMOOC</strong>',
+    'top_banner_subtitle': u'A platform created to facilitate the search for open educational resources',
     #'bootstrap_css': u'',
-    #'moocng_css': u'',
-    #'cert_banner': u'',
-    #'cert_banner_alt': _(''),
+    'moocng_css': STATIC_URL + u'brand/css/moocng.css',
+    #'prefoot_template': u'prefoot.html',
+    #'link_tos': u'http://ecolearning.eu/terms-of-use/',
+    #'link_privacy': u'http://ecolearning.eu/privacy-policy/',
 }
 
 ENABLED_COMUNICATIONS = (
@@ -629,7 +629,7 @@ FEATURE_TEAMS = False
 FEATURE_CALENDAR = False
 FEATURE_WIKI = False
 FEATURE_GROUPS = False
-FEATURE_GROUPS_VIDEO = False;
+FEATURE_GROUPS_VIDEO = False
 FEATURE_FORUM = False
 FEATURE_BLOG = False
 FEATURE_NOTIFICATIONS = False
@@ -642,6 +642,8 @@ FEATURE_SEC_CONTACT = False
 FEATURE_SEC_TEACHERS = False
 FEATURE_SOCIAL = False
 FEATURE_ECTS = False
+SHOW_EMAIL = False
+FEATURE_GEOLOCATION = False
 
 INSTITUTIONS = (
     ('UNED','logo_uned.png','http://www.uned.es'),
