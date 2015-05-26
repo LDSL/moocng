@@ -69,6 +69,11 @@
 		        	</a></li>
 		        {% endif %}
 			</ul>
+			{%if theme.header_right_logo %}
+			<div class="extra-logo pull-right">
+				<img src="{{ theme.header_right_logo }}">
+			</div>
+			{% endif %}
 			{% if user.is_authenticated %}
 				{% block useractions %}
 					{% include "courses/include.useractions.html" %}
