@@ -683,6 +683,36 @@ def course_forum_vote(request, course_slug, post_id, reply_id, vote):
     votes = f.post_vote(reply_id, request.user.id, vote)
     return HttpResponse(simplejson.dumps(votes), mimetype='application/json')
 
+def course_forum_post_flag(request, course_slug, post_id):
+    f = Forum()
+    success = f.post_flag(post_id, request.user.id)
+    if success:
+        return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
+    else:
+        #TODO Alert: ERROR
+        return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
+
+def course_forum_post_edit(request, course_slug, post_id):
+    f = Forum()
+    if request.method == 'POST':
+        form = ForumReplyForm(request.POST)
+        if form.is_valid():
+            success = f.post_edit(post_id, request.user.id, course_slug, form.cleaned_data['postText'])
+            if success:
+                return HttpResponseRedirect('{0}#{1}'.format(reverse('course_forum_post', args=[course_slug, post_id]), reply_id))
+            else:
+                #TODO Alert: Can't edit
+                return HttpResponseRedirect('{0}#{1}'.format(reverse('course_forum_post', args=[course_slug, post_id]), reply_id))
+
+def course_forum_post_delete(request, course_slug, post_id):
+    f = Forum()
+    success = f.post_delete(post_id, request.user.id, course_slug)
+    if success:
+        return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
+    else:
+        #TODO Alert: Can't delete
+        return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
+
 def course_forum_load_more(request, course_slug, page, query, search=False, hashtag=False):
     f = Forum()
     page = int(page)

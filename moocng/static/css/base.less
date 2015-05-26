@@ -4933,7 +4933,31 @@ ul.rating {
 						}
 					}
 
+					.edit{
+						color:@highlight;
+						border-right: 1px solid @neutral_light_2;
+						margin-right: 18px;
+						padding-right: 20px;
+						/*line-height: 45px;*/
+						cursor:pointer;
+						display: inline-block;
+						margin-bottom: 25px;
+						/*margin-top: 30px;*/
+						
+						&:before {
+							content: url('/static/img/ECO_icon_editar.svg');
+							position: relative;
+							top: 7px;
+							margin-right: 10px;
+						}
+					}
+
 					.karma {
+						border-right: 1px solid @neutral_light_2;
+						margin-right: 18px;
+						padding-right: 20px;
+						display: inline-block;
+
 						&:before {
 							content: url('/static/img/ECO_icon_karma.svg');
 							display: inline-block;
@@ -4998,6 +5022,53 @@ ul.rating {
 
 						&:before {
 							content: url('/static/img/ECO_icon_favorito.svg');
+							position: relative;
+							top: 7px;
+							margin-right: 10px;
+						}
+					}
+
+					.flag {
+						color:@highlight;
+						cursor:pointer;
+
+						border-right: 1px solid @neutral_light_2;
+						margin-right: 18px;
+						padding-right: 20px;
+						display: inline-block;
+
+						&:before {
+							content: url('/static/img/ECO_icon_moderar.svg');
+							position: relative;
+							top: 7px;
+							margin-right: 10px;
+						}
+					}
+
+					.delete {
+						color:@highlight;
+						cursor:pointer;
+
+						border-right: 1px solid @neutral_light_2;
+						margin-right: 18px;
+						padding-right: 20px;
+						display: inline-block;
+
+						&:before {
+							content: url('/static/img/ECO_icon_eliminar.svg');
+							position: relative;
+							top: 7px;
+							margin-right: 10px;
+						}
+					}
+
+					.permalink {
+						color:@highlight;
+						cursor:pointer;
+						display: inline-block;
+
+						&:before {
+							content: url('/static/img/ECO_icon_hiperlink.svg');
 							position: relative;
 							top: 7px;
 							margin-right: 10px;

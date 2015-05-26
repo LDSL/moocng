@@ -10,6 +10,10 @@ from datetime import date, datetime
 from moocng.mongodb import get_db
 from bson.objectid import ObjectId
 
+from django.contrib.auth.models import User
+from moocng.courses.models import Course
+from moocng.courses.utils import is_teacher
+
 class CommunityShareBase(object):
 	def __init__(self, prefix='share'):
 		self.col_prefix=prefix
@@ -281,6 +285,39 @@ class Forum(CommunityShareBase):
 		else:
 			return False
 
+	def post_flag(self, post_id, id_user):
+		postCollection = get_db().get_collection(self.col_post)
+		post = postCollection.find_one({"_id": ObjectId(post_id)})
+		if post:
+			if "flaggers" in post:
+				user_flagged = [x for x in post["flaggers"] if id_user == x["id_user"]]
+				if user_flagged:
+					return True
+			else:
+				post["flaggers"] = []
+			post["flaggers"].append({"id_user": id_user})
+			postCollection.update({"_id": ObjectId(post_id)}, {"$set": {"flaggers": post["flaggers"]}})
+			return True
+		else:
+			return False
+
+	def post_edit(self, post_id, id_user, course_slug, postText):
+		postCollection = get_db().get_collection(self.col_post)
+		
+		if self._can_edit(id_user, course_slug, post_id):
+			postCollection.update({"_id": ObjectId(post_id)}, {"$set": {"text": escape(postText)}})
+			return True
+		else:
+			return False
+
+	def post_delete(self, post_id, id_user, course_slug):
+		postCollection = get_db().get_collection(self.col_post)
+		if self._can_edit(id_user, course_slug, post_id):
+			postCollection.update({"_id": ObjectId(post_id)}, {"$set": {"deleted": True}})
+			return True
+		else:
+			return False
+
 	def _process_post(self, post, from_zone, to_zone, id_user=None):
 		post["text"] = self._process_urls(post["text"])
 		super(Forum, self)._process_post(post, from_zone, to_zone)
@@ -321,3 +358,15 @@ class Forum(CommunityShareBase):
 	def _process_urls(self, text):
 		hashtagged = re.sub(r'(?!<a href=")https?:\/\/([a-zA-Z\d._\-\/?]+)', self._url_to_link, text)
 		return hashtagged
+
+	def _can_edit(self, id_user, course_slug, post_id=None):
+		user = User.objects.get(pk=id_user)
+		course = Course.objects.get(slug=course_slug)
+		can_edit = False
+		if user.is_superuser or is_teacher(user, course):
+			can_edit = True
+		elif post_id is not None:
+			post = postCollection.find_one({"_id": ObjectId(post_id)})
+			can_edit = post["id_user"] == id_user
+
+		return can_edit
