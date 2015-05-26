@@ -46,6 +46,9 @@ def theme(request):
             'top_banner_subtitle': u'A platform created to facilitate the search for open educational resources',
             'bootstrap_css': settings.STATIC_URL + u'css/bootstrap.min.css',
             'moocng_css': settings.STATIC_URL + u'css/moocng.css',
+            'favicon_dir': settings.STATIC_URL + u'img/favicon/',
+            'course_default_thumbnail': settings.STATIC_URL + u'img/classroom.png',
+            'course_overview_default_background': settings.STATIC_URL + u'img/course_bck.jpg',
             'link_tos': u'/tos',
             'link_privacy': u'/legal',
         }

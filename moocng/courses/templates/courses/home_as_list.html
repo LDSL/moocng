@@ -56,7 +56,7 @@
 					{% if course.thumbnail %}
 					    <a href="{{ course.get_absolute_url }}" style="background-image: url('{{ MEDIA_URL }}{{ course.thumbnail }}');" class="hide-text">{% if course.thumbnail_alt %}{{ course.thumbnail_alt }}{% else %}{% trans 'decorative classroom image' %}{% endif %}</a>
 					{% else %}
-					    <a href="{{ course.get_absolute_url }}" style="background-image: url('{{ STATIC_URL }}img/classroom.jpg');" class="hide-text">{% trans 'decorative classroom image' %}</a>
+					    <a href="{{ course.get_absolute_url }}" style="background-image: url('{{ theme.course_default_thumbnail }}');" class="hide-text">{% trans 'decorative classroom image' %}</a>
 					{% endif %}
 					{% if course.certification_available %}
 					    <img class="cert" src="{{ STATIC_URL }}img/ECO_icon_certificado.svg" alt="{% trans 'certificated course' %}">
