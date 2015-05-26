@@ -31,7 +31,7 @@
 		{% if course.background %}
 		<div class="course-header" style="background-image: url('{{ MEDIA_URL }}{{ course.background }}');">
 		{% else %}
-		<div class="course-header">
+		<div class="course-header" style="background-image: url('{{ theme.course_overview_default_background }}');">
 		{% endif %}
 			<div class="container">
 				<div class="row">
