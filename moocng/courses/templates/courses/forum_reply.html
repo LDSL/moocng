@@ -1,5 +1,5 @@
 {% load i18n %}
-<div class="replyPost">
+<div class="replyPost {% if not forloop.last %}children{% endif %}">
 	<div class="bookmarkHandler" id="{{reply.id}}"></div>
 	<div class="cell">
 		<img class="gravatar" src={{ reply.avatar }}>
@@ -10,7 +10,7 @@
 		<a href="{{reply.id_user}}"><span class="shared">{% trans "Shared by"%} {{reply.shared_by}}</span></a>
 		<div class="clearfix"></div>
 		{% endif %}
-		<a href={% url profile_user post.username %}><span class="namePost">{{reply.first_name}} {{reply.last_name}}</span></a>
+		<a href={% url profile_user reply.username %}><span class="namePost">{{reply.first_name}} {{reply.last_name}}</span></a>
 		<span class="emailPost">@{{reply.username}}</span>
 		
 		<span class="datePost">[{{reply.date}}]</span>
@@ -73,16 +73,8 @@
 				</a>
 			</span>
 		</div>
-		{% if reply.replies|length > 0 %}
-		<div class="subreplies">
-			{% for subreply in reply.replies %}
-				{% with "courses/forum_reply.html" as filename %}
-					{% with subreply as reply %}
-						{% include filename %}
-					{% endwith %}
-				{% endwith %}
-			{% endfor %}
-		</div>
+		{% if reply.replies|length %}
+		<div class="subreplies">{% for subreply in reply.replies %}{% with "courses/forum_reply.html" as filename %}{% with subreply as reply %}{% include filename %}{% endwith %}{% endwith %}{% endfor %}</div>
 		{% endif %}
 	</div>
 </div>

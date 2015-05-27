@@ -296,6 +296,12 @@ class Forum(CommunityShareBase):
 				post["votes"] = post["votes"] + vote
 				post["voters"].append({"id_user": id_user, "vote": vote})
 				postCollection.update({"_id": ObjectId(post_id)}, {"$set": {"votes": post["votes"], "voters": post["voters"]}})
+				#Update User karma
+				user = User.objects.get(pk=post["id_user"])
+				profile = user.get_profile()
+				profile.karma += vote
+				profile.save()
+				user.save()
 				return post["votes"]
 			else:
 				return False

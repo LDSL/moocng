@@ -4764,7 +4764,7 @@ ul.rating {
 	.posts {
 		background-color: @white;
 		.post, .replyPost {
-			border-bottom: 1px solid @neutral_light_2;
+			//border-bottom: 1px solid @neutral_light_2;
 			
 			.bookmarkHandler {
 				position: relative;
@@ -5113,15 +5113,64 @@ ul.rating {
 				padding-left: 71px;
 				background-color: @neutral_light_4;
 				overflow: auto;
+				border-top: 1px solid @neutral_light_2;
+
+				.replyPost:not(:empty) {
+					border-top: 1px solid @neutral_light_2;
+
+					&:first-of-type {
+						border-top: none;
+					}
+
+					.gravatar {
+						margin-top: 5px;
+					}
+				}
+			}
+
+			.subreplies:not(:empty) {
+				border-top: 1px solid @neutral_light_2;
+				position: relative;
+				left: -46px;
+				padding-left: 24px;
+				width: calc(~'100% + 46px');
 
 				.replyPost {
-					border-top: 1px solid @neutral_light_2;
+					position: relative;
+					left: -24px;
+					padding-left: 24px;
+					width: calc(~'100% + 24px');
+
+					&:before {
+						content: "";
+						position: absolute;
+						left: 46px;
+						height: 24px;
+						border-left: 4px solid @neutral_light_2;
+					}
+
+					&.children:before {
+						height: 100%;
+					}
+
+					.gravatar {
+						margin-top: 5px;
+					}
 				}
 			}
 		}
 
 		.replyPost {
 			width: 100%;
+			position: relative;
+
+			&:before {
+				content: "";
+				position: absolute;
+				left: 24px;
+				height: 100%;
+				border-left: 4px solid @neutral_light_2;
+			}
 
 			& > .cell:nth-of-type(3) {
 				width: 100%;
