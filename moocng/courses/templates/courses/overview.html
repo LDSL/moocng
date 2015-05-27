@@ -247,7 +247,11 @@
 				{% endif %}
         
 				<div class="box transparent">
+					{% if course.official_course %}
 					<h2>{% trans "Teachers" %}</h2>
+					{% else %}
+					<h2>{% trans "Tutors" %}</h2>
+					{% endif %}
 					<ul class="unstyled clearfix">
 					{% for course_teacher in course_teachers %}
 						<li class="teacher">
