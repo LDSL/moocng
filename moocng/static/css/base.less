@@ -4932,9 +4932,9 @@ ul.rating {
 
 					.reply{
 						color:@highlight;
-						border-right: 1px solid @neutral_light_2;
-						margin-right: 18px;
-						padding-right: 20px;
+						/*border-left: 1px solid @neutral_light_2;
+						margin-left: 18px;
+						padding-left: 20px;*/
 						/*line-height: 45px;*/
 						cursor:pointer;
 						display: inline-block;
@@ -4951,9 +4951,9 @@ ul.rating {
 
 					.edit{
 						color:@highlight;
-						border-right: 1px solid @neutral_light_2;
-						margin-right: 18px;
-						padding-right: 20px;
+						border-left: 1px solid @neutral_light_2;
+						margin-left: 18px;
+						padding-left: 20px;
 						/*line-height: 45px;*/
 						cursor:pointer;
 						display: inline-block;
@@ -4969,9 +4969,9 @@ ul.rating {
 					}
 
 					.karma {
-						border-right: 1px solid @neutral_light_2;
-						margin-right: 18px;
-						padding-right: 20px;
+						border-left: 1px solid @neutral_light_2;
+						margin-left: 18px;
+						padding-left: 20px;
 						display: inline-block;
 
 						&:before {
@@ -5048,9 +5048,9 @@ ul.rating {
 						color:@highlight;
 						cursor:pointer;
 
-						border-right: 1px solid @neutral_light_2;
-						margin-right: 18px;
-						padding-right: 20px;
+						border-left: 1px solid @neutral_light_2;
+						margin-left: 18px;
+						padding-left: 20px;
 						display: inline-block;
 
 						&:before {
@@ -5065,9 +5065,9 @@ ul.rating {
 						color:@highlight;
 						cursor:pointer;
 
-						border-right: 1px solid @neutral_light_2;
-						margin-right: 18px;
-						padding-right: 20px;
+						border-left: 1px solid @neutral_light_2;
+						margin-left: 18px;
+						padding-left: 20px;
 						display: inline-block;
 
 						&:before {
@@ -5083,11 +5083,28 @@ ul.rating {
 						cursor:pointer;
 						display: inline-block;
 
+						border-left: 1px solid @neutral_light_2;
+						margin-left: 18px;
+						padding-left: 20px;
+
 						&:before {
 							content: url('/static/img/ECO_icon_hiperlink.svg');
 							position: relative;
 							top: 7px;
 							margin-right: 10px;
+						}
+					}
+
+					.flag, .edit, .delete, .permalink {
+						//display: none;
+						opacity: 0.00001;
+						transition: opacity .25s ease;
+					}
+
+					&:hover {
+						.flag, .edit, .delete, .permalink {
+							//display: inline-block;
+							opacity: 1;
 						}
 					}
 				}
@@ -5105,7 +5122,12 @@ ul.rating {
 		}
 
 		.replyPost {
-			
+			width: 100%;
+
+			& > .cell:nth-of-type(3) {
+				width: 100%;
+			}
+
 			.cell .gravatar {
 				margin-left: 0;
 			}

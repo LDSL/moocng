@@ -48,7 +48,7 @@
 													0
 												{% endif %}
 											</span>
-											{% if post.username != user.username %}
+											{% if post.user_id != user.id %}
 												<a href="/course/{{ course.slug }}/forum/{{ post.id }}/upvote/{{ post.id }}" data-vote="1"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_up_black.svg" alt="{% trans "Vote +1" %}"  title="{% trans "Vote +1" %}"></a>
 												<a href="/course/{{ course.slug }}/forum/{{ post.id }}/downvote/{{ post.id }}" data-vote="-1"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_down_black.svg" alt="{% trans "Vote -1" %}" title="{% trans "Vote -1" %}"></a>
 											{% endif %}
@@ -58,7 +58,7 @@
 												{% trans "Flag" %}
 											</a>
 										</span>
-										{% if post.user_id == user.pk or is_teacher or user.is_staff or user.is_superuser %}
+										{% if post.user_id == user.id or is_teacher or user.is_staff or user.is_superuser %}
 											<!--<span class="edit">{% trans "Edit" %}</span>
 											<form class="postEdit" method="post" action="/course/{{ course.slug }}/forum/{{ post.id }}/edit/{{ post.id }}">
 												{% csrf_token %}
@@ -66,6 +66,8 @@
 												<input class="postButton" type="submit" value="{% trans "Send" %}">
 												<span class="cancelPost">{% trans "Cancel" %}</span>
 											</form>-->
+										{% endif %}
+										{% if is_teacher or user.is_staff or user.is_superuser %}
 											<span class="delete">
 												<a href="{% url course_forum_post_delete course.slug post.id %}">
 													{% trans "Delete" %}

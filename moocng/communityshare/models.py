@@ -22,9 +22,20 @@ class CommunityShareBase(object):
 	def get_posts(self, idsQuery, page, show_children=False):
 	    postCollection = get_db().get_collection(self.col_post)
 	    if not show_children:
-	    	posts = postCollection.find({"$and": [{"$or": idsQuery, }, {"$or": [ {"is_child": {"$exists": False} }, {"is_child": False} ] } ] })[page:page+10].sort("date",pymongo.DESCENDING)
+	    	posts = postCollection.find({
+	    		"$and": [
+	    			{"$or": idsQuery, },
+	    			{"$or": [ {"is_child": {"$exists": False} }, {"is_child": False} ] },
+	    			{"$or": [ {"deleted": {"$exists": False}}, {"deleted": False} ] },
+	    		]
+	    	})[page:page+10].sort("date",pymongo.DESCENDING)
 	    else:
-	    	posts = postCollection.find({"$or": idsQuery, })[page:page+10].sort("date",pymongo.DESCENDING)
+	    	posts = postCollection.find({
+	    		"$and": [
+	    			{"$or": idsQuery, },
+	    			{"$or": [ {"deleted": {"$exists": False} }, {"deleted": False} ] }
+	    		]
+	    	})[page:page+10].sort("date",pymongo.DESCENDING)
 	    posts_list = []
 	    for post in posts:
 	        if len(post['children']) > 0:
@@ -212,12 +223,18 @@ class Forum(CommunityShareBase):
 
 	def get_post_detail(self, post_id, user_id=None):
 		postCollection = get_db().get_collection(self.col_post)
-		post = postCollection.find_one({'_id': ObjectId(post_id)})
-		from_zone = tz.tzutc()
-		to_zone = tz.tzlocal()
-		self._process_post(post, from_zone, to_zone, user_id)
-		if len(post['children']) > 0:
-			self._process_post_children(post, user_id)
+		post = postCollection.find_one({
+			'$and': [
+				{'_id': ObjectId(post_id)},
+				{"$or": [ {"deleted": {"$exists": False} }, {"deleted": False} ] }
+			]
+		})
+		if post:
+			from_zone = tz.tzutc()
+			to_zone = tz.tzlocal()
+			self._process_post(post, from_zone, to_zone, user_id)
+			if len(post['children']) > 0:
+				self._process_post_children(post, user_id)
 		return post
 
 	def insert_post(self, category_slug, id_user, first_name, last_name, username, avatar, postTitle, postText):
@@ -328,28 +345,36 @@ class Forum(CommunityShareBase):
 				post["user_vote"] += user_vote["vote"]
 
 	def _process_post_children(self, post, id_user=None):
-	    postCollection = get_db().get_collection(self.col_post)
-	    from_zone = tz.tzutc()
-	    to_zone = tz.tzlocal()
-	    post['replies'] = []
-	    for child in post['children']:
-	        post_child = postCollection.find({'_id': child}).limit(1)[0]
-	        if post_child and len(post_child['children']) > 0:
-	            self._process_post_children(post_child, id_user)
+		postCollection = get_db().get_collection(self.col_post)
+		from_zone = tz.tzutc()
+		to_zone = tz.tzlocal()
+		post['replies'] = []
+		for child in post['children']:
+			try:
+				post_child = postCollection.find({
+					'$and': [
+						{'_id': child},
+						{'$or': [ {'deleted': {'$exists': False} }, {'deleted': False} ] }
+					]
+				}).limit(1)[0]
+				if post_child and len(post_child['children']) > 0:
+					self._process_post_children(post_child, id_user)
 
-	        post_child["date"] = datetime.strptime(post_child.get("date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
-	        if("original_date" in post_child):
-	            post_child["original_date"] = datetime.strptime(post_child.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
-	        post_child["id"] = post_child.pop("_id")
-	        post_child["text"] = self._process_urls(post_child["text"])
-	        post_child["text"] = self._process_hashtags(post_child["text"])
-	        if id_user:
-				user_voted = [x for x in post_child["voters"] if id_user == x["id_user"]]
-				post_child["user_vote"] = 0
-				for user_vote in user_voted:
-					post_child["user_vote"] += user_vote["vote"]
+				post_child["date"] = datetime.strptime(post_child.get("date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
+				if("original_date" in post_child):
+					post_child["original_date"] = datetime.strptime(post_child.get("original_date"), "%Y-%m-%dT%H:%M:%S.%f").replace(tzinfo=from_zone).astimezone(to_zone).strftime('%d %b %Y').upper()
+				post_child["id"] = post_child.pop("_id")
+				post_child["text"] = self._process_urls(post_child["text"])
+				post_child["text"] = self._process_hashtags(post_child["text"])
+				if id_user:
+					user_voted = [x for x in post_child["voters"] if id_user == x["id_user"]]
+					post_child["user_vote"] = 0
+					for user_vote in user_voted:
+						post_child["user_vote"] += user_vote["vote"]
 
-	        post['replies'].append(post_child)
+				post['replies'].append(post_child)
+			except:
+				pass
 
 	def _url_to_link(self, matchobj):
 	    url = matchobj.group(0)

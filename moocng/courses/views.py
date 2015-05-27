@@ -67,6 +67,8 @@ import hashlib
 import time
 from django.core import mail
 
+from django.http import Http404
+
 
 def home(request):
 
@@ -652,7 +654,9 @@ def course_forum_post(request, course_slug, post_id):
 
         f = Forum()
         post = f.get_post_detail(post_id, request.user.id)
-
+        if not post:
+            raise Http404('Post not found')
+        
         return render_to_response('courses/forum_post.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
