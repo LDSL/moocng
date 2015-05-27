@@ -220,6 +220,11 @@ def extra_settings(request):
     except AttributeError:
         feature_geolocation = '#'
 
+    try:
+        show_logout = settings.SHOW_LOGOUT
+    except AttributeError:
+        show_logout = False
+
     context = {
         'site_url': site_url,
         'sandbox': sandbox,
@@ -246,7 +251,8 @@ def extra_settings(request):
         'show_email': show_email,
         'max_file_size': max_file_size,
         'profile_provider_url': profile_provider_url,
-        'feature_geolocation': feature_geolocation
+        'feature_geolocation': feature_geolocation,
+        'show_logout': show_logout
     }
 
     return context
