@@ -4932,14 +4932,9 @@ ul.rating {
 
 					.reply{
 						color:@highlight;
-						/*border-left: 1px solid @neutral_light_2;
-						margin-left: 18px;
-						padding-left: 20px;*/
-						/*line-height: 45px;*/
 						cursor:pointer;
 						display: inline-block;
 						margin-bottom: 25px;
-						/*margin-top: 30px;*/
 						
 						&:before {
 							content: url('/static/img/ECO_icon_responder.svg');
@@ -4954,11 +4949,9 @@ ul.rating {
 						border-left: 1px solid @neutral_light_2;
 						margin-left: 18px;
 						padding-left: 20px;
-						/*line-height: 45px;*/
 						cursor:pointer;
 						display: inline-block;
 						margin-bottom: 25px;
-						/*margin-top: 30px;*/
 						
 						&:before {
 							content: url('/static/img/ECO_icon_editar.svg');
@@ -5009,13 +5002,19 @@ ul.rating {
 							margin: 0 5px;
 							position: relative;
 							top: -3px;
+							display: inline-block;
+							height: 25px;
+							vertical-align: middle;
 
 							&:first-of-type {
 								margin-left: 10px;
 							}
 
 							img {
-								vertical-align: middle;
+								/*vertical-align: middle;*/
+								display: block;
+								position: relative;
+								top: 8px;
 							}
 						}
 					}
