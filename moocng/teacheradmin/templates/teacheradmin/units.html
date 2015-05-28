@@ -158,10 +158,15 @@
                     <option value='{{ media_content_type.0}}'>{{ media_content_type.1}}</option>
                 {% endfor %}
             </select>
-        </div>
+        </div>                                        
         <div class="span4">
             <label for="kqmedia_content_id" class="required">{% trans "Content id or url" %}</label>
             <input id="kqmedia_content_id" type="text" name="kqmedia_content_id" maxlength="200" class="input-xlarge" required="required" />
+        </div>
+        <div class="span4" id="s3_upload_form">
+            <input type="file" accept="video/mp4" id="kqmedia_s3_upload_file" name="kqmedia_s3_upload_file">
+            <progress></progress>
+            <button id="s3_upload_btn" class="btn">{% trans "Upload video" %}</button>
         </div>
         <div class="span2">
             <label for="kqweight" class="required">{% trans "Weight" %}</label>

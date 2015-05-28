@@ -122,6 +122,9 @@ if (_.isUndefined(window.MOOC)) {
                 'prezi': [
                     /prezi\.com\/([a-zA-Z\d\-\_]+)\/.*/,
                     /^([a-zA-Z\d\-\_]+)$/ // Can't use \w because can't accept the _ char
+                ],
+                's3video': [
+                    /^(http(s)?:\/\/[A-zA-Z0-9:\/\-\_.]+)$/
                 ]
             };
 
@@ -760,7 +763,8 @@ if (_.isUndefined(window.MOOC)) {
                 "change select#kqmedia_content_type": "redrawCanGetLastFrame",
                 "click button.removeasset": "removeAssetOfAvailability",
                 "click button#addasset": "addAssetToAvailability",
-                "show a[data-toggle='tab']": "checkBeforeToggleTab"
+                "show a[data-toggle='tab']": "checkBeforeToggleTab",
+                "click button#s3_upload_btn": "uploadVideoToS3",
             },
 
             initialize: function () {
@@ -769,7 +773,7 @@ if (_.isUndefined(window.MOOC)) {
                     "toggleSolution", "addQuestion", "addPeerReviewAssignment",
                     "addCriterion", "forceProcess", "removeQuestion",
                     "removePeerReviewAssignment", "go2options", "addAssetAvailability",
-                    "removeAssetAvailability", "checkBeforeToggleTab");
+                    "removeAssetAvailability", "checkBeforeToggleTab", "uploadVideoToS3");
             },
 
             render: function () {
@@ -1391,6 +1395,31 @@ if (_.isUndefined(window.MOOC)) {
                     });
                 }, this);
                 showConfirmationModal(cb);
+            },
+
+            uploadVideoToS3: function(evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                
+                var input = this.$el.find("#s3_upload_form input[type='file']")[0],
+                fakeForm = new FormData();
+                fakeForm.append("file", input.files[0]);
+                $.ajax("s3upload/?kq=" + this.model.get("id"), {
+                    type: "POST",
+                    headers: {
+                        "X-CSRFToken": csrftoken
+                    },
+                    data: fakeForm,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        console.log("Toma!");
+                        $("#kqmedia_content_id").val(data.url);
+                    },
+                    error: function () {
+                        alert('Error uploading video');
+                    }
+                });
             },
 
             addQuestion: function (evt) {
