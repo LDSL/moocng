@@ -1,5 +1,5 @@
 {% load i18n %}
-<div class="replyPost {% if not forloop.last %}children{% endif %}">
+<div class="replyPost {% if not forloop.last or reply.replies|length %}children{% endif %} {% if forloop.last %}last{% endif%}">
 	<div class="bookmarkHandler" id="{{reply.id}}"></div>
 	<div class="cell">
 		<img class="gravatar" src={{ reply.avatar }}>

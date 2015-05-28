@@ -5119,11 +5119,28 @@ ul.rating {
 				overflow: auto;
 				border-top: 1px solid @neutral_light_2;
 
-				.replyPost:not(:empty) {
+				& > .replyPost:not(:empty) {
 					border-top: 1px solid @neutral_light_2;
 
 					&:first-of-type {
 						border-top: none;
+					}
+
+					&.last {
+						border-top: none;
+
+						&:before {
+							height: 24px;
+						}
+
+						&:after {
+							content: "";
+							position: absolute;
+							top: 0;
+							left: 24px;
+							width: calc(~'100% - 24px');
+							border-top: 1px solid @neutral_light_2;
+						}
 					}
 
 					.gravatar {
@@ -5133,7 +5150,6 @@ ul.rating {
 			}
 
 			.subreplies:not(:empty) {
-				border-top: 1px solid @neutral_light_2;
 				position: relative;
 				left: -46px;
 				padding-left: 24px;
@@ -5143,6 +5159,7 @@ ul.rating {
 				transition: max-height .5s ease-in-out;
 
 				.replyPost {
+					border-top: 1px solid @neutral_light_2;
 					position: relative;
 					left: -24px;
 					padding-left: 24px;
