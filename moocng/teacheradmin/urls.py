@@ -42,6 +42,9 @@ urlpatterns = patterns('moocng.teacheradmin.views',
     url(r'^units/transcription/$', 'teacheradmin_units_transcription',
         name='teacheradmin_units_transcription'),
 
+    url(r'^units/s3upload/$', 'teacheradmin_units_s3upload',
+        name='teacheradmin_units_s3upload'),
+
     url(r'^units/question/(?P<kq_id>\d+)/$', 'teacheradmin_units_question',
         name='teacheradmin_units_question'),
 
