@@ -74,6 +74,9 @@
 			</span>
 		</div>
 		{% if reply.replies|length %}
+		<div class="repliesToggle">
+			<img src="{{ STATIC_URL }}img/ECO_icon_comentar_foro.svg" alt="{% trans 'Toggle comments' %}" title="{% trans 'Toggle comments' %}">
+		</div>
 		<div class="subreplies">{% for subreply in reply.replies %}{% with "courses/forum_reply.html" as filename %}{% with subreply as reply %}{% include filename %}{% endwith %}{% endwith %}{% endfor %}</div>
 		{% endif %}
 	</div>

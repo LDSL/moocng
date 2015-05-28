@@ -138,6 +138,10 @@
 			}
 		});
 	});
+	$(".repliesToggle").click(function(e){
+		//$(this).parent().parent().toggleClass("collapsed");
+		$(this).siblings('.subreplies').slideToggle();
+	});
 </script>
 
 {% endblock %}

@@ -5138,6 +5138,9 @@ ul.rating {
 				left: -46px;
 				padding-left: 24px;
 				width: calc(~'100% + 46px');
+				max-height: 100%;
+				overflow-y:	hidden;
+				transition: max-height .5s ease-in-out;
 
 				.replyPost {
 					position: relative;
@@ -5182,6 +5185,21 @@ ul.rating {
 
 			.cell .gravatar {
 				margin-left: 0;
+			}
+
+			.repliesToggle {
+				position: absolute;
+				right: 15px;
+				top: 15px;
+				height: 26px;
+				width: 26px;
+				cursor: pointer;
+			}
+
+			&.collapsed {
+				.subreplies {
+					max-height: 0;
+				}
 			}
 		}
 		
