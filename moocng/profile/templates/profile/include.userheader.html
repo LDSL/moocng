@@ -12,7 +12,7 @@
 					<div class="col-lg-12 col-md-8 col-sm-5 col-mob-4 user-bar">
 						<img class="avatar" src="{% gravatar_for_email user_view_profile.email %}&s=128" alt="{% firstof user_view_profile.get_full_name user_view_profile.username %}">
 						<h1>{{ user_view_profile.get_full_name }}</h1>
-						<h2>@{{ user_view_profile.username }}</h2>
+						<h2>{% if show_username %}@{{ user_view_profile.username }}{% else %}&nbsp;{% endif %}</h2>
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4 data-bar">
 						<div class="profile-data">
