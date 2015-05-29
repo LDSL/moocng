@@ -11,7 +11,7 @@
 		<div class="clearfix"></div>
 		{% endif %}
 		<a href={% url profile_user reply.username %}><span class="namePost">{{reply.first_name}} {{reply.last_name}}</span></a>
-		<span class="emailPost">@{{reply.username}}</span>
+		{% if show_username %}<span class="emailPost">@{{reply.username}}</span>{% endif %}
 		
 		<span class="datePost">[{{reply.date}}]</span>
 		{% autoescape off %}

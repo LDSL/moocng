@@ -18,7 +18,7 @@
 								</div>
 								<div class="cell" style="padding-top: 15px; ">
 									<a href={% url profile_user post.username %}><span class="namePost">{{post.first_name}} {{post.last_name}}</span></a>
-									<span class="emailPost">@{{post.username}}</span>
+									{% if show_username %}<span class="emailPost">@{{post.username}}</span>{% endif %}
 									
 									<span class="datePost">[{{post.date}}]</span>
 									{% autoescape off %}

@@ -81,7 +81,11 @@
 										<h5>{% trans "Last reply" %}</h5>
 										{% with post.replies|last as lastpost %}
 										<a href="{{ post.id }}#{{ lastpost.id }}" class="block">
+											{% if show_username %}
 											<span class="userPost">{{ lastpost.username }}</span>
+											{% else %}
+											<span class="userPost">{{ lastpost.first_name }} {{ lastpost.last_name }}</span>
+											{% endif %}
 											<span class="datePost">[
 												{% if lastpost.original_date %}
 													{{ lastpost.original_date }}
