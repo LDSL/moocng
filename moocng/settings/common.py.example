@@ -498,35 +498,48 @@ MEDIA_CONTENT_TYPES = [
         'name': 'YouTube',
         'handler': 'moocng.media_contents.handlers.youtube.YoutubeMediaContentHandler',
         'can_get_last_frame': True,
-        'type' : 'video'
+        'type' : 'video',
+        'can_upload_media': False
     },
     {
         'id': 'vimeo',
         'name': 'Vimeo',
         'handler': 'moocng.media_contents.handlers.vimeo.VimeoMediaContentHandler',
         'can_get_last_frame': False,
-        'type' : 'video'
+        'type' : 'video',
+        'can_upload_media': False
     },
     {
         'id': 'scribd',
         'name': 'Scribd',
         'handler': 'moocng.media_contents.handlers.scribd.ScribdMediaContentHandler',
         'can_get_last_frame': False,
-        'type' : 'presentation'
+        'type' : 'presentation',
+        'can_upload_media': False
     },
     {
         'id': 'prezi',
         'name': 'Prezi',
         'handler': 'moocng.media_contents.handlers.prezi.PreziMediaContentHandler',
         'can_get_last_frame': False,
-        'type' : 'presentation'
+        'type' : 'presentation',
+        'can_upload_media': False
     },
     {
         'id': 'ytaccesible',
         'name': 'YouTube Accesible',
         'handlers': 'moocng.media_contents.handlers.ytaccesible.YoutubeAccesibleMediaContentHandler',
         'can_get_last_frame': True,
-        'type': 'video'
+        'type': 'video',
+        'can_upload_media': False
+    },
+    {
+        'id': 's3video',
+        'name': 'S3 HTML5 Video',
+        'handler': 'moocng.media_contents.handlers.s3video.S3VideoMediaContentHandler',
+        'can_get_last_frame': False,
+        'type': 'video',
+        'can_upload_media': True
     },
 ]
 
