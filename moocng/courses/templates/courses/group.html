@@ -43,9 +43,15 @@
 			<ul class="userlist">
 				{% for member in group.members %}
 				<li class="bottom-line" id_user="{{member.id_user}}">
-					<a href="{%url profile_user%}{{member.username}}"><img class="avatar" src="{% gravatar_for_email member.email %}&s=64" alt="{% firstof member.first_name member.username %}"><a/>
+					<a href="{%url profile_user%}{{member.username}}">
+						<img class="avatar" src="{% gravatar_for_email member.email %}&s=64" alt="{% firstof member.first_name member.username %}">
+					</a>
 					<div>
-						<h4 class="bottom-line"><a href="{%url profile_user%}{{member.username}}">{{ member.first_name }} {{ member.last_name }}<span>@{{ member.username }}</a></h4>
+						<h4 class="bottom-line">
+							<a href="{%url profile_user%}{{member.username}}">{{ member.first_name }} {{ member.last_name }}
+								{% if show_username %}<span>@{{ member.username }}</span>{% endif %}
+							</a>
+						</h4>
 						{% if member.countries %}
 						<p class="tag pull-left"><img src="{{ STATIC_URL }}img/ECO_icon_info_localizacion.svg" alt="{% trans "Location"%}">{{ member.countries }}</p>
 						{% endif %}
@@ -263,7 +269,7 @@
 						var postEl = '<li> \
 							<a href="'+userUrl+'"><img src="'+post.avatar+'"></a> \
 							<div> \
-								<a href="'+userUrl+'"><h5>'+post.first_name+' '+post.last_name+' <span>'+post.username+'</span></h5></a> \
+								<a href="'+userUrl+'"><h5>'+post.first_name+' '+post.last_name + {% if show_username %}' <span>'+post.username+'</span>' + {% endif %} '</h5></a> \
 								<p class="date">'+date+'</p><br> \
 								<p class="text">'+post.text+'</p> \
 							</div> \

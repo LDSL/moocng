@@ -201,11 +201,6 @@ def extra_settings(request):
         forum_category_url = '#'
 
     try:
-        show_email = settings.SHOW_EMAIL
-    except AttributeError:
-        show_email = False
-
-    try:
         max_file_size = settings.ATTACHMENTS_MAX_SIZE
     except AttributeError:
         max_file_size = 5
@@ -219,6 +214,16 @@ def extra_settings(request):
         feature_geolocation = settings.FEATURE_GEOLOCATION
     except AttributeError:
         feature_geolocation = '#'
+
+    try:
+        show_email = settings.SHOW_EMAIL
+    except AttributeError:
+        show_email = False
+
+    try:
+        show_username = settings.SHOW_USERNAME
+    except AttributeError:
+        show_username = False
 
     try:
         show_logout = settings.SHOW_LOGOUT
@@ -248,11 +253,12 @@ def extra_settings(request):
         'feature_ects': feature_ects,
         'forum_url': forum_url,
         'forum_category_url': forum_category_url,
-        'show_email': show_email,
         'max_file_size': max_file_size,
         'profile_provider_url': profile_provider_url,
         'feature_geolocation': feature_geolocation,
-        'show_logout': show_logout
+        'show_username': show_username,
+        'show_email': show_email,
+        'show_logout': show_logout,
     }
 
     return context
