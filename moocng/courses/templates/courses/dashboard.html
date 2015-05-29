@@ -112,7 +112,11 @@
 											{% url profile_posts post.username|cut:"@" as author_profile_url %}
 											<a href="{{ author_profile_url }}"><img src="{{ post.gravatar }}"></a>
 											<div>
-												<a href="{{ author_profile_url }}"><h5>{{ post.first_name }} {{ post.last_name }} <span>{{ post.username }}</span></h5></a>
+												<a href="{{ author_profile_url }}">
+													<h5>{{ post.first_name }} {{ post.last_name }}
+														{% if show_username %}<span>{{ post.username }}</span>{% endif %}
+													</h5>
+												</a>
 												<p class="date">
 													{% if post.original_date %}
 														{{post.original_date}}
@@ -120,6 +124,7 @@
 														{{post.date}}
 													{% endif %}
 												</p>
+												<br>
 												{% autoescape off %}
 												<p class="text">{{ post.text }}</p>
 												{% endautoescape %}
@@ -188,7 +193,10 @@
 							</li>-->
 						</ul>
 						<div class="bottom-bar">
-							<a href="{% url profile_posts %}" class="button pull-right">@{{ user.username }}<img src="{{ STATIC_URL }}/img/ECO_icon_flecha_enlace.svg"></a>
+							<a href="{% url profile_posts %}" class="button pull-right">
+								{% trans "Go to my timeline" %}
+								<img src="{{ STATIC_URL }}/img/ECO_icon_flecha_enlace.svg">
+							</a>
 						</div>
 					</div>
 				</div>
