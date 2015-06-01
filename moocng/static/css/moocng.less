@@ -3231,7 +3231,7 @@ ul.rating {
 				&:first-child {
 					border-top: none;
 				}
-				
+
 				.badge {
 					display: none;
 				}
@@ -3328,6 +3328,14 @@ ul.rating {
 				content: "";
 				display: block;
 				clear: both;
+			}
+
+			&.not_available {
+				opacity: .5;
+				
+				a {
+					cursor: no-drop;
+				}
 			}
 
 			& > .row {

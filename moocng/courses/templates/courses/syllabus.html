@@ -7,10 +7,10 @@
             <h3>{% trans "Syllabus" %}</h3>
             <ol>
             {% for unit in unit_list %}
-                <li>
+                <li {% if unit.status != 'p' %}class="not_available"{% endif %}>
                     <div class="row">
                         <div class="col-lg-12 col-md-8 col-sm-5 col-mob-4">
-                            <a href="{% if unit.status == 'p' %}{{unit.url}}{% else %}#{% endif %}" class="unit {% if unit.complete %}done{% endif %}"><span class="num"></span>{{unit.title}}</a>
+                            <a {% if unit.status == 'p' or is_teacher or user.is_staff %}href="{{unit.url}}"{% endif %} class="unit {% if unit.complete %}done{% endif %}"><span class="num"></span>{{unit.title}}</a>
                         </div>
                         <!--<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4">
                             <div class="social">
@@ -25,7 +25,7 @@
                         <li class="{% if q.completed %}done{% endif %} {% if q.current %}current{% endif %}">
                             <div class="row">
                                 <div class="col-lg-12 col-md-8 col-sm-5 col-mob-4">
-                                    <a class="kq" href="{% if unit.status == 'p' %}{{q.url}}{% else %}#{% endif %}">{{q.title}}</a>
+                                    <a class="kq" {% if unit.status == 'p' or is_teacher or user.is_staff %}href="{{q.url}}" {% endif %}>{{q.title}}</a>
                                     {% if q.has_video %}
                                         <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_video.svg">{% trans "Video" %}</span>
                                     {% endif %} 
