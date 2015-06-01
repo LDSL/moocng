@@ -19,14 +19,17 @@
 					<div class="content">
 						<ol start="2">
 							{% for unit in unit_list %}
-								<li class="{% if unit.complete %}done{% endif %}"><a href="{{ unit.url }}">{{unit.title}}</a>
-								{% if unit.questions %}
+								<li class="{% if unit.complete %}done{% endif %} {% if unit.status != 'p' %}not_available{% endif %}">
+									<a href="{% if unit.status == 'p' %}{{ unit.url }}{% else %}#{% endif %}" {% if unit.status != 'p' %}title="{% trans 'Not available yet' %}"{% endif %}>{{unit.title}}</a>
+									{% if unit.questions %}
 									<ol>
 										{% for q in unit.questions %}
-										<li class="{% if q.completed %}done{% endif %} {% if q.current %} current {% endif %}"><a href="{{ q.url }}">{{q.title}}</a></li>
+										<li class="{% if q.completed %}done{% endif %} {% if q.current %} current {% endif %}">
+											<a href="{% if unit.status == 'p' %}{{ q.url }}{% else %}#{% endif %}" {% if unit.status != 'p' %}title="{% trans 'Not published yet' %}"{% endif %}>{{q.title}}</a>
+										</li>
 										{% endfor %}
 									</ol>
-								{% endif %}
+									{% endif %}
 								</li>
 							{% empty %}
 								<li class="empty">{% trans "There is no course content yet" %}</li>

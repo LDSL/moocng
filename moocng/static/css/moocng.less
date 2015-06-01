@@ -2257,6 +2257,14 @@ ul.rating {
 			
 			li {
 				display: block;
+
+				&.not_available {
+					opacity: .5;
+					
+					a {
+						cursor: no-drop;
+					}
+				}
 				
 				&.done {
 					color: @neutral_medium_1;
