@@ -6,7 +6,7 @@
 	<div class="cell" style="padding-top: 15px; ">
 		{% if reply.id_original_post %}
 		<img class="sharedImage" src="/static/img/ECO_icon_republicado.svg">
-		<a href="{{reply.id_user}}">
+		<a href="{% if show_username %}{% url profile_posts reply.username|slice:'1:' %}{% else %}{% url profile_posts_byid reply.id_user %}{% endif %}">
 			{% if show_username %}
 			<span class="shared">{% trans "Shared by" %} {{reply.shared_by}}</span>
 			{% else %}
@@ -15,7 +15,7 @@
 		</a>
 		<div class="clearfix"></div>
 		{% endif %}
-		<a href={{reply.username|slice:"1:"}}><span class="namePost">{{reply.first_name}} {{reply.last_name}}</span></a>
+		<a href="{% if show_username %}{% url profile_posts reply.username|slice:'1:' %}{% else %}{% url profile_posts_byid reply.id_user %}{% endif %}"><span class="namePost">{{reply.first_name}} {{reply.last_name}}</span></a>
 		{% if show_username %}<span class="emailPost">{{reply.username}}</span>{% endif %}
 		
 		<span class="datePost">[
