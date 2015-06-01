@@ -148,6 +148,7 @@ def profile_user(request, id, byid=False):
 
 # @login_required
 def profile_posts(request, id, api=False, byid=False):
+	m = Microblog()
 	if(not id):
 		if(not request.user.id):
 			return HttpResponseRedirect("/auth/login")
