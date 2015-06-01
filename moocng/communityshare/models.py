@@ -115,10 +115,10 @@ class Microblog(CommunityShareBase):
 	def get_blog_user(self, id):
 	    return get_db().get_collection(self.col_user).find_one({'id_user': id})
 
-	def insert_blog_user(self, user_id):
+	def insert_blog_user(self, user_id, following):
 		user = {
 			"id_user": user_id, 
-			"following": [id]
+			"following": following
 		}
 		get_db().get_collection(self.col_user).insert(user)
 

@@ -308,10 +308,7 @@ def user_follow(request, id, follow):
 				user["following"].append(id)
 				m.update_following_blog_user(request.user.id, user["following"])
 		else:
-			m.insert_blog_user({
-									"id_user": request.user.id, 
-									"following": [id]
-								  })
+			m.insert_blog_user(request.user.id, [id])
 	
 	elif(follow == "1" and user):
 		user["following"].remove(id)
