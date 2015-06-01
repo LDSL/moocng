@@ -17,7 +17,9 @@
 									<img class="gravatar" src={{ post.avatar}}>
 								</div>
 								<div class="cell" style="padding-top: 15px; ">
-									<a href={% url profile_user post.username %}><span class="namePost">{{post.first_name}} {{post.last_name}}</span></a>
+									{% url profile_user post.username as post_profile_url %}
+									{% url profile_user_byid post.id_user as post_profile_url_byid %}
+									<a href="{% if show_username %}{{ post_profile_url }}{% else %}{{ post_profile_url_byid }}{% endif %}"><span class="namePost">{{post.first_name}} {{post.last_name}}</span></a>
 									{% if show_username %}<span class="emailPost">@{{post.username}}</span>{% endif %}
 									
 									<span class="datePost">[{{post.date}}]</span>

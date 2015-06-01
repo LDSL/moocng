@@ -10,7 +10,9 @@
 		<a href="{{reply.id_user}}"><span class="shared">{% trans "Shared by"%} {{reply.shared_by}}</span></a>
 		<div class="clearfix"></div>
 		{% endif %}
-		<a href={% url profile_user reply.username %}><span class="namePost">{{reply.first_name}} {{reply.last_name}}</span></a>
+		{% url profile_user reply.username as reply_profile_url %}
+		{% url profile_user_byid reply.id_user as reply_profile_url_byid %}
+		<a href="{% if show_username %}{{ reply_profile_url }}{% else %}{{ reply_profile_url_byid }}{% endif %}"><span class="namePost">{{reply.first_name}} {{reply.last_name}}</span></a>
 		{% if show_username %}<span class="emailPost">@{{reply.username}}</span>{% endif %}
 		
 		<span class="datePost">[{{reply.date}}]</span>
