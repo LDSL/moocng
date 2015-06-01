@@ -331,6 +331,7 @@ def course_classroom(request, course_slug):
             'id': u.id,
             'title': u.title,
             'unittype': u.unittype,
+            'status': u.status,
             'badge_class': get_unit_badge_class(u),
             'badge_tooltip': u.get_unit_type_name(),
         }
@@ -888,7 +889,7 @@ def course_progress(request, course_slug):
         }, context_instance=RequestContext(request))
 
     units = []
-    course_units = get_units_available_for_user(course, request.user)
+    course_units = get_units_available_for_user(course, request.user, True)
     for u in course_units:
         unit = {
             'id': u.id,

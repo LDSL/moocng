@@ -545,8 +545,9 @@ class Unit(Sortable):
 
     UNIT_STATUSES = (
         ('d', _(u'Draft')),
-        ('l', _(u'Hidden')),
+        ('h', _(u'Hidden')),
         ('p', _(u'Published')),
+        ('l', _(u'Listable')),
     )
 
     status = models.CharField(
@@ -578,7 +579,7 @@ class Unit(Sortable):
         if not settings.COURSES_USING_OLD_TRANSCRIPT:
             return self.unittype != 'n'
         else:
-            return true
+            return True
 
 
 def unit_invalidate_cache(sender, instance, **kwargs):
