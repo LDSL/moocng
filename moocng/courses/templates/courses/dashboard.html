@@ -20,12 +20,12 @@
 						<ol start="2">
 							{% for unit in unit_list %}
 								<li class="{% if unit.complete %}done{% endif %} {% if unit.status != 'p' %}not_available{% endif %}">
-									<a href="{% if unit.status == 'p' %}{{ unit.url }}{% else %}#{% endif %}" {% if unit.status != 'p' %}title="{% trans 'Not available yet' %}"{% endif %}>{{unit.title}}</a>
+									<a {% if unit.status == 'p' or is_teacher or user.is_staff %}href="{{ unit.url }}"{% else %} title="{% trans 'Not available yet' %}"{% endif %}>{{unit.title}}</a>
 									{% if unit.questions %}
 									<ol>
 										{% for q in unit.questions %}
 										<li class="{% if q.completed %}done{% endif %} {% if q.current %} current {% endif %}">
-											<a href="{% if unit.status == 'p' %}{{ q.url }}{% else %}#{% endif %}" {% if unit.status != 'p' %}title="{% trans 'Not published yet' %}"{% endif %}>{{q.title}}</a>
+											<a {% if unit.status == 'p' or is_teacher or user.is_staff %}href="{{ q.url }}"{% else %} title="{% trans 'Not published yet' %}"{% endif %}>{{q.title}}</a>
 										</li>
 										{% endfor %}
 									</ol>
