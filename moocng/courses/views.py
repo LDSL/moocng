@@ -1025,7 +1025,7 @@ def check_survey(request, course_slug, survey_id, survey_token):
     units = get_units_available_for_user(course, user, True)
     is_enrolled = course.students.filter(id=request.user.id).exists()
     tasks = get_tasks_available_for_user(course, request.user)
-    is_teacher = is_teacher_test(user, course),
+    is_teacher = is_teacher_test(user, course)
     is_ready, ask_admin = is_course_ready(course)
     group = get_group_by_user_and_course(request.user.id, course.id)
 
@@ -1043,7 +1043,6 @@ def check_survey(request, course_slug, survey_id, survey_token):
         sliced = re.sub('<[^>]*>', '', response)
         decoded_response = json.loads(base64.b64decode(sliced))
         user_response = decoded_response[u'responses'][0]
-        print user_response
         if user_response[user_response.keys()[0]][u'lastpage']:
             template_name = 'courses/survey_completed.html'
 
@@ -1072,3 +1071,29 @@ def check_survey(request, course_slug, survey_id, survey_token):
         'survey_token': survey_token,
         'survey_id': survey_id,
     }, context_instance=RequestContext(request))
+
+@login_required
+def course_diploma_pdf(request, course_slug):
+    user = request.user
+    course = get_course_if_user_can_view_or_404(course_slug, request)
+    is_enrolled = course.students.filter(id=user.id).exists()
+    is_teacher = is_teacher_test(user, course)
+    is_ready, ask_admin = is_course_ready(course)
+    if is_enrolled and has_user_passed_course(user, course): 
+        context_dict = {
+            'pagesize': 'A4',
+            'user': user,
+            'course': course
+        }
+
+        template = get_template('courses/diploma.html')
+        context = Context(context_dict)
+        html = template.render(context)
+        result = StringIO.StringIO()
+        pdf = pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1")), result)
+        if not pdf.err:
+            return HttpResponse(result.getvalue(), mimetype='application/pdf')
+        return HttpResponse('We had some errors<pre>%s</pre>' % cgi.escape(html))
+    else:
+        return HttpResponseForbidden()
+
