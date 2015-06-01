@@ -111,7 +111,7 @@
 										<li>
 											{% url profile_posts post.username|cut:"@" as author_profile_url %}
 											{% url profile_posts_byid post.id_user as author_profile_url_byid %}
-											<a href="{% if show_username %}{{ author_profile_url }}{% else %}{{ author_profile_url_byid }}{% endif %}"><img src="{{ post.gravatar }}"></a>
+											<a href="{% if show_username %}{{ author_profile_url }}{% else %}{{ author_profile_url_byid }}{% endif %}"><img src="{{ post.avatar }}"></a>
 											<div>
 												<a href="{% if show_username %}{{ author_profile_url }}{% else %}{{ author_profile_url_byid }}{% endif %}">
 													<h5>{{ post.first_name }} {{ post.last_name }}
