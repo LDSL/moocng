@@ -55,7 +55,7 @@ def profile_groups(request):
 		}, context_instance=RequestContext(request))
 
 # @login_required
-def profile_courses(request, id):
+def profile_courses(request, id, byid=False):
 
 	if(not id):
 		if(not request.user.id):
@@ -63,8 +63,11 @@ def profile_courses(request, id):
 		user = request.user
 		id = request.user.id
 	else:
-		user = User.objects.get(username=id)
-		id = user.id
+		if byid:
+			user = User.objects.get(pk=id)
+		else:
+			user = User.objects.get(username=id)
+			id = user.id
 
 	case = _getCase(request,id)
 
@@ -92,21 +95,23 @@ def profile_courses(request, id):
 		}, context_instance=RequestContext(request))
 
 # @login_required
-def profile_badges(request, id):
-
+def profile_badges(request, id, byid=False):
 	if(not id):
 		if(not request.user.id):
 			return HttpResponseRedirect("/auth/login")
 		user = request.user
 		id = request.user.id
 	else:
-		user = User.objects.get(username=id)
-		id = user.id
+		if byid:
+			user = User.objects.get(pk=id)
+		else:
+			user = User.objects.get(username=id)
+			id = user.id
 
 	courses = get_user_badges_group_by_course(user)
 
 	return render_to_response('profile/badges.html', {
-		"id":id,
+		"id": id,
 		'request': request,
 		"user_view_profile": user,
 		"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
@@ -121,7 +126,7 @@ def profile_calendar(request):
 		}, context_instance=RequestContext(request))
 
 # @login_required
-def profile_user(request, id):
+def profile_user(request, id, byid=False):
 
 	if(not id):
 		if(not request.user.id):
@@ -129,8 +134,11 @@ def profile_user(request, id):
 		id = request.user.id
 		user =  request.user
 	else:
-		user = User.objects.get(username=id)
-		id = user.id
+		if byid:
+			user = User.objects.get(pk=id)
+		else:
+			user = User.objects.get(username=id)
+			id = user.id
 
 	courses = get_courses_user_is_enrolled(user)
 
@@ -144,15 +152,19 @@ def profile_user(request, id):
 		}, context_instance=RequestContext(request))
 
 # @login_required
-def profile_posts(request, id, api=False):
+def profile_posts(request, id, api=False, byid=False):
 	if(not id):
 		if(not request.user.id):
 			return HttpResponseRedirect("/auth/login")
 		id = request.user.id
 		user = request.user
 	else:
-		user = User.objects.get(username=id)
-		id = user.id
+		if byid:
+			id = int(id)
+			user = User.objects.get(pk=id)
+		else:	
+			user = User.objects.get(username=id)
+			id = user.id
 
 	if request.method == 'POST':
 		form = PostForm(request.POST)
