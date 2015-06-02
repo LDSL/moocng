@@ -805,7 +805,10 @@ if (_.isUndefined(window.MOOC)) {
                 this.$el.find("select#kqmedia_content_type").val(this.model.get("media_content_type"));
                 this.$el.find("input#kqmedia_content_id").val(this.model.get("media_content_id"));
                 this.$el.find("input#kqweight").val(this.model.get("weight"));
-                var can_upload = MEDIA_CONTENT_TYPES[this.model.get("media_content_type")].can_upload_media || false;
+                var can_upload = false;
+                if(this.model.get("media_content_type")){
+                    can_upload = MEDIA_CONTENT_TYPES[this.model.get("media_content_type")].can_upload_media || false;
+                }
                 if (can_upload) {
                     $("#s3_upload_form").css({'display': 'block'});
                 }else{
