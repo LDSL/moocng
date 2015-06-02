@@ -58,13 +58,21 @@ from moocng.courses.security import (get_course_if_user_can_view_or_404,
 from moocng.courses.tasks import clone_activity_user_course_task
 from moocng.courses.forms import CourseRatingForm
 from moocng.slug import unique_slugify
-from moocng.utils import use_cache
+from moocng.utils import use_cache, generate_pdf
 from moocng.profile.models import search_posts
 
 import hashlib
 import time
 from django.core import mail
 
+from django.template.loader import get_template
+from django.template import Context
+import xhtml2pdf.pisa as pisa
+try:
+    import StringIO
+except Exception:
+    from io import StringIO
+import os
 
 def home(request):
 
@@ -1079,21 +1087,18 @@ def course_diploma_pdf(request, course_slug):
     is_enrolled = course.students.filter(id=user.id).exists()
     is_teacher = is_teacher_test(user, course)
     is_ready, ask_admin = is_course_ready(course)
-    if is_enrolled and has_user_passed_course(user, course): 
+    if is_enrolled and has_user_passed_course(user, course):
         context_dict = {
             'pagesize': 'A4',
             'user': user,
             'course': course
         }
 
-        template = get_template('courses/diploma.html')
-        context = Context(context_dict)
-        html = template.render(context)
-        result = StringIO.StringIO()
-        pdf = pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1")), result)
-        if not pdf.err:
-            return HttpResponse(result.getvalue(), mimetype='application/pdf')
-        return HttpResponse('We had some errors<pre>%s</pre>' % cgi.escape(html))
+        pdf = generate_pdf(request, 'courses/diploma.html', context_dict)
+        if pdf:
+            return HttpResponse(pdf.getvalue(), mimetype='application/pdf')
+        else:
+            return HttpResponse('Error while generating pdf')
     else:
         return HttpResponseForbidden()
 

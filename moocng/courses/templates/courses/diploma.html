@@ -1,3 +1,4 @@
+{% load i18n %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -8,7 +9,7 @@
 <style type="text/css">
 {% block style %}
 	@page {
-		size: {{pagesize}};
+		size: {{pagesize}} landscape;
 		margin: 1cm;
 		@frame footer {
     		-pdf-frame-content: footerContent;
@@ -24,13 +25,14 @@
 <body>
 <div>
 {%block page_header%}
-   <div>
-   		<h1>{{ user.first_name }}</h1>
-   		<h2>{{ course.title }}</h2>
-   </div>
+  <img src="{{ theme.logo }}" />
+  {% trans 'Diploma' %}
 	<hr />
 {%endblock%}
 {%block content%}
+   <div>
+      <h1>{% trans 'Certificate that' %} <span class="user">{{ user.get_full_name }}</span> {% trans 'has completed the course' %} <span class="course">{{ course.name }}</span></h1>
+   </div>
 {%endblock%}
 </div>
 <div id="footerContent">

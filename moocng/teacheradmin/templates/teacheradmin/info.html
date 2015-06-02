@@ -161,49 +161,56 @@
             {% if static_page_form.help_text %}<span class="help-block">{{ static_page_form.help_text }}</span>{% endif %}
         </div>
     </div>
-    <p>
-        {{ form.certification_available.errors }}
-        <label for="id_certification_available" style="margin: 32px 0;">
-          {{ form.certification_available }}
-          {% trans "Certification available" %}
-        </label>
-        {% if form.certification_available.help_text %}<span class="help-inline">{{ form.certification_available.help_text }}</span>{% endif %}
-    </p>
-    <p>
-        {{ form.external_certification_available.errors }}
-        <label for="id_external_certification_available" style="margin: 32px 0;">
-          {{ form.external_certification_available }}
-          {% trans "External certification available" %}
-        </label>
-        {% if form.external_certification_available.help_text %}<span class="help-inline">{{ form.external_certification_available.help_text }}</span>{% endif %}
-    </p>
-    <p>
-        {{ form.certification_file.errors }}
-        {{ form.certification_file.label_tag }}
-        {{ form.certification_file }}
-        {% if form.certification_file.help_text %}<span class="help-inline">{{ form.certification_file.help_text }}</span>{% endif %}
-        <span class="help-inline">{% trans "Max file size" %}: {{ max_file_size }}Mb</span>
-    </p>
-    <p>
-        {{ form.thumbnail.errors }}
-        {{ form.thumbnail.label_tag }}
-        {{ form.thumbnail }}
-        {% if form.thumbnail.help_text %}<span class="help-inline">{{ form.thumbnail.help_text }}</span>{% endif %}
-        <span class="help-inline">{% trans "Max file size" %}: {{ max_file_size }}Mb. {% trans "Recommended image size" %}: {{ thumb_rec_height }} x {{ thumb_rec_width }}px.</span>
-    </p>
-    <p>
-        {{ form.thumbnail_alt.errors }}
-        {{ form.thumbnail_alt.label_tag }}
-        {{ form.thumbnail_alt }}
-        {% if form.thumbnail_alt.help_text %}<span class="help-inline">{{ form.thumbnail_alt.help_text }}</span>{% endif %}
-    </p>
-    <p>
-        {{ form.background.errors }}
-        {{ form.background.label_tag }}
-        {{ form.background }}
-        {% if form.background.help_text %}<span class="help-inline">{{ form.background.help_text }}</span>{% endif %}
-        <span class="help-inline">{% trans "Max file size" %}: {{ max_file_size }}Mb. {% trans "Recommended image size" %}: {{ back_rec_height }} x {{ back_rec_width }}px.</span>
-    </p>
+    <fieldset>
+        <legend>
+            <p>
+                {{ form.certification_available.errors }}
+                <label for="id_certification_available" style="margin: 32px 0;">
+                  {{ form.certification_available }}
+                  {% trans "Certification available" %}
+                </label>
+                {% if form.certification_available.help_text %}<span class="help-inline">{{ form.certification_available.help_text }}</span>{% endif %}
+            </p>
+        </legend>
+        <p>
+            {{ form.external_certification_available.errors }}
+            <label for="id_external_certification_available" style="margin: 32px 0;">
+              {{ form.external_certification_available }}
+              {% trans "External certification available" %}
+            </label>
+            {% if form.external_certification_available.help_text %}<span class="help-inline">{{ form.external_certification_available.help_text }}</span>{% endif %}
+        </p>
+        <p>
+            {{ form.certification_file.errors }}
+            {{ form.certification_file.label_tag }}
+            {{ form.certification_file }}
+            {% if form.certification_file.help_text %}<span class="help-inline">{{ form.certification_file.help_text }}</span>{% endif %}
+            <span class="help-inline">{% trans "Max file size" %}: {{ max_file_size }}Mb</span>
+        </p>
+    </fieldset>
+    <fieldset>
+        <legend>{% trans 'Course images' %}</legend>
+        <p>
+            {{ form.thumbnail.errors }}
+            <h4>{{ form.thumbnail.label_tag }}</h4>
+            {{ form.thumbnail }}
+            {% if form.thumbnail.help_text %}<span class="help-inline">{{ form.thumbnail.help_text }}</span>{% endif %}
+            <span class="help-inline">{% trans "Max file size" %}: {{ max_file_size }}Mb. {% trans "Recommended image size" %}: {{ thumb_rec_height }} x {{ thumb_rec_width }}px.</span>
+        </p>
+        <p>
+            {{ form.thumbnail_alt.errors }}
+            <h4>{{ form.thumbnail_alt.label_tag }}</h4>
+            {{ form.thumbnail_alt }}
+            {% if form.thumbnail_alt.help_text %}<span class="help-inline">{{ form.thumbnail_alt.help_text }}</span>{% endif %}
+        </p>
+        <p>
+            {{ form.background.errors }}
+            <h4>{{ form.background.label_tag }}</h4>
+            {{ form.background }}
+            {% if form.background.help_text %}<span class="help-inline">{{ form.background.help_text }}</span>{% endif %}
+            <span class="help-inline">{% trans "Max file size" %}: {{ max_file_size }}Mb. {% trans "Recommended image size" %}: {{ back_rec_height }} x {{ back_rec_width }}px.</span>
+        </p>
+    </fieldset>
     <p class="form-actions">
       <input type="submit" class="btn btn-primary" value="{% trans "Save" %}" />
     </p>

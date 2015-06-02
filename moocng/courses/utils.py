@@ -56,7 +56,10 @@ TRACE_CLONE_COURSE_DIR = 'trace_clone_course'
 import pymongo
 
 import csv
-import StringIO
+try:
+    import StringIO
+except Exception:
+    from io import StringIO
 from HTMLParser import HTMLParser
 
 
