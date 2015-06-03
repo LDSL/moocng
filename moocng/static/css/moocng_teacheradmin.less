@@ -41,6 +41,14 @@
     margin: 0;
 }
 
+.fleft {
+    float: left;
+}
+
+.fright {
+    float: right;
+}
+
 .cleaner {
     display: block;
     clear: both;
@@ -801,8 +809,17 @@ code {
     width: 100%;
 }
 
-.teacheradmin-stats .pie.viewport svg {
-    height: 250px;
+.teacheradmin-stats .pie.viewport{
+
+    svg {
+        height: 250px;
+    }
+
+    &.taller {
+        svg {
+            height: 400px;
+        }
+    }
 }
 
 .teacheradmin-stats #tendencies .viewport svg,
@@ -1145,3 +1162,35 @@ footer {
         background-color: @neutral_light_2;
     }
 }
+
+#table {
+    .indented {
+        background-color: @neutral_light_3;
+
+        td:first-of-type {
+            padding-left: 20px;
+        }
+    }
+}
+
+.nav.bar {
+    li {
+        display: inline-block;
+        margin: 0 10px;
+
+        &:first-of-type {
+            margin-left: 0;
+        }
+
+        a {
+            padding: 5px 10px;
+            
+            &.active {
+                background-color: @neutral_intense;
+                color: @white;
+            }
+        }
+    }
+}
+
+#map { height: 400px; width: 100%; margin-bottom: 20px;}

@@ -77,6 +77,8 @@ BADGES_ISSUER_DESCRIPTION = ""
 BADGES_ISSUER_IMAGE = ""
 BADGES_ISSUER_EMAIL = ""
 
+PROFILE_SERVICE_URL = "http://devopenmooc.com/profile"
+
 # Tastypie resource limit per page, 0 means unlimited
 API_LIMIT_PER_PAGE = 0
 
@@ -112,11 +114,15 @@ TIME_ZONE = 'Europe/Madrid'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-es'
 
 LANGUAGES = (
     ('en', gettext('English')),
     ('es', gettext('Spanish')),
+    ('it', gettext('Italian')),
+    ('pt', gettext('Portuguese')),
+    ('fr', gettext('French')),
+    ('de', gettext('German')),
 )
 
 # the default value is 'django_language' but changing this
@@ -252,6 +258,7 @@ THIRDPARTY_APPS = [
     'south',
     'django_mathjax',
     'pagination',
+    'modeltranslation',
 ]
 
 OPENMOOC_APPS = [
@@ -463,6 +470,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 * 1
 
 FORUM_URL = "http://forum.devopenmooc.com"
+FORUM_CATEGORY_URL = FORUM_URL + "/category/"
 FORUM_API_SECRET = 'password'
 LOGINFORUM_URL = FORUM_URL + "/auth/saml"
 LOGOUTFORUM_URL = FORUM_URL + "/auth/saml/logout"

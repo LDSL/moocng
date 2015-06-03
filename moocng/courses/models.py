@@ -62,9 +62,9 @@ class Language(models.Model):
 
 class Course(Sortable):
     THUMBNAIL_WIDTH = 300
-    THUMBNAIL_HEIGHT = 185
+    THUMBNAIL_HEIGHT = 200
     BACKGROUND_WIDTH = 1920
-    BACKGROUND_HEIGHT = 150
+    BACKGROUND_HEIGHT = 400
 
     name = models.CharField(verbose_name=_(u'Name'), max_length=200)
     slug = models.SlugField(verbose_name=_(u'Slug'), unique=True, db_index=True)
@@ -212,6 +212,9 @@ class Course(Sortable):
     group_max_size = models.PositiveSmallIntegerField(verbose_name=_('Maximum number of members allowed for each group'),
         default=settings.DEFAULT_GROUP_MAX_SIZE)
 
+    official_course = models.BooleanField(verbose_name=_('Is this course official?'),
+                                          default=False)
+
     objects = CourseManager()
 
     class Meta(Sortable.Meta):
@@ -241,8 +244,7 @@ class Course(Sortable):
                 kq = KnowledgeQuantum.objects.get(pk=mark["kq_id"])
             except KnowledgeQuantum.DoesNotExist:
                 pass
-        else:
-            return kq
+        return kq
 
     def get_rating(self):
         course_student_set = CourseStudent.objects.filter(course=self)
@@ -295,6 +297,10 @@ class Course(Sortable):
         return self.status in ['p', 'o', 'h']
 
     @property
+    def is_always_open(self):
+        return self.status == 'o'
+
+    @property
     def is_active(self):
         # If you change it, you should change the actives method in CourseQuerySet class
         today = datetime.date.today()
@@ -302,6 +308,14 @@ class Course(Sortable):
                 (not self.end_date or
                  not self.start_date and self.end_date >= today or
                  self.start_date and self.start_date <= today and self.end_date >= today))
+
+    @property
+    def is_deactivated(self):
+        today = datetime.date.today()
+        return not (self.is_public and
+                    (self.status == 'o' or
+                    not self.end_date or
+                    self.end_date >= today))
 
     @property
     def is_outdated(self):
@@ -351,7 +365,7 @@ class Course(Sortable):
             else:
                 img.thumbnail((size['width'], size['height']), Image.ANTIALIAS)
             try:
-                img.save(filename, optimize=1, queality=60)
+                img.save(filename, optimize=1, quality=60)
             except IOError:
                 img.save(filename)
 
@@ -867,9 +881,6 @@ class Question(models.Model):
             results_dict[key] = result_q
             result += result_q
 
-        print '\nResults_dict : ' + str(results_dict)
-        print '\nResult : ' + str(result)
-
         return result
 
     def is_completed(self, user, visited=None):
@@ -946,7 +957,6 @@ class Option(models.Model):
                 logger.error('Error at option %s - Value %s - Solution %s' % (str(self.id), str(reply), self.solution))
                 return True
             else:
-                print self.solution.lower() +' vs '+ reply.lower()
                 return reply.lower() == self.solution.lower()
         else:
             return bool(reply) == (self.solution.lower() == u'true')

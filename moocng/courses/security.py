@@ -41,6 +41,7 @@ def can_user_view_course(course, user):
     .. versionadded:: 0.1
     """
     if course.is_active:
+        print 'The course is active'
         return True, 'active'
 
     if user.is_superuser:
@@ -59,10 +60,15 @@ def can_user_view_course(course, user):
 
     # at this point you don't have permissions to see a course unless is always open
     if course.is_public:
-        if(course.is_outdated):
+        if course.is_outdated:
+            print 'The course is outdated'
             return False, 'not_active_outdated'
-        else:
+        elif course.is_always_open:
+            print 'The course is always open'
             return True, 'is_always_open'
+        else:
+            print 'The course is no active yet'
+            return False, 'not_active_yet'
     return False, 'not_active'
 
 
@@ -257,6 +263,31 @@ def get_tasks_available_for_user(course, user, is_overview=False):
                 	next_task = task
                 tasks.append(task)
     return tasks, numdone, next_task
+
+def get_tasks_published(course, is_overview=False):
+    tasks = []
+
+    for u in course.unit_set.filter(Q(status='p') | Q(status='o') | Q(status='l')):
+        for q in KnowledgeQuantum.objects.filter(unit_id=u.id):
+            t = None
+            ttype = None;
+            if (len(q.question_set.filter()) > 0):
+                t = q.question_set.all()[0]
+                ttype = 'q';
+            else:
+                pr = PeerReviewAssignment.objects.filter(kq=q)
+                if (len(pr) > 0):
+                    t = pr.all()[0]
+                    ttype = 'p'
+            
+            if t is not None:
+                task = {
+                    'title': q.title,
+                    'type': ttype,
+                    'item': t,
+                }
+                tasks.append(task)
+    return tasks
 
 def get_course_progress_for_user(course, user):
     kq_passed = 0

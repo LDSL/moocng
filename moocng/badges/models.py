@@ -135,7 +135,12 @@ class Badge(models.Model):
 
 
 class BadgeByCourse(models.Model):
-    from moocng.courses.models import Course
+    CRITERIA_TYPE_CHOICES = (
+        (0, _(u'Units checkpoint')),
+        (1, _(u'Peer review')),
+        (2, _(u'Unique unit'))
+    )
+
     title = models.CharField(verbose_name=_(u'Name'),
                              blank=False, null=False, unique=False,
                              max_length=255)
@@ -147,7 +152,7 @@ class BadgeByCourse(models.Model):
                                blank=False, null=False)
     
     criteria_type = models.IntegerField(verbose_name=_(u'Criteria_type'),
-                               blank=False, null=False)
+                               blank=False, null=False, choices=CRITERIA_TYPE_CHOICES)
 
     note = models.IntegerField(verbose_name=_(u'Note'),
                                blank=False, null=False)
@@ -155,7 +160,7 @@ class BadgeByCourse(models.Model):
     color = models.TextField(verbose_name=_('Color'),
                                    blank=False, null=False)
 
-    course = models.ForeignKey(Course, verbose_name=_(u'Course'))
+    course = models.ForeignKey('courses.Course', verbose_name=_(u'Course'))
 
 
     @classmethod

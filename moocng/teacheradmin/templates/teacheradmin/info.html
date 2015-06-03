@@ -189,7 +189,7 @@
         {{ form.thumbnail.label_tag }}
         {{ form.thumbnail }}
         {% if form.thumbnail.help_text %}<span class="help-inline">{{ form.thumbnail.help_text }}</span>{% endif %}
-        <span class="help-inline">{% trans "Max file size" %}: {{ max_file_size }}Mb</span>
+        <span class="help-inline">{% trans "Max file size" %}: {{ max_file_size }}Mb. {% trans "Recommended image size" %}: {{ thumb_rec_height }} x {{ thumb_rec_width }}px.</span>
     </p>
     <p>
         {{ form.thumbnail_alt.errors }}
@@ -202,7 +202,7 @@
         {{ form.background.label_tag }}
         {{ form.background }}
         {% if form.background.help_text %}<span class="help-inline">{{ form.background.help_text }}</span>{% endif %}
-        <span class="help-inline">{% trans "Max file size" %}: {{ max_file_size }}Mb</span>
+        <span class="help-inline">{% trans "Max file size" %}: {{ max_file_size }}Mb. {% trans "Recommended image size" %}: {{ back_rec_height }} x {{ back_rec_width }}px.</span>
     </p>
     <p class="form-actions">
       <input type="submit" class="btn btn-primary" value="{% trans "Save" %}" />
