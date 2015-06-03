@@ -849,6 +849,8 @@ def course_progress(request, course_slug):
                     award = Award(badge=badge, user=request.user)
                     award.save()
 
+    print "course.external_certification_available = %s - certification_file = %s" % (course.external_certification_available, course.certification_file)
+
     return render_to_response('courses/progress.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
