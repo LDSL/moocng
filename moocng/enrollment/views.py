@@ -67,6 +67,10 @@ def free_enrollment(request, course_slug):
             user = request.user
             lat = request.POST["latitude"]
             lon = request.POST["longitude"]
+            geolocation = {
+                'lat': lat,
+                'lon': lon
+            }
             old_course_status = 'f'
             if course.created_from:
                 if course.created_from.students.filter(pk=user.pk):
@@ -81,7 +85,7 @@ def free_enrollment(request, course_slug):
                 enroll_course_at_idp(request.user, course)
 
             # Send xAPI event
-            x_api.learnerEnrollsInMooc(user, course)
+            x_api.learnerEnrollsInMooc(user, course, geolocation)
 
             success(request,
                     _(u'Congratulations, you have successfully enroll in the course %(course)s')

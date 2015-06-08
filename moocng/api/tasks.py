@@ -398,8 +398,13 @@ def on_peerreviewreview_created_task(review_created, user_reviews):
 @task
 def on_history_created_task(history_created):
     # Send xAPI event
+    print history_created['course_id']
     user = User.objects.get(pk=history_created['user_id'])
     course = Course.objects.get(pk=history_created['course_id'])
+    geolocation = {
+        'lat': history_created['lat'],
+        'lon': history_created['lon']
+    }
     page = {}
     page['url'] = history_created['url']
     if course:
@@ -408,4 +413,4 @@ def on_history_created_task(history_created):
     else:
         page['name'] = ''
         page['description'] = ''
-    x_api.learnerAccessAPage(user, page)
+    x_api.learnerAccessAPage(user, page, geolocation)

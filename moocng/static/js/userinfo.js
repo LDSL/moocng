@@ -146,30 +146,35 @@ function showGeolocationAdvise(){
 }
 
 function sendHistoryEntry(course_id){
+	var currentCourse = course_id;
 	window.setTimeout(function(){
-		var lat = 0.0;
-		var lon = 0.0;
-		var data;
-		if (geolocation){
-			lat = geolocation.coords.latitude;
-			lon = geolocation.coords.longitude;
-		}
-		data = {
-			lat: lat,
-			lon: lon,
-			timestamp: new Date().getTime(),
-			url: window.location.href,
-			dev_type: deviceInfo.type,
-			dev_os: deviceInfo.os,
-			dev_orientation: deviceInfo.orientation,
-			course_id: course_id || ''
-		};
+		if (currentCourse){
+			var lat = 0.0;
+			var lon = 0.0;
+			var data;
+			if (geolocation){
+				lat = geolocation.coords.latitude;
+				lon = geolocation.coords.longitude;
+			}
+			data = {
+				lat: lat,
+				lon: lon,
+				timestamp: new Date().getTime(),
+				url: window.location.href,
+				dev_type: deviceInfo.type,
+				dev_os: deviceInfo.os,
+				dev_orientation: deviceInfo.orientation,
+				course_id: currentCourse || ''
+			};
 
-		$.ajax({
-			url: '/api/v1/history/',
-			type: 'POST',
-        	contentType: "application/json",
-			data: JSON.stringify(data)
-		});
+			$.ajax({
+				url: '/api/v1/history/',
+				type: 'POST',
+	        	contentType: "application/json",
+				data: JSON.stringify(data)
+			});
+		}else{
+			console.log('Current course not defined');
+		}
 	},2500);
 }
