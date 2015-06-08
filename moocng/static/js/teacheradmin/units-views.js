@@ -1229,9 +1229,9 @@ if (_.isUndefined(window.MOOC)) {
                 }
 
                 // Look for attachments
-                if (this.$el.find("div.fileupload input[type='file']").val() !== "") {
+                if (this.$el.find("div.fileupload input[type='file']#id_file").val() !== "") {
                     steps.push(function (asyncCB) {
-                        var input = self.$el.find("div.fileupload input[type='file']")[0],
+                        var input = self.$el.find("div.fileupload input[type='file']#id_file")[0],
                             fakeForm;
                         if (input.files) {
                             // Check file size
