@@ -31,6 +31,7 @@ def generate_pdf(request, template_name, context_dict):
     template = get_template(template_name)
     context = RequestContext(request, context_dict)
     html = template.render(context)
+    print html
     result = StringIO.StringIO()
     pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1")), dest=result, link_callback=fetch_resources)
     if not pdf.err:
