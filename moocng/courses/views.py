@@ -62,7 +62,6 @@ from moocng.slug import unique_slugify
 from moocng.communityshare.models import Microblog, Forum
 from moocng.portal.templatetags.gravatar import gravatar_for_email
 from moocng.utils import use_cache, generate_pdf
-from moocng.profile.models import search_posts
 
 import hashlib
 import time
@@ -1203,7 +1202,7 @@ def course_diploma_pdf(request, course_slug):
             'course_mark': round(total_mark,2)
         }
 
-        if 'diploma_template' in settings.THEME:
+        if hasattr(settings, 'MOOCNG_THEME') and 'diploma_template' in settings.MOOCNG_THEME:
             pdf = generate_pdf(request, 'diploma.html', context_dict)
         else:
             pdf = generate_pdf(request, 'courses/diploma.html', context_dict)
