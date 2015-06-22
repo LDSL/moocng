@@ -1089,13 +1089,15 @@ def course_diploma_pdf(request, course_slug):
     is_enrolled = course.students.filter(id=user.id).exists()
     is_teacher = is_teacher_test(user, course)
     is_ready, ask_admin = is_course_ready(course)
-    total_mark, units_info = get_course_mark(course, request.user)
     if is_enrolled and has_user_passed_course(user, course):
+        total_mark, units_info = get_course_mark(course, request.user)
+        course_units = get_units_available_for_user(course, user)
         context_dict = {
             'pagesize': 'A4',
             'user': user,
             'course': course,
-            'course_mark': round(total_mark,2)
+            'course_mark': round(total_mark,2),
+            'course_units': course_units,
         }
 
         pdf = generate_pdf(request, 'courses/diploma.html', context_dict)
