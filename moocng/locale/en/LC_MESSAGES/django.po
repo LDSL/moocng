@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-01 15:14+0200\n"
+"POT-Creation-Date: 2015-06-22 17:56+0200\n"
 "PO-Revision-Date: 2015-04-27 15:08+0100\n"
 "Last-Translator: Javier Viñuales Gutiérrez <javigu@gmail.com>\n"
 "Language-Team: \n"
@@ -203,10 +203,10 @@ msgid "Your reservation has been modified"
 msgstr ""
 
 #: assets/views.py:48 assets/views.py:104 assets/views.py:136
-#: courses/views.py:315 courses/views.py:385 courses/views.py:483
-#: courses/views.py:524 courses/views.py:584 courses/views.py:634
-#: courses/views.py:742 courses/views.py:781 courses/views.py:820
-#: courses/views.py:872 courses/templates/courses/transcript_course.html:6
+#: courses/views.py:322 courses/views.py:392 courses/views.py:490
+#: courses/views.py:531 courses/views.py:591 courses/views.py:641
+#: courses/views.py:749 courses/views.py:788 courses/views.py:827
+#: courses/views.py:879 courses/templates/courses/transcript_course.html:6
 #: peerreview/views.py:53 peerreview/views.py:112 peerreview/views.py:163
 msgid "You are not enrolled in this course"
 msgstr ""
@@ -476,7 +476,7 @@ msgid "Upload an image to represent the badge, it must be png"
 msgstr "Please upload an image in .png format to depict the badge"
 
 #: badges/models.py:94 badges/models.py:151
-#: courses/templates/courses/progress.html:83
+#: courses/templates/courses/progress.html:87
 #: teacheradmin/templates/teacheradmin/badges.html:85
 msgid "Criteria"
 msgstr ""
@@ -739,6 +739,157 @@ msgstr ""
 msgid "There are no courses with this category or categories associated yet."
 msgstr ""
 
+#: collected_static/brand/templates/prefoot.html:11
+#: collected_static/brand_difundi/templates/prefoot.html:11
+#: collected_static/brand_eco/templates/prefoot.html:11
+#: static/brand/templates/prefoot.html:11
+#: static/brand_difundi/templates/prefoot.html:11
+#: static/brand_eco/templates/prefoot.html:11
+msgid "The"
+msgstr ""
+
+#: collected_static/brand/templates/prefoot.html:13
+#: collected_static/brand_difundi/templates/prefoot.html:13
+#: collected_static/brand_eco/templates/prefoot.html:13
+#: static/brand/templates/prefoot.html:13
+#: static/brand_difundi/templates/prefoot.html:13
+#: static/brand_eco/templates/prefoot.html:13
+msgid "and the"
+msgstr ""
+
+#: collected_static/brand/templates/prefoot.html:15
+#: collected_static/brand_difundi/templates/prefoot.html:15
+#: collected_static/brand_eco/templates/prefoot.html:15
+#: static/brand/templates/prefoot.html:15
+#: static/brand_difundi/templates/prefoot.html:15
+#: static/brand_eco/templates/prefoot.html:15
+msgid "the"
+msgstr ""
+
+#: collected_static/brand/templates/prefoot.html:19
+#: collected_static/brand_difundi/templates/prefoot.html:19
+#: collected_static/brand_eco/templates/prefoot.html:19
+#: static/brand/templates/prefoot.html:19
+#: static/brand_difundi/templates/prefoot.html:19
+#: static/brand_eco/templates/prefoot.html:19
+msgid "cooperates"
+msgstr ""
+
+#: collected_static/brand/templates/prefoot.html:19
+#: collected_static/brand_difundi/templates/prefoot.html:19
+#: collected_static/brand_eco/templates/prefoot.html:19
+#: static/brand/templates/prefoot.html:19
+#: static/brand_difundi/templates/prefoot.html:19
+#: static/brand_eco/templates/prefoot.html:19
+msgid "cooperate"
+msgstr ""
+
+#: collected_static/brand/templates/prefoot.html:19
+#: collected_static/brand_difundi/templates/prefoot.html:19
+#: collected_static/brand_eco/templates/prefoot.html:19
+#: static/brand/templates/prefoot.html:19
+#: static/brand_difundi/templates/prefoot.html:19
+#: static/brand_eco/templates/prefoot.html:19
+msgid ""
+"on the <strong>ECO</strong> platform to encourage the free participation on "
+"Open Access Massive Online Courses"
+msgstr ""
+
+#: collected_static/brand/templates/prefoot.html:26
+#: collected_static/brand_difundi/templates/prefoot.html:26
+#: collected_static/brand_eco/templates/prefoot.html:26
+#: static/brand/templates/prefoot.html:26
+#: static/brand_difundi/templates/prefoot.html:26
+#: static/brand_eco/templates/prefoot.html:26
+msgid "Catalogue of courses"
+msgstr ""
+
+#: collected_static/brand/templates/prefoot.html:29
+#: collected_static/brand_difundi/templates/prefoot.html:29
+#: collected_static/brand_eco/templates/prefoot.html:29
+#: static/brand/templates/prefoot.html:29
+#: static/brand_difundi/templates/prefoot.html:29
+#: static/brand_eco/templates/prefoot.html:29 templates/base.html:131
+#: templates/base_bigheader.html:62
+msgid "Teams"
+msgstr ""
+
+#: collected_static/brand/templates/prefoot.html:32
+#: collected_static/brand_difundi/templates/prefoot.html:32
+#: collected_static/brand_eco/templates/prefoot.html:32
+#: static/brand/templates/prefoot.html:32
+#: static/brand_difundi/templates/prefoot.html:32
+#: static/brand_eco/templates/prefoot.html:32 templates/base.html:134
+#: templates/base_bigheader.html:65 templates/base_orig.html:64
+msgid "About"
+msgstr ""
+
+#: collected_static/brand/templates/prefoot.html:35
+#: collected_static/brand_difundi/templates/prefoot.html:35
+#: collected_static/brand_eco/templates/prefoot.html:35
+#: static/brand/templates/prefoot.html:35
+#: static/brand_difundi/templates/prefoot.html:35
+#: static/brand_eco/templates/prefoot.html:35 templates/base.html:138
+#: templates/base_bigheader.html:69 templates/base_orig.html:66
+msgid "How it works"
+msgstr ""
+
+#: collected_static/brand/templates/prefoot.html:42
+#: collected_static/brand_difundi/templates/prefoot.html:42
+#: collected_static/brand_eco/templates/prefoot.html:42
+#: static/brand/templates/prefoot.html:42
+#: static/brand_difundi/templates/prefoot.html:42
+#: static/brand_eco/templates/prefoot.html:42
+msgid "Staff"
+msgstr ""
+
+#: collected_static/brand/templates/prefoot.html:45
+#: collected_static/brand_difundi/templates/prefoot.html:45
+#: collected_static/brand_eco/templates/prefoot.html:45
+#: static/brand/templates/prefoot.html:45
+#: static/brand_difundi/templates/prefoot.html:45
+#: static/brand_eco/templates/prefoot.html:45
+msgid "FAQ"
+msgstr ""
+
+#: collected_static/brand/templates/prefoot.html:48
+#: collected_static/brand_difundi/templates/prefoot.html:48
+#: collected_static/brand_eco/templates/prefoot.html:48
+#: contact/templates/contact/contact.html:6
+#: static/brand/templates/prefoot.html:48
+#: static/brand_difundi/templates/prefoot.html:48
+#: static/brand_eco/templates/prefoot.html:48 templates/base_orig.html:100
+#: templates/base_teacheradmin.html:92
+msgid "Contact"
+msgstr ""
+
+#: collected_static/brand/templates/prefoot.html:73
+#: collected_static/brand_difundi/templates/prefoot.html:73
+#: collected_static/brand_eco/templates/prefoot.html:73
+#: static/brand/templates/prefoot.html:73
+#: static/brand_difundi/templates/prefoot.html:73
+#: static/brand_eco/templates/prefoot.html:73
+msgid "Platform integrated into the"
+msgstr ""
+
+#: collected_static/brand/templates/prefoot.html:73
+#: collected_static/brand_difundi/templates/prefoot.html:73
+#: collected_static/brand_eco/templates/prefoot.html:73
+#: static/brand/templates/prefoot.html:73
+#: static/brand_difundi/templates/prefoot.html:73
+#: static/brand_eco/templates/prefoot.html:73
+msgid "ECO: Elearning, Communication and Open-data"
+msgstr ""
+
+#: collected_static/brand/templates/prefoot.html:73
+#: collected_static/brand_difundi/templates/prefoot.html:73
+#: collected_static/brand_eco/templates/prefoot.html:73
+#: static/brand/templates/prefoot.html:73
+#: static/brand_difundi/templates/prefoot.html:73
+#: static/brand_eco/templates/prefoot.html:73
+msgid "project"
+msgstr ""
+
 #: contact/forms.py:30 contact/forms.py:54
 msgid "See Terms of Use"
 msgstr ""
@@ -797,14 +948,6 @@ msgid ""
 "Thank you for contacting us. The provided information will be sent to the "
 "appropiate staff. We will contact you soon to tell you about the state of "
 "your request."
-msgstr ""
-
-#: contact/templates/contact/contact.html:6
-#: static/brand/templates/prefoot.html:48
-#: static/brand_difundi/templates/prefoot.html:48
-#: static/brand_eco/templates/prefoot.html:48 templates/base_orig.html:100
-#: templates/base_teacheradmin.html:92
-msgid "Contact"
 msgstr ""
 
 #: contact/templates/contact/contact.html:9
@@ -969,11 +1112,11 @@ msgstr ""
 msgid "Pass threshold"
 msgstr ""
 
-#: courses/models.py:137 teacheradmin/templates/teacheradmin/info.html:168
+#: courses/models.py:137 teacheradmin/templates/teacheradmin/info.html:174
 msgid "Certification available"
 msgstr ""
 
-#: courses/models.py:140 teacheradmin/templates/teacheradmin/info.html:176
+#: courses/models.py:140 teacheradmin/templates/teacheradmin/info.html:183
 msgid "External certification available"
 msgstr ""
 
@@ -1015,6 +1158,7 @@ msgid "Always Open"
 msgstr ""
 
 #: courses/models.py:162 courses/models.py:554
+#: teacheradmin/templates/teacheradmin/info.html:17
 #: teacheradmin/templates/teacheradmin/units.html:86
 msgid "Status"
 msgstr ""
@@ -1423,42 +1567,42 @@ msgstr ""
 msgid "This course is not public"
 msgstr ""
 
-#: courses/views.py:154
+#: courses/views.py:161
 msgid "Only administrators can create courses"
 msgstr ""
 
-#: courses/views.py:165 courses/views.py:180
+#: courses/views.py:172 courses/views.py:187
 msgid "That user doesn't exists, the owner must be an user of the platform"
 msgstr ""
 
-#: courses/views.py:168
+#: courses/views.py:175
 msgid ""
 "There is more than a teacher with this name or email, please select other or "
 "contact with support."
 msgstr ""
 
-#: courses/views.py:174
+#: courses/views.py:181
 msgid "The owner must be a name plus ID or an email"
 msgstr ""
 
-#: courses/views.py:187
+#: courses/views.py:194
 msgid "The name can't be an empty string"
 msgstr ""
 
-#: courses/views.py:190
+#: courses/views.py:197
 msgid "To fill"
 msgstr ""
 
-#: courses/views.py:200
+#: courses/views.py:207
 #, python-format
 msgid "Your course \"%s\" has been created"
 msgstr ""
 
-#: courses/views.py:210
+#: courses/views.py:217
 msgid "The course was successfully created"
 msgstr ""
 
-#: courses/views.py:1105
+#: courses/views.py:1114
 #, python-format
 msgid ""
 "We are cloning the activity from %(course)s. You will receive an email soon"
@@ -1707,7 +1851,7 @@ msgstr ""
 #: courses/templates/courses/classroom.html:99
 #: courses/templates/courses/overview.html:180
 #: courses/templates/courses/overview.html:182
-#: courses/templates/courses/progress.html:80
+#: courses/templates/courses/progress.html:84
 #: courses/templates/courses/transcript.html:44
 #: courses/templates/courses/transcript.html:46
 msgid "Evaluation criteria"
@@ -1750,7 +1894,7 @@ msgstr ""
 
 #: courses/templates/courses/classroom.html:103
 #: courses/templates/courses/include.useractions.html:17
-#: courses/templates/courses/progress.html:102
+#: courses/templates/courses/progress.html:106
 #: teacheradmin/templates/teacheradmin/emails.html:97
 msgid "Close"
 msgstr ""
@@ -1842,9 +1986,11 @@ msgstr ""
 
 #: courses/templates/courses/classroom.html:295
 #: courses/templates/courses/dashboard.html:17
+#: courses/templates/courses/diploma.html:154
 #: courses/templates/courses/include.courseactions.html:53
 #: courses/templates/courses/overview.html:356
 #: courses/templates/courses/syllabus.html:7
+#: static/brand/templates/diploma.html:157
 msgid "Syllabus"
 msgstr ""
 
@@ -2158,6 +2304,36 @@ msgstr ""
 
 #: courses/templates/courses/dashboard.html:192
 msgid "General"
+msgstr ""
+
+#: courses/templates/courses/diploma.html:148
+#: static/brand/templates/diploma.html:151
+msgid "has succesfully completed"
+msgstr ""
+
+#: courses/templates/courses/diploma.html:148
+#: static/brand/templates/diploma.html:151
+msgid "with a score of"
+msgstr ""
+
+#: courses/templates/courses/diploma.html:150
+#: static/brand/templates/diploma.html:153
+msgid "an online course of"
+msgstr ""
+
+#: courses/templates/courses/diploma.html:150
+#: static/brand/templates/diploma.html:153
+msgid "authorized by"
+msgstr ""
+
+#: courses/templates/courses/diploma.html:150
+#: static/brand/templates/diploma.html:153
+msgid "and featured by"
+msgstr ""
+
+#: courses/templates/courses/diploma.html:151
+#: static/brand/templates/diploma.html:154
+msgid "And therefore, this diploma is issued"
 msgstr ""
 
 #: courses/templates/courses/email_new_course.txt:3
@@ -2558,27 +2734,29 @@ msgstr ""
 
 #: courses/templates/courses/progress.html:24
 #: courses/templates/courses/progress.html:26
+#: courses/templates/courses/progress.html:28
+#: courses/templates/courses/progress.html:30
 msgid "Download certification file"
 msgstr ""
 
-#: courses/templates/courses/progress.html:75
+#: courses/templates/courses/progress.html:79
 msgid "Review details"
 msgstr ""
 
-#: courses/templates/courses/progress.html:78
+#: courses/templates/courses/progress.html:82
 msgid "Review date"
 msgstr ""
 
-#: courses/templates/courses/progress.html:84
+#: courses/templates/courses/progress.html:88
 #: teacheradmin/templates/teacheradmin/badges.html:135
 msgid "Score"
 msgstr ""
 
-#: courses/templates/courses/progress.html:91
+#: courses/templates/courses/progress.html:95
 msgid "Final score"
 msgstr ""
 
-#: courses/templates/courses/progress.html:97
+#: courses/templates/courses/progress.html:101
 msgid "Comment"
 msgstr ""
 
@@ -3431,101 +3609,6 @@ msgstr ""
 msgid "German"
 msgstr ""
 
-#: static/brand/templates/prefoot.html:11
-#: static/brand_difundi/templates/prefoot.html:11
-#: static/brand_eco/templates/prefoot.html:11
-msgid "The"
-msgstr ""
-
-#: static/brand/templates/prefoot.html:13
-#: static/brand_difundi/templates/prefoot.html:13
-#: static/brand_eco/templates/prefoot.html:13
-msgid "and the"
-msgstr ""
-
-#: static/brand/templates/prefoot.html:15
-#: static/brand_difundi/templates/prefoot.html:15
-#: static/brand_eco/templates/prefoot.html:15
-msgid "the"
-msgstr ""
-
-#: static/brand/templates/prefoot.html:19
-#: static/brand_difundi/templates/prefoot.html:19
-#: static/brand_eco/templates/prefoot.html:19
-msgid "cooperates"
-msgstr ""
-
-#: static/brand/templates/prefoot.html:19
-#: static/brand_difundi/templates/prefoot.html:19
-#: static/brand_eco/templates/prefoot.html:19
-msgid "cooperate"
-msgstr ""
-
-#: static/brand/templates/prefoot.html:19
-#: static/brand_difundi/templates/prefoot.html:19
-#: static/brand_eco/templates/prefoot.html:19
-msgid ""
-"on the <strong>ECO</strong> platform to encourage the free participation on "
-"Open Access Massive Online Courses"
-msgstr ""
-
-#: static/brand/templates/prefoot.html:26
-#: static/brand_difundi/templates/prefoot.html:26
-#: static/brand_eco/templates/prefoot.html:26
-msgid "Catalogue of courses"
-msgstr ""
-
-#: static/brand/templates/prefoot.html:29
-#: static/brand_difundi/templates/prefoot.html:29
-#: static/brand_eco/templates/prefoot.html:29 templates/base.html:131
-#: templates/base_bigheader.html:62
-msgid "Teams"
-msgstr ""
-
-#: static/brand/templates/prefoot.html:32
-#: static/brand_difundi/templates/prefoot.html:32
-#: static/brand_eco/templates/prefoot.html:32 templates/base.html:134
-#: templates/base_bigheader.html:65 templates/base_orig.html:64
-msgid "About"
-msgstr ""
-
-#: static/brand/templates/prefoot.html:35
-#: static/brand_difundi/templates/prefoot.html:35
-#: static/brand_eco/templates/prefoot.html:35 templates/base.html:138
-#: templates/base_bigheader.html:69 templates/base_orig.html:66
-msgid "How it works"
-msgstr ""
-
-#: static/brand/templates/prefoot.html:42
-#: static/brand_difundi/templates/prefoot.html:42
-#: static/brand_eco/templates/prefoot.html:42
-msgid "Staff"
-msgstr ""
-
-#: static/brand/templates/prefoot.html:45
-#: static/brand_difundi/templates/prefoot.html:45
-#: static/brand_eco/templates/prefoot.html:45
-msgid "FAQ"
-msgstr ""
-
-#: static/brand/templates/prefoot.html:73
-#: static/brand_difundi/templates/prefoot.html:73
-#: static/brand_eco/templates/prefoot.html:73
-msgid "Platform integrated into the"
-msgstr ""
-
-#: static/brand/templates/prefoot.html:73
-#: static/brand_difundi/templates/prefoot.html:73
-#: static/brand_eco/templates/prefoot.html:73
-msgid "ECO: Elearning, Communication and Open-data"
-msgstr ""
-
-#: static/brand/templates/prefoot.html:73
-#: static/brand_difundi/templates/prefoot.html:73
-#: static/brand_eco/templates/prefoot.html:73
-msgid "project"
-msgstr ""
-
 #: teacheradmin/admin.py:49
 msgid "Send email massive"
 msgstr ""
@@ -3817,7 +3900,7 @@ msgstr ""
 #: teacheradmin/templates/teacheradmin/badges.html:157
 #: teacheradmin/templates/teacheradmin/categories.html:30
 #: teacheradmin/templates/teacheradmin/groups.html:81
-#: teacheradmin/templates/teacheradmin/info.html:208
+#: teacheradmin/templates/teacheradmin/info.html:219
 #: teacheradmin/templates/teacheradmin/units.html:135
 #: teacheradmin/templates/teacheradmin/units.html:376
 msgid "Save"
@@ -3975,24 +4058,32 @@ msgstr ""
 msgid "Groups already exist for this course"
 msgstr ""
 
-#: teacheradmin/templates/teacheradmin/info.html:56
+#: teacheradmin/templates/teacheradmin/info.html:29
+msgid "General info"
+msgstr ""
+
+#: teacheradmin/templates/teacheradmin/info.html:58
 #: teacheradmin/templates/teacheradmin/units.html:167
 #: teacheradmin/templates/teacheradmin/units.html:321
 msgid "Content id or url"
 msgstr ""
 
-#: teacheradmin/templates/teacheradmin/info.html:126
+#: teacheradmin/templates/teacheradmin/info.html:128
 msgid "Extra info"
 msgstr ""
 
-#: teacheradmin/templates/teacheradmin/info.html:185
 #: teacheradmin/templates/teacheradmin/info.html:192
-#: teacheradmin/templates/teacheradmin/info.html:205
+#: teacheradmin/templates/teacheradmin/info.html:202
+#: teacheradmin/templates/teacheradmin/info.html:215
 msgid "Max file size"
 msgstr ""
 
-#: teacheradmin/templates/teacheradmin/info.html:192
-#: teacheradmin/templates/teacheradmin/info.html:205
+#: teacheradmin/templates/teacheradmin/info.html:196
+msgid "Course images"
+msgstr ""
+
+#: teacheradmin/templates/teacheradmin/info.html:202
+#: teacheradmin/templates/teacheradmin/info.html:215
 msgid "Recommended image size"
 msgstr ""
 
