@@ -118,6 +118,15 @@
         height: 12cm;
     }
 	}
+
+  @page backside {
+    @frame content_frame {          /* Content Frame */
+        top: 2.5cm;
+        left: 2.5cm;
+        width: 25cm;
+        height: 20cm;
+    }
+  }
 {%endblock%}	
 </style>
 </head>
@@ -140,6 +149,14 @@
     <span class="course">{{ course.name }}</span>
     {% trans 'an online course of' %} {{ course.start_date|timesince:course.end_date }} {% trans 'authorized by' %} {{ course.owner.get_profile.organization.all|first }} {% trans 'and featured by' %} {{ site.name }}.</p>
     <p>{% trans 'And therefore, this diploma is issued' %}.</p>
+    <pdf:nexttemplate name="backside">
+    <div><pdf:nextpage /></div>
+    <h1>{% trans 'Syllabus' %}</h1>
+    <ol>
+      {% for unit in course_units %}
+      <li>{{ unit.title }}</li>
+      {% endfor %}
+    </ol>
 {%endblock%}
 </body>
 </html>
