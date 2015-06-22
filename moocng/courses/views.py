@@ -59,16 +59,24 @@ from moocng.courses.security import (get_course_if_user_can_view_or_404,
 from moocng.courses.tasks import clone_activity_user_course_task
 from moocng.courses.forms import CourseRatingForm, ForumPostForm, ForumReplyForm
 from moocng.slug import unique_slugify
-from moocng.utils import use_cache
 from moocng.communityshare.models import Microblog, Forum
 from moocng.portal.templatetags.gravatar import gravatar_for_email
+from moocng.utils import use_cache, generate_pdf
+from moocng.profile.models import search_posts
 
 import hashlib
 import time
 from django.core import mail
 
 from django.http import Http404
-
+from django.template.loader import get_template
+from django.template import Context
+import xhtml2pdf.pisa as pisa
+try:
+    import StringIO
+except Exception:
+    from io import StringIO
+import os
 
 def home(request):
 
@@ -946,6 +954,8 @@ def course_progress(request, course_slug):
                     award = Award(badge=badge, user=request.user)
                     award.save()
 
+    print "course.external_certification_available = %s - certification_file = %s" % (course.external_certification_available, course.certification_file)
+
     return render_to_response('courses/progress.html', {
         'course': course,
         'progress': get_course_progress_for_user(course, request.user),
@@ -1130,7 +1140,7 @@ def check_survey(request, course_slug, survey_id, survey_token):
     units = get_units_available_for_user(course, user, True)
     is_enrolled = course.students.filter(id=request.user.id).exists()
     tasks = get_tasks_available_for_user(course, request.user)
-    is_teacher = is_teacher_test(user, course),
+    is_teacher = is_teacher_test(user, course)
     is_ready, ask_admin = is_course_ready(course)
     group = get_group_by_user_and_course(request.user.id, course.id)
 
@@ -1148,7 +1158,6 @@ def check_survey(request, course_slug, survey_id, survey_token):
         sliced = re.sub('<[^>]*>', '', response)
         decoded_response = json.loads(base64.b64decode(sliced))
         user_response = decoded_response[u'responses'][0]
-        print user_response
         if user_response[user_response.keys()[0]][u'lastpage']:
             template_name = 'courses/survey_completed.html'
 
@@ -1177,3 +1186,32 @@ def check_survey(request, course_slug, survey_id, survey_token):
         'survey_token': survey_token,
         'survey_id': survey_id,
     }, context_instance=RequestContext(request))
+
+@login_required
+def course_diploma_pdf(request, course_slug):
+    user = request.user
+    course = get_course_if_user_can_view_or_404(course_slug, request)
+    is_enrolled = course.students.filter(id=user.id).exists()
+    is_teacher = is_teacher_test(user, course)
+    is_ready, ask_admin = is_course_ready(course)
+    total_mark, units_info = get_course_mark(course, request.user)
+    if is_enrolled and has_user_passed_course(user, course):
+        context_dict = {
+            'pagesize': 'A4',
+            'user': user,
+            'course': course,
+            'course_mark': round(total_mark,2)
+        }
+
+        if 'diploma_template' in settings.THEME:
+            pdf = generate_pdf(request, 'diploma.html', context_dict)
+        else:
+            pdf = generate_pdf(request, 'courses/diploma.html', context_dict)
+
+        if pdf:
+            return HttpResponse(pdf.getvalue(), mimetype='application/pdf')
+        else:
+            return HttpResponse('Error while generating pdf')
+    else:
+        return HttpResponseForbidden()
+

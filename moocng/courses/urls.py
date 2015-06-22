@@ -93,6 +93,8 @@ urlpatterns = patterns(
     url(r'^course/setmark/(?P<knowledgequantumid>\d+)/$','course_setmark',name='course_setmark'),
     url(r'^course/(?P<course_slug>[-\w]+)/checksurvey/(?P<survey_id>[-\w]+)/(?P<survey_token>[-\w]+)$', 'check_survey', name='check_survey'),
 
+    url(r'^course/(?P<course_slug>[-\w]+)/diploma/$', 'course_diploma_pdf', name='course_diploma_pdf'),
+
     # Teacher's course administration
     url(r'^course/(?P<course_slug>[-\w]+)/teacheradmin/',
         include('moocng.teacheradmin.urls')),
