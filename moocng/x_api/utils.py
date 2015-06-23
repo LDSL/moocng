@@ -3,6 +3,7 @@
 import requests
 import sys
 import json
+import re
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -91,7 +92,7 @@ def learnerEnrollsInMooc(user, course, geolocation):
 	sendStatement(verb)
 
 def learnerAccessAPage(user, page, geolocation):
-	page_type = {
+	page_types = {
 		"course": "http://adlnet.gov/expapi/activities/course",
 		"questionnaire": "http://adlnet.gov/expapi/activities/assessment",
 		"page": "http://activitystrea.ms/schema/1.0/page",
@@ -112,6 +113,35 @@ def learnerAccessAPage(user, page, geolocation):
 		"wikipage": "http://www.ecolearning.eu/expapi/activitytype/wiki",
 		"activitystream": "http://www.ecolearning.eu/expapi/activitytype/activitystream"
 	}
+	page_verbs = {
+		"course": "Indicates the learner accessed a course",
+		"questionnaire": "Indicates the learner accessed a questionnaire",
+		"page": "Indicates the learner accessed a page",
+		"module": "Indicates the learner accessed a module",
+		"syllabus": "Indicates the learner accessed a syllabus",
+		"learningactivity": "Indicates the learner accessed a learning activity",
+		"task": "Indicates the learner accessed a task",
+		"assignment": "Indicates the learner accessed an assignment",
+		"assessment": "Indicates the learner accessed an assessment",
+		"peerassessment": "Indicates the learner accessed a peer assessment",
+		"peerproduct": "Indicates the learner accessed a peer product",
+		"learningresource": "Indicates the learner accessed a learning resource",
+		"forum": "Indicates the learner accessed a forum",
+		"blog": "Indicates the learner accessed a blog",
+		"blogpage": "Indicates the learner accessed a blog page",
+		"blogpost": "Indicates the learner accessed a blog post",
+		"wiki": "Indicates the learner accessed a wiki",
+		"wikipage": "Indicates the learner accessed a wikipage",
+		"activitystream": "Indicates the learner accessed an activity stream",
+	}
+
+	page_type = "page"
+	if re.search('\/syllabus', page['url']):
+		page_type = "syllabus"
+	elif re.search('\/classroom\/', page['url']):
+		page_type = "module"
+	
+
 	verb = {
 	    "actor": {
 	        "objectType": "Agent",
@@ -123,10 +153,10 @@ def learnerAccessAPage(user, page, geolocation):
 	    "verb": {
 	        "id": "http://activitystrea.ms/schema/1.0/access",
 	        "display": {
-	            "en-US": "Indicates the learner accessed a page"
+	            "en-US": page_verbs[page_type]
 	        }
 	    },
-	        "object": {
+	    "object": {
 	        "objectType": "Activity",
 	        "id": page['url'],
 	        "definition": {
@@ -136,7 +166,7 @@ def learnerAccessAPage(user, page, geolocation):
 	            "description": {
 	                "en-US": page['description']
 	            },
-	            "type": "http://activitystrea.ms/schema/1.0/page"
+	            "type": page_types[page_type]
 	        }
 	    },
 	    "context": {
