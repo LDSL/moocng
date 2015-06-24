@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
 
 from moocng.users.models import User
-from moocng.courses.models import Course
+from moocng.courses.models import Course, CourseStudent
 from moocng.x_api.utils import learnerAccessAPage, learnerEnrollsInMooc
 from moocng import mongodb
 
@@ -34,16 +34,29 @@ class Command(BaseCommand):
 
 	def handle(self, *args, **options):
 		if options['date']:
-			max_timestamp = calendar.timegm(time.strptime(options['date'], '%d/%m/%Y %H:%M')) * 1000
+			max_timestamp = calendar.timegm(time.strptime(options['date'], '%d/%m/%Y %H:%M'))
 		else:
-			max_timestamp = calendar.timegm(time.gmtime()) * 1000
+			max_timestamp = calendar.timegm(time.gmtime())
+
+		# Get enrollments
+		enrollments = CourseStudent.objects.filter(timestamp__lte=max_timestamp)
+		print "%d enrollments until %d" % (enrollments.count(), max_timestamp)
+
+		#Send each enrroment entry as xAPI Statement
+		for enrollment in enrollments:
+			geolocation = {
+				'lat': enrollment.pos_lat,
+				'lon': enrollment.pos_lon
+			}
+			learnerEnrollsInMooc(enrollment.student, enrollment.course, geolocation)
+		self.message('Enrollments succesfully exported')
 
 		# Get history
 		history_col = mongodb.get_db().get_collection('history')
-		histories = history_col.find({'timestamp': {'$lte': max_timestamp}})
-		
-		# Send each history entry as xAPI Statement
+		histories = history_col.find({'timestamp': {'$lte': max_timestamp * 1000}})
 		print "%d histories until %d" % (histories.count(), max_timestamp)
+
+		# Send each history entry as xAPI Statement
 		for history in histories:
 			course = None
 			try:
@@ -69,3 +82,5 @@ class Command(BaseCommand):
 				'lon': history['lon']
 			}
 			learnerAccessAPage(user, page, geolocation)
+
+		self.message('History succesfully exported')
