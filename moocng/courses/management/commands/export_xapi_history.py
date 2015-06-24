@@ -8,6 +8,8 @@ import time
 import calendar
 from optparse import make_option
 
+import pyprind
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
@@ -40,23 +42,27 @@ class Command(BaseCommand):
 
 		# Get enrollments
 		enrollments = CourseStudent.objects.filter(timestamp__lte=max_timestamp)
-		print "%d enrollments until %d" % (enrollments.count(), max_timestamp)
+		self.message("%d enrollments until %d" % (enrollments.count(), max_timestamp))
 
-		#Send each enrroment entry as xAPI Statement
+		#Send each enrollment entry as xAPI statement
+		bar = pyprind.ProgBar(enrollments.count())
 		for enrollment in enrollments:
 			geolocation = {
 				'lat': enrollment.pos_lat,
 				'lon': enrollment.pos_lon
 			}
 			learnerEnrollsInMooc(enrollment.student, enrollment.course, geolocation)
+			bar.update()
+
 		self.message('Enrollments succesfully exported')
 
 		# Get history
 		history_col = mongodb.get_db().get_collection('history')
 		histories = history_col.find({'timestamp': {'$lte': max_timestamp * 1000}})
-		print "%d histories until %d" % (histories.count(), max_timestamp)
+		self.message("%d histories until %d" % (histories.count(), max_timestamp))
 
 		# Send each history entry as xAPI Statement
+		bar = pyprind.ProgBar(histories.count())
 		for history in histories:
 			course = None
 			try:
@@ -82,5 +88,6 @@ class Command(BaseCommand):
 				'lon': history['lon']
 			}
 			learnerAccessAPage(user, page, geolocation)
+			bar.update()
 
 		self.message('History succesfully exported')
