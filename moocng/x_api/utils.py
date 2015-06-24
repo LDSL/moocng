@@ -18,9 +18,7 @@ def sendStatement(verb):
 			"Authorization": settings.XAPI_AUTH
 		}
 		r = requests.post(settings.XAPI_URL, data=json.dumps(verb), headers=headers)
-		if r.status_code == requests.codes.ok:
-			print "  --> Statement sended succesfully"
-		else:
+		if not r.status_code == requests.codes.ok:
 			print "  --> Couldn't send this statement"
 			print r.text
 
