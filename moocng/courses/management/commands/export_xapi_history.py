@@ -26,6 +26,18 @@ class Command(BaseCommand):
 					dest='date',
 					default='',
 					help='Max date to export. Format "DD/MM/YYYY hh:mm"'),
+
+		make_option('-e', '--enrollments',
+					action='store_true',
+					dest='enrollments',
+					default='',
+					help='Export only enrollments'),
+
+		make_option('-a', '--accesses',
+					action='store_true',
+					dest='accesses',
+					default='',
+					help='Export only accesses'),
 	)
 
 	def error(self, message):
@@ -40,54 +52,63 @@ class Command(BaseCommand):
 		else:
 			max_timestamp = calendar.timegm(time.gmtime())
 
-		# Get enrollments
-		enrollments = CourseStudent.objects.filter(timestamp__lte=max_timestamp)
-		self.message("%d enrollments until %d" % (enrollments.count(), max_timestamp))
+		if options['enrollments'] or not options['accesses']:
+			# Get enrollments
+			enrollments = CourseStudent.objects.filter(timestamp__lte=max_timestamp)
+			self.message("%d enrollments until %d" % (enrollments.count(), max_timestamp))
 
-		#Send each enrollment entry as xAPI statement
-		bar = pyprind.ProgBar(enrollments.count())
-		for enrollment in enrollments:
-			geolocation = {
-				'lat': enrollment.pos_lat,
-				'lon': enrollment.pos_lon
-			}
-			learnerEnrollsInMooc(enrollment.student, enrollment.course, geolocation)
-			bar.update()
+			#Send each enrollment entry as xAPI statement
+			bar = pyprind.ProgBar(enrollments.count())
+			for enrollment in enrollments:
+				try:
+					geolocation = {
+						'lat': enrollment.pos_lat,
+						'lon': enrollment.pos_lon
+					}
+					learnerEnrollsInMooc(enrollment.student, enrollment.course, geolocation)
+				except:
+					self.error('ERROR sending an statement for user %s in enrollment with timestamp %s' % (enrollment.user, enrollment.timestamp))
+					continue
 
-		self.message('Enrollments succesfully exported')
+				bar.update()
 
-		# Get history
-		history_col = mongodb.get_db().get_collection('history')
-		histories = history_col.find({'timestamp': {'$lte': max_timestamp * 1000}})
-		self.message("%d histories until %d" % (histories.count(), max_timestamp))
+			self.message('Enrollments succesfully exported')
 
-		# Send each history entry as xAPI Statement
-		bar = pyprind.ProgBar(histories.count())
-		for history in histories:
-			course = None
-			try:
-				user_id = str(int(history['user_id']))
-				user = User.objects.get(pk=user_id)
-				if 'course_id' in history:
-					course_id = str(int(history['course_id']))
-					course = Course.objects.get(pk=course_id)
-			except (ValueError, TypeError):
-				continue
-			
-			page = {}
-			page['url'] = history['url']
-			if course:
-				page['name'] = course.name
-				page['description'] = course.name
-			else:
-				page['name'] = ''
-				page['description'] = ''
-			
-			geolocation = {
-				'lat': history['lat'],
-				'lon': history['lon']
-			}
-			learnerAccessAPage(user, page, geolocation)
-			bar.update()
+		if options['accesses'] or not options['enrollments']:
+			# Get history
+			history_col = mongodb.get_db().get_collection('history')
+			histories = history_col.find({'timestamp': {'$lte': max_timestamp * 1000}})
+			self.message("%d histories until %d" % (histories.count(), max_timestamp))
 
-		self.message('History succesfully exported')
+			# Send each history entry as xAPI Statement
+			bar = pyprind.ProgBar(histories.count())
+			for history in histories:
+				course = None
+				try:
+					user_id = str(int(history['user_id']))
+					user = User.objects.get(pk=user_id)
+					if 'course_id' in history:
+						course_id = str(int(history['course_id']))
+						course = Course.objects.get(pk=course_id)
+
+					page = {}
+					page['url'] = history['url']
+					if course:
+						page['name'] = course.name
+						page['description'] = course.name
+					else:
+						page['name'] = ''
+						page['description'] = ''
+					
+					geolocation = {
+						'lat': history['lat'],
+						'lon': history['lon']
+					}
+					learnerAccessAPage(user, page, geolocation)
+				except:
+					self.error('ERROR sending a statement for user %s in history with timestamp %s' % (history['user_id'], history['timestamp']))
+					continue
+
+				bar.update()
+
+			self.message('History succesfully exported')
