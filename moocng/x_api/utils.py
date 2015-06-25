@@ -4,6 +4,7 @@ import requests
 import sys
 import json
 import re
+import time
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -26,7 +27,11 @@ def sendStatement(verb):
 		print "  !!! Error sending statement"
 		print "      Unexpected error:", sys.exc_info()
 
-def learnerEnrollsInMooc(user, course, geolocation):
+def learnerEnrollsInMooc(user, course, geolocation, timestamp=None):
+	if not timestamp:
+		timestamp = time.gmtime()
+	formatted_timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", timestamp)
+
 	verb = {
 		    "actor": {
 		        "objectType": "Agent",
@@ -85,11 +90,12 @@ def learnerEnrollsInMooc(user, course, geolocation):
 		                }
 		            }
 		        }
-		    }
+		    },
+		    "timestamp": formatted_timestamp
 		}
 	sendStatement(verb)
 
-def learnerAccessAPage(user, page, geolocation):
+def learnerAccessAPage(user, page, geolocation, timestamp=None):
 	page_types = {
 		"course": "http://adlnet.gov/expapi/activities/course",
 		"questionnaire": "http://adlnet.gov/expapi/activities/assessment",
@@ -139,6 +145,9 @@ def learnerAccessAPage(user, page, geolocation):
 	elif re.search('\/classroom\/', page['url']):
 		page_type = "module"
 	
+	if not timestamp:
+		timestamp = time.gmtime()
+	formatted_timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", timestamp)
 
 	verb = {
 	    "actor": {
@@ -198,7 +207,8 @@ def learnerAccessAPage(user, page, geolocation):
 	                }
 	            }
 	        }
-	    }
+	    },
+	    "timestamp": formatted_timestamp
 	}
 
 	sendStatement(verb)

@@ -65,9 +65,10 @@ class Command(BaseCommand):
 						'lat': enrollment.pos_lat,
 						'lon': enrollment.pos_lon
 					}
-					learnerEnrollsInMooc(enrollment.student, enrollment.course, geolocation)
+					timestamp = time.gmtime(enrollment.timestamp)
+					learnerEnrollsInMooc(enrollment.student, enrollment.course, geolocation, timestamp)
 				except:
-					self.error('ERROR sending an statement for user %s in enrollment with timestamp %s' % (enrollment.user, enrollment.timestamp))
+					self.error('ERROR sending an statement for user %s in enrollment with timestamp %s' % (enrollment.student, time.strftime("%d/%m/%Y %H:%M:%S", timestamp)))
 					continue
 
 				bar.update()
@@ -104,9 +105,10 @@ class Command(BaseCommand):
 						'lat': history['lat'],
 						'lon': history['lon']
 					}
-					learnerAccessAPage(user, page, geolocation)
+					timestamp = time.gmtime(history['timestamp']/1000)
+					learnerAccessAPage(user, page, geolocation, timestamp)
 				except:
-					self.error('ERROR sending a statement for user %s in history with timestamp %s' % (history['user_id'], history['timestamp']))
+					self.error('ERROR sending a statement for user %s in history with timestamp %s' % (history['user_id'], time.strftime("%d/%m/%Y %H:%M:%S", timestamp)))
 					continue
 
 				bar.update()
