@@ -21,19 +21,23 @@ from moocng import mongodb
 
 class Command(BaseCommand):
 	option_list = BaseCommand.option_list + (
-		make_option('-d', '--date',
+		make_option('-b', '--datebefore',
 					action='store',
-					dest='date',
+					dest='datebefore',
 					default='',
 					help='Max date to export. Format "DD/MM/YYYY hh:mm"'),
-
+		make_option('-a', '--dateafter',
+					action='store',
+					dest='dateafter',
+					default='',
+					help='Min date to export. Format "DD/MM/YYYY hh:mm"'),
 		make_option('-e', '--enrollments',
 					action='store_true',
 					dest='enrollments',
 					default='',
 					help='Export only enrollments'),
 
-		make_option('-a', '--accesses',
+		make_option('-c', '--accesses',
 					action='store_true',
 					dest='accesses',
 					default='',
@@ -47,15 +51,20 @@ class Command(BaseCommand):
 		self.stdout.write("%s\n" % message.encode("ascii", "replace"))
 
 	def handle(self, *args, **options):
-		if options['date']:
-			max_timestamp = calendar.timegm(time.strptime(options['date'], '%d/%m/%Y %H:%M'))
+		if options['datebefore']:
+			max_timestamp = calendar.timegm(time.strptime(options['datebefore'], '%d/%m/%Y %H:%M'))
 		else:
 			max_timestamp = calendar.timegm(time.gmtime())
 
+		if options['dateafter']:
+			min_timestamp = calendar.timegm(time.strptime(options['dateafter'], '%d/%m/%Y %H:%M'))
+		else:
+			min_timestamp = 0
+
 		if options['enrollments'] or not options['accesses']:
 			# Get enrollments
-			enrollments = CourseStudent.objects.filter(timestamp__lte=max_timestamp)
-			self.message("%d enrollments until %d" % (enrollments.count(), max_timestamp))
+			enrollments = CourseStudent.objects.exclude(timestamp__lte=min_timestamp).filter(timestamp__lte=max_timestamp)
+			self.message("%d enrollments between %d and %d" % (enrollments.count(), min_timestamp, max_timestamp))
 
 			#Send each enrollment entry as xAPI statement
 			bar = pyprind.ProgBar(enrollments.count())
@@ -78,7 +87,10 @@ class Command(BaseCommand):
 		if options['accesses'] or not options['enrollments']:
 			# Get history
 			history_col = mongodb.get_db().get_collection('history')
-			histories = history_col.find({'timestamp': {'$lte': max_timestamp * 1000}})
+			histories = history_col.find({'$and': [
+        									{'timestamp': {'$lte': max_timestamp * 1000} },
+        									{'timestamp': {'$gte': min_timestamp * 1000} }
+        								]})
 			self.message("%d histories until %d" % (histories.count(), max_timestamp))
 
 			# Send each history entry as xAPI Statement
