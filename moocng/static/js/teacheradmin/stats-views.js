@@ -46,6 +46,13 @@ if (_.isUndefined(window.MOOC)) {
                     .call(chart);
 
                 nv.utils.windowResize(chart.update);
+
+                chart.pie.dispatch.on("elementClick", function(e) {
+                    var label = e.label.replace(' ','-').toLowerCase();
+                    var href = $('#'+label).attr('href');
+                    window.location.href=href;
+                });
+
                 return chart;
             });
         },
@@ -273,7 +280,7 @@ if (_.isUndefined(window.MOOC)) {
                 [MOOC.trans.notCompleted, MOOC.trans.completed],
                 [data.enrolled - data.completed, data.completed]
             );
-            
+
             var countryValues = Object.keys(data.byCountry).map(function (key) {
                 return data.byCountry[key];
             });
@@ -338,7 +345,7 @@ if (_.isUndefined(window.MOOC)) {
                 unitsNav,
                 aux;
             this.$el.html(this.template(this.model.toJSON()));
-            
+
             var countryValues = Object.keys(data.byCountry).map(function (key) {
                 return data.byCountry[key];
             });
