@@ -1032,7 +1032,7 @@ def _get_students_by_filter(filter, course):
 
     students = []
     if filter == 'started':
-        students = list(CourseStudent.objects.filter(course=course, student__pk__in=[int(d['_id']) for d in _get_students_completed_kqs_filter(course)])),
+        students = CourseStudent.objects.filter(course=course, student__pk__in=[int(d['_id']) for d in _get_students_completed_kqs_filter(course)]),
     elif filter == 'notstarted':
         students = CourseStudent.objects.filter(course=course).exclude(student__pk__in=[int(d['_id']) for d in _get_students_completed_kqs_filter(course)]),
     elif filter == 'completed':
@@ -1043,8 +1043,12 @@ def _get_students_by_filter(filter, course):
         students = CourseStudent.objects.filter(course=course, student__pk__in=[int(d['user_id']) for d in list(marks_course_col.find({'course_id': course.pk, 'mark': {'$gte': float(course.threshold)} }))]),
     elif filter == 'notpassed':
         students = CourseStudent.objects.filter(course=course).exclude(student__pk__in=[int(d['user_id']) for d in list(marks_course_col.find({'course_id': course.pk, 'mark': {'$gte': float(course.threshold)} }))])
+
     try:
-        return students[0]
+        if isinstance(students, tuple):
+            return students[0]
+        else:
+            return students
     except:
         return []
 
