@@ -1030,14 +1030,23 @@ def _get_students_by_filter(filter, course):
     for unit in course.unit_set.filter(Q(status='p') | Q(status='o') | Q(status='l')).all():
         num_kqs += unit.knowledgequantum_set.count()
 
-    return {
-        'started': CourseStudent.objects.filter(course=course, student__pk__in=[int(d['_id']) for d in _get_students_completed_kqs_filter(course)]),
-        'notstarted': CourseStudent.objects.filter(course=course).exclude(student__pk__in=[int(d['_id']) for d in _get_students_completed_kqs_filter(course)]),
-        'completed': CourseStudent.objects.filter(course=course, student__pk__in=[int(d['_id']) for d in _get_students_completed_kqs_filter(course) if d['kqs'] >= num_kqs]),
-        'notcompleted': CourseStudent.objects.filter(course=course).exclude(student__pk__in=[int(d['_id']) for d in _get_students_completed_kqs_filter(course) if d['kqs'] >= num_kqs]),
-        'passed': CourseStudent.objects.filter(course=course, student__pk__in=[int(d['user_id']) for d in list(marks_course_col.find({'course_id': course.pk, 'mark': {'$gte': float(course.threshold)} }))]),
-        'notpassed': CourseStudent.objects.filter(course=course).exclude(student__pk__in=[int(d['user_id']) for d in list(marks_course_col.find({'course_id': course.pk, 'mark': {'$gte': float(course.threshold)} }))])
-    }[filter]
+    students = []
+    if filter == 'started':
+        students = list(CourseStudent.objects.filter(course=course, student__pk__in=[int(d['_id']) for d in _get_students_completed_kqs_filter(course)])),
+    elif filter == 'notstarted':
+        students = CourseStudent.objects.filter(course=course).exclude(student__pk__in=[int(d['_id']) for d in _get_students_completed_kqs_filter(course)]),
+    elif filter == 'completed':
+        students = CourseStudent.objects.filter(course=course, student__pk__in=[int(d['_id']) for d in _get_students_completed_kqs_filter(course) if d['kqs'] >= num_kqs]),
+    elif filter == 'notcompleted':
+        students = CourseStudent.objects.filter(course=course).exclude(student__pk__in=[int(d['_id']) for d in _get_students_completed_kqs_filter(course) if d['kqs'] >= num_kqs]),
+    elif filter == 'passed':
+        students = CourseStudent.objects.filter(course=course, student__pk__in=[int(d['user_id']) for d in list(marks_course_col.find({'course_id': course.pk, 'mark': {'$gte': float(course.threshold)} }))]),
+    elif filter == 'notpassed':
+        students = CourseStudent.objects.filter(course=course).exclude(student__pk__in=[int(d['user_id']) for d in list(marks_course_col.find({'course_id': course.pk, 'mark': {'$gte': float(course.threshold)} }))])
+    try:
+        return students[0]
+    except:
+        return []
 
 @is_teacher_or_staff
 def teacheradmin_lists_coursestudents(request, course_slug, format=None, filter=None):
