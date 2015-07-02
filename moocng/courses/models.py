@@ -16,11 +16,7 @@
 import datetime
 import logging
 
-try:
-    import Image
-    import ImageOps
-except ImportError:
-    from PIL import Image, ImageOps
+from PIL import Image, ImageOps
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -40,7 +36,7 @@ from moocng.badges.models import Badge
 from moocng.courses.cache import invalidate_template_fragment_i18n
 from moocng.courses.managers import (CourseManager, UnitManager,
                                      KnowledgeQuantumManager, QuestionManager,
-                                     OptionManager, TranscriptionManager, 
+                                     OptionManager, TranscriptionManager,
                                      AttachmentManager, AnnouncementManager)
 from moocng.enrollment import enrollment_methods
 from moocng.mongodb import get_db
@@ -55,7 +51,7 @@ logger = logging.getLogger(__name__)
 class Language(models.Model):
     name = models.CharField(verbose_name=_(u'Name'), max_length=200)
     abbr = models.CharField(verbose_name=_(u'Abbr'), max_length=2, null=True)
-    
+
     def __unicode__(self):
         return self.name
 
@@ -83,14 +79,14 @@ class Course(Sortable):
                                   blank=True, null=True)
     end_date = models.DateField(verbose_name=_(u'End date'),
                                 blank=True, null=True)
-    
+
     ects = models.PositiveSmallIntegerField(verbose_name=_(u'ECTS:'),
                                                               default=8)
-    
+
     teachers = models.ManyToManyField(User, verbose_name=_(u'Teachers'),
                                       through='CourseTeacher',
                                       related_name='courses_as_teacher')
-    
+
     owner = models.ForeignKey(User, verbose_name=_(u'Teacher owner'),
                               related_name='courses_as_owner', blank=False,
                               null=False)
@@ -692,7 +688,7 @@ class KnowledgeQuantum(Sortable):
                 "current" : True
             },
             {
-                "$unset": { "current": "" },  
+                "$unset": { "current": "" },
             }
         )
 
@@ -759,7 +755,7 @@ def get_transcription_types_choices():
     for handler_dict in settings.TRANSCRIPTION_TYPES:
         choices.append((handler_dict['id'], handler_dict.get('name', handler_dict['id'])))
     return choices
-    
+
 class Transcription(models.Model):
     kq = models.ForeignKey(KnowledgeQuantum,
                            verbose_name=_(u'Nugget'))
