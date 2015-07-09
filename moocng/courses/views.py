@@ -213,7 +213,7 @@ def course_add(request):
             'auth-hash': authhash,
             'auth-timestamp': timestamp
         }
-        
+
         if settings.FEATURE_FORUM:
             try:
                 r = requests.post(settings.FORUM_URL + '/api2/categories', data=json.dumps(data), headers=headers)
@@ -264,7 +264,7 @@ def course_overview(request, course_slug):
     """
     course, permission = get_course_if_user_can_view_and_permission(course_slug, request)
     print "Permission %s" % (permission)
-    
+
     relatedcourses = get_related_courses_available_for_user(course, request.user)
 
     if request.user.is_authenticated():
@@ -275,19 +275,19 @@ def course_overview(request, course_slug):
         is_teacher = False
 
     course_teachers = CourseTeacher.objects.filter(course=course)
-    
+
     organizers = []
     for teacher in course_teachers:
         organization = teacher.teacher.get_profile().organization.all()
 
-        for v in organization:            
+        for v in organization:
             if(v not in organizers):
                 organizers.append(v)
 
     #course_has_started = True if date.today() >= course.start_date else False
     announcements = Announcement.objects.filter(course=course).order_by('datetime').reverse()[:5]
     units = get_units_available_for_user(course, request.user, True)
-    
+
     rating = course.get_rating()
     rating_obj = None
     if rating > 0:
@@ -298,7 +298,7 @@ def course_overview(request, course_slug):
         rating_obj = 0
 
     tasks = get_tasks_available_for_user(course, request.user)
-    
+
     if is_enrolled:
         has_passed= has_user_passed_course(request.user, course)
     else:
@@ -537,7 +537,7 @@ def course_syllabus(request, course_slug):
         'progress': get_course_progress_for_user(course, request.user),
         'task_list': tasks[0],
         'tasks_done': tasks[1],
-        'is_enrolled' : is_enrolled,   
+        'is_enrolled' : is_enrolled,
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'unit_list': get_sillabus_tree(course,request.user,minversion=False),
@@ -565,7 +565,7 @@ def course_group(request, course_slug):
         }, context_instance=RequestContext(request))
 
     tasks = get_tasks_available_for_user(course, request.user)
-    
+
     groups = []
     group = {}
     group = get_group_by_user_and_course(request.user.id, course.id)
@@ -589,7 +589,7 @@ def course_group(request, course_slug):
         'progress': get_course_progress_for_user(course, request.user),
         'task_list': tasks[0],
         'tasks_done': tasks[1],
-        'is_enrolled' : is_enrolled,   
+        'is_enrolled' : is_enrolled,
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
@@ -630,7 +630,7 @@ def course_forum(request, course_slug):
         'progress': get_course_progress_for_user(course, request.user),
         'task_list': tasks[0],
         'tasks_done': tasks[1],
-        'is_enrolled' : is_enrolled,  
+        'is_enrolled' : is_enrolled,
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
@@ -669,7 +669,7 @@ def course_calendar(request, course_slug):
         'progress': get_course_progress_for_user(course, request.user),
         'task_list': tasks[0],
         'tasks_done': tasks[1],
-        'is_enrolled' : is_enrolled,   
+        'is_enrolled' : is_enrolled,
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
@@ -708,7 +708,7 @@ def course_wiki(request, course_slug):
         'progress': get_course_progress_for_user(course, request.user),
         'task_list': tasks[0],
         'tasks_done': tasks[1],
-        'is_enrolled' : is_enrolled,   
+        'is_enrolled' : is_enrolled,
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
@@ -749,7 +749,7 @@ def course_teachers(request, course_slug):
         'progress': get_course_progress_for_user(course, request.user),
         'task_list': tasks[0],
         'tasks_done': tasks[1],
-        'is_enrolled' : is_enrolled,   
+        'is_enrolled' : is_enrolled,
         'is_ready' : is_ready,
         'is_teacher': is_teacher,
         'group': group,
@@ -777,7 +777,7 @@ def course_progress(request, course_slug):
 
     is_ready, ask_admin = is_course_ready(course)
     is_teacher = is_teacher_test(request.user, course)
-    
+
     tasks = get_tasks_available_for_user(course, request.user)
 
     if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
@@ -810,7 +810,7 @@ def course_progress(request, course_slug):
 
     for unit_info in units_info:
         print unit_info
-    
+
     units_info_ordered = []
     for unit in course_units:
         uinfo = next((u for u in units_info if u['unit_id'] == unit.pk),
@@ -974,7 +974,7 @@ def transcript(request, course_slug=None):
             units_info_ordered.append(uinfo)
         tasks = get_tasks_available_for_user(course, request.user)
         group = get_group_by_user_and_course(request.user.id, course.id)
-        
+
         courses_info.append({
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
@@ -1068,7 +1068,7 @@ def check_survey(request, course_slug, survey_id, survey_token):
         print ex
         template_name = 'courses/survey_not_completed.html'
 
-    
+
     return render_to_response(template_name, {
         'course': course,
         'is_enrolled' : is_enrolled,
@@ -1100,11 +1100,13 @@ def course_diploma_pdf(request, course_slug):
             'course_units': course_units,
         }
 
-        pdf = generate_pdf(request, 'courses/diploma.html', context_dict)
+        if hasattr(settings, 'MOOCNG_THEME') and settings.MOOCNG_THEME['diploma_template']:
+            pdf = generate_pdf(request, settings.MOOCNG_THEME['diploma_template'], context_dict)
+        else:
+            pdf = generate_pdf(request, 'courses/diploma.html', context_dict)
         if pdf:
             return HttpResponse(pdf.getvalue(), mimetype='application/pdf')
         else:
             return HttpResponse('Error while generating pdf')
     else:
         return HttpResponseForbidden()
-
