@@ -43,7 +43,6 @@ from moocng.courses.serializer import (CourseClone, UnitClone, KnowledgeQuantumC
 from moocng.peerreview.models import PeerReviewAssignment, EvaluationCriterion
 from moocng.courses.marks import get_course_mark
 
-
 from moocng.courses.security import get_units_available_for_user
 
 from moocng.media_contents import get_media_type
@@ -152,7 +151,7 @@ def send_mass_mail_wrapper(subject, message, recipients, html_message=None):
             if html_message:
                 email.attach_alternative(html_message, "text/html")
             mails.append(email)
-    
+
         get_connection().send_messages(mails)
     except IOError as ex:
         logger.error('The massive email "%s" to %s could not be sent because of %s' % (subject, recipients, str(ex)))
@@ -366,7 +365,7 @@ def get_sillabus_tree(course,user,minversion=True,incontext=False):
         if not incontext:
 
             for u in course_units:
-                unit, current_mark_kq = get_unit_tree(u, user, current_mark_kq, minversion)            
+                unit, current_mark_kq = get_unit_tree(u, user, current_mark_kq, minversion)
                 units.append(unit)
 
         else:
@@ -377,7 +376,7 @@ def get_sillabus_tree(course,user,minversion=True,incontext=False):
                 prev = None
                 for u in course_units:
                     unit, current_mark_kq = get_unit_tree(u, user, current_mark_kq, minversion)
-                    
+
                     if not unit['complete']:
                         units.append(unit)
                         return units
@@ -470,11 +469,11 @@ def create_groups(id_course):
             if not country:
                 country = ''
 
-            student = {"id_user": student.id, "username": student.username, 
-                        "first_name":student.first_name, "last_name":student.last_name, 
-                        "email": student.email, "karma": student.get_profile().karma, "country": country, 
+            student = {"id_user": student.id, "username": student.username,
+                        "first_name":student.first_name, "last_name":student.last_name,
+                        "email": student.email, "karma": student.get_profile().karma, "country": country,
                         "language": lang}
-            
+
             if not lang or lang not in groupNames:
                 if course.languages.count() > 0:
                     lang = course.languages.all()[0].abbr.encode()
@@ -516,7 +515,7 @@ def get_groups_by_course(id_course, my_group=None):
 def change_user_group(id_user, id_group, new_id_group, pos_lat=0.0, pos_lon=0.0):
     groupCollection = mongodb.get_db().get_collection('groups')
     group = groupCollection.find_one({'_id': ObjectId(id_group)})
-    
+
     for m in group["members"]:
         if m["id_user"] == id_user:
             member = m
@@ -525,7 +524,7 @@ def change_user_group(id_user, id_group, new_id_group, pos_lat=0.0, pos_lon=0.0)
                 group["size"] -= 1
             else:
                 group["size"] = len(group["members"])
-    
+
     groupCollection.update({'_id': ObjectId(id_group)}, {"$set": {"members": group["members"], "size": group["size"]}})
     group = groupCollection.find_one({'_id': ObjectId(new_id_group)})
     group["members"].append(member)
@@ -554,6 +553,45 @@ def get_course_students_csv(course):
             fieldvalue = getattr(student, field)
             row.append(h.unescape(fieldvalue).encode("utf-8", "replace"))
         course_csv.writerow(row)
+
+    return course_file.getvalue()
+
+def get_csv_from_students_list(course, studentlist):
+    course_file = StringIO.StringIO()
+
+    course_csv = csv.writer(course_file, quoting=csv.QUOTE_ALL)
+    headers = ["first_name", "last_name", "email", "mark"]
+    course_csv.writerow(headers)
+
+    h = HTMLParser()
+    if not hasattr(studentlist[:1][0], 'student'):
+        for student in studentlist:
+            row = []
+            try:
+                mark, mark_info = get_course_mark(course, student)
+                row = [
+                    h.unescape(student.first_name).encode("utf-8", "replace"),
+                    h.unescape(student.last_name).encode("utf-8", "replace"),
+                    h.unescape(student.email).encode("utf-8", "replace"),
+                    "%.2f" % mark
+                    ]
+            except:
+                continue
+            course_csv.writerow(row)
+    else:
+        for student in studentlist:
+            row = []
+            try:
+                mark, mark_info = get_course_mark(course, student.student)
+                row = [
+                    h.unescape(student.student.first_name).encode("utf-8", "replace"),
+                    h.unescape(student.student.last_name).encode("utf-8", "replace"),
+                    h.unescape(student.student.email).encode("utf-8", "replace"),
+                    "%.2f" % mark
+                ]
+            except:
+                continue
+            course_csv.writerow(row)
 
     return course_file.getvalue()
 
@@ -603,7 +641,7 @@ def has_user_passed_course(user, course):
 def get_course_activity_dates_for_user(course, user):
     result = {}
     user_course = CourseStudent.objects.get(student_id=user.id, course_id=course.id)
-    
+
     db = mongodb.get_db()
     activity = db.get_collection("activity")
     last_course_activity = activity.find({
@@ -611,7 +649,7 @@ def get_course_activity_dates_for_user(course, user):
         "course_id": course.id,
     }).sort("timestamp", pymongo.DESCENDING).limit(1)
 
-    
+
     if user_course.timestamp:
         result["enrollDate"] = datetime.utcfromtimestamp(user_course.timestamp)
     if last_course_activity.count() > 0:
