@@ -50,7 +50,8 @@ if (_.isUndefined(window.MOOC)) {
                 chart.pie.dispatch.on("elementClick", function(e) {
                     var label = e.label.replace(' ','-').toLowerCase();
                     var href = $('#'+label).attr('href');
-                    window.location.href=href;
+                    if (href)
+                        window.location.href=href;
                 });
 
                 return chart;
