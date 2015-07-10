@@ -104,7 +104,7 @@ urlpatterns = patterns('moocng.teacheradmin.views',
         'teacheradmin_assets_edit',
         name='teacheradmin_assets_edit'),
 
-    
+
 
     url(r'^badges/reloadPills/(?P<id>\d+)/$', 'reload_pills',
         name='reload_pills'),
@@ -116,10 +116,12 @@ urlpatterns = patterns('moocng.teacheradmin.views',
     url(r'^externalapps/', include('moocng.externalapps.urls')),
 
     url(r'^lists/$', 'teacheradmin_lists', name='teacheradmin_lists'),
-    url(r'^lists/coursestudents$', 'teacheradmin_lists_coursestudents', name='teacheradmin_lists_coursestudents'),
+    url(r'^lists/coursestudents/$', 'teacheradmin_lists_coursestudents', name='teacheradmin_lists_coursestudents'),
     url(r'^lists/coursestudents/csv$', 'teacheradmin_lists_coursestudents', {'format':'csv'}, name='teacheradmin_lists_coursestudents_csv'),
-    url(r'^lists/coursestudentsmarks$', 'teacheradmin_lists_coursestudentsmarks', name='teacheradmin_lists_coursestudentsmarks'),
+    url(r'^lists/coursestudentsmarks/$', 'teacheradmin_lists_coursestudentsmarks', name='teacheradmin_lists_coursestudentsmarks'),
     url(r'^lists/coursestudentsmarks/csv$', 'teacheradmin_lists_coursestudentsmarks', {'format':'csv'}, name='teacheradmin_lists_coursestudentsmarks_csv'),
+    url(r'^lists/coursestudentsmarks/(?P<filter>[\w]*)/$', 'teacheradmin_lists_coursestudentsmarks', name='teacheradmin_lists_coursestudentsmarks_filter'),
+    url(r'^lists/coursestudentsmarks/(?P<filter>[\w]*)/csv$', 'teacheradmin_lists_coursestudentsmarks', {'format':'csv'}, name='teacheradmin_lists_coursestudentsmarks_filter_csv'),
     url(r'^lists/courseteachers$', 'teacheradmin_lists_courseteachers', name='teacheradmin_lists_courseteachers'),
     url(r'^lists/courseteachers/csv$', 'teacheradmin_lists_courseteachers', {'format':'csv'}, name='teacheradmin_lists_courseteachers_csv'),
 

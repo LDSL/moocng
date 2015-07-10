@@ -33,7 +33,7 @@ from django.db.models import Q
 from moocng.courses.models import (Course, CourseTeacher, CourseStudent, KnowledgeQuantum,
                                    Option, Announcement, Unit, Attachment, Language,
                                    Transcription, get_transcription_types_choices)
-from moocng.courses.utils import UNIT_BADGE_CLASSES, get_course_students_csv, get_course_teachers_csv
+from moocng.courses.utils import UNIT_BADGE_CLASSES, get_course_students_csv, get_course_teachers_csv, get_csv_from_students_list
 from moocng.courses.marks import calculate_course_mark, get_units_info_from_course, get_kqs_info_from_unit
 from moocng.courses.security import get_tasks_published
 from moocng.categories.models import Category
@@ -183,7 +183,7 @@ def teacheradmin_stats_students(request, course_slug):
             total_unknown_age += 1
         if student.pos_lat:
             data["byLocations"].append({"lon": student.pos_lon, "lat": student.pos_lat})
-    
+
     if total_unknown_age > 0:
         data["byAge"]["unknown"] = total_unknown_age
 
@@ -703,7 +703,7 @@ def teacheradmin_info(request, course_slug):
 def teacheradmin_groups(request, course_slug):
     course = get_object_or_404(Course, slug=course_slug)
     is_enrolled = course.students.filter(id=request.user.id).exists()
-    
+
     if request.method == 'POST':
         form = GroupsForm(data=request.POST, instance=course)
         if form.is_valid():
@@ -717,7 +717,6 @@ def teacheradmin_groups(request, course_slug):
         form = GroupsForm(instance=course)
 
         if(get_db().get_collection('groups').find({"id_course":course.id}).count() > 0):
-            print("entro1")
             disabled = None
         else:
             disabled =True
@@ -811,12 +810,12 @@ def teacheradmin_badges(request, course_slug, badge_id=None):
         badge.save()
 
         return HttpResponseRedirect("/course/" + course_slug + "/teacheradmin/badges/")
-        
 
 
-    
+
+
     units = course.unit_set.all().order_by('order')
-    
+
     knowledgequantum = []
     pills = []
     if(units and len(units) > 0):
@@ -841,7 +840,7 @@ def teacheradmin_badges(request, course_slug, badge_id=None):
 
 @is_teacher_or_staff
 def reload_pills(request,course_slug,id):
-    
+
     result = {"result":[]};
     pills = KnowledgeQuantum.objects.filter(unit_id = id).all().order_by("order")
     for pill in pills:
@@ -1016,17 +1015,72 @@ def teacheradmin_lists(request, course_slug):
         'is_enrolled': is_enrolled,
     }, context_instance=RequestContext(request))
 
+def _get_students_completed_kqs_filter(course):
+    activity_col = get_db().get_collection('activity')
+    pipeline = [
+        {'$match': {'course_id': course.pk} },
+        {'$group': {'_id': '$user_id', 'kqs': {'$sum': 1} } }
+    ]
+    student_list = activity_col.aggregate(pipeline)
+    return student_list['result']
+
+def _get_students_by_filter(filter, course):
+    marks_course_col = get_db().get_collection('marks_course')
+    num_kqs = 0
+    for unit in course.unit_set.filter(Q(status='p') | Q(status='o') | Q(status='l')).all():
+        num_kqs += unit.knowledgequantum_set.count()
+
+    students = []
+    if filter == 'started':
+        students = CourseStudent.objects.filter(course=course, student__pk__in=[int(d['_id']) for d in _get_students_completed_kqs_filter(course)]),
+    elif filter == 'notstarted':
+        students = CourseStudent.objects.filter(course=course).exclude(student__pk__in=[int(d['_id']) for d in _get_students_completed_kqs_filter(course)]),
+    elif filter == 'completed':
+        students = CourseStudent.objects.filter(course=course, student__pk__in=[int(d['_id']) for d in _get_students_completed_kqs_filter(course) if d['kqs'] >= num_kqs]),
+    elif filter == 'notcompleted':
+        students = CourseStudent.objects.filter(course=course).exclude(student__pk__in=[int(d['_id']) for d in _get_students_completed_kqs_filter(course) if d['kqs'] >= num_kqs]),
+    elif filter == 'passed':
+        students = CourseStudent.objects.filter(course=course, student__pk__in=[int(d['user_id']) for d in list(marks_course_col.find({'course_id': course.pk, 'mark': {'$gte': float(course.threshold)} }))]),
+    elif filter == 'notpassed':
+        students = CourseStudent.objects.filter(course=course).exclude(student__pk__in=[int(d['user_id']) for d in list(marks_course_col.find({'course_id': course.pk, 'mark': {'$gte': float(course.threshold)} }))])
+
+    try:
+        if isinstance(students, tuple):
+            return students[0]
+        else:
+            return students
+    except:
+        return []
+
 @is_teacher_or_staff
-def teacheradmin_lists_coursestudents(request, course_slug, format=None):
+def teacheradmin_lists_coursestudents(request, course_slug, format=None, filter=None):
     course = get_object_or_404(Course, slug=course_slug)
     is_enrolled = course.students.filter(id=request.user.id).exists()
+
+    if not filter:
+        students = course.students.all()
+    else:
+        students = _get_students_by_filter(filter, course)
 
     if format is None:
         headers = [_(u"First name"), _(u"Last name"), _(u"Email"), _(u"Date joined"), _(u"Last login"), _(u"View details")]
         elements = []
-        for student in course.students.all():
-            element = [student.first_name, student.last_name, student.email, student.date_joined.strftime('%d/%m/%Y'), student.last_login.strftime('%d/%m/%Y'), {"caption": _(u"Go"), "link": reverse('teacheradmin_lists_coursestudents_detail', args=[course.slug, student.username])}]
-            elements.append(element)
+
+        if len(students):
+            if not hasattr(students[:1][0], 'student'):
+                for student in students:
+                    try:
+                        element = [student.first_name, student.last_name, student.email, student.date_joined.strftime('%d/%m/%Y'), student.last_login.strftime('%d/%m/%Y'), {"caption": _(u"Go"), "link": reverse('teacheradmin_lists_coursestudents_detail', args=[course.slug, student.username])}]
+                        elements.append(element)
+                    except:
+                        continue
+            else:
+                for student in students:
+                    try:
+                        element = [student.student.first_name, student.student.last_name, student.student.email, student.student.date_joined.strftime('%d/%m/%Y'), student.student.last_login.strftime('%d/%m/%Y'), {"caption": _(u"Go"), "link": reverse('teacheradmin_lists_coursestudents_detail', args=[course.slug, student.student.username])}]
+                        elements.append(element)
+                    except:
+                        continue
         return render_to_response('teacheradmin/list_table.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -1036,24 +1090,43 @@ def teacheradmin_lists_coursestudents(request, course_slug, format=None):
 
     elif format == 'csv':
         students_list = get_course_students_csv(course)
-    
+
         response = HttpResponse(mimetype='text/csv')
         response['Content-Disposition'] = 'attachment; filename="%s.csv"' % (course_slug)
         response.write(students_list)
         return response
 
 @is_teacher_or_staff
-def teacheradmin_lists_coursestudentsmarks(request, course_slug, format=None):
+def teacheradmin_lists_coursestudentsmarks(request, course_slug, format=None, filter=None):
     course = get_object_or_404(Course, slug=course_slug)
     is_enrolled = course.students.filter(id=request.user.id).exists()
-    
+
+    if not filter:
+        students = course.students.all()
+    else:
+        students = list(_get_students_by_filter(filter, course))
+
     if format is None:
         headers = [_(u"First name"), _(u"Last name"), _(u"Email"), _(u"Course mark"), _(u"View details")]
         elements = []
-        for student in course.students.all():
-            mark, mark_info = calculate_course_mark(course, student)
-            element = [student.first_name, student.last_name, student.email, "%.2f" % mark, {"caption": _(u"Go"), "link": reverse('teacheradmin_lists_coursestudents_detail', args=[course.slug, student.username])}]
-            elements.append(element)
+
+        if len(students):
+            if not hasattr(students[:1][0], 'student'):
+                for student in students:
+                    try:
+                        mark, mark_info = calculate_course_mark(course, student)
+                        element = [student.first_name, student.last_name, student.email, "%.2f" % mark, {"caption": _(u"Go"), "link": reverse('teacheradmin_lists_coursestudents_detail', args=[course.slug, student.username])}]
+                        elements.append(element)
+                    except:
+                        continue
+            else:
+                for student in students:
+                    try:
+                        mark, mark_info = calculate_course_mark(course, student.student)
+                        element = [student.student.first_name, student.student.last_name, student.student.email, "%.2f" % mark, {"caption": _(u"Go"), "link": reverse('teacheradmin_lists_coursestudents_detail', args=[course.slug, student.student.username])}]
+                        elements.append(element)
+                    except:
+                        continue
         return render_to_response('teacheradmin/list_table.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -1062,8 +1135,8 @@ def teacheradmin_lists_coursestudentsmarks(request, course_slug, format=None):
         }, context_instance=RequestContext(request))
 
     elif format == 'csv':
-        students_list = get_course_students_csv(course)
-    
+        students_list = get_csv_from_students_list(course, students)
+
         response = HttpResponse(mimetype='text/csv')
         response['Content-Disposition'] = 'attachment; filename="%s.csv"' % (course_slug)
         response.write(students_list)
@@ -1131,7 +1204,7 @@ def teacheradmin_lists_courseteachers(request, course_slug, format=None):
 
     elif format == 'csv':
         students_list = get_course_teachers_csv(course)
-    
+
         response = HttpResponse(mimetype='text/csv')
         response['Content-Disposition'] = 'attachment; filename="%s.csv"' % (course_slug)
         response.write(students_list)
