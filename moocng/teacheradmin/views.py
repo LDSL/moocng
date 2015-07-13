@@ -819,15 +819,18 @@ def teacheradmin_badges(request, course_slug, badge_id=None):
     knowledgequantum = []
     pills = []
     if(units and len(units) > 0):
-        pills = units[0].knowledgequantum_set.all().order_by("order")
+        pills = units[0].knowledgequantum_set.filter(peerreviewassignment__isnull=False).order_by("order")
 
     badge = None
     if badge_id:
         badge = BadgeByCourse.objects.get(id=badge_id)
         if badge.criteria_type == 1:
-            criteria_list = [int(n) for n in badge.criteria.split(',')]
-            criteria_items = KnowledgeQuantum.objects.filter(id__in=criteria_list)
-            badge.criteria = criteria_items
+            try:
+                criteria_list = [int(n) for n in badge.criteria.split(',')]
+                criteria_items = KnowledgeQuantum.objects.filter(id__in=criteria_list)
+                badge.criteria = criteria_items
+            except:
+                pass
 
 
     return render_to_response('teacheradmin/badges.html', {
@@ -842,7 +845,7 @@ def teacheradmin_badges(request, course_slug, badge_id=None):
 def reload_pills(request,course_slug,id):
 
     result = {"result":[]};
-    pills = KnowledgeQuantum.objects.filter(unit_id = id).all().order_by("order")
+    pills = KnowledgeQuantum.objects.filter(unit_id = id).filter(peerreviewassignment__isnull=False).order_by("order")
     for pill in pills:
         result["result"].append({"id":pill.id, "title":pill.title})
 
