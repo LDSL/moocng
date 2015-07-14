@@ -89,7 +89,9 @@
 						<li>
 							{% url profile_badges user_view_profile.username as url_badges %}
 							{% url profile_badges as url_badges2 %}
-							<a href="{{ url_badges }}" {% if request.path == url_badges or request.path == url_badges2 %} class="selected" {% endif %}>
+							{% url profile_badge badge.id_badge as url_badges3 %}
+							{% url profile_badge user_view_profile.username badge.id_badge as url_badges4 %}
+							<a href="{{ url_badges }}" {% if request.path == url_badges or request.path == url_badges2 or request.path == url_badges3 or request.path == url_badges4 %} class="selected" {% endif %}>
 								{% trans "Badges" %}
 							</a>
 						</li>

@@ -150,7 +150,7 @@ class BadgeByCourse(models.Model):
 
     criteria = models.TextField(verbose_name=_(u'Criteria'),
                                blank=False, null=False)
-    
+
     criteria_type = models.IntegerField(verbose_name=_(u'Criteria_type'),
                                blank=False, null=False, choices=CRITERIA_TYPE_CHOICES)
 
@@ -161,6 +161,13 @@ class BadgeByCourse(models.Model):
                                    blank=False, null=False)
 
     course = models.ForeignKey('courses.Course', verbose_name=_(u'Course'))
+
+    # New fields
+    image = models.ImageField(verbose_name=_(u'Badge image'),
+                              blank=True, null=True, upload_to='badges',
+                              validators=[validate_png_image],
+                              help_text=_(u'Upload an image to represent the '
+                                          u'badge, it must be png'))
 
 
     @classmethod
@@ -174,6 +181,15 @@ class BadgeByCourse(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    def to_dict(self):
+        return {
+            'name': self.title,
+            'description': self.description,
+            'image': build_absolute_url(reverse('badge_image', args=(self.id, ) )),
+            'criteria': self.criteria,
+            'issuer': build_absolute_url(reverse('issuer')),
+        }
 
 
 class Award(models.Model):

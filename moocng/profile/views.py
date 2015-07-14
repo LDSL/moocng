@@ -17,8 +17,8 @@ from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 
 
-from moocng.profile.models import (	UserProfile, get_blog_user, get_posts, 
-									insert_post, count_posts, update_following_blog_user, 
+from moocng.profile.models import (	UserProfile, get_blog_user, get_posts,
+									insert_post, count_posts, update_following_blog_user,
 									insert_blog_user, save_retweet, save_reply, get_num_followers, search_posts)
 
 from moocng.courses.security import (get_courses_available_for_user,
@@ -41,6 +41,7 @@ from datetime import date, datetime
 from moocng.profile.utils import (get_user)
 from cgi import escape
 from django.utils.html import urlize
+import hashlib
 
 def profile_timeline(request):
 	return render_to_response('profile/timeline.html', {
@@ -92,7 +93,7 @@ def profile_courses(request, id):
 		}, context_instance=RequestContext(request))
 
 # @login_required
-def profile_badges(request, id):
+def profile_badges(request, id=None):
 
 	if(not id):
 		if(not request.user.id):
@@ -112,6 +113,33 @@ def profile_badges(request, id):
 		"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
 		"courses": courses,
 		}, context_instance=RequestContext(request))
+
+def profile_badge(request, badgeid, id=None):
+
+	if (badgeid):
+		if(not id):
+			if(not request.user.id):
+				return HttpResponseRedirect("/auth/login")
+			user = request.user
+			id = request.user.id
+		else:
+			user = User.objects.get(username=id)
+			id = user.id
+
+		badge = get_db().get_collection('badge').find({"id_user": id, "id_badge": int(badgeid)})[0]
+		hashed_email = hashlib.sha256(user.email + settings.BADGES_HASH_SALT).hexdigest()
+		badge['id'] = badge['_id']
+
+		return render_to_response('profile/badge.html', {
+			"id":id,
+			'request': request,
+			"user_view_profile": user,
+			"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
+			"hashed_email": hashed_email,
+			"badge": badge,
+			}, context_instance=RequestContext(request))
+	else:
+		return HttpResponseBadRequest()
 
 @login_required
 def profile_calendar(request):
@@ -158,7 +186,7 @@ def profile_posts(request, id, api=False):
 		form = PostForm(request.POST)
 		if form.is_valid():
 			insert_post({
-							"id_user": request.user.id, 
+							"id_user": request.user.id,
 							"first_name": request.user.first_name,
 							"last_name":request.user.last_name,
 							"username": "@" + request.user.username,
@@ -172,7 +200,7 @@ def profile_posts(request, id, api=False):
 						})
 
 			return HttpResponseRedirect("/user/posts")
-	
+
 	else:
 		case = _getCase(request,id)
 
@@ -191,7 +219,7 @@ def profile_posts(request, id, api=False):
 			followingCount = len(blog_user["following"])
 
 		listPost = get_posts(case, id, blog_user, 0)
-		
+
 		if not api:
 			return render_to_response('profile/posts.html', {
 				"id":id,
@@ -228,7 +256,7 @@ def profile_posts_search(request, query, hashtag=False, api=False):
 		form = PostForm(request.POST)
 		if form.is_valid():
 			insert_post({
-							"id_user": request.user.id, 
+							"id_user": request.user.id,
 							"first_name": request.user.first_name,
 							"last_name":request.user.last_name,
 							"username": "@" + request.user.username,
@@ -242,7 +270,7 @@ def profile_posts_search(request, query, hashtag=False, api=False):
 						})
 
 			return HttpResponseRedirect("/user/posts")
-	
+
 	else:
 		case = _getCase(request,id)
 
@@ -265,7 +293,7 @@ def profile_posts_search(request, query, hashtag=False, api=False):
 		else:
 			search_query = query
 		listPost = search_posts(search_query, 0)
-		
+
 		if not api:
 			return render_to_response('profile/posts_search.html', {
 				"id":id,
@@ -286,7 +314,7 @@ def profile_posts_search(request, query, hashtag=False, api=False):
 		else:
 			response = {
 				"query": query,
-				"is_hashtag": hashtag,		
+				"is_hashtag": hashtag,
 				"posts": listPost
 			}
 			return HttpResponse(json_util.dumps(response), mimetype='application/json')
@@ -315,7 +343,7 @@ def load_more_posts(request, page, query, search=False, hashtag=False):
 @login_required
 def user_follow(request, id, follow):
 	id = int(id)
-	user = get_blog_user(request.user.id) 
+	user = get_blog_user(request.user.id)
 
 	if(follow == "0"):
 		if(user):
@@ -324,10 +352,10 @@ def user_follow(request, id, follow):
 				update_following_blog_user(request.user.id, user["following"])
 		else:
 			insert_blog_user({
-									"id_user": request.user.id, 
+									"id_user": request.user.id,
 									"following": [id]
 								  })
-	
+
 	elif(follow == "1" and user):
 		user["following"].remove(id)
 		update_following_blog_user(request.user.id, user["following"] )
@@ -344,7 +372,7 @@ def reply(request, id):
 		form = PostForm(request.POST)
 		if form.is_valid():
 			post = {
-						"id_user": request.user.id, 
+						"id_user": request.user.id,
 						"first_name": request.user.first_name,
 						"last_name":request.user.last_name,
 						"username": "@" + request.user.username,
@@ -371,5 +399,3 @@ def _getCase(request, id):
 		return 1
 	else:
 		return 0
-
-
