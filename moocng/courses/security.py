@@ -222,12 +222,14 @@ def get_units_available_for_user(course, user, is_overview=False):
                 Q(status='p', course=course) |
                 Q(status='o', course=course) |
                 Q(status='l', course=course) |
+                Q(status='h', course=course, course__courseteacher__teacher=user, course__courseteacher__course=course) |
                 Q(status='d', course=course, course__courseteacher__teacher=user, course__courseteacher__course=course)).distinct()
         else:
             return Unit.objects.filter(
                 Q(status='p', course=course) |
                 Q(status='o', course=course) |
                 Q(status='l', course=course, course__courseteacher__teacher=user, course__courseteacher__course=course) |
+                Q(status='h', course=course, course__courseteacher__teacher=user, course__courseteacher__course=course) |
                 Q(status='d', course=course, course__courseteacher__teacher=user, course__courseteacher__course=course)).distinct()
 
 
@@ -267,7 +269,7 @@ def get_tasks_available_for_user(course, user, is_overview=False):
 def get_tasks_published(course, is_overview=False):
     tasks = []
 
-    for u in course.unit_set.filter(Q(status='p') | Q(status='o') | Q(status='l')):
+    for u in course.unit_set.filter(Q(status='p') | Q(status='o') | Q(status='l') | Q(status='h')):
         for q in KnowledgeQuantum.objects.filter(unit_id=u.id):
             t = None
             ttype = None;

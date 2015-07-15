@@ -54,7 +54,10 @@ TRACE_CLONE_COURSE_DIR = 'trace_clone_course'
 import pymongo
 
 import csv
-import StringIO
+try:
+    import StringIO
+except Exception:
+    from io import StringIO
 from HTMLParser import HTMLParser
 
 
@@ -359,7 +362,7 @@ def get_sillabus_tree(course,user,minversion=True,incontext=False):
 
     current_mark_kq = course.get_user_mark(user)
 
-    course_units = get_units_available_for_user(course, user)
+    course_units = get_units_available_for_user(course, user, True)
 
     if len(course_units) > 0:
         if not incontext:
@@ -428,6 +431,7 @@ def get_unit_tree(unit, user, current_mark_kq, minversion=True):
     unit = {
         'id': unit.id,
         'title': unit.title,
+        'status': unit.status,
         'url': "/course/"+unit.course.slug+"/classroom/#!unit"+str(unit.pk),
         'unittype': unit.unittype,
         'badge_class': get_unit_badge_class(unit),

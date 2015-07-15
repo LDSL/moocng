@@ -11,24 +11,36 @@ urlpatterns = patterns(
         name='profile_groups'),
    
 
-   url(r'^user/courses/(?P<id>[-\+@\w.]*)$', 'profile_courses',
+    url(r'^user/courses/(?P<id>[\d]+)$', 'profile_courses',
+        {'byid': True}, name='profile_courses_byid'),
+
+    url(r'^user/courses/(?P<id>[-\+@\w.]*)$', 'profile_courses',
         name='profile_courses'),
    
     url(r'^user/courses/$', 'profile_courses',
         name='profile_courses'),
+
+    url(r'^user/badges/(?P<id>[\d]+)$', 'profile_badges',
+        {'byid': True}, name='profile_badges_byid'),
 
     url(r'^user/badges/(?P<id>[-\+@\w.]*)$', 'profile_badges',
         name='profile_badges'),
     
     url(r'^user/calendar/$', 'profile_calendar',
         name='profile_calendar'),
-   
+    
+    url(r'^user/profile/(?P<id>[\d]+)$', 'profile_user',
+        {'byid': True}, name='profile_user_byid'),
+    
     url(r'^user/profile/(?P<id>[-\+@\w.]*)$', 'profile_user',
         name='profile_user'),
 
     url(r'^user/profile/$', 'profile_user',
         name='profile_user'),
    
+    url(r'^user/posts/(?P<id>[\d]+)$', 'profile_posts',
+        {'byid': True}, name='profile_posts_byid'),
+
     url(r'^user/posts/(?P<id>[-\+@\w.]*)$', 'profile_posts',
         name='profile_posts'),
 
@@ -58,6 +70,9 @@ urlpatterns = patterns(
 
     url(r'^user/reply/(?P<id>[-\w.]+)$', 'reply',
         name='reply'),
+
+    url(r'^user/api/posts/(?P<id>[\d]+)$', 'profile_posts',
+        {'api': True, 'byid': True}, name='profile_posts_api_byid'),
 
     url(r'^user/api/posts/(?P<id>[-\+@\w.]*)$', 'profile_posts',
         {'api': True}, name='profile_posts_api'),

@@ -122,6 +122,9 @@ if (_.isUndefined(window.MOOC)) {
                 'prezi': [
                     /prezi\.com\/([a-zA-Z\d\-\_]+)\/.*/,
                     /^([a-zA-Z\d\-\_]+)$/ // Can't use \w because can't accept the _ char
+                ],
+                's3video': [
+                    /^(http(s)?:\/\/[A-zA-Z0-9:\/\-\_.]+)$/
                 ]
             };
 
@@ -758,9 +761,11 @@ if (_.isUndefined(window.MOOC)) {
                 "click button#addassetavailability": "addAssetAvailability",
                 "click button#delete-asset-availability": "removeAssetAvailability",
                 "change select#kqmedia_content_type": "redrawCanGetLastFrame",
+                "change select#kqmedia_content_type": "showUploadFileForm",
                 "click button.removeasset": "removeAssetOfAvailability",
                 "click button#addasset": "addAssetToAvailability",
-                "show a[data-toggle='tab']": "checkBeforeToggleTab"
+                "show a[data-toggle='tab']": "checkBeforeToggleTab",
+                "click button#s3_upload_btn": "uploadVideoToS3",
             },
 
             initialize: function () {
@@ -769,7 +774,7 @@ if (_.isUndefined(window.MOOC)) {
                     "toggleSolution", "addQuestion", "addPeerReviewAssignment",
                     "addCriterion", "forceProcess", "removeQuestion",
                     "removePeerReviewAssignment", "go2options", "addAssetAvailability",
-                    "removeAssetAvailability", "checkBeforeToggleTab");
+                    "removeAssetAvailability", "checkBeforeToggleTab", "uploadVideoToS3", "showUploadFileForm");
             },
 
             render: function () {
@@ -800,6 +805,15 @@ if (_.isUndefined(window.MOOC)) {
                 this.$el.find("select#kqmedia_content_type").val(this.model.get("media_content_type"));
                 this.$el.find("input#kqmedia_content_id").val(this.model.get("media_content_id"));
                 this.$el.find("input#kqweight").val(this.model.get("weight"));
+                var can_upload = false;
+                if(this.model.get("media_content_type")){
+                    can_upload = MEDIA_CONTENT_TYPES[this.model.get("media_content_type")].can_upload_media || false;
+                }
+                if (can_upload) {
+                    $("#s3_upload_form").css({'display': 'block'});
+                }else{
+                    $("#s3_upload_form").css({'display': 'none'});
+                }
 
                 if (this.model.has("questionInstance")) {
                     question = this.model.get("questionInstance");
@@ -1215,9 +1229,9 @@ if (_.isUndefined(window.MOOC)) {
                 }
 
                 // Look for attachments
-                if (this.$el.find("div.fileupload input[type='file']").val() !== "") {
+                if (this.$el.find("div.fileupload input[type='file']#id_file").val() !== "") {
                     steps.push(function (asyncCB) {
-                        var input = self.$el.find("div.fileupload input[type='file']")[0],
+                        var input = self.$el.find("div.fileupload input[type='file']#id_file")[0],
                             fakeForm;
                         if (input.files) {
                             // Check file size
@@ -1391,6 +1405,47 @@ if (_.isUndefined(window.MOOC)) {
                     });
                 }, this);
                 showConfirmationModal(cb);
+            },
+
+            uploadVideoToS3: function(evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                
+                var $progress = this.$el.find("#s3_upload_form progress");
+                $progress.css({'display': 'inline'});
+
+                var input = this.$el.find("#s3_upload_form input[type='file']")[0],
+                fakeForm = new FormData();
+                fakeForm.append("file", input.files[0]);
+                $.ajax("s3upload/?kq=" + this.model.get("id"), {
+                    type: "POST",
+                    headers: {
+                        "X-CSRFToken": csrftoken
+                    },
+                    data: fakeForm,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        console.log("Toma!");
+                        $("#kqmedia_content_id").val(data.url);
+                        $progress.css({'display': 'none'});
+                    },
+                    error: function () {
+                        alert('Error uploading video');
+                        $progress.css({'display': 'none'});
+                    }
+                });
+            },
+
+            showUploadFileForm: function(evt){
+                var target = $(evt.currentTarget);
+                var content_type = target.val();
+                var can_upload = MEDIA_CONTENT_TYPES[content_type].can_upload_media || false;
+                if (can_upload) {
+                    $("#s3_upload_form").slideDown();
+                }else{
+                    $("#s3_upload_form").slideUp();
+                }
             },
 
             addQuestion: function (evt) {

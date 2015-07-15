@@ -83,10 +83,10 @@
 						</a>
 					</li>
 					{% endif %}
-					{% if feature_forum and course.forum_slug %}
+					{% if feature_forum %}
 					<li class="noLowRes">
-						{% url course_forum course.forum_slug as url_forum %}
-						<a href="{{ forum_category_url }}{{course.forum_slug}}" target="_blank" {% if request.path == url_forum %} class="selected"{% endif %}>
+						{% url course_forum course.slug as url_forum %}
+						<a href="{{ url_forum }}" {% if url_forum in request.path %} class="selected"{% endif %}>
 							{% trans "Forum" %}
 						</a>
 					</li>
@@ -134,10 +134,10 @@
 								</a>
 							</li>
 							{% endif %}
-							{% if feature_forum and course.forum_slug %}
+							{% if feature_forum %}
 							<li class="onlyLowRes">
-								{% url course_forum course.forum_slug as url_forum %}
-								<a href="{{ forum_category_url }}{{course.forum_slug}}" target="_blank" {% if request.path == url_forum %} class="selected"{% endif %}>
+								{% url course_forum course.slug as url_forum %}
+								<a href="{{ url_forum }}" {% if url_forum in request.path %} class="selected"{% endif %}>
 									{% trans "Forum" %}
 								</a>
 							</li>
