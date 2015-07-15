@@ -137,6 +137,7 @@ def profile_badge(request, badgeid, id=None):
 			"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
 			"hashed_email": hashed_email,
 			"badge": badge,
+			"openbadges_service_url": settings.BADGES_SERVICE_URL,
 			}, context_instance=RequestContext(request))
 	else:
 		return HttpResponseBadRequest()
