@@ -83,6 +83,11 @@ def badge_assertion(request, assertion_uuid):
         badge = get_db().get_collection('badge').find({"_id": ObjectId(assertion_uuid)})[0]
         user = get_object_or_404(User, pk=badge['id_user'])
         hashed_email = hashlib.sha256(user.email + settings.BADGES_HASH_SALT).hexdigest()
+        if hasattr(badge, 'date'):
+            date = badge['date']
+        else:
+            badge_def = BadgeByCourse.objects.get(pk=badge['id_badge'])
+            date = badge_def.course.end_date.isoformat()
 
         assertion = {
             "uid": str(badge['_id']),
@@ -95,7 +100,7 @@ def badge_assertion(request, assertion_uuid):
                 "type": "hosted",
                 "url": "https://%s/badges/assertion/%s.json" % (site, str(badge['_id']))
             },
-            "issuedOn": badge['date'],
+            "issuedOn": date,
             "badge": "https://%s/badges/badge/%s.json" % (site, badge['id_badge'])
         }
     except:
