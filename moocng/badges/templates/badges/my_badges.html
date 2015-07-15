@@ -28,7 +28,7 @@
             <div class="span10">
                 <p>
                     <a class="btn" href="{{ award.get_image_url }}"><span class="icon-download-alt"></span> {% trans "Download Badge" %}</a>
-                    <a href="#" class="button squared publish-badge" rel="{{ award.get_absolute_url }}"><span class="icon-share"></span> {% trans "Send to Mozilla Backpack" %}</a>
+                    <a href="#" class="btn publish-badge" rel="{{ award.get_absolute_url }}"><span class="icon-share"></span> {% trans "Send to Mozilla Backpack" %}</a>
                 </p>
 
                 {% if award.badge.description %}
