@@ -779,7 +779,8 @@ MOOC.models.Unit = Backbone.Model.extend({
     statuses: {
         p: "published",
         l: "listable",
-        d: "draft"
+        d: "draft",
+        h: "hidden"
     },
 
     url: function () {

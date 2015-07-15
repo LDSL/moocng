@@ -68,14 +68,26 @@
 <div class="row">
     <div class="span3" id="started">
         <h4>{% trans "...started the course"%}</h4>
+        {% trans 'Started' as started %}
+        {% trans 'Not started' as notstarted %}
+        <a class="hide" id="{{ started|slugify }}" href="{% url teacheradmin_lists_coursestudentsmarks_filter course.slug 'started' %}">{{ started }}</a>
+        <a class="hide" id="{{ notstarted|slugify }}" href="{% url teacheradmin_lists_coursestudentsmarks_filter course.slug 'notstarted' %}">{{ notstarted }}</a>
         <div class="pie viewport"></div>
     </div>
     <div class="span3" id="completed">
         <h4>{% trans "...completed the course"%}</h4>
+        {% trans "Completed" as completed %}
+        {% trans "Incompleted" as notcompleted %}
+        <a class="hide" id="{{ completed|slugify }}" href="{% url teacheradmin_lists_coursestudentsmarks_filter course.slug 'completed' %}">{{ completed }}</a>
+        <a class="hide" id="{{ notcompleted|slugify }}"  href="{% url teacheradmin_lists_coursestudentsmarks_filter course.slug 'notcompleted' %}">{{ notcompleted }}</a>
         <div class="pie viewport"></div>
     </div>
     <div class="span3 hide" id="passed">
         <h4>{% trans "...passed the course"%}</h4>
+        {% trans "Passed" as passed %}
+        {% trans "Not passed" as notpassed %}
+        <a class="hide" id="{{ passed|slugify }}" href="{% url teacheradmin_lists_coursestudentsmarks_filter course.slug 'passed' %}">{{ passed }}</a>
+        <a class="hide" id="{{ notpassed|slugify }}" href="{% url teacheradmin_lists_coursestudentsmarks_filter course.slug 'notpassed' %}">{{ notpassed }}</a>
         <div class="pie viewport"></div>
     </div>
 </div>

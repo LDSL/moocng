@@ -7,8 +7,10 @@
         {% if theme.top_banner %}
             <div class="main_banner" style="background-image: url('{{ theme.top_banner }}');">
             	<div class="color_back">
-					<h2><strong>ECO</strong> + Open<em>MOOC</em></h2>
-					<h1>{% trans "A platform created to facilitate the search for open educational resources" %}</h1>
+            		{% autoescape off %}
+					<h2>{{ theme.top_banner_title }}</h2>
+					{% endautoescape %}
+					<h1>{% trans theme.top_banner_subtitle %}</h1>
 					{% if not user.is_authenticated %}
 						<a class="button" href="{% url login %}">{% trans "Enter now" %}</a>
 					{% endif %}
@@ -54,7 +56,7 @@
 					{% if course.thumbnail %}
 					    <a href="{{ course.get_absolute_url }}" style="background-image: url('{{ MEDIA_URL }}{{ course.thumbnail }}');" class="hide-text">{% if course.thumbnail_alt %}{{ course.thumbnail_alt }}{% else %}{% trans 'decorative classroom image' %}{% endif %}</a>
 					{% else %}
-					    <a href="{{ course.get_absolute_url }}" style="background-image: url('{{ STATIC_URL }}img/classroom.jpg');" class="hide-text">{% trans 'decorative classroom image' %}</a>
+					    <a href="{{ course.get_absolute_url }}" style="background-image: url('{{ theme.course_default_thumbnail }}');" class="hide-text">{% trans 'decorative classroom image' %}</a>
 					{% endif %}
 					{% if course.certification_available %}
 					    <img class="cert" src="{{ STATIC_URL }}img/ECO_icon_certificado.svg" alt="{% trans 'certificated course' %}">

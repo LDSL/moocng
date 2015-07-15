@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.conf import settings
 from django.contrib.messages import success
 from django.core.urlresolvers import reverse
@@ -7,6 +9,7 @@ from django.utils.translation import ugettext as _
 from moocng.courses.security import (get_course_if_user_can_view_or_404,
                                     get_course_if_user_can_view_and_permission)
 from moocng.enrollment.idp import enroll_course_at_idp
+from moocng.x_api import utils as x_api
 from moocng import mongodb
 from bson.objectid import ObjectId
 import pymongo
@@ -64,6 +67,10 @@ def free_enrollment(request, course_slug):
             user = request.user
             lat = request.POST["latitude"]
             lon = request.POST["longitude"]
+            geolocation = {
+                'lat': lat,
+                'lon': lon
+            }
             old_course_status = 'f'
             if course.created_from:
                 if course.created_from.students.filter(pk=user.pk):
@@ -76,6 +83,10 @@ def free_enrollment(request, course_slug):
                                                    pos_lon=lon)
             if getattr(settings, 'FREE_ENROLLMENT_CONSISTENT', False):
                 enroll_course_at_idp(request.user, course)
+
+            # Send xAPI event
+            x_api.learnerEnrollsInMooc(user, course, geolocation)
+
             success(request,
                     _(u'Congratulations, you have successfully enroll in the course %(course)s')
                     % {'course': unicode(course)})

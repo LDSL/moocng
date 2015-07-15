@@ -1,19 +1,14 @@
-geolocation = null;
-deviceInfo = {
+var geolocation = null;
+var deviceInfo = {
 	type: "unknown",
 	os: "unknown",
 	orientation: "unknown"
 };
-geolocation_advised = false;
-geolocation_allowed = undefined;
-$(function(){
-	// Check geolocation permission
-	if(window.sessionStorage && window.localStorage){
-		geolocation_advised = sessionStorage.getItem('geolocation_advised') == "true";
-		geolocation_allowed = localStorage.getItem('geolocation_allowed');
-	}
+var geolocation_advised = false;
+var geolocation_allowed = undefined;
 
-    // Device Type
+$(function(){
+	// Device Type
     if(device.desktop()){
     	deviceInfo.type = "desktop";
     }else if(device.tablet()){
@@ -45,18 +40,26 @@ $(function(){
 	}
 
 	// Update geolocation
-    if(navigator.geolocation && (geolocation_advised || geolocation_allowed == 'true')){
-        navigator.geolocation.getCurrentPosition(function(position){
-        		localStorage.setItem('geolocation_allowed', true);
-            	geolocation = position;
-        	},function(error){
-        		if (error.code == error.PERMISSION_DENIED)
-        			localStorage.setItem('geolocation_allowed', false);
-        	},{timeout: 2000}
-        );
-    }else{
-    	showGeolocationAdvise();
-    }
+	if(!noGeolocation){
+		// Check geolocation permission
+		if(window.sessionStorage && window.localStorage){
+			geolocation_advised = sessionStorage.getItem('geolocation_advised') == "true";
+			geolocation_allowed = localStorage.getItem('geolocation_allowed');
+		}
+		
+	    if(navigator.geolocation && (geolocation_advised || geolocation_allowed == 'true')){
+	        navigator.geolocation.getCurrentPosition(function(position){
+	        		localStorage.setItem('geolocation_allowed', true);
+	            	geolocation = position;
+	        	},function(error){
+	        		if (error.code == error.PERMISSION_DENIED)
+	        			localStorage.setItem('geolocation_allowed', false);
+	        	},{timeout: 2000}
+	        );
+	    }else{
+	    	showGeolocationAdvise();
+	    }
+	}
 });
 
 function getBrowserName(){
@@ -145,30 +148,36 @@ function showGeolocationAdvise(){
 	sessionStorage.setItem('geolocation_advised', true);
 }
 
-function sendHistoryEntry(){
+function sendHistoryEntry(course_id){
+	var currentCourse = course_id;
 	window.setTimeout(function(){
-		var lat = 0.0;
-		var lon = 0.0;
-		var data;
-		if (geolocation){
-			lat = geolocation.coords.latitude;
-			lon = geolocation.coords.longitude;
-		}
-		data = {
-			lat: lat,
-			lon: lon,
-			timestamp: new Date().getTime(),
-			url: window.location.href,
-			dev_type: deviceInfo.type,
-			dev_os: deviceInfo.os,
-			dev_orientation: deviceInfo.orientation
-		};
+		if (currentCourse){
+			var lat = 0.0;
+			var lon = 0.0;
+			var data;
+			if (geolocation){
+				lat = geolocation.coords.latitude;
+				lon = geolocation.coords.longitude;
+			}
+			data = {
+				lat: lat,
+				lon: lon,
+				timestamp: new Date().getTime(),
+				url: window.location.href,
+				dev_type: deviceInfo.type,
+				dev_os: deviceInfo.os,
+				dev_orientation: deviceInfo.orientation,
+				course_id: currentCourse || ''
+			};
 
-		$.ajax({
-			url: '/api/v1/history/',
-			type: 'POST',
-        	contentType: "application/json",
-			data: JSON.stringify(data)
-		});
+			$.ajax({
+				url: '/api/v1/history/',
+				type: 'POST',
+	        	contentType: "application/json",
+				data: JSON.stringify(data)
+			});
+		}else{
+			console.log('Current course not defined');
+		}
 	},2500);
 }

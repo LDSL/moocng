@@ -1,25 +1,30 @@
 {% load i18n %}
 <div class="replyPost">
 	<div class="cell">
-		<img class="gravatar" src={{ reply.gravatar }}>
+		<img class="gravatar" src={{ reply.avatar }}>
 	</div>
 	<div class="cell" style="padding-top: 15px; ">
 		{% if reply.id_original_post %}
 		<img class="sharedImage" src="/static/img/ECO_icon_republicado.svg">
-		<a href="{{reply.id_user}}"><span class="shared">{% trans "Shared by"%} {{reply.shared_by}}</span></a>
+		<a href="{% if show_username %}{% url profile_posts reply.shared_by|slice:'1:' %}{% else %}{% url profile_posts_byid reply.id_author %}{% endif %}">
+			{% if show_username %}
+			<span class="shared">{% trans "Shared by" %} {{reply.shared_by}}</span>
+			{% else %}
+			<span class="shared">{% trans "Reshared" %}</span>
+			{% endif %}
+		</a>
 		<div class="clearfix"></div>
 		{% endif %}
-		<a href={{reply.username|slice:"1:"}}><span class="namePost">{{reply.first_name}} {{reply.last_name}}</span></a>
-		<span class="emailPost">{{reply.username}}</span>
+		<a href="{% if show_username %}{% url profile_posts reply.username|slice:'1:' %}{% else %}{% url profile_posts_byid reply.id_user %}{% endif %}"><span class="namePost">{{reply.first_name}} {{reply.last_name}}</span></a>
+		{% if show_username %}<span class="emailPost">{{reply.username}}</span>{% endif %}
 		
-		<span class="datePost">
+		<span class="datePost">[
 			{% if reply.original_date %}
 				{{reply.original_date}}
 			{% else %}
 				{{reply.date}}
 			{% endif %}
-
-		</span>
+		]</span>
 		{% autoescape off %}
 		<p class="postText">{{reply.text}}</p>
 		{% endautoescape %}

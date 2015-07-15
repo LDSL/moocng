@@ -24,7 +24,8 @@ from moocng.badges.models import BadgeByCourse
 from moocng.courses.models import KnowledgeQuantum
 from moocng.mongodb import get_db
 
-from moocng.courses.models import Unit
+from moocng.courses.models import Unit, Course
+from moocng.x_api import utils as x_api
 from moocng.courses.marks import get_course_mark
 
 
@@ -393,3 +394,23 @@ def on_peerreviewreview_created_task(review_created, user_reviews):
     }
     data_kq.update(increment)
     update_stats(data, data_kq, data_unit, data_course)
+
+@task
+def on_history_created_task(history_created):
+    # Send xAPI event
+    print history_created['course_id']
+    user = User.objects.get(pk=history_created['user_id'])
+    course = Course.objects.get(pk=history_created['course_id'])
+    geolocation = {
+        'lat': history_created['lat'],
+        'lon': history_created['lon']
+    }
+    page = {}
+    page['url'] = history_created['url']
+    if course:
+        page['name'] = course.name
+        page['description'] = course.name
+    else:
+        page['name'] = ''
+        page['description'] = ''
+    x_api.learnerAccessAPage(user, page, geolocation)

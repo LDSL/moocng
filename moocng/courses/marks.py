@@ -126,6 +126,7 @@ def calculate_unit_mark(unit, user, normalized_unit_weight=None):
     kqs = get_kq_info_from_course(unit, user)
     for kq in kqs:
         unit_mark += kq['relative_mark']
+    print "Unit_mark: %d - normalized_unit_weight: %d, normalized_unit_mark: %d" % (unit_mark, normalized_unit_weight, (normalized_unit_weight * unit_mark) / 100.0)
     return (unit_mark, (normalized_unit_weight * unit_mark) / 100.0)
 
 
@@ -138,6 +139,7 @@ def get_kq_info_from_course(unit, user, db=None):
 
 
 def normalize_unit_weight(unit, course_unit_counter, total_weight_unnormalized):
+    print "Unit: %s - Course_unit_counter: %d - total_weight_unnormalized: %d" % (unit, course_unit_counter, total_weight_unnormalized)
     if total_weight_unnormalized == 0:
         if course_unit_counter == 0 or not unit.is_scorable():
             return 0

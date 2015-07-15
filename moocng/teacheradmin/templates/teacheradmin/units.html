@@ -36,7 +36,8 @@
             unit: {
                 unit: "{% trans 'unit' %}",
                 d: "{% trans 'Draft' %}",
-                l: "{% trans 'Hidden' %}",
+                h: "{% trans 'Hidden' %}",
+                l: "{% trans 'Listable' %}",
                 p: "{% trans 'Published' %}",
                 n: "{% trans 'Normal' %}",
                 h: "{% trans 'Homework' %}",
@@ -86,8 +87,11 @@
                 <label for="status-published" class="radio inline pointer">
                     <input type="radio" name="status" id="status-published" /> {% trans "Published" %}
                 </label>
+                <label for="status-hidden" class="radio inline pointer">
+                    <input type="radio" name="status" id="status-hidden" /> {% trans "Hidden" %}
+                </label>
                 <label for="status-listable" class="radio inline pointer">
-                    <input type="radio" name="status" id="status-listable" /> {% trans "Hidden" %}
+                    <input type="radio" name="status" id="status-listable" /> {% trans "Listable" %}
                 </label>
                 <label for="status-draft" class="radio inline pointer">
                     <input type="radio" name="status" id="status-draft" /> {% trans "Draft" %}
@@ -158,12 +162,30 @@
                     <option value='{{ media_content_type.0}}'>{{ media_content_type.1}}</option>
                 {% endfor %}
             </select>
-        </div>
+        </div>                                        
         <div class="span4">
             <label for="kqmedia_content_id" class="required">{% trans "Content id or url" %}</label>
             <input id="kqmedia_content_id" type="text" name="kqmedia_content_id" maxlength="200" class="input-xlarge" required="required" />
         </div>
-        <div class="span2">
+        <div class="span6" id="s3_upload_form">
+            <label for="id_file">{% trans "File" %}</label>
+            <div class="fileupload fileupload-new" data-provides="fileupload">
+                <div class="input-append">
+                    <div class="uneditable-input span3">
+                        <span class="icon-file fileupload-exists"></span> <span class="fileupload-preview"></span>
+                    </div>
+                    <span class="btn btn-file">
+                        <span class="fileupload-new">{% trans "Select file" %}</span>
+                        <span class="fileupload-exists">{% trans "Change" %}</span>
+                        <input type="file" accept="video/mp4" name="kqmedia_s3_upload_file" id="kqmedia_s3_upload_file" />
+                    </span>
+                    <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">{% trans "Remove" %}</a>
+                </div>
+            </div>
+            <button id="s3_upload_btn" class="btn">{% trans "Upload video" %}</button>
+            <progress></progress>
+        </div>
+        <div class="span4">
             <label for="kqweight" class="required">{% trans "Weight" %}</label>
             <div class="input-append">
                 <input type="number" min="0" max="100" step="1" name="kqweight" id="kqweight" class="input-mini" required="required" />
