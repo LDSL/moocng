@@ -1,3 +1,5 @@
+// out: ./moocng_teacheradmin.css, compress: true
+
 /*
  * Copyright 2012 UNED
  *
@@ -57,18 +59,18 @@
 .btn-group{
     position: relative;
     float: left;
-    
+
     .dropdown-toggle, .btn {
         display: block;
         text-align: center;
         margin: 0 5px;
         transition: background-color 0.1s ease;
-        
+
         &:hover {
             background-color: @neutral_light_3;
         }
     }
-    
+
     .dropdown-menu{
         visibility: hidden;
         opacity: 0;
@@ -107,7 +109,7 @@
                 }
             }
         }
-        
+
         & > li {
             display: block;
             opacity: 1;
@@ -121,7 +123,7 @@
                     background: none;
                 }
             }
-            
+
             &.divider {
                 height: 1px;
                 width: 100%;
@@ -131,11 +133,11 @@
             }
         }
     }
-    
+
     &:hover > .dropdown-toggle {
         background-color: @neutral_light_3;
     }
-    
+
     &:hover > .dropdown-menu {
         visibility: visible;
         opacity: 1;
@@ -182,13 +184,13 @@ header {
     left: 0;
     background: @white;
     z-index: 1;
-    
+
     .main-bar {
         padding: 10px 30px;
         max-height: 86px;
         transition: max-height .2s ease;
     }
-    
+
     h1.logo, .logo-mini {
         float: left;
         margin: 0;
@@ -200,14 +202,14 @@ header {
         opacity: 1;
         transition: opacity .2s linear, top .2s ease;
     }
-    
+
     .logo-mini {
         opacity: 0;
         height: 55px;
         padding-top: 10px;
         top: 30px;
     }
-    
+
     #meta-buttons {
         position: absolute;
         opacity: 1;
@@ -215,7 +217,7 @@ header {
         left: 180px;
         transition: opacity .2s linear, top .2s ease;
     }
-    
+
     .btn-link {
         color: inherit;
         font-size: 18px;
@@ -225,7 +227,7 @@ header {
             text-decoration: none;
         }
     }
-    
+
     .course-title {
         opacity: 0;
         font-size: 18px;
@@ -237,12 +239,12 @@ header {
         left: 94px;
         transition: opacity .2s linear, top .2s ease;
     }
-    
+
     ul > li {
         display: inline-block;
         margin-right: 18px;
     }
-    
+
     .btn-toolbar {
         .btn-group {
             display: none;
@@ -995,12 +997,12 @@ input[type="checkbox"] {
             cursor: pointer;
         }
     }
-    
+
     textarea{
         resize: none;
         margin-bottom: 20px;
     }
-    
+
 
     /*.unit{
         margin-top: 20px;
@@ -1069,7 +1071,7 @@ footer {
         font-weight: 300;
         text-align: center;
     }
-  
+
     .prefoot {
         padding: 30px 0 50px;
         border-top: 10px solid @highlight;
@@ -1189,7 +1191,7 @@ footer {
 
         a {
             padding: 5px 10px;
-            
+
             &.active {
                 background-color: @neutral_intense;
                 color: @white;
@@ -1209,7 +1211,7 @@ fieldset {
     & > p {
         padding-left: 20px;
 
-        
+
         & > label:first-of-type {
             position: relative;
             left: -20px;
@@ -1223,4 +1225,16 @@ fieldset {
     h4 {
         margin-top: 20px;
     }
+}
+
+.mainmenu {
+    position: fixed;
+
+    @media screen and (max-width: 639px) {
+        position: static;
+    }
+}
+
+.maincontent {
+    min-height: calc(~'100vh - 168px');
 }
