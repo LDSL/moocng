@@ -187,7 +187,7 @@ class BadgeByCourse(models.Model):
             'name': self.title,
             'description': self.description,
             'image': build_absolute_url(reverse('badge_image', args=(self.id, ) )),
-            'criteria': settings.BADGES_CRITERIA_URL,
+            'criteria': build_absolute_url('/'+settings.BADGES_CRITERIA_URL),
             'issuer': build_absolute_url(reverse('issuer')),
         }
 
