@@ -91,17 +91,18 @@ def badge_assertion(request, assertion_uuid):
 
         assertion = {
             "uid": str(badge['_id']),
-            "identity": {
-                "recipient": "sha256$%s" % ( hashed_email ),
+            "badge": "https://%s/badges/badge/%s.json" % (site, badge['id_badge']),
+            "recipient": {
+                "identity": "sha256$%s" % ( hashed_email ),
                 "type": "email",
-                "hashed": True
+                "hashed": True,
+                "salt": settings.BADGES_HASH_SALT
             },
             "verify": {
                 "type": "hosted",
                 "url": "https://%s/badges/assertion/%s.json" % (site, str(badge['_id']))
             },
-            "issuedOn": date,
-            "badge": "https://%s/badges/badge/%s.json" % (site, badge['id_badge'])
+            "issuedOn": date
         }
     except:
         assertion = {
