@@ -386,16 +386,18 @@ if (_.isUndefined(window.MOOC)) {
                 } else {
                     header.push("<h3>" + this.model.get("title") + "</h3>");
                 }
+                header.push("<button class='btn ml10 pull-right add'><span class='icon-plus'></span> " +
+                    MOOC.trans.add + " " + MOOC.trans.kq.kq + "</button>");
                 header.push("<button class='btn pull-right edit' title='" + MOOC.trans.edit +
                     " " + MOOC.trans.unit.unit + "'><span class='icon-edit'></span> " +
                     MOOC.trans.edit + "</button>");
                 header = header.join("");
-                add = "<button class='btn pull-right add'><span class='icon-plus'></span> " +
-                    MOOC.trans.add + " " + MOOC.trans.kq.kq + "</button>";
+                // add = "<button class='btn pull-right add'><span class='icon-plus'></span> " +
+                //     MOOC.trans.add + " " + MOOC.trans.kq.kq + "</button>";
                 html = inlineb({ classes: "drag-handle" });
                 html += inlineb(block(header, { classes: "header" }),
                                 block("", { classes: "kq-container" }),
-                                block(add),
+                                // block(add),
                                 { classes: "unit-right" });
                 node.html(html);
 
@@ -511,7 +513,7 @@ if (_.isUndefined(window.MOOC)) {
         KQ: Backbone.View.extend({
             events: {
                 "click button.kqedit": "toKQEditor",
-                "click a.thumbnail": "openVideoPlayer"
+                "click .thumbnail": "openVideoPlayer"
             },
 
             initialize: function () {
@@ -551,19 +553,20 @@ if (_.isUndefined(window.MOOC)) {
 
                 video_thumbnail = "";
                 if (thumbnail_url) {
-                    video_thumbnail = "<a class='thumbnail' data-toggle='modal' href='#player-" + this.model.id + "'>" +
+                    video_thumbnail = "<a data-toggle='modal' href='#player-" + this.model.id + "'>" +
                         "<img src='" + this.model.get("thumbnail_url") + "' alt='" + MOOC.trans.kq.screenshot + this.model.get("title") + "' /></a>";
                 }
 
-                data = "<p class='noLowRes'>" + MOOC.trans.kq.teacher_comments + ": " +
-                    truncate(stripTags(this.model.get("teacher_comments"))) + "</p>" +
-                    "<p class='noLowRes'>" + MOOC.trans.kq.supplementary_material + ": " +
-                    truncate(stripTags(this.model.get("supplementary_material"))) + "<p/>";
+                // data = "<p class='noLowRes'>" + MOOC.trans.kq.teacher_comments + ": " +
+                //     truncate(stripTags(this.model.get("teacher_comments"))) + "</p>" +
+                //     "<p class='noLowRes'>" + MOOC.trans.kq.supplementary_material + ": " +
+                //     truncate(stripTags(this.model.get("supplementary_material"))) + "<p/>";
 
 
                 html = inlineb({ classes: "drag-handle" }) +
-                    inlineb(video_thumbnail, { style: "margin-left: 30px;" }) +
-                    inlineb(block(header), block(data), { classes: "kq-right" });
+                    inlineb(video_thumbnail, { classes: "thumbnail" }) +
+                    inlineb(block(header), { classes: "kq-right" });
+                    // inlineb(block(header), block(data), { classes: "kq-right" });
 
                 this.$el.html(html);
             },
@@ -751,6 +754,7 @@ if (_.isUndefined(window.MOOC)) {
                 "click button#use-last-frame": "useLastFrame",
                 "click button#delete-question": "removeQuestion",
                 "click button#delete-peer-review-assignment": "removePeerReviewAssignment",
+                "click button#use-no-solution-btn": "toggleSolution",
                 "click button#use-solution-video-btn": "toggleSolution",
                 "click button#use-solution-text-btn": "toggleSolution",
                 "click button#go2options": "go2options",
@@ -761,7 +765,7 @@ if (_.isUndefined(window.MOOC)) {
                 "click button#addassetavailability": "addAssetAvailability",
                 "click button#delete-asset-availability": "removeAssetAvailability",
                 "change select#kqmedia_content_type": "redrawCanGetLastFrame",
-                "change select#kqmedia_content_type": "showUploadFileForm",
+                "change select#kqmedia_content_type": "changeKqMediaContentType",
                 "click button.removeasset": "removeAssetOfAvailability",
                 "click button#addasset": "addAssetToAvailability",
                 "show a[data-toggle='tab']": "checkBeforeToggleTab",
@@ -774,7 +778,7 @@ if (_.isUndefined(window.MOOC)) {
                     "toggleSolution", "addQuestion", "addPeerReviewAssignment",
                     "addCriterion", "forceProcess", "removeQuestion",
                     "removePeerReviewAssignment", "go2options", "addAssetAvailability",
-                    "removeAssetAvailability", "checkBeforeToggleTab", "uploadVideoToS3", "showUploadFileForm");
+                    "removeAssetAvailability", "checkBeforeToggleTab", "uploadVideoToS3", "changeKqMediaContentType");
             },
 
             render: function () {
@@ -799,20 +803,29 @@ if (_.isUndefined(window.MOOC)) {
                 while (tinyMCE.editors.length > 0) {
                     tinyMCE.editors[0].remove();
                 }
-                this.$el.html($("#edit-kq-tpl").text());
+
+                this.$el.html(_.template($("#edit-kq-tpl").html())(this.model.toJSON()));
 
                 this.$el.find("input#kqtitle").val(this.model.get("title"));
                 this.$el.find("select#kqmedia_content_type").val(this.model.get("media_content_type"));
                 this.$el.find("input#kqmedia_content_id").val(this.model.get("media_content_id"));
                 this.$el.find("input#kqweight").val(this.model.get("weight"));
+
                 var can_upload = false;
+                var showTransTab = false;
                 if(this.model.get("media_content_type")){
                     can_upload = MEDIA_CONTENT_TYPES[this.model.get("media_content_type")].can_upload_media || false;
+                    showTransTab = MEDIA_CONTENT_TYPES[this.model.get("media_content_type")].need_captions || false;
                 }
                 if (can_upload) {
                     $("#s3_upload_form").css({'display': 'block'});
                 }else{
                     $("#s3_upload_form").css({'display': 'none'});
+                }
+                if (showTransTab) {
+                    $("#transcriptions-tab").show();
+                }else{
+                    $("#transcriptions-tab").hide();
                 }
 
                 if (this.model.has("questionInstance")) {
@@ -831,7 +844,7 @@ if (_.isUndefined(window.MOOC)) {
                         this.$el.find("button#use-solution-text-btn").trigger("click");
                     } else {
                         // Default
-                        this.$el.find("button#use-solution-video-btn").trigger("click");
+                        this.$el.find("button#use-no-solution-btn").trigger("click");
                     }
                     if (question.has("solution_media_content_type") && question.get("solution_media_content_type") !== "") {
                         this.$el.find("#questionmedia_content_type").val(question.get("solution_media_content_type"));
@@ -1127,10 +1140,14 @@ if (_.isUndefined(window.MOOC)) {
                         question.set("solution_media_content_type", this.$el.find("#questionmedia_content_type").val());
                         question.set("solution_media_content_id", this.$el.find("#questionmedia_content_id").val());
                         question.set("solutionText", null);
-                    } else {
+                    } else if (this.$el.find("#use-solution-text-btn").is(".active")) {
                         question.set("solution_media_content_type", null);
                         question.set("solution_media_content_id", null);
                         question.set("solutionText", tinyMCE.get("solution-text").getContent());
+                    } else {
+                        question.set("solution_media_content_type", null);
+                        question.set("solution_media_content_id", null);
+                        question.set("solutionText", null);
                     }
 
                     steps.push(function (asyncCB) {
@@ -1178,8 +1195,8 @@ if (_.isUndefined(window.MOOC)) {
                         criterion.set("description", $.trim(self.$el.find("#" + descriptionInputId).val()));
                         // Save rubric
                         for(var i=1;i<=5;i++){
-                            criterion.set("description_score_"+i, $.trim(self.$el.find("#criterionscore"+i+"-"+criterion.get("id")).val()));    
-                        }                        
+                            criterion.set("description_score_"+i, $.trim(self.$el.find("#criterionscore"+i+"-"+criterion.get("id")).val()));
+                        }
 
                         criterionListSaveTasks.push(function (asyncCB) {
                             criterion.save(null, {
@@ -1350,7 +1367,7 @@ if (_.isUndefined(window.MOOC)) {
                                     case "FileTooBig":  MOOC.ajax.showAlert("FileTooBig");
                                                         break;
                                     default: MOOC.ajax.showAlert("generic");
-                                }                                
+                                }
                             } else {
                                 MOOC.ajax.showAlert("saved");
                             }
@@ -1410,7 +1427,7 @@ if (_.isUndefined(window.MOOC)) {
             uploadVideoToS3: function(evt) {
                 evt.preventDefault();
                 evt.stopPropagation();
-                
+
                 var $progress = this.$el.find("#s3_upload_form progress");
                 $progress.css({'display': 'inline'});
 
@@ -1437,6 +1454,11 @@ if (_.isUndefined(window.MOOC)) {
                 });
             },
 
+            changeKqMediaContentType: function(evt) {
+                this.showTranscriptionsTab(evt);
+                this.showUploadFileForm(evt);
+            },
+
             showUploadFileForm: function(evt){
                 var target = $(evt.currentTarget);
                 var content_type = target.val();
@@ -1445,6 +1467,17 @@ if (_.isUndefined(window.MOOC)) {
                     $("#s3_upload_form").slideDown();
                 }else{
                     $("#s3_upload_form").slideUp();
+                }
+            },
+
+            showTranscriptionsTab: function(evt){
+                var target = $(evt.currentTarget);
+                var content_type = target.val();
+                var showTransTab = MEDIA_CONTENT_TYPES[content_type].need_captions || false;
+                if (showTransTab) {
+                    $("#transcriptions-tab").show();
+                }else{
+                    $("#transcriptions-tab").hide();
                 }
             },
 
@@ -1683,15 +1716,16 @@ if (_.isUndefined(window.MOOC)) {
                 evt.preventDefault();
                 evt.stopPropagation();
                 var id = evt.target.id,
-                    toShow = id.split("-btn")[0],
-                    toHide = "use-solution-video";
-                if (toShow.indexOf("video") > 0) {
-                    toHide = "use-solution-text";
-                }
+                    toShow = id.split("-btn")[0];
+
+                this.$el.find("#use-no-solution-btn").removeClass("active");
+                this.$el.find("#use-solution-video-btn").removeClass("active");
+                this.$el.find("#use-solution-text-btn").removeClass("active");
+                this.$el.find("#use-solution-video").addClass("hide");
+                this.$el.find("#use-solution-text").addClass("hide");
+
                 this.$el.find("#" + toShow).removeClass("hide");
                 this.$el.find("#" + toShow + "-btn").addClass("active");
-                this.$el.find("#" + toHide).addClass("hide");
-                this.$el.find("#" + toHide + "-btn").removeClass("active");
             },
 
             removeQuestion: function (evt) {
@@ -1973,16 +2007,15 @@ if (_.isUndefined(window.MOOC)) {
                 } else {
                     cb();
                 }
-
             },
 
             go2options: function (evt) {
                 evt.preventDefault();
                 evt.stopPropagation();
                 var model = this.model,
-                    callback = function () {
-                        window.open("question/" + model.get("id"), "_self");
-                    };
+                callback = function () {
+                    window.open("question/" + model.get("id"), "_self");
+                };
                 this.save(evt, callback);
             },
 

@@ -60,6 +60,11 @@
     position: relative;
     float: left;
 
+    &.inline .btn {
+        display: inline-block;
+        margin: 0;       
+    }
+
     .dropdown-toggle, .btn {
         display: block;
         text-align: center;
@@ -311,7 +316,9 @@ a.externallink {
 
 footer {
     border-top: 1px solid #dddddd;
-    padding: 1em 0;
+    padding: 1em 20px;
+    width: 100%;
+    text-align: right;
 }
 
 footer ul {
@@ -397,6 +404,10 @@ footer ul li {
 
 .mb20 {
     margin-bottom: 20px;
+}
+
+.ml10 {
+    margin-left: 10px;
 }
 
 .row.alerts {
@@ -696,7 +707,7 @@ code {
 }
 
 .teacheradmin-units .kq-right {
-    width: calc(~'100% - 150px');
+    width: calc(~'100% - 76px');
     margin-left: 10px;
     vertical-align: top;
 
@@ -725,7 +736,9 @@ code {
 .teacheradmin-units .kq h4 {
     display: inline-block;
     margin-top: 0;
-    max-width: 400px;
+    max-width: calc(~'100% - 150px');
+    position: relative;
+    top: 5px;
 }
 
 .teacheradmin-units .kq p {
@@ -743,7 +756,7 @@ code {
 
 .teacheradmin-units .kq .badge {
     position: relative;
-    /*top: 8px;*/
+    top: 5px;
     margin-right: 10px;
 }
 
@@ -767,12 +780,22 @@ code {
     padding: 1px;
 }
 
-.teacheradmin-units a.thumbnail img {
-    width: 106px;
+.teacheradmin-units .thumbnail {
+    margin-left: 30px;
+
+    img {
+        height: 18px;
+    }
 }
 
 .teacheradmin-units select#type, .teacheradmin-units input[type="text"] {
     width: 100%;
+}
+
+.teacheradmin-units {
+    .btn {
+        height: 28px;
+    }
 }
 
 #media-player {
@@ -874,15 +897,23 @@ td.green a.ui-state-default {
     border: 1px dotted #333;
     outline: none !important;
     background-color: white;
-    min-height: 100px;
+    min-height: 170px;
 }
 
 .tab-content-no-overflow {
     overflow: hidden;
 }
 
+.tab-content.showOverflow {
+    overflow: visible;
+}
+
 .nav-pills>.active>a, .nav-pills>.active>a:hover {
     background-color: @highlight;
+}
+
+.nav-list {
+    font-size: 16px;
 }
 
 .nav-list>.active>a, .nav-list>.active>a:hover {
@@ -1236,5 +1267,20 @@ fieldset {
 }
 
 .maincontent {
-    min-height: calc(~'100vh - 168px');
+    min-height: calc(~'100vh - 210px');
+}
+
+textarea.tall {
+    height: 400px;
+}
+
+// Sorry for this hack
+.tall .mce-tinymce{
+    iframe {
+        height: 400px !important;
+    }
+}
+
+.mce-tinymce.mce-container {
+    margin-bottom: 40px;
 }

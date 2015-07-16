@@ -298,8 +298,8 @@ class StaticPageForm(TranslationModelForm, BootstrapMixin):
         model = StaticPage
         include = ('title', 'body',)
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'input-xxlarge'}),
-            'body': TinyMCE(attrs={'class': 'input-xxlarge'}),
+            'title': forms.TextInput(attrs={'class': 'wide'}),
+            'body': TinyMCE(attrs={'class': 'wide'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -307,7 +307,7 @@ class StaticPageForm(TranslationModelForm, BootstrapMixin):
         for field in self.fields.values():
             widget = field.widget
             if isinstance(widget, (forms.widgets.TextInput, forms.widgets.DateInput)):
-                widget.attrs['class'] = 'input-xxlarge'
+                widget.attrs['class'] = 'wide'
             elif isinstance(widget, forms.widgets.Textarea):
                 widget.mce_attrs['width'] = '780'  # bootstrap span10
 
@@ -317,4 +317,3 @@ class StaticPageForm(TranslationModelForm, BootstrapMixin):
 #     badgeTitle = forms.CharField(required=True)
 #     noteBadge = forms.CharField(required=True)
 #     unitBadge = forms.ChoiceField(widget=forms.Select, required=False, choices=[])
-
