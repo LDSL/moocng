@@ -94,7 +94,7 @@
     };
   </script>
   <script>
-    var noGeolocation = {% if not feature_geolocation %}true{% else %}var noGeolocation = false{% endif %};
+    var noGeolocation = {% if not feature_geolocation %}true{% else %}false{% endif %};
   </script>
   <script src="{{ STATIC_URL }}js/userinfo.js"></script>
   {% if google_analytics %}
