@@ -62,7 +62,7 @@
 
     &.inline .btn {
         display: inline-block;
-        margin: 0;       
+        margin: 0;
     }
 
     .dropdown-toggle, .btn {
@@ -1283,4 +1283,17 @@ textarea.tall {
 
 .mce-tinymce.mce-container {
     margin-bottom: 40px;
+}
+
+legend:after{
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.alert:not(.notfixed) {
+    position: fixed;
+    z-index: 1;
+    right: 10px;
+    top: 10px;
 }

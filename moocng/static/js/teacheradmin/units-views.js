@@ -779,6 +779,8 @@ if (_.isUndefined(window.MOOC)) {
                     "addCriterion", "forceProcess", "removeQuestion",
                     "removePeerReviewAssignment", "go2options", "addAssetAvailability",
                     "removeAssetAvailability", "checkBeforeToggleTab", "uploadVideoToS3", "changeKqMediaContentType");
+
+                this.addingCriterion = false;
             },
 
             render: function () {
@@ -913,18 +915,20 @@ if (_.isUndefined(window.MOOC)) {
                             scoreInputs.push(model);
                         }
 
+
                         titleInput = "<input type=\"text\" name=\"" + titleInputId + "\" id=\"" + titleInputId + "\" maxlength=\"100\" class=\"input-large\" required=\"required\" />";
                         titleLabel = "<label for=\"" + titleInputId + "\" class=\"required\">" + MOOC.trans.evaluationCriterion.title + "</label>";
                         descriptionInput = "<input type=\"text\" name=\"" + descriptionInputId + "\" id=\"" + descriptionInputId + "\" maxlength=\"200\" class=\"input\" required=\"required\" />";
                         descriptionLabel = "<label for=\"" + descriptionInputId + "\" class=\"required\">" + MOOC.trans.evaluationCriterion.description + "</label>";
                         removeBtn = "<button id=\"" + removeBtnId + "\" class=\"removecriterion btn btn-danger\">" + MOOC.trans.evaluationCriterion.remove + "</button>";
                         criterionDiv = "<div id=\"" + criterionDivId + "\">"
+                                       + "<fieldset>"
                                        + "<div class=\"\"> <div>" + titleLabel + titleInput + "</div>"
                                        + "<div class=\"\">" + descriptionLabel + descriptionInput + "</div>"
                         for(var i=0;i<5;i++){
                             criterionDiv += '<div class="">' + scoreInputs[i].scoreLabel + scoreInputs[i].scoreInput + '</div>';
                         }
-                        criterionDiv += "<div class=\"\"><div class=\"align-right\">" + removeBtn + "</div></div></div>";
+                        criterionDiv += "<div class=\"\"><div class=\"align-right\">" + removeBtn + "</div></div></fieldset></div>";
 
                         criterionListDiv.append(criterionDiv);
                         criterionListDiv.find("#" + titleInputId).val(criterion.get("title"));
@@ -1120,13 +1124,15 @@ if (_.isUndefined(window.MOOC)) {
                     cb2,
                     attachCB;
 
+                var lang = $('html').attr('lang');
+
                 this.model.unset("new");
                 this.model.set("title", $.trim(this.$el.find("input#kqtitle").val()));
                 this.model.set("media_content_id", $.trim(this.$el.find("input#kqmedia_content_id").val()));
                 this.model.set("media_content_type", this.$el.find("select#kqmedia_content_type").val());
                 this.model.set("weight", parseInt(this.$el.find("input#kqweight").val(), 10));
                 this.model.set("supplementary_material", tinyMCE.get("kqsupplementary").getContent());
-                this.model.set("teacher_comments", tinyMCE.get("kqcomments").getContent());
+                this.model.set("teacher_comments_"+lang, tinyMCE.get("kqcomments").getContent());
 
                 if (this.model.has("questionInstance")) {
                     question = this.model.get("questionInstance");
@@ -1185,6 +1191,11 @@ if (_.isUndefined(window.MOOC)) {
                     });
 
                     criterionList = assignment.get("_criterionList");
+                    if (criterionList.length === 0 && assignment.get('description') != "" && !this.addingCriterion){
+                        alert("You must include almost one criterion on your peer review assignment");
+                        MOOC.ajax.hideLoading();
+                        return;
+                    }
                     criterionList.each(function (criterion) {
                         var titleInputId,
                             descriptionInputId;
@@ -1526,7 +1537,7 @@ if (_.isUndefined(window.MOOC)) {
                 assignment = this.model.get("peerReviewAssignmentInstance");
                 assignmentUrl = assignment.url();
                 newCriterion = new MOOC.models.EvaluationCriterion();
-
+                this.addingCriterion = true;
                 this.save(evt, function () {
                     newCriterion.set("assignment", assignmentUrl);
                     newCriterion.save(null, {
@@ -1547,17 +1558,21 @@ if (_.isUndefined(window.MOOC)) {
                                     self.$el.find("form fieldset.active").removeClass("active");
                                     self.$el.find("#peer-review-assignment-tab").addClass("active");
                                     self.$el.find("#peer-review-assignment").addClass("active");
+                                    $('html,body').animate({scrollTop: $('#reviewcriterions > div:last-child').position().top - $('header').outerHeight() - 10}, 750);
+                                    self.addingCriterion = false;
                                     MOOC.ajax.hideLoading();
                                 },
                                 error: function () {
                                     MOOC.ajax.hideLoading();
                                     MOOC.ajax.showAlert("generic");
+                                    self.addingCriterion = false;
                                 }
                             });
                         },
                         error: function () {
                             MOOC.ajax.hideLoading();
                             MOOC.ajax.showAlert("generic");
+                            self.addingCriterion = false;
                         }
                     });
 

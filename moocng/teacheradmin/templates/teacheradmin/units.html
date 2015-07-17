@@ -45,7 +45,7 @@
             },
             kq: {
                 teacher_comments: "{% trans "Instructor's comments" %}",
-                supplementary_material: "{% trans 'Supplementary material' %}",
+                supplementary_material: "{% trans 'Complementary material' %}",
                 kq: "{% trans 'nugget' %}",
                 question: "{% trans 'It has a question' %}",
                 pr: "{% trans 'PR' %}",
@@ -144,7 +144,7 @@
     <legend><%= title %></legend>
     <ul class="nav nav-tabs">
         <li class="active"><a href="#nugget" data-toggle="tab">{% trans "Nugget" %}</a></li>
-        <li id="attachments-tab"><a href="#attachments" data-toggle="tab">{% trans "Supplementary material" %}</a></li>
+        <li id="attachments-tab"><a href="#attachments" data-toggle="tab">{% trans "Complementary material" %}</a></li>
         <li id="transcriptions-tab" class="hide"><a href="#transcriptions" data-toggle="tab">{% trans "Transcriptions" %}</a></li>
         <li id="question-tab" class="hide"><a href="#question" data-toggle="tab">{% trans "Question" %}</a></li>
         <li id="peer-review-assignment-tab" class="hide"><a href="#peer-review-assignment" data-toggle="tab">{% trans "Peer review" %}</a></li>
@@ -215,7 +215,7 @@
         </div>
     </fieldset>
     <fieldset class="tab-pane tall" id="attachments">
-        <legend>{% trans "Supplementary material" %}</legend>
+        <legend>{% trans "Complementary material" %}</legend>
         <textarea id="kqsupplementary" name="kqsupplementary" class="span5 tall" rows="5"></textarea>
 
         <legend>{% trans "Attachments" %}</legend>
@@ -286,7 +286,7 @@
                 <p><button id="force-process" class="hide btn">{% trans "Force processing the nugget's video" %}</button></p>
             </div>
             <div id="no-last-frame" class="hide">
-                <div class="alert alert-info">
+                <div class="alert alert-info notfixed">
                     <h4>{% trans "Using blank canvas" %}</h4>
                     <p>{% trans "You are using a blank canvas for the question instead of the last frame of the nugget's video." %}</p>
                 </div>
@@ -336,18 +336,18 @@
     </div>
     <div class="row">
         <div class="align-right col-lg-16 col-md-12 col-sm-8 col-mob-4">
-            <button id="go2options" class="btn btn-primary" type="submit">{% trans "Save changes and edit question's options" %}</button>
+            <button id="go2options" class="btn btn-primary" type="submit">{% trans "Edit question's options" %}</button>
             <button id="delete-question" class="btn btn-danger">{% trans "Remove the question from this nugget" %}</button>
         </div>
     </div>
     </fieldset>
     <fieldset class="tab-pane" id="peer-review-assignment">
     <div>
-        <div class="col-lg-7 col-md-7 col-sm-8 col-mob-4">
+        <div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 tall">
             <label for="reviewdescription" class="required">{% trans "Assignment description" %}</label>
-            <textarea id="reviewdescription" name="reviewdescription" class="span5" rows="5"></textarea>
+            <textarea id="reviewdescription" name="reviewdescription" class="span5 tall" rows="5"></textarea>
         </div>
-        <div class="col-lg-8 col-md-6 col-sm-4 col-mob-4">
+        <div class="col-lg-8 col-md-6 col-sm-4 col-mob-4 mb20">
             <label for="reviewminreviews" class="required">{% trans "Minimun reviewers" %}</label>
             <div class="input-append">
                 <input type="number" min="0" max="100" step="1" name="reviewminreviews" id="reviewminreviews" class="input-mini" required="required" />
@@ -356,12 +356,15 @@
     </div>
     <div class="cleaner">
       <div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
-        <legend>{% trans "Evaluation criterions" %}</legend>
+        <legend>
+            <span class="fleft">{% trans "Evaluation criterions" %}</span>
+            <button id="addcriterion" class="btn btn-primary fright" type="submit">{% trans "Add an evaluation criterion" %}</button>
+        </legend>
         <div id="reviewcriterions">
         </div>
         <div class="mt-20">
             <div class="align-right">
-                <button id="addcriterion" class="btn btn-primary" type="submit">{% trans "Save changes and add an evaluation criterion" %}</button>
+                <!--<button id="addcriterion" class="btn btn-primary" type="submit">{% trans "Add an evaluation criterion" %}</button>-->
             </div>
         </div>
       </div>
@@ -405,27 +408,45 @@
     <h4>{% trans "Success" %}</h4>
     <p>{% trans "A task for processing the video has been queued. Refresh in a few moments." %}</p>
 </div>
-<div class="alert alert-error hide" id="generic">
+<div class="alert alert-error alert-dismissible hide" id="generic">
+    <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
     <h4>{% trans "Error" %}</h4>
     <p>{% trans "Something went wrong, please try again later." %}</p>
 </div>
-<div class="alert alert-error hide" id="FileTooBig">
+<div class="alert alert-error alert-dismissible hide" id="FileTooBig">
+    <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
     <h4>{% trans "Error" %}</h4>
     <p>{% trans "The attached file size is too big, the max file size is" %} {{max_file_size}}Mb.</p>
 </div>
-<div class="alert alert-error hide" id="required">
+<div class="alert alert-error alert-dismissible hide" id="required">
+    <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
     <h4>{% trans "Error" %}</h4>
     <p>{% trans "A required field is empty." %}</p>
 </div>
-<div class="alert alert-error hide" id="media_content_id">
+<div class="alert alert-error alert-dismissible hide" id="media_content_id">
+    <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
     <h4>{% trans "Error" %}</h4>
     <p>{% trans "Invalid content id or url" %}</p>
 </div>
-<div class="alert alert-error hide" id="unsaved">
+<div class="alert alert-error alert-dismissible hide" id="unsaved">
+    <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
     <h4>{% trans "Error" %}</h4>
     <p>{% trans "This item is new and must be saved before going back." %}</p>
 </div>
-<div class="alert alert-error hide" id="wrong_dates">
+<div class="alert alert-error alert-dismissible hide" id="wrong_dates">
+    <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
     <h4>{% trans "Error" %}</h4>
     <p>{% trans "The start date must be lower than the end date" %}.</p>
 </div>

@@ -482,7 +482,8 @@ def teacheradmin_units_question(request, course_slug, kq_id):
         return HttpResponse(status=400)
 
     if 'HTTP_REFERER' in request.META:
-        goback = request.META['HTTP_REFERER']
+        goback = reverse('teacheradmin_units', args=(course.slug,)) + '#kq' + kq_id
+        # goback = request.META['HTTP_REFERER']
     else:
         goback = None
 
@@ -508,6 +509,7 @@ def teacheradmin_units_question(request, course_slug, kq_id):
                 } for opt in obj.option_set.all()]
         context = {
             'course': course,
+            'kq': kq,
             'is_enrolled': is_enrolled,
             'object_id': obj.id,
             'original': obj,

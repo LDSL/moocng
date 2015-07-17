@@ -187,10 +187,15 @@ if (_.isUndefined(window.MOOC)) {
         showAlert: function (id) {
             var alert = $("#" + id);
             alert.removeClass("hide");
-            $("body").animate({ scrollTop: alert.offset().top }, 500);
-            setTimeout(function () {
-                $("#" + id).addClass("hide");
-            }, MOOC.alertTime);
+            if(!alert.hasClass('alert-dismissible')){
+                setTimeout(function () {
+                    alert.addClass("hide");
+                }, MOOC.alertTime);
+            }else{
+                alert.find('.close').click(function(){
+                    alert.addClass("hide");
+                });
+            }
         }
     };
 

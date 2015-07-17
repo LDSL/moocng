@@ -156,9 +156,15 @@ MOOC.alerts.show = function (type, title, message) {
     alert.find("p").text(message);
     alert.removeClass("hide");
     $("body").animate({ scrollTop: 0 }, 500);
-    _.delay(function () {
-        MOOC.alerts.hide();
-    }, 10000);
+    if(!alert.hasClass('alert-dismissible')){
+        setTimeout(function () {
+            alert.addClass("hide");
+        }, MOOC.alertTime);
+    }else{
+        alert.find('.close').click(function(){
+            alert.addClass("hide");
+        });
+    }
 };
 
 MOOC.alerts.hide = function () {
