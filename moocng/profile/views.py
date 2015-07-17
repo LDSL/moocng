@@ -36,6 +36,7 @@ from datetime import date, datetime
 from moocng.profile.utils import (get_user)
 from cgi import escape
 from django.utils.html import urlize
+import hashlib
 
 def profile_timeline(request):
 	return render_to_response('profile/timeline.html', {
@@ -113,6 +114,34 @@ def profile_badges(request, id, byid=False):
 		"courses": courses,
 		}, context_instance=RequestContext(request))
 
+def profile_badge(request, badgeid, id=None):
+
+	if (badgeid):
+		if(not id):
+			if(not request.user.id):
+				return HttpResponseRedirect("/auth/login")
+			user = request.user
+			id = request.user.id
+		else:
+			user = User.objects.get(username=id)
+			id = user.id
+
+		badge = get_db().get_collection('badge').find({"id_user": id, "id_badge": int(badgeid)})[0]
+		hashed_email = hashlib.sha256(user.email + settings.BADGES_HASH_SALT).hexdigest()
+		badge['id'] = badge['_id']
+
+		return render_to_response('profile/badge.html', {
+			"id":id,
+			'request': request,
+			"user_view_profile": user,
+			"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
+			"hashed_email": hashed_email,
+			"badge": badge,
+			"openbadges_service_url": settings.BADGES_SERVICE_URL,
+			}, context_instance=RequestContext(request))
+	else:
+		return HttpResponseBadRequest()
+
 @login_required
 def profile_calendar(request):
 	return render_to_response('profile/calendar.html', {
@@ -158,7 +187,7 @@ def profile_posts(request, id, api=False, byid=False):
 		if byid:
 			id = int(id)
 			user = User.objects.get(pk=id)
-		else:	
+		else:
 			user = User.objects.get(username=id)
 			id = user.id
 
@@ -167,7 +196,7 @@ def profile_posts(request, id, api=False, byid=False):
 		if form.is_valid():
 			m.insert_post(request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
 			return HttpResponseRedirect("/user/posts")
-	
+
 	else:
 		case = _getCase(request,id)
 
@@ -186,7 +215,7 @@ def profile_posts(request, id, api=False, byid=False):
 			followingCount = len(blog_user["following"])
 
 		listPost = m.get_posts(case, id, blog_user, 0)
-		
+
 		if not api:
 			return render_to_response('profile/posts.html', {
 				"id":id,
@@ -225,7 +254,7 @@ def profile_posts_search(request, query, hashtag=False, api=False):
 		if form.is_valid():
 			m.insert_post(request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
 			return HttpResponseRedirect("/user/posts")
-	
+
 	else:
 		case = _getCase(request,id)
 
@@ -248,7 +277,7 @@ def profile_posts_search(request, query, hashtag=False, api=False):
 		else:
 			search_query = query
 		listPost = m.search_posts(search_query, 0)
-		
+
 		if not api:
 			return render_to_response('profile/posts_search.html', {
 				"id":id,
@@ -269,7 +298,7 @@ def profile_posts_search(request, query, hashtag=False, api=False):
 		else:
 			response = {
 				"query": query,
-				"is_hashtag": hashtag,		
+				"is_hashtag": hashtag,
 				"posts": listPost
 			}
 			return HttpResponse(json_util.dumps(response), mimetype='application/json')
@@ -300,7 +329,7 @@ def load_more_posts(request, page, query, search=False, hashtag=False):
 def user_follow(request, id, follow):
 	id = int(id)
 	m = Microblog()
-	user = m.get_blog_user(request.user.id) 
+	user = m.get_blog_user(request.user.id)
 
 	if(follow == "0"):
 		if(user):
@@ -309,7 +338,7 @@ def user_follow(request, id, follow):
 				m.update_following_blog_user(request.user.id, user["following"])
 		else:
 			m.insert_blog_user(request.user.id, [id])
-	
+
 	elif(follow == "1" and user):
 		user["following"].remove(id)
 		m.update_following_blog_user(request.user.id, user["following"] )
@@ -341,5 +370,3 @@ def _getCase(request, id):
 		return 1
 	else:
 		return 0
-
-

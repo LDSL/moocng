@@ -9,14 +9,14 @@ urlpatterns = patterns(
         name='profile_timeline'),
     url(r'^user/groups$', 'profile_groups',
         name='profile_groups'),
-   
+
 
     url(r'^user/courses/(?P<id>[\d]+)$', 'profile_courses',
         {'byid': True}, name='profile_courses_byid'),
 
     url(r'^user/courses/(?P<id>[-\+@\w.]*)$', 'profile_courses',
         name='profile_courses'),
-   
+
     url(r'^user/courses/$', 'profile_courses',
         name='profile_courses'),
 
@@ -25,19 +25,28 @@ urlpatterns = patterns(
 
     url(r'^user/badges/(?P<id>[-\+@\w.]*)$', 'profile_badges',
         name='profile_badges'),
-    
+
+    url(r'^user/badges/$', 'profile_badges',
+        name='profile_badges'),
+
+    url(r'^user/badge/(?P<id>[-\+@\w.]*)/(?P<badgeid>\d+)$', 'profile_badge',
+        name='profile_badge'),
+
+    url(r'^user/badge/(?P<badgeid>\d+)$', 'profile_badge',
+        name='profile_badge'),
+
     url(r'^user/calendar/$', 'profile_calendar',
         name='profile_calendar'),
     
     url(r'^user/profile/(?P<id>[\d]+)$', 'profile_user',
         {'byid': True}, name='profile_user_byid'),
-    
+
     url(r'^user/profile/(?P<id>[-\+@\w.]*)$', 'profile_user',
         name='profile_user'),
 
     url(r'^user/profile/$', 'profile_user',
         name='profile_user'),
-   
+
     url(r'^user/posts/(?P<id>[\d]+)$', 'profile_posts',
         {'byid': True}, name='profile_posts_byid'),
 
@@ -55,7 +64,7 @@ urlpatterns = patterns(
 
     url(r'^user/loadMorePosts/(?P<page>[-\w]+)/(?P<query>[-\w.]+)$', 'load_more_posts',
         name='load_more_posts'),
-    
+
     url(r'^user/loadMorePosts/search/(?P<page>[-\w]+)/(?P<query>[-\w.]+)$', 'load_more_posts',
         {'search': True}, name='load_more_posts_search'),
 
