@@ -49,7 +49,7 @@ urlpatterns = patterns(
         name='course_dashboard'),
     url(r'^course/(?P<course_slug>[-\w]+)/progress/$', 'course_progress',
         name='course_progress'),
-    
+
     url(r'^course/(?P<course_slug>[-\w]+)/forum/$', 'course_forum',
         name='course_forum'),
     url(r'^course/(?P<course_slug>[-\w]+)/forum/search/(?P<query>[-\w.]+)/(?P<page>[-\w]+)$', 'course_forum_load_more',
@@ -58,7 +58,7 @@ urlpatterns = patterns(
         {'search': True, 'hashtag': True}, name='course_forum_load_more_hashtag'),
     url(r'^course/(?P<course_slug>[-\w]+)/forum/loadMorePosts/(?P<page>[-\w]+)$', 'course_forum_load_more',
         name='course_forum_load_more'),
-    
+
     url(r'^course/(?P<course_slug>[-\w]+)/forum/(?P<post_id>[-\w]+)$', 'course_forum_post',
         name='course_forum_post'),
     url(r'^course/(?P<course_slug>[-\w]+)/forum/(?P<post_id>[-\w]+)/reply/(?P<reply_id>[-\w.]+)$', 'course_forum_reply',
@@ -73,6 +73,8 @@ urlpatterns = patterns(
         name='course_forum_post_delete'),
     url(r'^course/(?P<course_slug>[-\w]+)/forum/(?P<post_id>[-\w]+)/flag/$', 'course_forum_post_flag',
         name='course_forum_post_flag'),
+    url(r'^course/(?P<course_slug>[-\w]+)/forum/(?P<post_id>[-\w]+)/pin/$', 'course_forum_post_pin',
+        name='course_forum_post_pin'),
 
     url(r'^course/(?P<course_slug>[-\w]+)/calendar/$', 'course_calendar',
         name='course_calendar'),

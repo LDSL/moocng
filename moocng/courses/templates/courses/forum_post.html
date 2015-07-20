@@ -21,7 +21,7 @@
 									{% url profile_user_byid post.id_user as post_profile_url_byid %}
 									<a href="{% if show_username %}{{ post_profile_url }}{% else %}{{ post_profile_url_byid }}{% endif %}"><span class="namePost">{{post.first_name}} {{post.last_name}}</span></a>
 									{% if show_username %}<span class="emailPost">@{{post.username}}</span>{% endif %}
-									
+
 									<span class="datePost">[{{post.date}}]</span>
 									{% autoescape off %}
 									<p class="postText">{{post.text|linebreaks}}</p>
@@ -33,8 +33,8 @@
 											{% csrf_token %}
 											{{ form }}
 											<input class="postButton" type="submit" value="{% trans "Send" %}">
-											<span class="cancelPost">{% trans "Cancel" %}</span>
-										</form>								
+											<span class="cancelReply">{% trans "Cancel" %}</span>
+										</form>
 										<!-- <span class="favourite">0</span> -->
 										<span class="karma
 												{% if post.user_vote > 0 %}
@@ -99,51 +99,14 @@
 		</div>
 	</div>
 </div>
+
 <script type="text/javascript">
-	$(".reply").click(function(e){
-		e.preventDefault();
-		$(this).parent().parent().parent().toggleClass('open');
-	});
-
-	$(".cancelPost").click(function(e){
-		e.preventDefault();
-		$(this).parent().parent().parent().parent().toggleClass('open');
-	});
-
-	$(".karma a").click(function(e){
-		e.preventDefault();
-		var target = e.target;
-		if (!target.href) {
-			target = e.target.parentElement;
-		}
-		$.get(target.href, function(result){
-			if(result !== false){
-				var karma_elem = $(target).parent();
-				var votes_elem = karma_elem.find('span');
-				var vote = $(target).data('vote');
-				if(karma_elem.hasClass('upvoted') && vote === -1){
-					vote = 0;
-				} else if (karma_elem.hasClass('downvoted') && vote === 1) {
-					vote = 0;
-				}
-				
-				votes_elem.html(result);
-				switch(vote){
-					case 1: karma_elem.addClass('upvoted');
-							break;
-					case 0: karma_elem.removeClass('upvoted');
-							karma_elem.removeClass('downvoted');
-							break;
-					case -1: karma_elem.addClass('downvoted');
-							break;
-				}
-			}
-		});
-	});
-	$(".repliesToggle").click(function(e){
-		//$(this).parent().parent().toggleClass("collapsed");
-		$(this).siblings('.subreplies').slideToggle();
-	});
+	var course_slug = '{{ course.slug }}';
+	var forum_trans = {
+		'confirm_flag': '{% trans "Are you sure you want to flag this post?" %}',
+		'confirm_delete': '{% trans "Are you sure you want to delete this post?" %}'
+	}
 </script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/forum.js"></script>
 
 {% endblock %}

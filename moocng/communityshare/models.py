@@ -28,7 +28,7 @@ class CommunityShareBase(object):
 	    			{"$or": [ {"is_child": {"$exists": False} }, {"is_child": False} ] },
 	    			{"$or": [ {"deleted": {"$exists": False}}, {"deleted": False} ] },
 	    		]
-	    	})[page:page+10].sort("date",pymongo.DESCENDING)
+	    	})[page:page+10].sort([("pinned", pymongo.DESCENDING), ("date", pymongo.DESCENDING)])
 	    else:
 	    	posts = postCollection.find({
 	    		"$and": [
@@ -117,7 +117,7 @@ class Microblog(CommunityShareBase):
 
 	def insert_blog_user(self, user_id, following):
 		user = {
-			"id_user": user_id, 
+			"id_user": user_id,
 			"following": following
 		}
 		get_db().get_collection(self.col_user).insert(user)
@@ -136,7 +136,7 @@ class Microblog(CommunityShareBase):
 	    return super(Microblog,self).get_posts(idsUsers, page)
 
 	def insert_post(self, id_user, first_name, last_name, username, avatar, postText):
-		post = { 
+		post = {
 			"id_user": id_user,
 			"first_name": first_name,
 			"last_name":last_name,
@@ -176,7 +176,7 @@ class Microblog(CommunityShareBase):
 	    post_orig = postCollection.find_one({"_id":ObjectId(post_id)})
 	    if post_orig:
 	    	post = {
-						"id_user": user_id, 
+						"id_user": user_id,
 						"first_name": first_name,
 						"last_name": last_name,
 						"username": "@%s" % (username),
@@ -238,7 +238,7 @@ class Forum(CommunityShareBase):
 		return post
 
 	def insert_post(self, category_slug, id_user, first_name, last_name, username, avatar, postTitle, postText):
-		post = { 
+		post = {
 			"category_slug": category_slug,
 			"id_user": id_user,
 			"first_name": first_name,
@@ -262,7 +262,7 @@ class Forum(CommunityShareBase):
 	    if post_orig:
 	    	post = {
 	    				"category_slug": category_slug,
-						"id_user": id_user, 
+						"id_user": id_user,
 						"first_name": first_name,
 						"last_name": last_name,
 						"username": username,
@@ -324,9 +324,22 @@ class Forum(CommunityShareBase):
 		else:
 			return False
 
+	def post_pin(self, post_id):
+		postCollection = get_db().get_collection(self.col_post)
+		post = postCollection.find_one({"_id": ObjectId(post_id)})
+		if post:
+			if "pinned" in post:
+				pinned = not post["pinned"]
+			else:
+				pinned = True
+			postCollection.update({"_id": ObjectId(post_id)}, {"$set": {"pinned": pinned}})
+			return True
+		else:
+			return False
+
 	def post_edit(self, post_id, id_user, course_slug, postText):
 		postCollection = get_db().get_collection(self.col_post)
-		
+
 		if self._can_edit(id_user, course_slug, post_id):
 			postCollection.update({"_id": ObjectId(post_id)}, {"$set": {"text": escape(postText)}})
 			return True

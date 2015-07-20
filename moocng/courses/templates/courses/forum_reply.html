@@ -14,7 +14,7 @@
 		{% url profile_user_byid reply.id_user as reply_profile_url_byid %}
 		<a href="{% if show_username %}{{ reply_profile_url }}{% else %}{{ reply_profile_url_byid }}{% endif %}"><span class="namePost">{{reply.first_name}} {{reply.last_name}}</span></a>
 		{% if show_username %}<span class="emailPost">@{{reply.username}}</span>{% endif %}
-		
+
 		<span class="datePost">[{{reply.date}}]</span>
 		{% autoescape off %}
 		<div class="postText">{{reply.text|linebreaks}}</div>
@@ -25,9 +25,9 @@
 				{% csrf_token %}
 				{{ form }}
 				<input class="postButton" type="submit" value="{% trans "Send" %}">
-				<span class="cancelPost">{% trans "Cancel" %}</span>
+				<span class="cancelReply">{% trans "Cancel" %}</span>
 			</form>
-			
+
 			<!-- <span class="favourite">0</span> -->
 			<span class="karma
 					{% if reply.user_vote > 0 %}
