@@ -100,7 +100,8 @@
 	var course_slug = '{{ course.slug }}';
 	var forum_trans = {
 		'confirm_flag': '{% trans "Are you sure you want to flag this post?" %}',
-		'confirm_delete': '{% trans "Are you sure you want to delete this post?" %}'
+		'confirm_delete': '{% trans "Are you sure you want to delete this post?" %}',
+		'cant_delete_children': '{% trans "Sorry, you cannot delete this post as long as it contains replies" %}'
 	}
 </script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/forum.js"></script>

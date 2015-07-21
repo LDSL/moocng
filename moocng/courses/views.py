@@ -58,7 +58,7 @@ from moocng.courses.security import (get_course_if_user_can_view_or_404,
                                      get_course_rating_for_user,
                                      get_course_if_user_can_view_and_permission)
 from moocng.courses.tasks import clone_activity_user_course_task
-from moocng.courses.forms import CourseRatingForm, ForumPostForm, ForumReplyForm
+from moocng.courses.forms import CourseRatingForm, ForumPostForm, ForumReplyForm, ForumEditForm
 from moocng.slug import unique_slugify
 from moocng.communityshare.models import Microblog, Forum
 from moocng.portal.templatetags.gravatar import gravatar_for_email
@@ -676,7 +676,8 @@ def course_forum_post(request, course_slug, post_id):
             'is_teacher': is_teacher,
             'group': group,
             'passed': has_passed,
-            'form': ForumReplyForm(),
+            'formReply': ForumReplyForm(),
+            'formEdit': ForumEditForm(),
             'post': post,
         }, context_instance=RequestContext(request))
 
@@ -715,12 +716,12 @@ def course_forum_post_pin(request, course_slug, post_id):
         #TODO Alert: ERROR
         return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
 
-def course_forum_post_edit(request, course_slug, post_id):
+def course_forum_post_edit(request, course_slug, post_id, reply_id):
     f = Forum()
     if request.method == 'POST':
-        form = ForumReplyForm(request.POST)
+        form = ForumEditForm(request.POST)
         if form.is_valid():
-            success = f.post_edit(post_id, request.user.id, course_slug, form.cleaned_data['postText'])
+            success = f.post_edit(reply_id, request.user.id, course_slug, form.cleaned_data['postText'])
             if success:
                 return HttpResponseRedirect('{0}#{1}'.format(reverse('course_forum_post', args=[course_slug, post_id]), reply_id))
             else:
@@ -729,7 +730,7 @@ def course_forum_post_edit(request, course_slug, post_id):
 
 def course_forum_post_delete(request, course_slug, post_id):
     f = Forum()
-    success = f.post_delete(post_id, request.user.id, course_slug)
+    success = f.post_delete(post_id, request.user.id, course_slug, True)
     if success:
         return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
     else:

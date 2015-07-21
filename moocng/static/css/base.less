@@ -4749,7 +4749,7 @@ ul.rating {
 		}
 	}
 
-	.postFrom, .postReply {
+	.postFrom, .postReply, .postEdit {
 		display:none;
 
 		input[type=text]{
@@ -4778,13 +4778,13 @@ ul.rating {
 			margin:10px;
 			padding: 10px;
 		}
-		.cancelPost, .cancelReply {
+		.cancelPost, .cancelReply, .cancelEdit {
 			font-size:13px;
 			cursor:pointer;
 		}
 	}
 
-	.postReply {
+	.postReply, .postEdit {
 		position: absolute;
 	}
 
@@ -4792,20 +4792,45 @@ ul.rating {
 		background-color: @white;
 		.post, .replyPost {
 			//border-bottom: 1px solid @neutral_light_2;
+            .message {
+                padding: 15px 0 30px;
+            }
 
 			.bookmarkHandler {
 				position: relative;
 				top: -150px;
 			}
 
+            &.post.flagged {
+                & > .cell:nth-of-type(2) {
+                    width: 100%;
+
+                    & > .message {
+                        border-right: 5px solid @comp;
+                    }
+                }
+            }
+
+            &.replyPost.flagged > .cell > .message{
+                border-right: 5px solid @comp;
+            }
+
 			&.notMyPost{
 				background-color: @neutral_light_4;
 			}
 
-			&.open > .cell > .tools {
+			&.openReply > .cell > .message .tools {
 				padding-bottom: 155px;
 
 				& > .postReply {
+					display: block;
+				}
+			}
+
+            &.openEdit > .cell > .message .tools {
+				padding-bottom: 155px;
+
+				& > .postEdit {
 					display: block;
 				}
 			}
@@ -4814,7 +4839,7 @@ ul.rating {
 				display:table-cell;
 				vertical-align: -webkit-baseline-middle;
 				vertical-align: top;
-				padding-top: 15px;
+				//padding-top: 15px;
 
 				&:first-child {
 					padding-top: 0;
@@ -4960,7 +4985,6 @@ ul.rating {
 				.tools{
 					font-size: 16px;
 					margin-top: 30px;
-					margin-bottom: 30px;
 					line-height: 45px;
 
 					.reply{
@@ -4992,6 +5016,10 @@ ul.rating {
 							top: 7px;
 							margin-right: 10px;
 						}
+
+                        &.open + form.postEdit {
+                            display: block;
+                        }
 					}
 
 					.karma {
@@ -5149,10 +5177,23 @@ ul.rating {
 				border-top: 1px solid @neutral_light_2;
 
 				& > .replyPost:not(:empty) {
-					border-top: 1px solid @neutral_light_2;
+
+                    &:before {
+                        width: 48px;
+        				border: 4px solid @neutral_light_2;
+                        border-width: 1px 0 0 4px;
+					}
 
 					&:first-of-type {
 						border-top: none;
+
+                        &:before {
+            				border-width: 0 0 0 4px;
+    					}
+
+                        & > .cell:last-of-type {
+                            border-top: none;
+                        }
 					}
 
 					&.last {
@@ -5170,11 +5211,29 @@ ul.rating {
 							width: calc(~'100% - 24px');
 							border-top: 1px solid @neutral_light_2;
 						}
+
+                        .subreplies .replyPost.last{
+                            border-top: none;
+
+                            &:before {
+                                width: 48px;
+                                border: 4px solid @neutral_light_2;
+                                border-width: 1px 0 0 4px;
+                            }
+
+                            & > .cell:last-of-type {
+                                border-top: 1px solid @neutral_light_2;
+                            }
+                        }
 					}
 
 					.gravatar {
-						margin-top: 5px;
+						margin-top: 20px;
 					}
+
+                    & > .cell:last-of-type {
+                        border-top: 1px solid @neutral_light_2;
+                    }
 				}
 			}
 
@@ -5188,18 +5247,31 @@ ul.rating {
 				transition: max-height .5s ease-in-out;
 
 				.replyPost {
-					border-top: 1px solid @neutral_light_2;
 					position: relative;
 					left: -24px;
 					padding-left: 24px;
 					width: calc(~'100% + 24px');
+
+                    &:first-of-type {
+                        border-top: 1px solid @neutral_light_2;
+
+                        & > .cell:last-of-type {
+                            border-top: none;
+                        }
+
+                        &:before {
+                            border-width: 0 0 0 4px;
+                        }
+                    }
 
 					&:before {
 						content: "";
 						position: absolute;
 						left: 46px;
 						height: 24px;
-						border-left: 4px solid @neutral_light_2;
+                        width: 48px;
+        				border: 4px solid @neutral_light_2;
+                        border-width: 1px 0 0 4px;
 					}
 
 					&.children:before {
@@ -5207,8 +5279,12 @@ ul.rating {
 					}
 
 					.gravatar {
-						margin-top: 5px;
+                        margin-top: 20px;
 					}
+
+                    & > .cell:last-of-type {
+                        border-top: 1px solid @neutral_light_2;
+                    }
 				}
 			}
 		}
@@ -5230,6 +5306,7 @@ ul.rating {
 			}
 
 			.cell .gravatar {
+                margin-top: 20px;
 				margin-left: 0;
 			}
 

@@ -107,3 +107,6 @@ class ForumPostForm(forms.Form):
 
 class ForumReplyForm(forms.Form):
     postText = forms.CharField(required=True, max_length="500", label="", widget=forms.Textarea(attrs={'placeholder': _('Write a message...')}))
+
+class ForumEditForm(forms.Form):
+    postText = forms.CharField(required=True, max_length="500", label="", widget=forms.Textarea(attrs={'placeholder': _('Edit your message...')}))

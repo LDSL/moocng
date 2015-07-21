@@ -346,9 +346,11 @@ class Forum(CommunityShareBase):
 		else:
 			return False
 
-	def post_delete(self, post_id, id_user, course_slug):
+	def post_delete(self, post_id, id_user, course_slug, avoidCascade=None):
 		postCollection = get_db().get_collection(self.col_post)
 		if self._can_edit(id_user, course_slug, post_id):
+			if avoidCascade and len(postCollection.find({"_id": ObjectId(post_id)})[0]['children']) > 0:
+				return False
 			postCollection.update({"_id": ObjectId(post_id)}, {"$set": {"deleted": True}})
 			return True
 		else:
@@ -400,7 +402,7 @@ class Forum(CommunityShareBase):
 	    return '<a href="%s" target="_blank">%s</a>' % (url, url)
 
 	def _process_urls(self, text):
-		hashtagged = re.sub(r'(?!<a href=")https?:\/\/([a-zA-Z\d._\-\/?]+)', self._url_to_link, text)
+		hashtagged = re.sub(r'(?!<a href=")https?:\/\/([a-zA-Z\d._#\-\/?]+)', self._url_to_link, text)
 		return hashtagged
 
 	def _can_edit(self, id_user, course_slug, post_id=None):
@@ -410,6 +412,7 @@ class Forum(CommunityShareBase):
 		if user.is_superuser or is_teacher(user, course):
 			can_edit = True
 		elif post_id is not None:
+			postCollection = get_db().get_collection(self.col_post)
 			post = postCollection.find_one({"_id": ObjectId(post_id)})
 			can_edit = post["id_user"] == id_user
 

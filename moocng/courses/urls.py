@@ -67,7 +67,7 @@ urlpatterns = patterns(
         { 'vote': 1 }, name='course_forum_upvote'),
     url(r'^course/(?P<course_slug>[-\w]+)/forum/(?P<post_id>[-\w]+)/downvote/(?P<reply_id>[-\w.]+)$', 'course_forum_vote',
         { 'vote': -1 }, name='course_forum_downvote'),
-    url(r'^course/(?P<course_slug>[-\w]+)/forum/(?P<post_id>[-\w]+)/edit/$', 'course_forum_post_edit',
+    url(r'^course/(?P<course_slug>[-\w]+)/forum/(?P<post_id>[-\w]+)/edit/(?P<reply_id>[-\w]+)$', 'course_forum_post_edit',
         name='course_forum_post_edit'),
     url(r'^course/(?P<course_slug>[-\w]+)/forum/(?P<post_id>[-\w]+)/delete/$', 'course_forum_post_delete',
         name='course_forum_post_delete'),
