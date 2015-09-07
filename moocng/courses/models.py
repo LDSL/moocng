@@ -16,11 +16,7 @@
 import datetime
 import logging
 
-try:
-    import Image
-    import ImageOps
-except ImportError:
-    from PIL import Image, ImageOps
+from PIL import Image, ImageOps
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -40,7 +36,7 @@ from moocng.badges.models import Badge
 from moocng.courses.cache import invalidate_template_fragment_i18n
 from moocng.courses.managers import (CourseManager, UnitManager,
                                      KnowledgeQuantumManager, QuestionManager,
-                                     OptionManager, TranscriptionManager, 
+                                     OptionManager, TranscriptionManager,
                                      AttachmentManager, AnnouncementManager)
 from moocng.enrollment import enrollment_methods
 from moocng.mongodb import get_db
@@ -55,16 +51,16 @@ logger = logging.getLogger(__name__)
 class Language(models.Model):
     name = models.CharField(verbose_name=_(u'Name'), max_length=200)
     abbr = models.CharField(verbose_name=_(u'Abbr'), max_length=2, null=True)
-    
+
     def __unicode__(self):
         return self.name
 
 
 class Course(Sortable):
     THUMBNAIL_WIDTH = 300
-    THUMBNAIL_HEIGHT = 185
+    THUMBNAIL_HEIGHT = 200
     BACKGROUND_WIDTH = 1920
-    BACKGROUND_HEIGHT = 150
+    BACKGROUND_HEIGHT = 400
 
     name = models.CharField(verbose_name=_(u'Name'), max_length=200)
     slug = models.SlugField(verbose_name=_(u'Slug'), unique=True, db_index=True)
@@ -83,14 +79,14 @@ class Course(Sortable):
                                   blank=True, null=True)
     end_date = models.DateField(verbose_name=_(u'End date'),
                                 blank=True, null=True)
-    
+
     ects = models.PositiveSmallIntegerField(verbose_name=_(u'ECTS:'),
                                                               default=8)
-    
+
     teachers = models.ManyToManyField(User, verbose_name=_(u'Teachers'),
                                       through='CourseTeacher',
                                       related_name='courses_as_teacher')
-    
+
     owner = models.ForeignKey(User, verbose_name=_(u'Teacher owner'),
                               related_name='courses_as_owner', blank=False,
                               null=False)
@@ -213,7 +209,7 @@ class Course(Sortable):
         default=settings.DEFAULT_GROUP_MAX_SIZE)
 
     official_course = models.BooleanField(verbose_name=_('Is this course official?'),
-                                         default=False)
+                                          default=False)
 
     objects = CourseManager()
 
@@ -244,8 +240,7 @@ class Course(Sortable):
                 kq = KnowledgeQuantum.objects.get(pk=mark["kq_id"])
             except KnowledgeQuantum.DoesNotExist:
                 pass
-        else:
-            return kq
+        return kq
 
     def get_rating(self):
         course_student_set = CourseStudent.objects.filter(course=self)
@@ -298,6 +293,10 @@ class Course(Sortable):
         return self.status in ['p', 'o', 'h']
 
     @property
+    def is_always_open(self):
+        return self.status == 'o'
+
+    @property
     def is_active(self):
         # If you change it, you should change the actives method in CourseQuerySet class
         today = datetime.date.today()
@@ -305,6 +304,14 @@ class Course(Sortable):
                 (not self.end_date or
                  not self.start_date and self.end_date >= today or
                  self.start_date and self.start_date <= today and self.end_date >= today))
+
+    @property
+    def is_deactivated(self):
+        today = datetime.date.today()
+        return not (self.is_public and
+                    (self.status == 'o' or
+                    not self.end_date or
+                    self.end_date >= today))
 
     @property
     def is_outdated(self):
@@ -354,7 +361,7 @@ class Course(Sortable):
             else:
                 img.thumbnail((size['width'], size['height']), Image.ANTIALIAS)
             try:
-                img.save(filename, optimize=1, queality=60)
+                img.save(filename, optimize=1, quality=60)
             except IOError:
                 img.save(filename)
 
@@ -680,7 +687,7 @@ class KnowledgeQuantum(Sortable):
                 "current" : True
             },
             {
-                "$unset": { "current": "" },  
+                "$unset": { "current": "" },
             }
         )
 
@@ -747,7 +754,7 @@ def get_transcription_types_choices():
     for handler_dict in settings.TRANSCRIPTION_TYPES:
         choices.append((handler_dict['id'], handler_dict.get('name', handler_dict['id'])))
     return choices
-    
+
 class Transcription(models.Model):
     kq = models.ForeignKey(KnowledgeQuantum,
                            verbose_name=_(u'Nugget'))
@@ -870,9 +877,6 @@ class Question(models.Model):
             results_dict[key] = result_q
             result += result_q
 
-        print '\nResults_dict : ' + str(results_dict)
-        print '\nResult : ' + str(result)
-
         return result
 
     def is_completed(self, user, visited=None):
@@ -949,7 +953,6 @@ class Option(models.Model):
                 logger.error('Error at option %s - Value %s - Solution %s' % (str(self.id), str(reply), self.solution))
                 return True
             else:
-                print self.solution.lower() +' vs '+ reply.lower()
                 return reply.lower() == self.solution.lower()
         else:
             return bool(reply) == (self.solution.lower() == u'true')

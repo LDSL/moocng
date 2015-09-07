@@ -255,6 +255,7 @@ def course_overview(request, course_slug):
     .. versionadded:: 0.1
     """
     course, permission = get_course_if_user_can_view_and_permission(course_slug, request)
+    print "Permission %s" % (permission)
     
     relatedcourses = get_related_courses_available_for_user(course, request.user)
 
@@ -316,7 +317,7 @@ def course_overview(request, course_slug):
         'passed': has_passed,
     }, context_instance=RequestContext(request))
 
-@login_required
+
 def course_classroom(request, course_slug):
 
     """
@@ -329,6 +330,9 @@ def course_classroom(request, course_slug):
 
     .. versionadded:: 0.1
     """
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
+
     course = get_course_if_user_can_view_or_404(course_slug, request)
     is_enrolled = course.students.filter(id=request.user.id).exists()
     if not is_enrolled:
@@ -336,8 +340,9 @@ def course_classroom(request, course_slug):
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
     is_ready, ask_admin = is_course_ready(course)
+    is_teacher = is_teacher_test(request.user, course)
 
-    if not is_ready and not request.user.is_superuser:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -406,7 +411,7 @@ def course_dashboard(request, course_slug):
     is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher :
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser :
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -504,7 +509,7 @@ def course_syllabus(request, course_slug):
     is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -544,7 +549,7 @@ def course_group(request, course_slug):
     is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -564,6 +569,8 @@ def course_group(request, course_slug):
             if(len(g["members"]) <= course.group_max_size + (course.group_max_size * settings.GROUPS_UPPER_THRESHOLD / 100)):
                 groups.append(g)
 
+    posts_list = search_posts(group["hashtag"], 0)
+
     if is_enrolled:
         has_passed= has_user_passed_course(request.user, course)
     else:
@@ -579,6 +586,7 @@ def course_group(request, course_slug):
         'is_teacher': is_teacher,
         'group': group,
         'groups':groups,
+        'posts_list': posts_list,
         'passed': has_passed,
     }, context_instance=RequestContext(request))
 
@@ -594,7 +602,7 @@ def course_forum(request, course_slug):
     is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'is_enrolled': is_enrolled,
@@ -632,7 +640,7 @@ def course_calendar(request, course_slug):
     is_ready, ask_admin = is_course_ready(course)
     is_teacher = is_teacher_test(request.user, course)
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
@@ -671,7 +679,7 @@ def course_wiki(request, course_slug):
     is_ready, ask_admin = is_course_ready(course)
     is_teacher = is_teacher_test(request.user, course)
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
@@ -718,7 +726,7 @@ def course_teachers(request, course_slug):
         has_passed= False
 
     # if not is_ready and not request.user.is_superuser:
-    if not is_ready and not is_teacher:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
@@ -760,10 +768,11 @@ def course_progress(request, course_slug):
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
     is_ready, ask_admin = is_course_ready(course)
-
+    is_teacher = is_teacher_test(request.user, course)
+    
     tasks = get_tasks_available_for_user(course, request.user)
 
-    if not is_ready:
+    if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
         return render_to_response('courses/no_content.html', {
             'course': course,
             'progress': get_course_progress_for_user(course, request.user),
@@ -996,6 +1005,7 @@ def clone_activity(request, course_slug):
 
 @login_required
 def create_course_groups(request,id):
+    print "Create course groups id: %s" % (id)
     create_groups(id)
     return HttpResponse("true")
 

@@ -135,6 +135,12 @@ class Badge(models.Model):
 
 
 class BadgeByCourse(models.Model):
+    CRITERIA_TYPE_CHOICES = (
+        (0, _(u'Units checkpoint')),
+        (1, _(u'Peer review')),
+        (2, _(u'Unique unit'))
+    )
+
     title = models.CharField(verbose_name=_(u'Name'),
                              blank=False, null=False, unique=False,
                              max_length=255)
@@ -146,7 +152,7 @@ class BadgeByCourse(models.Model):
                                blank=False, null=False)
     
     criteria_type = models.IntegerField(verbose_name=_(u'Criteria_type'),
-                               blank=False, null=False)
+                               blank=False, null=False, choices=CRITERIA_TYPE_CHOICES)
 
     note = models.IntegerField(verbose_name=_(u'Note'),
                                blank=False, null=False)

@@ -24,7 +24,9 @@ from moocng.badges.models import BadgeByCourse
 from moocng.courses.models import KnowledgeQuantum
 from moocng.mongodb import get_db
 
-from moocng.courses.models import Unit
+from moocng.courses.models import Unit, Course
+from moocng.x_api import utils as x_api
+from moocng.courses.marks import get_course_mark
 
 
 @task
@@ -138,8 +140,6 @@ def has_passed_now(new_mark, mark_item, threshold):
 
 def update_kq_mark(db, kq, user, threshold, new_mark_kq=None, new_mark_normalized_kq=None):
     from moocng.courses.marks import calculate_kq_mark
-
-    print '  --> update_kq_mark'
     
     if not new_mark_kq or not new_mark_normalized_kq:
         new_mark_kq, new_mark_normalized_kq = calculate_kq_mark(kq, user)
@@ -185,6 +185,26 @@ def update_kq_mark(db, kq, user, threshold, new_mark_kq=None, new_mark_normalize
         if(win):
             get_db().get_collection('badge').insert({"id_badge":badge.id, "id_user":user.pk, "title":badge.title, "description":badge.description, "color":badge.color})
 
+    # badge unit checkpoint
+    badges = BadgeByCourse.objects.filter(course_id=kq.unit.course_id, criteria_type=0)
+    course_mark, units_info = get_course_mark(kq.unit.course, user)
+    for badge in badges:
+        win = False
+        if(badge.note <= course_mark):
+            gotBadge = get_db().get_collection('badge').find_one({'id_badge': badge.id, "id_user": user.pk})
+            if(not gotBadge):
+                evaluateUnit = Unit.objects.get(id=badge.criteria)
+                units = Unit.objects.filter(course_id=evaluateUnit.course_id, order__lte = evaluateUnit.order)
+                win = True       
+                for aux in units:
+                    unit_kqs = aux.knowledgequantum_set.all()
+                    for kq in unit_kqs:
+                        if not kq.is_completed(user):
+                            win = False
+
+        if(win):
+            get_db().get_collection('badge').insert({"id_badge":badge.id, "id_user":user.pk, "title":badge.title, "description":badge.description, "color":badge.color})
+
     return updated_kq_mark, has_passed_now(new_mark_kq, mark_kq_item, threshold)
 
 
@@ -215,25 +235,22 @@ def update_unit_mark(db, unit, user, threshold, new_mark_unit=None, new_mark_nor
         data_unit['relative_mark'] = new_mark_normalized_unit
         marks_unit.insert(data_unit)
 
+    # check if user completed this unit
+    unit_kqs = unit.knowledgequantum_set.all()
+    completed = True
+    for kq in unit_kqs:
+        if not kq.is_completed(user):
+            completed = False
 
-    # badges
-    badges = BadgeByCourse.objects.filter(course_id=unit.course_id, criteria_type=0)
-    for badge in badges:
-        win = False
-        if(badge.note <= new_mark_unit):
-            gotBadge = get_db().get_collection('badge').find_one({'id_badge': badge.id, "id_user": user.pk})
-            if(not gotBadge):
-                evaluateUnit = Unit.objects.get(id=badge.criteria)
-                units = Unit.objects.filter(course_id=evaluateUnit.course_id, order__lte = evaluateUnit.order)
-                win = True       
-                for aux in units:
-                    lastUnit = get_db().get_collection('marks_unit').find_one({'course_id': int(aux.course_id), "unit_id": int(aux.id)})
-                    if(not lastUnit or lastUnit["mark"] < badge.note):
-                        win = False
-
-        if(win):
-            get_db().get_collection('badge').insert({"id_badge":badge.id, "id_user":user.pk, "title":badge.title, "description":badge.description, "color":badge.color})
-                
+    if completed:        
+        # badge unique unit            
+        badges = BadgeByCourse.objects.filter(course_id=unit.course_id, criteria_type=2)
+        for badge in badges:
+            win = False
+            if(badge.note <= new_mark_unit):
+                gotBadge = get_db().get_collection('badge').find_one({'id_badge': badge.id, "id_user": user.pk})
+                if(not gotBadge):
+                    get_db().get_collection('badge').insert({"id_badge":badge.id, "id_user":user.pk, "title":badge.title, "description":badge.description, "color":badge.color})
 
     return updated_unit_mark, has_passed_now(new_mark_unit, mark_unit_item, threshold)
 
@@ -377,3 +394,23 @@ def on_peerreviewreview_created_task(review_created, user_reviews):
     }
     data_kq.update(increment)
     update_stats(data, data_kq, data_unit, data_course)
+
+@task
+def on_history_created_task(history_created):
+    # Send xAPI event
+    print history_created['course_id']
+    user = User.objects.get(pk=history_created['user_id'])
+    course = Course.objects.get(pk=history_created['course_id'])
+    geolocation = {
+        'lat': history_created['lat'],
+        'lon': history_created['lon']
+    }
+    page = {}
+    page['url'] = history_created['url']
+    if course:
+        page['name'] = course.name
+        page['description'] = course.name
+    else:
+        page['name'] = ''
+        page['description'] = ''
+    x_api.learnerAccessAPage(user, page, geolocation)

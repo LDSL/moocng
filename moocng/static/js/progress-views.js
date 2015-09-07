@@ -306,7 +306,7 @@ MOOC.views.PeerReviewReview = Backbone.View.extend({
 
         console.log('Comment = ' + comment);
         if(comment){
-            $details.find("blockquote pre").text(comment).end();
+            $details.find("blockquote").text(comment).end();
         }else{
             $('#comments').remove();
         }

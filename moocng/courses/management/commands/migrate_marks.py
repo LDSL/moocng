@@ -16,6 +16,8 @@ from datetime import datetime
 
 from optparse import make_option
 
+import pyprind
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
@@ -90,9 +92,8 @@ class Command(BaseCommand):
                           email_list.split(','))
         courses_pks = options["courses_pks"]
         courses_actives = options["courses_actives"]
-        print("ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ENTRO ")
+        bar = pyprind.ProgBar(users.count())
         for user in users:
-            print "User: "+str(user)
             for course in self.get_courses(user, courses_pks, courses_actives):
-                print "Course: "+str(course)
                 update_course_mark_by_user(course, user)
+            bar.update()

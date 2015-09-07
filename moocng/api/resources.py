@@ -52,7 +52,7 @@ from moocng.api.mongodb import (MongoObj, MongoResource, MongoUserResource,
                                 mongo_object_updated, mongo_object_created)
 from moocng.api.tasks import (on_activity_created_task, on_answer_created_task,
                               on_answer_updated_task,
-                              on_peerreviewsubmission_created_task)
+                              on_peerreviewsubmission_created_task, on_history_created_task)
 from moocng.api.validation import (AnswerValidation, answer_validate_date,
                                    PeerReviewSubmissionsResourceValidation)
 from moocng.assets.models import Asset, Reservation, AssetAvailability
@@ -603,6 +603,7 @@ class PeerReviewSubmissionsResource(BaseMongoResource):
         bundle.data["reviews"] = 0
         bundle.data["author_reviews"] = 0
         bundle.data["author"] = request.user.id
+        bundle.data["language"] = request.user.get_profile().language
         from moocng.peerreview.utils import insert_p2p_if_does_not_exists_or_raise
         _id = insert_p2p_if_does_not_exists_or_raise(bundle.data, self._collection)
 
@@ -942,6 +943,7 @@ class HistoryResource(BaseMongoUserResource):
     dev_type = fields.CharField(null=False)
     dev_os = fields.CharField(null=False)
     dev_orientation = fields.CharField(null=False)
+    course_id = fields.CharField(null=False)
 
     class Meta:
         resource_name = 'history'
@@ -966,10 +968,13 @@ class HistoryResource(BaseMongoUserResource):
             "lon": 1.0,
             "dev_type": "",
             "dev_os": "",
-            "dev_orientation": ""
+            "dev_orientation": "",
+            "course_id": ""
         }
 
     def _initial(self, request, **kwargs):
+        print request
+        print kwargs
         user_id = kwargs['pk']
         return {
             "user_id": -1,
@@ -979,7 +984,8 @@ class HistoryResource(BaseMongoUserResource):
             "lon": 0.0,
             "dev_type": "",
             "dev_os": "",
-            "dev_orientation": ""
+            "dev_orientation": "",
+            "course_id": "",
         }
 
 
@@ -1410,6 +1416,13 @@ def on_peerreviewsubmission_created(sender, user_id, mongo_object, **kwargs):
         queue=STATS_QUEUE,
     )
 
+def on_history_created(sender, user_id, mongo_object, **kwargs):
+    api_task_logger.debug("history created")
+
+    on_history_created_task.apply_async(
+        args=[mongo_object.to_dict()],
+        queue=STATS_QUEUE,
+    )
 
 mongo_object_created.connect(on_activity_created, sender=ActivityResource,
                              dispatch_uid="activity_created")
@@ -1420,3 +1433,5 @@ mongo_object_updated.connect(on_answer_updated, sender=AnswerResource,
 mongo_object_created.connect(on_peerreviewsubmission_created,
                              sender=PeerReviewSubmissionsResource,
                              dispatch_uid="peerreviewsubmission_created")
+mongo_object_created.connect(on_history_created, sender=HistoryResource,
+                             dispatch_uid="history_created")

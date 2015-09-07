@@ -170,6 +170,16 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
 
             $("#kq-title").html(this.model.truncateTitle(MOOC.views.KQ_TITLE_MAX_LENGTH));
 
+            var meta_fb_name = $("meta[property*='site_name']");
+            if (meta_fb_name.length > 0){
+                meta_fb_name.attr('content', MOOC.vars.course_name + ' - ' + this.model.truncateTitle(MOOC.views.KQ_TITLE_MAX_LENGTH));
+            }else{
+                $('head').append('<meta property="og:site_name" content="' + MOOC.vars.course_name + ' - ' + this.model.truncateTitle(MOOC.views.KQ_TITLE_MAX_LENGTH) + '"/>');
+            }
+            $("#share_fb").attr('href', 'https://www.facebook.com/sharer/sharer.php?u=' + location.href.replace('#','%23'));
+            $("#share_tw").attr('href', 'https://twitter.com/home?status=' + location.href.replace('#','%23'));
+            $("#share_gplus").attr('href', 'https://plus.google.com/share?url=' + location.href.replace('#','%23'));
+
             unit = MOOC.models.course.getByKQ(this.model.get("id"));
             this.setEventForNavigation("#kq-previous", unit, this.model, false);
             this.setEventForNavigation("#kq-next", unit, this.model, true);
@@ -217,7 +227,7 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
             // Call activity if media type has no end event
             var media_type = this.model.get('media_content_type');
             if(media_type != 'youtube' && media_type != 'ytaccesible' && media_type != 'vimeo'){
-                MOOC.players_listener.trigger('mediaContentFinished', MOOC.views.kqViews[this.model.get('id')]);
+                //MOOC.players_listener.trigger('mediaContentFinished', MOOC.views.kqViews[this.model.get('id')]);
             }
         }, this);
 

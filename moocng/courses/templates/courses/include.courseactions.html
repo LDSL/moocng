@@ -86,7 +86,7 @@
 					{% if feature_forum and course.forum_slug %}
 					<li class="noLowRes">
 						{% url course_forum course.forum_slug as url_forum %}
-						<a href="{{ forum_url }}/category/{{course.forum_slug}}" target="_blank" {% if request.path == url_forum %} class="selected"{% endif %}>
+						<a href="{{ forum_category_url }}{{course.forum_slug}}" target="_blank" {% if request.path == url_forum %} class="selected"{% endif %}>
 							{% trans "Forum" %}
 						</a>
 					</li>
@@ -126,10 +126,18 @@
 								</a>
 							</li>
 							{% endif %}
-							{% if feature_forum %}
+							{% if feature_groups and group %}
 							<li class="onlyLowRes">
-								{% url course_forum course.slug as url_forum %}
-								<a href="{{ url_forum }}" {% if request.path == url_forum %} class="selected"{% endif %}>
+								{% url course_group course.slug as url_group %}
+								<a href="{{ url_group }}" {% if request.path == url_group %} class="selected"{% endif %}>
+									{% trans "Group" %}
+								</a>
+							</li>
+							{% endif %}
+							{% if feature_forum and course.forum_slug %}
+							<li class="onlyLowRes">
+								{% url course_forum course.forum_slug as url_forum %}
+								<a href="{{ forum_category_url }}{{course.forum_slug}}" target="_blank" {% if request.path == url_forum %} class="selected"{% endif %}>
 									{% trans "Forum" %}
 								</a>
 							</li>
@@ -149,7 +157,7 @@
 								</a>
 							</li>
 							<li>
-								{% if is_teacher %}
+								{% if is_teacher or user.is_staff %}
 								{% url teacheradmin_info course.slug as url_course_admin %}
 								<a href="{{ url_course_admin }}" {% if request.path == url_course_admin %} class="selected"{% endif %}>
 									{% trans "Admin course" %}
@@ -179,6 +187,7 @@
 </div>
 <script>
 	$(function(){
-		sendHistoryEntry();
+		var course_id = {{ course.id }}
+		sendHistoryEntry(course_id);
 	})
 </script>

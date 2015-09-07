@@ -41,7 +41,7 @@ urlpatterns = patterns(
     url(r'^course/add$', 'course_add', name='course_add'),
     url(r'^course/(?P<course_slug>[-\w]+)/$', 'course_overview',
         name='course_overview'),
-    url(r'^course/(?P<course_slug>[-\w]+)/classroom/$', 'course_classroom',
+    url(r'^course/(?P<course_slug>[-\w]+)/classroom/', 'course_classroom',
         name='course_classroom'),
     url(r'^course/(?P<course_slug>[-\w]+)/syllabus/$', 'course_syllabus',
         name='course_syllabus'),

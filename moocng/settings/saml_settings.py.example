@@ -20,6 +20,11 @@ SAML_ATTRIBUTE_MAPPING = {
     'c': ('country', ),
     'schacmothertongue': ('language', ),
     'eduPersonPrincipalName': ('sub', ),
+    'description': ('bio', ),
+    'labeledURI': ('personalweb', ),
+    'twitteruri': ('twitter', ),
+    'facebookuri': ('facebook', ),
+    'linkedinuri': ('linkedin', ),
 }
 
 
