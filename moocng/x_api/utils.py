@@ -13,6 +13,7 @@ from moocng.courses.models import Course
 
 def sendStatement(verb):
 	try:
+		print "Statement: " + json.dumps(verb)
 		headers = {
 			"Content-Type": "application/json",
 			"X-Experience-API-Version": "1.0.0",
@@ -43,7 +44,7 @@ def learnerEnrollsInMooc(user, course, geolocation, timestamp=None):
 		    "verb": {
 		        "id": "http://adlnet.gov/expapi/verbs/registered",
 		        "display": {
-		            "es-ES": "se ha matriculado en el MOOC",
+		            "en-US": "se ha matriculado en el MOOC",
 		        },
 		    },
 		    "object": {
@@ -51,10 +52,10 @@ def learnerEnrollsInMooc(user, course, geolocation, timestamp=None):
 		        "id": 'oai:' + '.'.join(settings.API_URI.split(".")[::-1]) + ":" + str(course.id),
 		        "definition": {
 		            "name": {
-		                "es-ES": course.name,
+		                "en-US": course.name,
 		            },
 		            "description": {
-		                "es-ES": course.description,
+		                "en-US": course.description,
 		            },
 		            "type": "http://adlnet.gov/expapi/activities/course",
 		        }
@@ -95,7 +96,72 @@ def learnerEnrollsInMooc(user, course, geolocation, timestamp=None):
 		}
 	sendStatement(verb)
 
-def learnerAccessAPage(user, page, geolocation, timestamp=None):
+def learnerAccessesMooc(user, course, geolocation, timestamp=None):
+	if not timestamp:
+		timestamp = time.gmtime()
+	formatted_timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", timestamp)
+
+	verb = {
+		    "actor": {
+		        "objectType": "Agent",
+		        "account": {
+		        "homePage": "https://portal.ecolearning.eu?user=%s" % (user.get_profile().sub),
+		        "name": user.get_profile().sub
+		        }
+		    },
+		    "verb": {
+		        "id": "http://activitystrea.ms/schema/1.0/access",
+		        "display": {
+		            "en-US": "Indicates the learner accessed the MOOC",
+		        },
+		    },
+		    "object": {
+		        "objectType": "Activity",
+		        "id": 'oai:' + '.'.join(settings.API_URI.split(".")[::-1]) + ":" + str(course.id),
+		        "definition": {
+		            "name": {
+		                "en-US": course.name,
+		            },
+		            "description": {
+		                "en-US": course.description,
+		            },
+		            "type": "http://adlnet.gov/expapi/activities/course",
+		        }
+		    },
+		    "context": {
+		    	"extensions": {
+		    		"http://activitystrea.ms/schema/1.0/place": {
+		                "objectType": "Place",
+		                "id": "http://vocab.org/placetime/geopoint/wgs84/X%sY%s.html" % (geolocation['lon'], geolocation['lat']),  # Not mandatory, Maren Scheffel asked for it
+		                "geojson": {
+		                    "type": "FeatureCollection",
+		                    "features": [
+		                        {
+		                            "type": "Feature",
+		                            "geometry": {
+		                                "type": "Point",
+		                                "coordinates": [geolocation['lon'], geolocation['lat']]
+		                            }
+		                        }
+		                    ]
+		                },
+		                "definition": {
+		                    "name": {
+		                        "en-US": "Place"
+		                    },
+		                    "description": {
+		                        "en-US": "Represents a physical location."
+		                    },
+		                    "type": "http://activitystrea.ms/schema/1.0/place"
+		                }
+		            }
+		        }
+		    },
+		    "timestamp": formatted_timestamp
+		}
+	sendStatement(verb)
+
+def learnerAccessAPage(user, page, course, geolocation, timestamp=None):
 	page_types = {
 		"course": "http://adlnet.gov/expapi/activities/course",
 		"questionnaire": "http://adlnet.gov/expapi/activities/assessment",
@@ -144,7 +210,15 @@ def learnerAccessAPage(user, page, geolocation, timestamp=None):
 		page_type = "syllabus"
 	elif re.search('\/classroom\/', page['url']):
 		page_type = "module"
+		if re.search('\/classroom\/.*\/kq[0-9]+\/q', page['url']):
+			page_type = "task"
+		if re.search('\/classroom\/.*\/kq[0-9]+\/p', page['url']):
+				page_type = "peerassessment"
+		elif re.search('\/classroom\/.*\/kq[0-9]+\/a', page['url']):
+			page_type = "answer"
+
 	
+
 	if not timestamp:
 		timestamp = time.gmtime()
 	formatted_timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", timestamp)
@@ -206,8 +280,25 @@ def learnerAccessAPage(user, page, geolocation, timestamp=None):
 	                    "type": "http://activitystrea.ms/schema/1.0/place"
 	                }
 	            }
-	        }
-	    },
+	        },
+			"contextActivities": {
+				"parent": [
+					{
+						"id": 'oai:' + '.'.join(settings.API_URI.split(".")[::-1]) + ":" + str(course.id),
+						"objectType": "Activity",
+						"definition": {
+							"name": {
+								"en-US": course.name
+							},
+							"description": {
+								"en-US": course.description
+							},
+							"type": "http://adlnet.gov/expapi/activities/course"
+						}
+					}
+				]
+			}
+		},
 	    "timestamp": formatted_timestamp
 	}
 

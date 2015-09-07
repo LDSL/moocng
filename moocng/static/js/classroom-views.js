@@ -246,7 +246,7 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
         $(window).trigger('renderfinished');
 
         if (sendHistoryEntry){
-            sendHistoryEntry();
+            sendHistoryEntry(MOOC.models.course.courseId);
         }
 
         return this;
@@ -810,7 +810,7 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
         async.series(toExecute);
 
         if (sendHistoryEntry){
-            sendHistoryEntry();
+            sendHistoryEntry(MOOC.models.course.courseId);
         }
 
         return this;
@@ -887,7 +887,7 @@ MOOC.views.Question = Backbone.View.extend({
         });
 
         if (sendHistoryEntry){
-            sendHistoryEntry();
+            sendHistoryEntry(MOOC.models.course.courseId);
         }
 
         return this;
@@ -1258,7 +1258,7 @@ MOOC.views.PeerReviewAssignment = Backbone.View.extend({
         }
 
         if (sendHistoryEntry){
-            sendHistoryEntry();
+            sendHistoryEntry(MOOC.models.course.courseId);
         }
 
         return this;

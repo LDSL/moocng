@@ -419,4 +419,4 @@ def on_history_created_task(history_created):
     else:
         page['name'] = ''
         page['description'] = ''
-    x_api.learnerAccessAPage(user, page, geolocation)
+    x_api.learnerAccessAPage(user, page, course, geolocation)
