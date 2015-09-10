@@ -230,6 +230,7 @@ class BaseMassiveEmailForm(forms.ModelForm):
         if getattr(self, 'course', None):
             instance.course = self.course
             instance.massive_email_type = 'course'
+            instance.subject = "%s - %s" % (self.course.name, instance.subject)
         instance.save()
         instance.send_in_batches(send_massive_email_task)
         return instance
