@@ -113,8 +113,18 @@ MOOC.ajax.sendAnswer = function (answer, callback) {
         url += answer.get('question_id') + "/";
         method = "put";
     }
+
+    var headers = {};
+    if(geolocation){
+      headers = {
+        'geo_lat': geolocation.coords.latitude,
+        'geo_lon': geolocation.coords.longitude
+      }
+    }
+
     $.ajax(url, {
         type: method,
+        headers: headers,
         data: JSON.stringify(data),
         contentType: "application/json",
         success: callback,
@@ -125,8 +135,18 @@ MOOC.ajax.sendAnswer = function (answer, callback) {
 MOOC.ajax.sendPRSubmission = function (submission, callback) {
     "use strict";
     var url = MOOC.ajax.host + "peer_review_submissions/";
+
+    var headers = {};
+    if(geolocation){
+      headers = {
+        'geo_lat': geolocation.coords.latitude,
+        'geo_lon': geolocation.coords.longitude
+      }
+    }
+
     $.ajax(url, {
         type: "POST",
+        headers: headers,
         data: JSON.stringify(submission),
         contentType: "application/json",
         success: callback,

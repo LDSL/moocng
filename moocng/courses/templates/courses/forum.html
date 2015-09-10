@@ -104,5 +104,8 @@
 		'cant_delete_children': '{% trans "Sorry, you cannot delete this post as long as it contains replies" %}'
 	}
 </script>
+<script type="text/javascript">
+	sendHistoryEntry({{ course.pk }});
+</script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/forum.js"></script>
 {% endblock %}

@@ -9,9 +9,9 @@ import time
 from django.conf import settings
 from django.contrib.auth.models import User
 
-from moocng.courses.models import Course
+from moocng.courses.models import Course, KnowledgeQuantum
 
-def sendStatement(verb):
+def _sendStatement(verb):
 	try:
 		print "Statement: " + json.dumps(verb)
 		headers = {
@@ -28,201 +28,68 @@ def sendStatement(verb):
 		print "  !!! Error sending statement"
 		print "      Unexpected error:", sys.exc_info()
 
-def learnerEnrollsInMooc(user, course, geolocation, timestamp=None):
-	if not timestamp:
-		timestamp = time.gmtime()
-	formatted_timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", timestamp)
-
+def _populateVerbAboutMOOC(user, course, geolocation, timestamp):
 	verb = {
-		    "actor": {
-		        "objectType": "Agent",
-		        "account": {
-		        "homePage": "https://portal.ecolearning.eu?user=%s" % (user.get_profile().sub),
-		        "name": user.get_profile().sub
-		        }
-		    },
-		    "verb": {
-		        "id": "http://adlnet.gov/expapi/verbs/registered",
-		        "display": {
-		            "en-US": "se ha matriculado en el MOOC",
-		        },
-		    },
-		    "object": {
-		        "objectType": "Activity",
-		        "id": 'oai:' + '.'.join(settings.API_URI.split(".")[::-1]) + ":" + str(course.id),
-		        "definition": {
-		            "name": {
-		                "en-US": course.name,
-		            },
-		            "description": {
-		                "en-US": course.description,
-		            },
-		            "type": "http://adlnet.gov/expapi/activities/course",
-		        }
-		    },
-		    "context": {
-		    	"extensions": {
-		    		"http://activitystrea.ms/schema/1.0/place": {
-		                "objectType": "Place",
-		                "id": "http://vocab.org/placetime/geopoint/wgs84/X%sY%s.html" % (geolocation['lon'], geolocation['lat']),  # Not mandatory, Maren Scheffel asked for it
-		                "geojson": {
-		                    "type": "FeatureCollection",
-		                    "features": [
-		                        {
-		                            "type": "Feature",
-		                            "geometry": {
-		                                "type": "Point",
-		                                "coordinates": [geolocation['lon'], geolocation['lat']]
-		                            },
-#		                            "properties": {
-#		                                "property1": "value1"  # Not mandatory, but useful to include more metadata about geolocation
-#		                            }
-		                        }
-		                    ]
-		                },
-		                "definition": {
-		                    "name": {
-		                        "en-US": "Place"
-		                    },
-		                    "description": {
-		                        "en-US": "Represents a physical location."
-		                    },
-		                    "type": "http://activitystrea.ms/schema/1.0/place"
-		                }
-		            }
-		        }
-		    },
-		    "timestamp": formatted_timestamp
-		}
-	sendStatement(verb)
-
-def learnerAccessesMooc(user, course, geolocation, timestamp=None):
-	if not timestamp:
-		timestamp = time.gmtime()
-	formatted_timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", timestamp)
-
-	verb = {
-		    "actor": {
-		        "objectType": "Agent",
-		        "account": {
-		        "homePage": "https://portal.ecolearning.eu?user=%s" % (user.get_profile().sub),
-		        "name": user.get_profile().sub
-		        }
-		    },
-		    "verb": {
-		        "id": "http://activitystrea.ms/schema/1.0/access",
-		        "display": {
-		            "en-US": "Indicates the learner accessed the MOOC",
-		        },
-		    },
-		    "object": {
-		        "objectType": "Activity",
-		        "id": 'oai:' + '.'.join(settings.API_URI.split(".")[::-1]) + ":" + str(course.id),
-		        "definition": {
-		            "name": {
-		                "en-US": course.name,
-		            },
-		            "description": {
-		                "en-US": course.description,
-		            },
-		            "type": "http://adlnet.gov/expapi/activities/course",
-		        }
-		    },
-		    "context": {
-		    	"extensions": {
-		    		"http://activitystrea.ms/schema/1.0/place": {
-		                "objectType": "Place",
-		                "id": "http://vocab.org/placetime/geopoint/wgs84/X%sY%s.html" % (geolocation['lon'], geolocation['lat']),  # Not mandatory, Maren Scheffel asked for it
-		                "geojson": {
-		                    "type": "FeatureCollection",
-		                    "features": [
-		                        {
-		                            "type": "Feature",
-		                            "geometry": {
-		                                "type": "Point",
-		                                "coordinates": [geolocation['lon'], geolocation['lat']]
-		                            }
-		                        }
-		                    ]
-		                },
-		                "definition": {
-		                    "name": {
-		                        "en-US": "Place"
-		                    },
-		                    "description": {
-		                        "en-US": "Represents a physical location."
-		                    },
-		                    "type": "http://activitystrea.ms/schema/1.0/place"
-		                }
-		            }
-		        }
-		    },
-		    "timestamp": formatted_timestamp
-		}
-	sendStatement(verb)
-
-def learnerAccessAPage(user, page, course, geolocation, timestamp=None):
-	page_types = {
-		"course": "http://adlnet.gov/expapi/activities/course",
-		"questionnaire": "http://adlnet.gov/expapi/activities/assessment",
-		"page": "http://activitystrea.ms/schema/1.0/page",
-		"module": "http://adlnet.gov/expapi/activities/module",
-		"syllabus": "http://www.ecolearning.eu/expapi/activitytype/syllabus",
-		"learningactivity": "http://www.ecolearning.eu/expapi/activitytype/learningactivity",
-		"task": "http://activitystrea.ms/schema/1.0/task",
-		"assignment": "http://id.tincanapi.com/activitytype/school-assignment",
-		"assessment": "http://adlnet.gov/expapi/activities/assessment",
-		"peerassessment": "http://www.ecolearning.eu/expapi/activitytype/peerassessment",
-		"peerproduct": "http://www.ecolearning.eu/expapi/activitytype/peerproduct",
-		"learningresource": "http://adlnet.gov/expapi/activities/media",
-		"forum": "http://id.tincanapi.com/activitytype/discussion",
-		"blog": "http://www.ecolearning.eu/expapi/activitytype/blog",
-		"blogpage": "http://www.ecolearning.eu/expapi/activitytype/blogpage",
-		"blogpost": "http://www.ecolearning.eu/expapi/activitytype/blogpage",
-		"wiki": "http://www.ecolearning.eu/expapi/activitytype/wiki",
-		"wikipage": "http://www.ecolearning.eu/expapi/activitytype/wiki",
-		"activitystream": "http://www.ecolearning.eu/expapi/activitytype/activitystream"
+	    "actor": {
+	        "objectType": "Agent",
+	        "account": {
+	        "homePage": "https://portal.ecolearning.eu?user=%s" % (user.get_profile().sub),
+	        "name": user.get_profile().sub
+	        }
+	    },
+	    "verb": {
+	        "id": "http://activitystrea.ms/schema/1.0/access",
+	        "display": {
+	            "en-US": "Indicates the learner accessed the MOOC",
+	        },
+	    },
+	    "object": {
+	        "objectType": "Activity",
+	        "id": 'oai:' + '.'.join(settings.API_URI.split(".")[::-1]) + ":" + str(course.id),
+	        "definition": {
+	            "name": {
+	                "en-US": course.name,
+	            },
+	            "description": {
+	                "en-US": course.description,
+	            },
+	            "type": "http://adlnet.gov/expapi/activities/course",
+	        }
+	    },
+	    "context": {
+	    	"extensions": {
+	    		"http://activitystrea.ms/schema/1.0/place": {
+	                "objectType": "Place",
+	                "id": "http://vocab.org/placetime/geopoint/wgs84/X%sY%s.html" % (geolocation['lon'], geolocation['lat']),  # Not mandatory, Maren Scheffel asked for it
+	                "geojson": {
+	                    "type": "FeatureCollection",
+	                    "features": [
+	                        {
+	                            "type": "Feature",
+	                            "geometry": {
+	                                "type": "Point",
+	                                "coordinates": [geolocation['lon'], geolocation['lat']]
+	                            }
+	                        }
+	                    ]
+	                },
+	                "definition": {
+	                    "name": {
+	                        "en-US": "Place"
+	                    },
+	                    "description": {
+	                        "en-US": "Represents a physical location."
+	                    },
+	                    "type": "http://activitystrea.ms/schema/1.0/place"
+	                }
+	            }
+	        }
+	    },
+	    "timestamp": timestamp
 	}
-	page_verbs = {
-		"course": "Indicates the learner accessed a course",
-		"questionnaire": "Indicates the learner accessed a questionnaire",
-		"page": "Indicates the learner accessed a page",
-		"module": "Indicates the learner accessed a module",
-		"syllabus": "Indicates the learner accessed a syllabus",
-		"learningactivity": "Indicates the learner accessed a learning activity",
-		"task": "Indicates the learner accessed a task",
-		"assignment": "Indicates the learner accessed an assignment",
-		"assessment": "Indicates the learner accessed an assessment",
-		"peerassessment": "Indicates the learner accessed a peer assessment",
-		"peerproduct": "Indicates the learner accessed a peer product",
-		"learningresource": "Indicates the learner accessed a learning resource",
-		"forum": "Indicates the learner accessed a forum",
-		"blog": "Indicates the learner accessed a blog",
-		"blogpage": "Indicates the learner accessed a blog page",
-		"blogpost": "Indicates the learner accessed a blog post",
-		"wiki": "Indicates the learner accessed a wiki",
-		"wikipage": "Indicates the learner accessed a wikipage",
-		"activitystream": "Indicates the learner accessed an activity stream",
-	}
+	return verb
 
-	page_type = "page"
-	if re.search('\/syllabus', page['url']):
-		page_type = "syllabus"
-	elif re.search('\/classroom\/', page['url']):
-		page_type = "module"
-		if re.search('\/classroom\/.*\/kq[0-9]+\/q', page['url']):
-			page_type = "task"
-		if re.search('\/classroom\/.*\/kq[0-9]+\/p', page['url']):
-				page_type = "peerassessment"
-		elif re.search('\/classroom\/.*\/kq[0-9]+\/a', page['url']):
-			page_type = "answer"
-
-	
-
-	if not timestamp:
-		timestamp = time.gmtime()
-	formatted_timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", timestamp)
-
+def _populateVerbAboutResource(user, resource, course, geolocation, timestamp, result=None):
 	verb = {
 	    "actor": {
 	        "objectType": "Agent",
@@ -232,22 +99,22 @@ def learnerAccessAPage(user, page, course, geolocation, timestamp=None):
 	        }
 	    },
 	    "verb": {
-	        "id": "http://activitystrea.ms/schema/1.0/access",
+	        "id": resource['verb_id'],
 	        "display": {
-	            "en-US": page_verbs[page_type]
+	            "en-US": resource['verb_desc']
 	        }
 	    },
 	    "object": {
 	        "objectType": "Activity",
-	        "id": page['url'],
+	        "id": resource['url'],
 	        "definition": {
 	            "name": {
-	                "en-US": page['name']
+	                "en-US": resource['name']
 	            },
 	            "description": {
-	                "en-US": page['description']
+	                "en-US": resource['description']
 	            },
-	            "type": page_types[page_type]
+	            "type": resource['type_id']
 	        }
 	    },
 	    "context": {
@@ -299,7 +166,175 @@ def learnerAccessAPage(user, page, course, geolocation, timestamp=None):
 				]
 			}
 		},
-	    "timestamp": formatted_timestamp
+	    "timestamp": timestamp
 	}
 
-	sendStatement(verb)
+	if result:
+		verb["result"] = {
+			"score": {
+				"scaled": result["score"]
+			},
+			"success": result["score"] >= 0.5 and True or False,
+			"completion": True,
+			"response": result["comment"] or ""
+		}
+
+	return verb
+
+def learnerEnrollsInMooc(user, course, geolocation, timestamp=None):
+	if not timestamp:
+		timestamp = time.gmtime()
+	formatted_timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", timestamp)
+
+	verb = {
+		    "actor": {
+		        "objectType": "Agent",
+		        "account": {
+		        "homePage": "https://portal.ecolearning.eu?user=%s" % (user.get_profile().sub),
+		        "name": user.get_profile().sub
+		        }
+		    },
+		    "verb": {
+		        "id": "http://adlnet.gov/expapi/verbs/registered",
+		        "display": {
+		            "en-US": "Indicates the learner registered/enrolled for MOOC",
+		        },
+		    },
+		    "object": {
+		        "objectType": "Activity",
+		        "id": 'oai:' + '.'.join(settings.API_URI.split(".")[::-1]) + ":" + str(course.id),
+		        "definition": {
+		            "name": {
+		                "en-US": course.name,
+		            },
+		            "description": {
+		                "en-US": course.description,
+		            },
+		            "type": "http://adlnet.gov/expapi/activities/course",
+		        }
+		    },
+		    "context": {
+		    	"extensions": {
+		    		"http://activitystrea.ms/schema/1.0/place": {
+		                "objectType": "Place",
+		                "id": "http://vocab.org/placetime/geopoint/wgs84/X%sY%s.html" % (geolocation['lon'], geolocation['lat']),  # Not mandatory, Maren Scheffel asked for it
+		                "geojson": {
+		                    "type": "FeatureCollection",
+		                    "features": [
+		                        {
+		                            "type": "Feature",
+		                            "geometry": {
+		                                "type": "Point",
+		                                "coordinates": [geolocation['lon'], geolocation['lat']]
+		                            },
+#		                            "properties": {
+#		                                "property1": "value1"  # Not mandatory, but useful to include more metadata about geolocation
+#		                            }
+		                        }
+		                    ]
+		                },
+		                "definition": {
+		                    "name": {
+		                        "en-US": "Place"
+		                    },
+		                    "description": {
+		                        "en-US": "Represents a physical location."
+		                    },
+		                    "type": "http://activitystrea.ms/schema/1.0/place"
+		                }
+		            }
+		        }
+		    },
+		    "timestamp": formatted_timestamp
+		}
+	_sendStatement(verb)
+
+def learnerAccessAPage(user, resource, course, geolocation, timestamp=None):
+	resource_types = {
+		"mooc": "http://adlnet.gov/expapi/activities/course",
+		"page": "http://activitystrea.ms/schema/1.0/page",
+		"syllabus": "http://www.ecolearning.eu/expapi/activitytype/syllabus",
+		"task": "http://activitystrea.ms/schema/1.0/task",
+		"assessment": "http://adlnet.gov/expapi/activities/assessment",
+		"peerassessment": "http://www.ecolearning.eu/expapi/activitytype/peerassessment",
+		"activitystream": "http://www.ecolearning.eu/expapi/activitytype/activitystream",
+		"forum": "http://id.tincanapi.com/activitytype/discussion",
+		"kq_book": "http://id.tincanapi.com/activitytype/book",
+		"kq_video": "http://activitystrea.ms/schema/1.0/video",
+		"kq_presentation": "http://id.tincanapi.com/activitytype/slide-deck"
+	}
+	resource_verbs = {
+		"mooc": "Indicates the learner accessed the MOOC",
+		"page": "Indicates the learner accessed a page",
+		"syllabus": "Indicates the learner accessed a syllabus",
+		"task": "Indicates the learner accessed a task",
+		"assessment": "Indicates the learner accessed an assessment",
+		"peerassessment": "Indicates the learner accessed a peer assessment",
+		"activitystream": "Indicates the learner accessed an activity stream",
+		"forum": "Indicates the learner accessed a forum",
+		"kq_book": "Indicates the learner accessed a book",
+		"kq_video": "Indicates the learner accessed a video",
+		"kq_presentation": "Indicates the learner accessed a slidedeck"
+	}
+
+	resource_type = "page"
+	if re.search('\/syllabus', resource['url']):
+		resource_type = "syllabus"
+	elif re.search('\/classroom\/', resource['url']):
+		if re.search('\/classroom\/.*\/kq[0-9]+\/q', resource['url']):
+			resource_type = "task"
+		elif re.search('\/classroom\/#unit[0-9]+\/kq[0-9]+\/p', resource['url']):
+				resource_type = "assessment"
+		elif re.search('\/classroom\/#unit[0-9]+\/kq[0-9]+\/a', resource['url']):
+			resource_type = "page"
+		elif re.search('\/classroom\/#unit[0-9]+\/kq[0-9]+$', resource['url']):
+			resource_type = "kq"
+			res = re.search('\/classroom\/#unit[0-9]+\/kq(?P<kqid>[0-9]+)$', resource['url'])
+			kq = KnowledgeQuantum.objects.get(pk=res.group('kqid'))
+			media_types = {elem['id']: elem['type'] for elem in settings.MEDIA_CONTENT_TYPES}
+			resource_type = "kq_%s" % (media_types[kq.media_content_type])
+	elif re.search('\/user\/posts\/hashtag\/', resource['url']):
+		resource_type = "activitystream"
+	elif re.search('\/course\/.*\/forum\/', resource['url']):
+		resource_type = "forum"
+	elif re.search('\/course\/.*\/reviews\/[0-9]+\/review\/', resource['url']):
+		resource_type = "peerassessment"
+	elif re.search('\/course\/[a-zA-Z0-9-_]+\/$', resource['url']):
+		resource_type = "mooc"
+
+	if not timestamp:
+		timestamp = time.gmtime()
+	formatted_timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", timestamp)
+
+	if resource_type != "mooc":
+		resource['verb_id'] = "http://activitystrea.ms/schema/1.0/access"
+		resource['verb_desc'] = resource_verbs[resource_type]
+		resource['type_id'] = resource_types[resource_type]
+		verb = _populateVerbAboutResource(user, resource, course, geolocation, formatted_timestamp)
+	else:
+		verb = _populateVerbAboutMOOC(user, course, geolocation, formatted_timestamp)
+
+	_sendStatement(verb)
+
+def learnerSubmitsAResource(user, resource, course, geolocation, timestamp=None, result=None):
+	resource_types = {
+		"task": "http://activitystrea.ms/schema/1.0/task",
+		"assessment": "http://adlnet.gov/expapi/activities/assessment",
+		"peerfeedback": "http://www.ecolearning.eu/expapi/activitytype/peerfeedback",
+	}
+	resource_verbs = {
+		"task": "Indicates the learner submitted a task",
+		"assessment": "Indicates the learner submitted an assessment",
+		"peerfeedback": "Indicates the learner submitted a peer feedback",
+	}
+
+	if not timestamp:
+		timestamp = time.gmtime()
+	formatted_timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", timestamp)
+
+	resource['verb_id'] = "http://activitystrea.ms/schema/1.0/submit"
+	resource['verb_desc'] = resource_verbs[resource['type']]
+	resource['type_id'] = resource_types[resource['type']]
+	verb = _populateVerbAboutResource(user, resource, course, geolocation, formatted_timestamp, result)
+
+	_sendStatement(verb)

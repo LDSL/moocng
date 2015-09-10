@@ -28,15 +28,15 @@
                                     <a class="kq" {% if unit.status == 'p' or is_teacher or user.is_staff %}href="{{q.url}}" {% endif %}>{{q.title}}</a>
                                     {% if q.has_video %}
                                         <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_video.svg">{% trans "Video" %}</span>
-                                    {% endif %} 
+                                    {% endif %}
 
                                     {% if q.has_presentation %}
                                         <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_presentacion.svg">{% trans "Presentation" %}</span>
-                                    {% endif %} 
+                                    {% endif %}
 
                                     {% if q.has_attachments %}
                                         <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_fichero.svg">{% trans "Attachments" %}</span>
-                                    {% endif %} 
+                                    {% endif %}
 
                                     {% if q.has_test %}
                                         <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_tarea-test.svg">{% trans "Test" %}</span>
@@ -97,6 +97,6 @@
                 });*/
             });
         });
-
+        sendHistoryEntry({{ course.pk }});
     </script>
 {% endblock %}
