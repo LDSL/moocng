@@ -2,10 +2,6 @@
 {% load i18n %}
 {% block content %}
 
-<script type="text/javascript">
-
-</script>
-
 <div class="userposts">
 	<div class="container">
 		<div class="row">
@@ -21,6 +17,8 @@
 					<form class="postFrom" method="post">
 						{% csrf_token %}
 						 {{ form }}
+						 <input type="hidden" name="context_geo_lat" value="0.0"/>
+						 <input type="hidden" name="context_geo_lon" value="0.0"/>
 						<input class="postButton" type="submit" value="{% trans "Send" %}">
 						<span class="cancelPost">{% trans "Cancel" %}</span>
 					</form>
@@ -106,6 +104,12 @@
 </script>
 <script type="text/javascript">
 	sendHistoryEntry({{ course.pk }});
+	window.setTimeout(function(){
+		if(geolocation){
+			$("input[name=context_geo_lat]").val(geolocation.coords.latitude);
+			$("input[name=context_geo_lon]").val(geolocation.coords.longitude);
+		}
+	}, 2500);
 </script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/forum.js"></script>
 {% endblock %}

@@ -25,6 +25,8 @@
 				<form class="postReply" method="post" action="{% url course_forum_reply course.slug post.id reply.id %}">
 					{% csrf_token %}
 					{{ formReply }}
+					<input type="hidden" name="context_geo_lat" value="0.0"/>
+					<input type="hidden" name="context_geo_lon" value="0.0"/>
 					<input class="postButton" type="submit" value="{% trans "Send" %}">
 					<span class="cancelReply">{% trans "Cancel" %}</span>
 				</form>

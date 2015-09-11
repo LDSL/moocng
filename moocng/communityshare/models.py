@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.html import urlize, escape
+from django.conf import settings
 
 import pymongo
 import re
@@ -13,6 +14,8 @@ from bson.objectid import ObjectId
 from django.contrib.auth.models import User
 from moocng.courses.models import Course
 from moocng.courses.utils import is_teacher
+from moocng.x_api import utils as x_api
+
 
 class CommunityShareBase(object):
 	def __init__(self, prefix='share'):
@@ -115,18 +118,40 @@ class Microblog(CommunityShareBase):
 	def get_blog_user(self, id):
 	    return get_db().get_collection(self.col_user).find_one({'id_user': id})
 
-	def insert_blog_user(self, user_id, following):
+	def insert_blog_user(self, user_id, following, extra=None):
 		user = {
 			"id_user": user_id,
 			"following": following
 		}
 		get_db().get_collection(self.col_user).insert(user)
 
+		# xAPI
+		if extra:
+			user = User.objects.get(pk=user_id)
+			course = None
+			resource = {
+				'type': 'microblogfollow',
+				'user_id': extra['user_id']
+			}
+			geolocation = extra.get('geolocation')
+			x_api.learnerInteracts(user, resource, course, geolocation)
+
 	def get_num_followers(self, id):
 	    return get_db().get_collection(self.col_user).find({"following": {"$eq" : id}}).count()
 
-	def update_following_blog_user(self, id, following):
-	    get_db().get_collection(self.col_user).update({"id_user": id}, {"$set": {"following": following}})
+	def update_following_blog_user(self, id, following, extra=None):
+		get_db().get_collection(self.col_user).update({"id_user": id}, {"$set": {"following": following}})
+
+		# xAPI
+		if extra:
+			user = User.objects.get(pk=id)
+			course = None
+			resource = {
+				'type': 'microblogfollow',
+				'user_id': extra['user_id']
+			}
+			geolocation = extra.get('geolocation')
+			x_api.learnerInteracts(user, resource, course, geolocation)
 
 	def get_posts(self, case, id, user, page):
 	    idsUsers=[{"id_user": id}]
@@ -135,7 +160,7 @@ class Microblog(CommunityShareBase):
 	                idsUsers.append({"id_user": following})
 	    return super(Microblog,self).get_posts(idsUsers, page)
 
-	def insert_post(self, id_user, first_name, last_name, username, avatar, postText):
+	def insert_post(self, id_user, first_name, last_name, username, avatar, postText, extra=None):
 		post = {
 			"id_user": id_user,
 			"first_name": first_name,
@@ -148,53 +173,95 @@ class Microblog(CommunityShareBase):
 			"favourite": [],
 			"shared": 0,
 		}
-		#get_db().get_collection(self.col_post).insert(post)
-		super(Microblog,self).insert_post(post)
+		post_id = super(Microblog,self).insert_post(post)
 
-	def save_retweet(self, post_id, user_id, username):
-	    postCollection = get_db().get_collection(self.col_post)
-	    post = postCollection.find_one({"$and": [{"id_user":user_id},{"id_original_post":ObjectId(post_id)}]})
+		# xAPI
+		if extra and 'course_slug' in extra:
+			user = User.objects.get(pk=id_user)
+			try:
+				course = Course.objects.get(slug=extra['course_slug'])
+			except:
+				course = None
+			resource = {
+				'type': 'microblogpost',
+				'url': 'https://%s%s#%s' % (settings.API_URI, reverse('profile_posts_byid', kwargs={'id': id_user}), post_id),
+				'name': 'Microblog post',
+				'description': 'This is a blog post'
+			}
+			geolocation = extra.get('geolocation')
+			x_api.learnerSubmitsAResource(user, resource, course, geolocation)
 
-	    if(not post):
-	        postCollection.update({"$or": [{"_id": ObjectId(post_id)}, {"id_original_post": ObjectId(post_id)}]}, {"$inc": {"shared":  1}}, multi=True)
-	        post = postCollection.find_one({"_id": ObjectId(post_id)})
-	        post["id_author"] = post["id_user"]
-	        post["id_user"] = user_id
-	        post["id_original_post"] = post["_id"]
-	        post["original_date"] = post["date"]
-	        post["date"] = datetime.utcnow().isoformat()
-	        post["shared_by"] = "@%s" % (username)
-	        del post["_id"]
-	        #get_db().get_collection(self.col_post).insert(post)
-	        super(Microblog,self).insert_post(post)
-	        return True
-	    else:
-	        return False
+	def save_retweet(self, post_id, user_id, username, extra=None):
+		postCollection = get_db().get_collection(self.col_post)
+		post = postCollection.find_one({"$and": [{"id_user":user_id},{"id_original_post":ObjectId(post_id)}]})
 
-	def save_reply(self, post_id, user_id, first_name, last_name, username, avatar, postText):
-	    postCollection = get_db().get_collection(self.col_post)
-	    post_orig = postCollection.find_one({"_id":ObjectId(post_id)})
-	    if post_orig:
-	    	post = {
-						"id_user": user_id,
-						"first_name": first_name,
-						"last_name": last_name,
-						"username": "@%s" % (username),
-						"avatar": avatar,
-						"date": datetime.utcnow().isoformat(),
-						"text": urlize(escape(postText)),
-						"children": [],
-						"favourite": [],
-						"shared": 0,
-						"is_child": True,
+		if(not post):
+			postCollection.update({"$or": [{"_id": ObjectId(post_id)}, {"id_original_post": ObjectId(post_id)}]}, {"$inc": {"shared":  1}}, multi=True)
+			post = postCollection.find_one({"_id": ObjectId(post_id)})
+			post["id_author"] = post["id_user"]
+			post["id_user"] = user_id
+			post["id_original_post"] = post["_id"]
+			post["original_date"] = post["date"]
+			post["date"] = datetime.utcnow().isoformat()
+			post["shared_by"] = "@%s" % (username)
+			del post["_id"]
+			rtpost_id = super(Microblog,self).insert_post(post)
 
+			# xAPI
+			if extra:
+				user = User.objects.get(pk=user_id)
+				course = None
+				resource = {
+					'type': 'microblogshare',
+					'url': 'https://%s%s#%s' % (settings.API_URI, reverse('profile_posts_byid', kwargs={'id': user_id}), rtpost_id),
+					'name': 'Microblog post',
+					'description': 'This is a blog post'
+				}
+				geolocation = extra.get('geolocation')
+				x_api.learnerSubmitsAResource(user, resource, course, geolocation)
+			return True
+		else:
+			return False
+
+	def save_reply(self, post_id, user_id, first_name, last_name, username, avatar, postText, extra=None):
+		postCollection = get_db().get_collection(self.col_post)
+		post_orig = postCollection.find_one({"_id":ObjectId(post_id)})
+		if post_orig:
+			post = {
+				"id_user": user_id,
+				"first_name": first_name,
+				"last_name": last_name,
+				"username": "@%s" % (username),
+				"avatar": avatar,
+				"date": datetime.utcnow().isoformat(),
+				"text": urlize(escape(postText)),
+				"children": [],
+				"favourite": [],
+				"shared": 0,
+				"is_child": True,
+			}
+			reply_id = postCollection.insert(post)
+			post_orig["children"].append(reply_id)
+			postCollection.update({'_id': ObjectId(post_id)}, {"$set": {"children": post_orig["children"]}})
+
+			# xAPI
+			if extra and 'course_slug' in extra:
+				user = User.objects.get(pk=user_id)
+				try:
+					course = Course.objects.get(slug=extra['course_slug'])
+				except:
+					course = None
+					resource = {
+					'type': 'microblogreply',
+					'url': 'https://%s%s#%s' % (settings.API_URI, reverse('profile_posts_byid', kwargs={'id': user_id}), reply_id),
+					'name': 'Microblog post',
+					'description': 'This is a blog post'
 					}
-	        reply_id = postCollection.insert(post)
-	        post_orig["children"].append(reply_id)
-	        postCollection.update({'_id': ObjectId(post_id)}, {"$set": {"children": post_orig["children"]}})
-	        return True
-	    else:
-	        return False
+					geolocation = extra.get('geolocation')
+					x_api.learnerSubmitsAResource(user, resource, course, geolocation)
+					return True
+		else:
+			return False
 
 
 class Blog(CommunityShareBase):
@@ -237,7 +304,7 @@ class Forum(CommunityShareBase):
 				self._process_post_children(post, user_id)
 		return post
 
-	def insert_post(self, category_slug, id_user, first_name, last_name, username, avatar, postTitle, postText):
+	def insert_post(self, category_slug, id_user, first_name, last_name, username, avatar, postTitle, postText, extra=None):
 		post = {
 			"category_slug": category_slug,
 			"id_user": id_user,
@@ -254,37 +321,64 @@ class Forum(CommunityShareBase):
 			"voters": [],
 			"shared": 0,
 		}
-		super(Forum,self).insert_post(post)
+		post_id = super(Forum,self).insert_post(post)
 
-	def save_reply(self, category_slug, post_id, id_user, first_name, last_name, username, avatar, postText):
-	    postCollection = get_db().get_collection(self.col_post)
-	    post_orig = postCollection.find_one({"_id":ObjectId(post_id)})
-	    if post_orig:
-	    	post = {
-	    				"category_slug": category_slug,
-						"id_user": id_user,
-						"first_name": first_name,
-						"last_name": last_name,
-						"username": username,
-						"avatar": avatar,
-						"date": datetime.utcnow().isoformat(),
-						"text": escape(postText),
-						"children": [],
-						"favourite": [],
-						"votes": 0,
-						"voters": [],
-						"shared": 0,
-						"is_child": True,
-					}
-	        reply_id = postCollection.insert(post)
-	        post["_id"] = reply_id
-	        post_orig["children"].append(reply_id)
-	        postCollection.update({'_id': ObjectId(post_id)}, {"$set": {"children": post_orig["children"]}})
-	        return reply_id
-	    else:
-	        return False
+		# xAPI
+		if extra and 'course_slug' in extra:
+			user = User.objects.get(pk=id_user)
+			course = Course.objects.get(slug=extra['course_slug'])
+			resource = {
+				'type': 'threadpost',
+				'url': "https://%s%s" % (settings.API_URI, reverse('course_forum_post', kwargs={'course_slug': extra['course_slug'], 'post_id': post_id})),
+				'name': post['title'],
+				'description': "This is a thread-opening forum message"
+			}
+			geolocation = extra.get('geolocation')
+			x_api.learnerSubmitsAResource(user, resource, course, geolocation)
 
-	def post_vote(self, post_id, id_user, vote=1):
+	def save_reply(self, category_slug, post_id, id_user, first_name, last_name, username, avatar, postText, extra=None):
+		postCollection = get_db().get_collection(self.col_post)
+		post_orig = postCollection.find_one({"_id":ObjectId(post_id)})
+		if post_orig:
+			post = {
+				"category_slug": category_slug,
+				"id_user": id_user,
+				"first_name": first_name,
+				"last_name": last_name,
+				"username": username,
+				"avatar": avatar,
+				"date": datetime.utcnow().isoformat(),
+				"text": escape(postText),
+				"children": [],
+				"favourite": [],
+				"votes": 0,
+				"voters": [],
+				"shared": 0,
+				"is_child": True,
+			}
+			reply_id = postCollection.insert(post)
+			post["_id"] = reply_id
+			post_orig["children"].append(reply_id)
+			postCollection.update({'_id': ObjectId(post_id)}, {"$set": {"children": post_orig["children"]}})
+
+			# xAPI
+			if extra and 'course_slug' in extra:
+				user = User.objects.get(pk=id_user)
+				course = Course.objects.get(slug=extra['course_slug'])
+				resource = {
+					'type': 'threadreply',
+					'url': "https://%s%s#%s" % (settings.API_URI, reverse('course_forum_post', kwargs={'course_slug': extra['course_slug'], 'post_id': post_id}), reply_id),
+					'name': post_orig.get('title') or "Unnamed post",
+					'description': "This is a forum message"
+				}
+				geolocation = extra.get('geolocation')
+				x_api.learnerSubmitsAResource(user, resource, course, geolocation)
+
+			return reply_id
+		else:
+			return False
+
+	def post_vote(self, post_id, id_user, vote=1, extra=None):
 		postCollection = get_db().get_collection(self.col_post)
 		post = postCollection.find_one({"_id": ObjectId(post_id)})
 		if post:
@@ -302,6 +396,20 @@ class Forum(CommunityShareBase):
 				profile.karma += vote
 				profile.save()
 				user.save()
+
+				# xAPI
+				if extra and 'course_slug' in extra:
+					user = User.objects.get(pk=id_user)
+					course = Course.objects.get(slug=extra['course_slug'])
+					resource = {
+						'type': 'threadvote',
+						'url': "https://%s%s" % (settings.API_URI, reverse('course_forum_post', kwargs={'course_slug': extra['course_slug'], 'post_id': post_id})),
+						'name': post.get('title') or "Unnamed post",
+						'description': "This is a forum message"
+					}
+					geolocation = extra.get('geolocation')
+					x_api.learnerSubmitsAResource(user, resource, course, geolocation)
+
 				return post["votes"]
 			else:
 				return False

@@ -17,7 +17,7 @@
 		{% endif %}
 		<a href="{% if show_username %}{% url profile_posts reply.username|slice:'1:' %}{% else %}{% url profile_posts_byid reply.id_user %}{% endif %}"><span class="namePost">{{reply.first_name}} {{reply.last_name}}</span></a>
 		{% if show_username %}<span class="emailPost">{{reply.username}}</span>{% endif %}
-		
+
 		<span class="datePost">[
 			{% if reply.original_date %}
 				{{reply.original_date}}
@@ -38,6 +38,8 @@
 			<form class="postReply" method="post" action="/user/reply/{{reply.id}}">
 				{% csrf_token %}
 				{{ form }}
+				<input type="hidden" name="context_geo_lat" value="0.0" />
+				<input type="hidden" name="context_geo_lon" value="0.0" />
 				<input class="postButton" type="submit" value="{% trans "Send" %}">
 				<span class="cancelPost">{% trans "Cancel" %}</span>
 			</form>
@@ -46,7 +48,7 @@
 			{% else %}
 				<span title="Retweet" class="noRetweet" style="cursor: inherit;">{{reply.shared}}</span>
 			{% endif %}
-			
+
 			<!-- <span class="favourite">0</span> -->
 		</div>
 		{% if reply.replies|length > 0 %}

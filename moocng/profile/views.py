@@ -158,6 +158,7 @@ def profile_user(request, id, byid=False):
 		id = request.user.id
 		user =  request.user
 	else:
+		case = _getCase(request,id)
 		if byid:
 			user = User.objects.get(pk=id)
 		else:
@@ -168,6 +169,7 @@ def profile_user(request, id, byid=False):
 
 	return render_to_response('profile/user.html', {
 		'id': id,
+		'case': case,
 		'badges_count': get_db().get_collection('badge').find({'id_user': id}).count(),
 		'request': request,
 		'courses': courses,
@@ -194,7 +196,35 @@ def profile_posts(request, id, api=False, byid=False):
 	if request.method == 'POST':
 		form = PostForm(request.POST)
 		if form.is_valid():
-			m.insert_post(request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
+			if request.META.get('HTTP_CONTEXT_URL'):
+				try:
+					geolocation = {
+						'lat': float(request.META['HTTP_CONTEXT_GEO_LAT']),
+						'lon': float(request.META['HTTP_CONTEXT_GEO_LON'])
+					}
+				except:
+					geolocation = {
+						'lat': 0.0,
+						'lon': 0.0
+					}
+				try:
+					url = request.META['HTTP_CONTEXT_URL']
+					result = re.search('\/course\/(?P<slug>[a-zA-Z0-9-_]+)\/', url)
+					course_slug = result.group('slug')
+				except:
+					course_slug = None
+			else:
+				geolocation = {
+                    'lat': float(request.POST['context_geo_lat']),
+                    'lon': float(request.POST['context_geo_lon'])
+                }
+				course_slug = None
+
+			extra = {
+				'geolocation': geolocation,
+				'course_slug': course_slug
+			}
+			m.insert_post(request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'], extra)
 			return HttpResponseRedirect("/user/posts")
 
 	else:
@@ -252,7 +282,35 @@ def profile_posts_search(request, query, hashtag=False, api=False):
 	if request.method == 'POST':
 		form = PostForm(request.POST)
 		if form.is_valid():
-			m.insert_post(request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
+			if request.META.get('HTTP_CONTEXT_URL'):
+				try:
+					geolocation = {
+						'lat': float(request.META['HTTP_CONTEXT_GEO_LAT']),
+						'lon': float(request.META['HTTP_CONTEXT_GEO_LON'])
+					}
+				except:
+					geolocation = {
+						'lat': 0.0,
+						'lon': 0.0
+					}
+				try:
+					url = request.META['HTTP_CONTEXT_URL']
+					result = re.search('\/course\/(?P<slug>[a-zA-Z0-9-_]+)\/', url)
+					course_slug = result.group('slug')
+				except:
+					course_slug = None
+			else:
+				geolocation = {
+                    'lat': float(request.POST['context_geo_lat']),
+                    'lon': float(request.POST['context_geo_lon'])
+                }
+				course_slug = None
+
+			extra = {
+				'geolocation': geolocation,
+				'course_slug': course_slug
+			}
+			m.insert_post(request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'], extra)
 			return HttpResponseRedirect("/user/posts")
 
 	else:
@@ -332,23 +390,51 @@ def user_follow(request, id, follow):
 	user = m.get_blog_user(request.user.id)
 
 	if(follow == "0"):
+		try:
+			geolocation = {
+				'lat': float(request.META['HTTP_CONTEXT_GEO_LAT']),
+				'lon': float(request.META['HTTP_CONTEXT_GEO_LON'])
+			}
+		except:
+			geolocation = {
+				'lat': 0.0,
+				'lon': 0.0
+			}
+		extra = {
+			'geolocation': geolocation,
+			'user_id': id
+		}
+
 		if(user):
 			if(not id in user["following"]):
 				user["following"].append(id)
-				m.update_following_blog_user(request.user.id, user["following"])
+				m.update_following_blog_user(request.user.id, user["following"], extra)
 		else:
-			m.insert_blog_user(request.user.id, [id])
+			m.insert_blog_user(request.user.id, [id], extra)
 
 	elif(follow == "1" and user):
 		user["following"].remove(id)
-		m.update_following_blog_user(request.user.id, user["following"] )
+		m.update_following_blog_user(request.user.id, user["following"])
 
 	return HttpResponse("true")
 
 @login_required
 def retweet(request, id):
 	m = Microblog()
-	return HttpResponse(m.save_retweet(id, request.user.id, request.user.username))
+	try:
+		geolocation = {
+			'lat': float(request.META['HTTP_CONTEXT_GEO_LAT']),
+			'lon': float(request.META['HTTP_CONTEXT_GEO_LON'])
+		}
+	except:
+		geolocation = {
+			'lat': 0.0,
+			'lon': 0.0
+		}
+	extra = {
+		'geolocation': geolocation
+	}
+	return HttpResponse(m.save_retweet(id, request.user.id, request.user.username, extra))
 
 @login_required
 def reply(request, id):
@@ -356,7 +442,35 @@ def reply(request, id):
 		m = Microblog()
 		form = PostForm(request.POST)
 		if form.is_valid():
-			m.save_reply(id, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
+			if request.META.get('HTTP_CONTEXT_URL'):
+				try:
+					geolocation = {
+						'lat': float(request.META['HTTP_CONTEXT_GEO_LAT']),
+						'lon': float(request.META['HTTP_CONTEXT_GEO_LON'])
+					}
+				except:
+					geolocation = {
+						'lat': 0.0,
+						'lon': 0.0
+					}
+				try:
+					url = request.META['HTTP_CONTEXT_URL']
+					result = re.search('\/course\/(?P<slug>[a-zA-Z0-9-_]+)\/', url)
+					course_slug = result.group('slug')
+				except:
+					course_slug = None
+			else:
+				geolocation = {
+                    'lat': float(request.POST['context_geo_lat']),
+                    'lon': float(request.POST['context_geo_lon'])
+                }
+				course_slug = None
+
+			extra = {
+				'geolocation': geolocation,
+				'course_slug': course_slug
+			}
+			m.save_reply(id, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'],extra)
 			return HttpResponseRedirect("/user/posts")
 
 def _getCase(request, id):

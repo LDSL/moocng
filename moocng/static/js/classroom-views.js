@@ -37,6 +37,9 @@ MOOC.views.Unit = Backbone.View.extend({
     initialize: function() {
         var self = this;
         $('#course-share').off('click').on('click', self.shareKQ);
+        $('.social_share_btn').off('click').on('click', function(e){
+          sendHistoryEntry(MOOC.models.course.courseId, {delay: 0, url: e.delegateTarget.href});
+        });
     },
 
 	/* RENDER INDEX */
@@ -278,10 +281,9 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
                 $("#attachments ul").empty();
                 attachments.each(function (attachment) {
                     var view = new MOOC.views.Attachment({
-                        model: attachment,
-                        el: $("#attachments ul")[0]
+                        model: attachment
                     });
-                    view.render();
+                    $("#attachments ul").append(view.render());
                 });
             }else{
                 $("#attachments").parent().addClass('hide');
@@ -1126,14 +1128,20 @@ MOOC.views.Option = Backbone.View.extend({
 MOOC.views.optionViews = {};
 
 MOOC.views.Attachment = Backbone.View.extend({
+    events: {
+      'click .link': 'send_stats'
+    },
     render: function () {
         "use strict";
-        var html = "<li><a href='" + this.model.get("url") + "' target='_blank'>",
+        var html = "<li><a class='link' href='" + this.model.get("url") + "' target='_blank'>",
             parts = this.model.get("url").split('/');
         html += parts[parts.length - 1];
         html += "</a></li>";
         this.$el.append(html);
-        return this;
+        return this.$el;
+    },
+    send_stats: function(e){
+      sendHistoryEntry(MOOC.models.course.courseId, {'delay': 0, 'url': MOOC.host + this.model.get("url")});
     }
 });
 

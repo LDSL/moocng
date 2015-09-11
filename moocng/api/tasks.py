@@ -28,7 +28,7 @@ from moocng.mongodb import get_db
 
 from moocng.courses.models import Unit, Course
 from moocng.x_api import utils as x_api
-from moocng.courses.marks import get_course_mark
+from moocng.courses.marks import get_course_mark, get_kq_mark
 
 from datetime import date
 
@@ -360,7 +360,10 @@ def on_answer_created_task(answer_created, extra):
         'type': 'task',
         'url': 'https://%s%s#unit%s/kq%s/q' % (settings.API_URI, reverse('course_classroom', kwargs={'course_slug': course.slug}), answer_created['unit_id'], answer_created['kq_id'])
     }
-    x_api.learnerSubmitsAResource(user, resource, course, extra['geolocation'])
+    result = {
+        'score': float(get_kq_mark(kq, user)) / 10
+    }
+    x_api.learnerSubmitsAResource(user, resource, course, extra['geolocation'], result=result)
 
 
 @task
@@ -379,7 +382,10 @@ def on_answer_updated_task(answer_updated, extra):
         'type': 'task',
         'url': 'https://%s%s#unit%s/kq%s/q' % (settings.API_URI, reverse('course_classroom', kwargs={'course_slug': course.slug}), answer_updated['unit_id'], answer_updated['kq_id'])
     }
-    x_api.learnerSubmitsAResource(user, resource, course, extra['geolocation'])
+    result = {
+        'score': float(get_kq_mark(kq, user)) / 10
+    }
+    x_api.learnerSubmitsAResource(user, resource, course, extra['geolocation'], result=result)
 
 @task
 def on_peerreviewsubmission_created_task(submission_created, extra):
@@ -457,7 +463,10 @@ def on_history_created_task(history_created):
     # Send xAPI event
     print history_created['course_id']
     user = User.objects.get(pk=history_created['user_id'])
-    course = Course.objects.get(pk=history_created['course_id'])
+    try:
+        course = Course.objects.get(pk=history_created['course_id'])
+    except:
+        course = None
     geolocation = {
         'lat': history_created['lat'],
         'lon': history_created['lon']

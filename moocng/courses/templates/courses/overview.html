@@ -60,7 +60,7 @@
 					<div class="social_links pull-left">
 						Share
 						<ul class="icons">
-							<li class="facebook"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}">
+							<li class="facebook"><a class="social_share_btn" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}">
 								<svg>
 									<g>
 										<path d="M44.547,310.009h-3.563c0,5.373,0,11.991,0,11.991H36c0,0,0-6.551,0-11.991L33,310v-4h3v-2.97
@@ -73,7 +73,7 @@
 									</g>
 								</svg>
 							</a></li>
-							<li class="twitter"><a target="_blank" href="https://twitter.com/home?status={{ request.build_absolute_uri }}" >
+							<li class="twitter"><a class="social_share_btn" target="_blank" href="https://twitter.com/home?status={{ request.build_absolute_uri }}" >
 								<svg>
 									<path d="M33.543,19.107c0.011,0.211,0.016,0.422,0.016,0.636c0,6.507-4.953,14.01-14.01,14.01c-2.782,0-5.369-0.814-7.549-2.212
 									c0.387,0.044,0.777,0.067,1.175,0.067c2.309,0,4.43-0.785,6.114-2.106c-2.153-0.041-3.973-1.465-4.598-3.419
@@ -84,7 +84,7 @@
 									c0.996-0.117,1.945-0.384,2.827-0.773C35.341,17.546,34.506,18.413,33.543,19.107z"/>
 								</svg>
 							</a></li>
-							<li class="gplus"><a target="_blank"  href="https://plus.google.com/share?url={{ request.build_absolute_uri }}">
+							<li class="gplus"><a class="social_share_btn" target="_blank" href="https://plus.google.com/share?url={{ request.build_absolute_uri }}">
 								<svg><g>
 									<g>
 										<path d="M24.407,25.734c-0.656-0.492-2.083-1.5-2.083-2.177c0-0.794,0.226-1.184,1.421-2.118c1.223-0.955,2.089-2.215,2.089-3.779
@@ -401,6 +401,9 @@
 	$('#gotoCourseBtn').click(function(e){
 		//e.preventDefault();
 		sendHistoryEntry({{ course.pk }}, {delay: 0});
+	});
+	$('.social_share_btn').click(function(e){
+		sendHistoryEntry({{ course.pk }}, {delay: 0, url: e.delegateTarget.href});
 	});
 </script>
 {% endblock %}
