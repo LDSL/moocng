@@ -198,8 +198,25 @@ def course_review_review(request, course_slug, assignment_id):
                     'reviewer': user_id,
                     'kq': assignment.kq.id
                 }).count()
+
+                review_scores = [int(form.cleaned_data['value']) for form in criteria_formset]
+                if len(review_scores) > 0:
+                    score = float(sum(review_scores) / len(review_scores)) * 2 / 10
+                else:
+                    score = 1
+                extra = {
+                    'geolocation': {
+                        'lat': float(request.POST.get("context_geo_lat", "0.0")),
+                        'lon': float(request.POST.get("context_geo_lon", "0.0")),
+                    },
+                    'url': request.build_absolute_uri(),
+                    'result': {
+                        'score': score,
+                        'comment': submission_form.cleaned_data['comments']
+                    }
+                }
                 on_peerreviewreview_created_task.apply_async(
-                    args=[review, reviewed_count],
+                    args=[review, reviewed_count, extra],
                     queue='stats',
                 )
 

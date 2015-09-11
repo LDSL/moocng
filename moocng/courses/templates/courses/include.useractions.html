@@ -38,7 +38,7 @@
 	<div class="vruler"></div>
 	<div class="btn-group">
 		<a class="dropdown-toggle usermenu" data-toggle="dropdown">
-			<img src="{% gravatar_for_email user.email %}&s=48" alt="{% firstof user.get_full_name user.username %}">      
+			<img src="{% gravatar_for_email user.email %}&s=48" alt="{% firstof user.get_full_name user.username %}">
 		</a>
 		<ul class="dropdown-menu usermenu">
 			<li><a href="{% url profile_user %}">{% trans "Profile" %}</a>
@@ -93,9 +93,17 @@
 		if (text.trim()) {
 			$('#microblog-share .editor').addClass('hide');
 			$('#microblog-share .loading').removeClass('hide');
+			var header = {
+				'context_url': window.location.href
+			};
+			if(typeof geolocation !== "undefined"){
+				header['context_geo_lat'] = geolocation.coords.latitude;
+				header['context_geo_lon'] = geolocation.coords.longitude
+			}
 			$.ajax({
 				url: '{% url profile_posts %}',
 				type: 'POST',
+				headers: header,
 				data: 'csrfmiddlewaretoken={{ csrf_token }}&postText='+text,
 				contentType: 'application/x-www-form-urlencoded',
 			}).done(function(data){

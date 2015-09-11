@@ -583,7 +583,14 @@ def course_forum(request, course_slug):
     if request.method == 'POST':
         form = ForumPostForm(request.POST)
         if form.is_valid():
-            f.insert_post(course_slug, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postTitle'], form.cleaned_data['postText'])
+            extra = {
+                'geolocation': {
+                    'lat': float(request.POST['context_geo_lat']),
+                    'lon': float(request.POST['context_geo_lon'])
+                },
+                'course_slug': course_slug
+            }
+            f.insert_post(course_slug, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postTitle'], form.cleaned_data['postText'], extra)
             return HttpResponseRedirect(reverse('course_forum', args=[course_slug]))
     else:
         course = get_course_if_user_can_view_or_404(course_slug, request)
@@ -632,7 +639,14 @@ def course_forum_post(request, course_slug, post_id):
     if request.method == 'POST':
         form = ForumReplyForm(request.POST)
         if form.is_valid():
-            f.save_reply(course_slug, post_id, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
+            extra = {
+                'geolocation': {
+                    'lat': float(request.POST['context_geo_lat']),
+                    'lon': float(request.POST['context_geo_lon'])
+                },
+                'course_slug': course_slug
+            }
+            f.save_reply(course_slug, post_id, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'],extra)
             print form.cleaned_data["postText"]
             return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
     else:
@@ -686,7 +700,14 @@ def course_forum_reply(request, course_slug, post_id, reply_id):
     if request.method == 'POST':
         form = ForumReplyForm(request.POST)
         if form.is_valid():
-            reply_id = f.save_reply(course_slug, reply_id, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'])
+            extra = {
+                'geolocation': {
+                    'lat': float(request.POST['context_geo_lat']),
+                    'lon': float(request.POST['context_geo_lon'])
+                },
+                'course_slug': course_slug
+            }
+            reply_id = f.save_reply(course_slug, reply_id, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'], extra)
             if reply_id is not False:
                 return HttpResponseRedirect('{0}#{1}'.format(reverse('course_forum_post', args=[course_slug, post_id]), reply_id))
             else:
@@ -694,7 +715,21 @@ def course_forum_reply(request, course_slug, post_id, reply_id):
 
 def course_forum_vote(request, course_slug, post_id, reply_id, vote):
     f = Forum()
-    votes = f.post_vote(reply_id, request.user.id, vote)
+    try:
+        geolocation = {
+            'lat': float(request.META['HTTP_CONTEXT_GEO_LAT']),
+            'lon': float(request.META['HTTP_CONTEXT_GEO_LON'])
+        }
+    except:
+        geolocation = {
+            'lat': 0.0,
+            'lon': 0.0
+        }
+    extra = {
+        'geolocation': geolocation,
+        'course_slug': course_slug
+    }
+    votes = f.post_vote(reply_id, request.user.id, vote, extra)
     return HttpResponse(simplejson.dumps(votes), mimetype='application/json')
 
 def course_forum_post_flag(request, course_slug, post_id):

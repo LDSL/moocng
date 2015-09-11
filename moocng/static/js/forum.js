@@ -59,7 +59,17 @@ $(".karma a").click(function(e){
     if (!target.href) {
         target = e.target.parentElement;
     }
-    $.get(target.href, function(result){
+    var header = {};
+    if(geolocation){
+      header = {
+        'context_geo_lat': geolocation.coords.latitude,
+        'context_geo_lon': geolocation.coords.longitude
+      }
+    }
+    $.ajax({
+      url: target.href,
+      headers: header,
+      complete: function(result){
         if(result !== false){
             var karma_elem = $(target).parent();
             var votes_elem = karma_elem.find('span');
@@ -81,6 +91,7 @@ $(".karma a").click(function(e){
                         break;
             }
         }
+      }
     });
 });
 

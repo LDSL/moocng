@@ -17,6 +17,8 @@
 import decimal
 
 from django.contrib.auth.models import User
+from django.conf import settings
+from django.core.urlresolvers import reverse
 
 from celery import task
 
@@ -26,7 +28,7 @@ from moocng.mongodb import get_db
 
 from moocng.courses.models import Unit, Course
 from moocng.x_api import utils as x_api
-from moocng.courses.marks import get_course_mark
+from moocng.courses.marks import get_course_mark, get_kq_mark
 
 from datetime import date
 
@@ -343,21 +345,50 @@ def get_data_dicts(submitted, passed_kq, passed_unit, passed_course):
 
 
 @task
-def on_answer_created_task(answer_created):
+def on_answer_created_task(answer_created, extra):
     up_kq, up_u, up_c, p_kq, p_u, p_c = update_mark(answer_created)
     submitted = 1
     update_stats(answer_created, *get_data_dicts(submitted, p_kq, p_u, p_c))
 
+    #  xAPI
+    user = User.objects.get(pk=answer_created['user_id'])
+    course = Course.objects.get(pk=answer_created['course_id'])
+    kq = KnowledgeQuantum.objects.get(pk=answer_created['kq_id'])
+    resource = {
+        'name': kq.title,
+        'description': 'Task for course %s' % (course.name),
+        'type': 'task',
+        'url': 'https://%s%s#unit%s/kq%s/q' % (settings.API_URI, reverse('course_classroom', kwargs={'course_slug': course.slug}), answer_created['unit_id'], answer_created['kq_id'])
+    }
+    result = {
+        'score': float(get_kq_mark(kq, user)) / 10
+    }
+    x_api.learnerSubmitsAResource(user, resource, course, extra['geolocation'], result=result)
+
 
 @task
-def on_answer_updated_task(answer_updated):
+def on_answer_updated_task(answer_updated, extra):
     up_kq, up_u, up_c, p_kq, p_u, p_c = update_mark(answer_updated)
     submitted = 0
     update_stats(answer_updated, *get_data_dicts(submitted, p_kq, p_u, p_c))
 
+    # xAPI
+    user = User.objects.get(pk=answer_updated['user_id'])
+    course = Course.objects.get(pk=answer_updated['course_id'])
+    kq = KnowledgeQuantum.objects.get(pk=answer_updated['kq_id'])
+    resource = {
+        'name': kq.title,
+        'description': 'Task for course %s' % (course.name),
+        'type': 'task',
+        'url': 'https://%s%s#unit%s/kq%s/q' % (settings.API_URI, reverse('course_classroom', kwargs={'course_slug': course.slug}), answer_updated['unit_id'], answer_updated['kq_id'])
+    }
+    result = {
+        'score': float(get_kq_mark(kq, user)) / 10
+    }
+    x_api.learnerSubmitsAResource(user, resource, course, extra['geolocation'], result=result)
 
 @task
-def on_peerreviewsubmission_created_task(submission_created):
+def on_peerreviewsubmission_created_task(submission_created, extra):
     data = {
         'course_id': submission_created['course'],
         'unit_id': submission_created['unit'],
@@ -367,9 +398,22 @@ def on_peerreviewsubmission_created_task(submission_created):
     passed = False
     update_stats(data, *get_data_dicts(submitted, passed, passed, passed))
 
+    # xAPI
+    user = User.objects.get(pk=submission_created['author'])
+    course = Course.objects.get(pk=submission_created['course'])
+    kq = KnowledgeQuantum.objects.get(pk=submission_created['kq'])
+    resource = {
+        'name': kq.title,
+        'description': 'Peer assesment for course %s' % (course.name),
+        'type': 'assessment',
+        'url': 'https://%s%s#unit%s/kq%s/q' % (settings.API_URI, reverse('course_classroom', kwargs={'course_slug': course.slug}), submission_created['unit'], submission_created['kq'])
+    }
+
+    x_api.learnerSubmitsAResource(user, resource, course, extra['geolocation'])
+
 
 @task
-def on_peerreviewreview_created_task(review_created, user_reviews):
+def on_peerreviewreview_created_task(review_created, user_reviews, extra):
     data = {
         'course_id': review_created['course'],
         'unit_id': review_created['unit'],
@@ -401,12 +445,28 @@ def on_peerreviewreview_created_task(review_created, user_reviews):
     data_kq.update(increment)
     update_stats(data, data_kq, data_unit, data_course)
 
+    # xAPI
+    user = User.objects.get(pk=review_created['author'])
+    course = Course.objects.get(pk=review_created['course'])
+    kq = KnowledgeQuantum.objects.get(pk=review_created['kq'])
+    resource = {
+        'name': kq.title,
+        'description': 'Peer assesment feedback for course %s' % (course.name),
+        'type': 'peerfeedback',
+        'url': extra['url']
+    }
+
+    x_api.learnerSubmitsAResource(user, resource, course, extra['geolocation'], result=extra['result'])
+
 @task
 def on_history_created_task(history_created):
     # Send xAPI event
     print history_created['course_id']
     user = User.objects.get(pk=history_created['user_id'])
-    course = Course.objects.get(pk=history_created['course_id'])
+    try:
+        course = Course.objects.get(pk=history_created['course_id'])
+    except:
+        course = None
     geolocation = {
         'lat': history_created['lat'],
         'lon': history_created['lon']
@@ -419,4 +479,4 @@ def on_history_created_task(history_created):
     else:
         page['name'] = ''
         page['description'] = ''
-    x_api.learnerAccessAPage(user, page, geolocation)
+    x_api.learnerAccessAPage(user, page, course, geolocation)
