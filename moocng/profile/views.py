@@ -153,6 +153,7 @@ def profile_calendar(request):
 def profile_user(request, id, byid=False):
 
 	if(not id):
+		case = None
 		if(not request.user.id):
 			return HttpResponseRedirect('/auth/login')
 		id = request.user.id
