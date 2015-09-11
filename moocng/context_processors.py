@@ -38,17 +38,19 @@ def theme(request):
     context = {
         'theme': {
             'logo': settings.STATIC_URL + u'img/logo.png',
+            'logo_big': settings.STATIC_URL + u'img/logo_big.png',
+            'logo_mini': settings.STATIC_URL + u'img/logo_mini.png',
             'subtitle': u'Knowledge for the masses',
             'top_banner': settings.STATIC_URL + u'img/top_banner.jpg',
-            'top_banner_alt': _('decorative landscape of seville'),
-            'right_banner1': settings.STATIC_URL + u'img/right_banner1.jpg',
-            'right_banner1_alt': _('decorative book stack'),
-            'right_banner2': settings.STATIC_URL + u'img/right_banner2.jpg',
-            'right_banner2_alt': _('decorative laptop'),
+            'top_banner_title': u'<strong>OpenMOOC</strong>',
+            'top_banner_subtitle': u'A platform created to facilitate the search for open educational resources',
             'bootstrap_css': settings.STATIC_URL + u'css/bootstrap.min.css',
             'moocng_css': settings.STATIC_URL + u'css/moocng.css',
-            'cert_banner': settings.STATIC_URL + u'img/cert_banner.png',
-            'cert_banner_alt': _('link to get a certification in this course'),
+            'favicon_dir': settings.STATIC_URL + u'img/favicon/',
+            'course_default_thumbnail': settings.STATIC_URL + u'img/classroom.png',
+            'course_overview_default_background': settings.STATIC_URL + u'img/course_bck.jpg',
+            'link_tos': u'/tos',
+            'link_privacy': u'/legal',
         }
     }
 
@@ -199,11 +201,6 @@ def extra_settings(request):
         forum_category_url = '#'
 
     try:
-        show_email = settings.SHOW_EMAIL
-    except AttributeError:
-        show_email = False
-
-    try:
         max_file_size = settings.ATTACHMENTS_MAX_SIZE
     except AttributeError:
         max_file_size = 5
@@ -212,6 +209,26 @@ def extra_settings(request):
         profile_provider_url = settings.PROFILE_SERVICE_URL
     except AttributeError:
         profile_provider_url = None
+
+    try:
+        feature_geolocation = settings.FEATURE_GEOLOCATION
+    except AttributeError:
+        feature_geolocation = '#'
+
+    try:
+        show_email = settings.SHOW_EMAIL
+    except AttributeError:
+        show_email = False
+
+    try:
+        show_username = settings.SHOW_USERNAME
+    except AttributeError:
+        show_username = False
+
+    try:
+        show_logout = settings.SHOW_LOGOUT
+    except AttributeError:
+        show_logout = False
 
     context = {
         'site_url': site_url,
@@ -236,9 +253,12 @@ def extra_settings(request):
         'feature_ects': feature_ects,
         'forum_url': forum_url,
         'forum_category_url': forum_category_url,
-        'show_email': show_email,
         'max_file_size': max_file_size,
-        'profile_provider_url': profile_provider_url
+        'profile_provider_url': profile_provider_url,
+        'feature_geolocation': feature_geolocation,
+        'show_username': show_username,
+        'show_email': show_email,
+        'show_logout': show_logout,
     }
 
     return context

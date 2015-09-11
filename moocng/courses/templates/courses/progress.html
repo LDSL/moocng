@@ -24,6 +24,10 @@
                 <a class="button" href="{{ MEDIA_URL }}{{ course.certification_file }}" target="_blank">{% trans 'Download certification file' %}</a>
             {% elif course.certification_file %}
                 <a href="{{ MEDIA_URL }}{{ course.certification_file }}" target="_blank">{% trans 'Download certification file' %}</a>
+            {% elif not course.certification_file and not cert_url %}
+                <a class="button" href="{% url course_diploma_pdf course.slug %}" target="_blank">{% trans 'Download certification file' %}</a>
+            {% else %}
+                <a href="{% url course_diploma_pdf course.slug %}" target="_blank">{% trans 'Download certification file' %}</a>
             {% endif %}
             </div>
             {% endif %}

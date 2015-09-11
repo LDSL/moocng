@@ -16,11 +16,6 @@ from django.template import RequestContext
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 
-
-from moocng.profile.models import (	UserProfile, get_blog_user, get_posts, 
-									insert_post, count_posts, update_following_blog_user, 
-									insert_blog_user, save_retweet, save_reply, get_num_followers, search_posts)
-
 from moocng.courses.security import (get_courses_available_for_user,
 									get_courses_user_is_enrolled,
 									get_course_progress_for_user)
@@ -30,9 +25,9 @@ from moocng.badges.utils import (get_user_badges_group_by_course)
 from moocng.slug import unique_slugify
 from moocng.utils import use_cache
 from moocng.profile.forms import (PostForm)
-from moocng.mongodb import get_micro_blog_db
 from moocng.mongodb import get_db
 from moocng.portal.templatetags.gravatar import (gravatar_for_email)
+from moocng.communityshare.models import Microblog
 import pymongo
 import json
 from bson import json_util
@@ -41,6 +36,7 @@ from datetime import date, datetime
 from moocng.profile.utils import (get_user)
 from cgi import escape
 from django.utils.html import urlize
+import hashlib
 
 def profile_timeline(request):
 	return render_to_response('profile/timeline.html', {
@@ -55,7 +51,7 @@ def profile_groups(request):
 		}, context_instance=RequestContext(request))
 
 # @login_required
-def profile_courses(request, id):
+def profile_courses(request, id, byid=False):
 
 	if(not id):
 		if(not request.user.id):
@@ -63,8 +59,11 @@ def profile_courses(request, id):
 		user = request.user
 		id = request.user.id
 	else:
-		user = User.objects.get(username=id)
-		id = user.id
+		if byid:
+			user = User.objects.get(pk=id)
+		else:
+			user = User.objects.get(username=id)
+			id = user.id
 
 	case = _getCase(request,id)
 
@@ -92,26 +91,56 @@ def profile_courses(request, id):
 		}, context_instance=RequestContext(request))
 
 # @login_required
-def profile_badges(request, id):
-
+def profile_badges(request, id, byid=False):
 	if(not id):
 		if(not request.user.id):
 			return HttpResponseRedirect("/auth/login")
 		user = request.user
 		id = request.user.id
 	else:
-		user = User.objects.get(username=id)
-		id = user.id
+		if byid:
+			user = User.objects.get(pk=id)
+		else:
+			user = User.objects.get(username=id)
+			id = user.id
 
 	courses = get_user_badges_group_by_course(user)
 
 	return render_to_response('profile/badges.html', {
-		"id":id,
+		"id": id,
 		'request': request,
 		"user_view_profile": user,
 		"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
 		"courses": courses,
 		}, context_instance=RequestContext(request))
+
+def profile_badge(request, badgeid, id=None):
+
+	if (badgeid):
+		if(not id):
+			if(not request.user.id):
+				return HttpResponseRedirect("/auth/login")
+			user = request.user
+			id = request.user.id
+		else:
+			user = User.objects.get(username=id)
+			id = user.id
+
+		badge = get_db().get_collection('badge').find({"id_user": id, "id_badge": int(badgeid)})[0]
+		hashed_email = hashlib.sha256(user.email + settings.BADGES_HASH_SALT).hexdigest()
+		badge['id'] = badge['_id']
+
+		return render_to_response('profile/badge.html', {
+			"id":id,
+			'request': request,
+			"user_view_profile": user,
+			"badges_count": get_db().get_collection('badge').find({"id_user": id}).count(),
+			"hashed_email": hashed_email,
+			"badge": badge,
+			"openbadges_service_url": settings.BADGES_SERVICE_URL,
+			}, context_instance=RequestContext(request))
+	else:
+		return HttpResponseBadRequest()
 
 @login_required
 def profile_calendar(request):
@@ -121,7 +150,7 @@ def profile_calendar(request):
 		}, context_instance=RequestContext(request))
 
 # @login_required
-def profile_user(request, id):
+def profile_user(request, id, byid=False):
 
 	if(not id):
 		if(not request.user.id):
@@ -129,13 +158,18 @@ def profile_user(request, id):
 		id = request.user.id
 		user =  request.user
 	else:
-		user = User.objects.get(username=id)
-		id = user.id
+		case = _getCase(request,id)
+		if byid:
+			user = User.objects.get(pk=id)
+		else:
+			user = User.objects.get(username=id)
+			id = user.id
 
 	courses = get_courses_user_is_enrolled(user)
 
 	return render_to_response('profile/user.html', {
 		'id': id,
+		'case': case,
 		'badges_count': get_db().get_collection('badge').find({'id_user': id}).count(),
 		'request': request,
 		'courses': courses,
@@ -144,39 +178,59 @@ def profile_user(request, id):
 		}, context_instance=RequestContext(request))
 
 # @login_required
-def profile_posts(request, id, api=False):
+def profile_posts(request, id, api=False, byid=False):
+	m = Microblog()
 	if(not id):
 		if(not request.user.id):
 			return HttpResponseRedirect("/auth/login")
 		id = request.user.id
 		user = request.user
 	else:
-		user = User.objects.get(username=id)
-		id = user.id
+		if byid:
+			id = int(id)
+			user = User.objects.get(pk=id)
+		else:
+			user = User.objects.get(username=id)
+			id = user.id
 
 	if request.method == 'POST':
 		form = PostForm(request.POST)
 		if form.is_valid():
-			insert_post({
-							"id_user": request.user.id, 
-							"first_name": request.user.first_name,
-							"last_name":request.user.last_name,
-							"username": "@" + request.user.username,
-							"gravatar": "http:" + gravatar_for_email(request.user.email),
-							"date": datetime.utcnow().isoformat(),
-							"text": urlize(escape(form.cleaned_data['postText'])),
-							"children": [],
-							"favourite": [],
-							"shared": 0
+			if request.META.get('HTTP_CONTEXT_URL'):
+				try:
+					geolocation = {
+						'lat': float(request.META['HTTP_CONTEXT_GEO_LAT']),
+						'lon': float(request.META['HTTP_CONTEXT_GEO_LON'])
+					}
+				except:
+					geolocation = {
+						'lat': 0.0,
+						'lon': 0.0
+					}
+				try:
+					url = request.META['HTTP_CONTEXT_URL']
+					result = re.search('\/course\/(?P<slug>[a-zA-Z0-9-_]+)\/', url)
+					course_slug = result.group('slug')
+				except:
+					course_slug = None
+			else:
+				geolocation = {
+                    'lat': float(request.POST['context_geo_lat']),
+                    'lon': float(request.POST['context_geo_lon'])
+                }
+				course_slug = None
 
-						})
-
+			extra = {
+				'geolocation': geolocation,
+				'course_slug': course_slug
+			}
+			m.insert_post(request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'], extra)
 			return HttpResponseRedirect("/user/posts")
-	
+
 	else:
 		case = _getCase(request,id)
 
-		blog_user = get_blog_user(request.user.id)
+		blog_user = m.get_blog_user(request.user.id)
 		if(blog_user and id in blog_user["following"]):
 			following = "true"
 		else:
@@ -184,14 +238,14 @@ def profile_posts(request, id, api=False):
 
 		followingCount = 0
 		if(request.user.id != id):
-			blog_user = get_blog_user(id)
+			blog_user = m.get_blog_user(id)
 			if(blog_user):
 				followingCount = len(blog_user["following"])
 		elif(blog_user):
 			followingCount = len(blog_user["following"])
 
-		listPost = get_posts(case, id, blog_user, 0)
-		
+		listPost = m.get_posts(case, id, blog_user, 0)
+
 		if not api:
 			return render_to_response('profile/posts.html', {
 				"id":id,
@@ -199,13 +253,13 @@ def profile_posts(request, id, api=False):
 				# "email":"@" + request.user.email.split("@")[0],
 				'request': request,
 				'form': PostForm(),
-				'totalPost': count_posts(id),
+				'totalPost': m.count_posts(id),
 				'posts': listPost,
 				'case': case,
 				"user_view_profile": user,
 				"following": following,
 				"followingCount": followingCount,
-				"followerCount": get_num_followers(id)
+				"followerCount": m.get_num_followers(id)
 				}, context_instance=RequestContext(request))
 		else:
 			response = {
@@ -213,12 +267,13 @@ def profile_posts(request, id, api=False):
 				"user": '@%s' % (user.username),
 				"following": following,
 				"followingCount": followingCount,
-				"followerCount": get_num_followers(id),
+				"followerCount": m.get_num_followers(id),
 				"posts": listPost
 			}
 			return HttpResponse(json_util.dumps(response), mimetype='application/json')
 
 def profile_posts_search(request, query, hashtag=False, api=False):
+	m = Microblog()
 	if(not request.user.id):
 		return HttpResponseRedirect("/auth/login")
 	id = request.user.id
@@ -227,26 +282,41 @@ def profile_posts_search(request, query, hashtag=False, api=False):
 	if request.method == 'POST':
 		form = PostForm(request.POST)
 		if form.is_valid():
-			insert_post({
-							"id_user": request.user.id, 
-							"first_name": request.user.first_name,
-							"last_name":request.user.last_name,
-							"username": "@" + request.user.username,
-							"gravatar": "http:" + gravatar_for_email(request.user.email),
-							"date": datetime.utcnow().isoformat(),
-							"text": urlize(escape(form.cleaned_data['postText'])),
-							"children": [],
-							"favourite": [],
-							"shared": 0
+			if request.META.get('HTTP_CONTEXT_URL'):
+				try:
+					geolocation = {
+						'lat': float(request.META['HTTP_CONTEXT_GEO_LAT']),
+						'lon': float(request.META['HTTP_CONTEXT_GEO_LON'])
+					}
+				except:
+					geolocation = {
+						'lat': 0.0,
+						'lon': 0.0
+					}
+				try:
+					url = request.META['HTTP_CONTEXT_URL']
+					result = re.search('\/course\/(?P<slug>[a-zA-Z0-9-_]+)\/', url)
+					course_slug = result.group('slug')
+				except:
+					course_slug = None
+			else:
+				geolocation = {
+                    'lat': float(request.POST['context_geo_lat']),
+                    'lon': float(request.POST['context_geo_lon'])
+                }
+				course_slug = None
 
-						})
-
+			extra = {
+				'geolocation': geolocation,
+				'course_slug': course_slug
+			}
+			m.insert_post(request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'], extra)
 			return HttpResponseRedirect("/user/posts")
-	
+
 	else:
 		case = _getCase(request,id)
 
-		blog_user = get_blog_user(request.user.id)
+		blog_user = m.get_blog_user(request.user.id)
 		if(blog_user and id in blog_user["following"]):
 			following = "true"
 		else:
@@ -254,7 +324,7 @@ def profile_posts_search(request, query, hashtag=False, api=False):
 
 		followingCount = 0
 		if(request.user.id != id):
-			blog_user = get_blog_user(id)
+			blog_user = m.get_blog_user(id)
 			if(blog_user):
 				followingCount = len(blog_user["following"])
 		elif(blog_user):
@@ -264,8 +334,8 @@ def profile_posts_search(request, query, hashtag=False, api=False):
 			search_query = '#%s' % (query)
 		else:
 			search_query = query
-		listPost = search_posts(search_query, 0)
-		
+		listPost = m.search_posts(search_query, 0)
+
 		if not api:
 			return render_to_response('profile/posts_search.html', {
 				"id":id,
@@ -273,20 +343,20 @@ def profile_posts_search(request, query, hashtag=False, api=False):
 				# "email":"@" + request.user.email.split("@")[0],
 				'request': request,
 				'form': PostForm(),
-				'totalPost': count_posts(id),
+				'totalPost': m.count_posts(id),
 				'posts': listPost,
 				'case': case,
 				"user_view_profile": user,
 				"following": following,
 				"followingCount": followingCount,
-				"followerCount": get_num_followers(id),
+				"followerCount": m.get_num_followers(id),
 				"query": query,
 				"is_hashtag": hashtag,
 				}, context_instance=RequestContext(request))
 		else:
 			response = {
 				"query": query,
-				"is_hashtag": hashtag,		
+				"is_hashtag": hashtag,
 				"posts": listPost
 			}
 			return HttpResponse(json_util.dumps(response), mimetype='application/json')
@@ -294,18 +364,19 @@ def profile_posts_search(request, query, hashtag=False, api=False):
 
 # @login_required
 def load_more_posts(request, page, query, search=False, hashtag=False):
+	m = Microblog()
 	page = int(page)
 	listPost = None
 	if search and query:
 		if hashtag:
 			query = "#%s" % (query)
-		listPost = search_posts(query, page)
+		listPost = m.search_posts(query, page)
 	else:
 		if(not query):
 			id = request.user.id
 		else:
 			id = int(query)
-		listPost = get_posts(0, id, get_blog_user(request.user.id), page)
+		listPost = m.get_posts(0, id, m.get_blog_user(request.user.id), page)
 
 	return render_to_response('profile/post.html', {
 			'request': request,
@@ -315,49 +386,91 @@ def load_more_posts(request, page, query, search=False, hashtag=False):
 @login_required
 def user_follow(request, id, follow):
 	id = int(id)
-	user = get_blog_user(request.user.id) 
+	m = Microblog()
+	user = m.get_blog_user(request.user.id)
 
 	if(follow == "0"):
+		try:
+			geolocation = {
+				'lat': float(request.META['HTTP_CONTEXT_GEO_LAT']),
+				'lon': float(request.META['HTTP_CONTEXT_GEO_LON'])
+			}
+		except:
+			geolocation = {
+				'lat': 0.0,
+				'lon': 0.0
+			}
+		extra = {
+			'geolocation': geolocation,
+			'user_id': id
+		}
+
 		if(user):
 			if(not id in user["following"]):
 				user["following"].append(id)
-				update_following_blog_user(request.user.id, user["following"])
+				m.update_following_blog_user(request.user.id, user["following"], extra)
 		else:
-			insert_blog_user({
-									"id_user": request.user.id, 
-									"following": [id]
-								  })
-	
+			m.insert_blog_user(request.user.id, [id], extra)
+
 	elif(follow == "1" and user):
 		user["following"].remove(id)
-		update_following_blog_user(request.user.id, user["following"] )
+		m.update_following_blog_user(request.user.id, user["following"])
 
 	return HttpResponse("true")
 
 @login_required
 def retweet(request, id):
-	return HttpResponse(save_retweet(request,id))
+	m = Microblog()
+	try:
+		geolocation = {
+			'lat': float(request.META['HTTP_CONTEXT_GEO_LAT']),
+			'lon': float(request.META['HTTP_CONTEXT_GEO_LON'])
+		}
+	except:
+		geolocation = {
+			'lat': 0.0,
+			'lon': 0.0
+		}
+	extra = {
+		'geolocation': geolocation
+	}
+	return HttpResponse(m.save_retweet(id, request.user.id, request.user.username, extra))
 
 @login_required
 def reply(request, id):
 	if request.method == 'POST':
+		m = Microblog()
 		form = PostForm(request.POST)
 		if form.is_valid():
-			post = {
-						"id_user": request.user.id, 
-						"first_name": request.user.first_name,
-						"last_name":request.user.last_name,
-						"username": "@" + request.user.username,
-						"gravatar": "http:" + gravatar_for_email(request.user.email),
-						"date": datetime.utcnow().isoformat(),
-						"text": urlize(escape(form.cleaned_data['postText'])),
-						"children": [],
-						"favourite": [],
-						"shared": 0
-
+			if request.META.get('HTTP_CONTEXT_URL'):
+				try:
+					geolocation = {
+						'lat': float(request.META['HTTP_CONTEXT_GEO_LAT']),
+						'lon': float(request.META['HTTP_CONTEXT_GEO_LON'])
 					}
-			save_reply(request, id, post)
+				except:
+					geolocation = {
+						'lat': 0.0,
+						'lon': 0.0
+					}
+				try:
+					url = request.META['HTTP_CONTEXT_URL']
+					result = re.search('\/course\/(?P<slug>[a-zA-Z0-9-_]+)\/', url)
+					course_slug = result.group('slug')
+				except:
+					course_slug = None
+			else:
+				geolocation = {
+                    'lat': float(request.POST['context_geo_lat']),
+                    'lon': float(request.POST['context_geo_lon'])
+                }
+				course_slug = None
 
+			extra = {
+				'geolocation': geolocation,
+				'course_slug': course_slug
+			}
+			m.save_reply(id, request.user.id, request.user.first_name, request.user.last_name, request.user.username, "https:" + gravatar_for_email(request.user.email), form.cleaned_data['postText'],extra)
 			return HttpResponseRedirect("/user/posts")
 
 def _getCase(request, id):
@@ -371,5 +484,3 @@ def _getCase(request, id):
 		return 1
 	else:
 		return 0
-
-

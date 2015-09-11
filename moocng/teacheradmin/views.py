@@ -63,6 +63,8 @@ import pprint
 from django.core import serializers
 from dateutil.relativedelta import relativedelta
 
+import boto
+
 @is_teacher_or_staff
 def teacheradmin_stats(request, course_slug):
     course = get_object_or_404(Course, slug=course_slug)
@@ -431,6 +433,44 @@ def teacheradmin_units_transcription(request, course_slug):
         return HttpResponse(status=400)
 
 @is_teacher_or_staff
+def teacheradmin_units_s3upload(request, course_slug):
+    if request.method == 'POST':
+        if not 'kq' in request.GET:
+            return HttpResponse(status=400)
+        kq = get_object_or_404(KnowledgeQuantum, id=request.GET['kq'])
+
+        if not('file' in request.FILES.keys()):
+            return HttpResponse(status=400)
+
+        file_to_upload = request.FILES.get('file', None)
+
+        conn = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+        bucket = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+        k = boto.s3.key.Key(bucket)
+        name = "files/%s/%s" % (kq.id, file_to_upload.name)
+        k.key = name
+        k.set_contents_from_file(file_to_upload)
+        k.make_public()
+        url = k.generate_url(expires_in=0, query_auth=False)
+        print "Url for updated file: %s" % (url)
+        #Save multimedia_content_id and multimedia_content_type?
+
+        return HttpResponse(simplejson.dumps({'url': url}), mimetype="application/json")
+
+    elif request.method == 'DELETE':
+        if not 'transcription' in request.GET:
+            return HttpResponse(status=400)
+
+        transcription = get_object_or_404(Transcription,
+                                       id=request.GET['transcription'])
+        transcription.delete()
+
+        return HttpResponse()
+
+    else:
+        return HttpResponse(status=400)
+
+@is_teacher_or_staff
 def teacheradmin_units_question(request, course_slug, kq_id):
     kq = get_object_or_404(KnowledgeQuantum, id=kq_id)
     course = get_object_or_404(Course, slug=course_slug)
@@ -442,7 +482,8 @@ def teacheradmin_units_question(request, course_slug, kq_id):
         return HttpResponse(status=400)
 
     if 'HTTP_REFERER' in request.META:
-        goback = request.META['HTTP_REFERER']
+        goback = reverse('teacheradmin_units', args=(course.slug,)) + '#kq' + kq_id
+        # goback = request.META['HTTP_REFERER']
     else:
         goback = None
 
@@ -468,6 +509,7 @@ def teacheradmin_units_question(request, course_slug, kq_id):
                 } for opt in obj.option_set.all()]
         context = {
             'course': course,
+            'kq': kq,
             'is_enrolled': is_enrolled,
             'object_id': obj.id,
             'original': obj,
