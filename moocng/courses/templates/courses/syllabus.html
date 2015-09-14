@@ -7,10 +7,10 @@
             <h3>{% trans "Syllabus" %}</h3>
             <ol>
             {% for unit in unit_list %}
-                <li>
+                <li {% if unit.status != 'p' %}class="not_available"{% endif %}>
                     <div class="row">
                         <div class="col-lg-12 col-md-8 col-sm-5 col-mob-4">
-                            <a href="{{unit.url}}" class="unit {% if unit.complete %}done{% endif %}"><span class="num"></span>{{unit.title}}</a>
+                            <a {% if unit.status == 'p' or is_teacher or user.is_staff %}href="{{unit.url}}"{% endif %} class="unit {% if unit.complete %}done{% endif %}"><span class="num"></span>{{unit.title}}</a>
                         </div>
                         <!--<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4">
                             <div class="social">
@@ -25,21 +25,29 @@
                         <li class="{% if q.completed %}done{% endif %} {% if q.current %}current{% endif %}">
                             <div class="row">
                                 <div class="col-lg-12 col-md-8 col-sm-5 col-mob-4">
-                                    <a class="kq" href="{{q.url}}">{{q.title}}</a>
+                                    <a class="kq" {% if unit.status == 'p' or is_teacher or user.is_staff %}href="{{q.url}}" {% endif %}>{{q.title}}</a>
                                     {% if q.has_video %}
                                         <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_video.svg">{% trans "Video" %}</span>
-                                    {% endif %} 
+                                    {% endif %}
 
                                     {% if q.has_presentation %}
                                         <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_presentacion.svg">{% trans "Presentation" %}</span>
-                                    {% endif %} 
+                                    {% endif %}
+
+                                    {% if q.has_book %}
+                                        <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_scribd.svg">{% trans "Text" %}</span>
+                                    {% endif %}
 
                                     {% if q.has_attachments %}
                                         <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_fichero.svg">{% trans "Attachments" %}</span>
-                                    {% endif %} 
+                                    {% endif %}
 
                                     {% if q.has_test %}
                                         <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_tarea-test.svg">{% trans "Test" %}</span>
+                                    {% endif %}
+
+                                    {% if q.has_pr %}
+                                        <span><img src="{{ STATIC_URL }}img/ECO_icon_contenido_tarea-desarrollo.svg">{% trans "Peer Review" %}</span>
                                     {% endif %}
                                 </div>
                                 <!--<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4">
@@ -97,6 +105,6 @@
                 });*/
             });
         });
-
+        sendHistoryEntry({{ course.pk }});
     </script>
 {% endblock %}

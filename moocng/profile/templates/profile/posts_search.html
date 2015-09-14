@@ -27,42 +27,60 @@
 		$(".retweet").click(function(){
 			var id = $(this).parent().attr("id");
 			var self = $(this);
+			var header = {
+				'context_geo_lat': 0.0,
+				'context_geo_lon': 0.0
+			}
+			if (geolocation) {
+				header['context_geo_lat'] = geolocation.coords.latitude;
+				header['context_geo_lon'] = geolocation.coords.longitude;
+			}
 			$.ajax({
 				url : "/user/retweet/" + id,
-			   	success: function(response) {
-			   		if(response == "False"){
-			   			$(".modal").modal({ show: false });
-				   		$(".modal").modal("show");
-				   		$("#modal_bck").click(function(){
+				headers: header,
+		   	success: function(response) {
+		   		if(response == "False"){
+		   			$(".modal").modal({ show: false });
+			   		$(".modal").modal("show");
+			   		$("#modal_bck").click(function(){
 							$(".modal").modal("hide");
 						});
-			   		}else{
-			   			self.text(parseInt(self.text()) + 1)
-			   		}
-			   	}
+	   			}else{
+	   				self.text(parseInt(self.text()) + 1)
+	   			}
+	   		}
 			});
 		});
-		
+
 		$(".reply").click(function(){
-			$(this).parent().parent().parent().toggleClass('open');
+			$(this).parent().parent().parent().toggleClass('openReply');
 		});
 
 		$(".followButton").click(function(){
 			var follow = ($(".followButton").hasClass('active') ? "1":0);
+			var header = {
+				'context_geo_lat': 0.0,
+				'context_geo_lon': 0.0
+			}
+			if (geolocation) {
+				header['context_geo_lat'] = geolocation.coords.latitude;
+				header['context_geo_lon'] = geolocation.coords.longitude;
+			}
 			$.ajax({
 				url : "/user/userFollow/" + {{id}} + "/" + follow,
-			   	success: function(response) {
-			   		if(follow == 0){
-			   			$(".followButton").text("{% trans 'UNFOLLOW' %}")
-			   			$(".followerCount").text(parseInt($(".followerCount").text()) + 1)
+				headers: header,
+		   	success: function(response) {
+		   		if(follow == 0){
+		   			$(".followButton").text("{% trans 'UNFOLLOW' %}")
+		   			$(".followerCount").text(parseInt($(".followerCount").text()) + 1)
 
-			   		}else{
-			   			$(".followButton").text("{% trans 'FOLLOW' %}")
-			   			$(".followerCount").text(parseInt($(".followerCount").text()) -1)
-			   		}
+		   		}else{
+		   			$(".followButton").text("{% trans 'FOLLOW' %}")
+		   			$(".followerCount").text(parseInt($(".followerCount").text()) -1)
+		   		}
 
-			   		$(".followButton").toggleClass("active")
-			   	}
+		   		$(".followButton").toggleClass("active")
+		   	}
 			});
 		});
 
@@ -70,7 +88,7 @@
 		var page = 10;
 		$(window).scroll(function() {
 		   if($(window).scrollTop() + $(window).height() == $(document).height() && load) {
-		   		load = false;	
+		   		load = false;
 		       $.ajax({
 					url : "/user/loadMorePosts/{% if is_hashtag %}hashtag{% else %}search{% endif %}/" + page + "/{{ query }}",
 			    	success: function(response) {
@@ -83,6 +101,12 @@
 				});
 		   }
 		});
+		window.setTimeout(function(){
+			if(geolocation){
+				$("input[name=context_geo_lat]").val(geolocation.coords.latitude);
+				$("input[name=context_geo_lon]").val(geolocation.coords.longitude);
+			}
+		}, 2500);
 	});
 </script>
 
@@ -130,7 +154,9 @@
 					{% if case == 0 %}
 					<form class="postFrom" method="post">
 						{% csrf_token %}
-						 {{ form}}
+						{{ form}}
+						<input type="hidden" name="context_geo_lat" value="0.0" />
+	 					<input type="hidden" name="context_geo_lon" value="0.0" />
 						<input class="postButton" type="submit" value="{% trans "Send" %}">
 						<span class="cancelPost">{% trans "Cancel" %}</span>
 					</form>
@@ -146,7 +172,7 @@
 	</div>
 
 	<div class="modal hide">
-		{% trans "This post has already been shared" %}	
+		{% trans "This post has already been shared" %}
 	</div>
 
 </div>

@@ -24,7 +24,7 @@
 	        $("#confirm-creation").modal('show');
 	    });
 
-		$("#accept-createGroups").click(function(){		
+		$("#accept-createGroups").click(function(){
 			$.ajax({
 		           type: "POST",
 		           url: "{% url teacheradmin_groups course.slug %}",
@@ -52,6 +52,7 @@
 		setGroupStatus();
 	});
 </script>
+<legend>{% trans "Groups" %}</legend>
 <div id="confirm-creation" class="modal fade hide">
 	<h2>{% trans "Warning" %}</h2>
 	<p>{% trans "The groups generation action <strong>cannot be undone</strong>. Please, ensure that your current values are the ones you want." %}</p>

@@ -1,17 +1,17 @@
-{% extends "base_orig.html" %}
+{% extends "base_teacheradmin.html" %}
 
 {% load i18n peer_review_tags asset_tags externalapps %}
 
-{% block nav %}
-    {% if is_enrolled or is_teacher or user.is_staff %}
-        <ul class="nav nav-pills">
+{# block nav #}
+    {# if is_enrolled or is_teacher or user.is_staff #}
+        <!--<ul class="nav nav-pills">
             <li {% block nav-course-overview %}{% endblock %}>
                 <a href="{% url course_overview course.slug %}">{% trans "Overview" %}</a>
             </li>
             <li {% block nav-course-classroom %}{% endblock %}>
                 <a href="{% url course_classroom course.slug %}">{% trans "Classes" %}</a>
             </li>
-            <!--<li {% block nav-course-externalapps %}{% endblock %}>
+            <li {% block nav-course-externalapps %}{% endblock %}>
                 {% externalapps_list %}
             </li>
             {% if_has_peer_review_assignments course %}
@@ -27,12 +27,12 @@
 
             <li {% block nav-course-progress %}{% endblock %}>
                 <a href="{% url course_progress course.slug %}">{% trans "Progress" %}</a>
-            </li>-->
+            </li>
             {% if is_teacher or user.is_staff %}
                 <li class="pull-right{% block nav-course-admin %}{% endblock %}">
                     <a href="{% url teacheradmin_index course.slug %}">{% trans "Course administration" %}</a>
                 </li>
             {% endif %}
-        </ul>
-    {% endif %}
-{% endblock %}
+        </ul>-->
+    {# endif #}
+{# endblock #}

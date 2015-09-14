@@ -64,8 +64,8 @@ class UnitQuerySet(MultilingualQuerySet):
 
     def scorables(self):
         if not settings.COURSES_USING_OLD_TRANSCRIPT:
-            return self.exclude(unittype='n', weight=0)
-        return self.all()
+            return self.filter(~Q(unittype='n') | ~Q(weight=0) | ~Q(status='d'))
+        return self.filter(~Q(status='d'))
 
 
 class UnitManager(models.Manager):
@@ -76,8 +76,8 @@ class UnitManager(models.Manager):
     def scorables(self):
         #return self.get_query_set().scorables()
         if not settings.COURSES_USING_OLD_TRANSCRIPT:
-            return self.exclude(unittype='n', weight=0)
-        return self.all()
+            return self.filter(~Q(unittype='n') | ~Q(weight=0) | ~Q(status='d'))
+        return self.filter(~Q(status='d'))
 
     def get_by_natural_key(self, course_slug, title):
         return self.get(title=title, course__slug=course_slug)

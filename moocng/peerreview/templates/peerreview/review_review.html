@@ -42,8 +42,15 @@
             });
             $("button#pr-confirm").click(function (evt) {
                 confirmModal.modal("hide");
+
+                if(geolocation){
+                  $('input[name=context_geo_lat]').val(geolocation.coords.latitude);
+                  $('input[name=context_geo_lon]').val(geolocation.coords.longitude);
+                }
                 $('form').trigger("submit");
             });
+
+            sendHistoryEntry({{course.pk}});
         });
     </script>
 {% endblock %}
@@ -155,6 +162,8 @@
                                     {% endfor %}
                                     <div class="block">
                                         {{ submission_form }}
+                                        <input type="hidden" name="context_geo_lat" value="0.0"/>
+                                        <input type="hidden" name="context_geo_lon" value="0.0"/>
                                     </div>
                                     <div class="form-actions block">
                                         <button type="submit" class="btn btn-primary pull-right" id="send_review" value="">
