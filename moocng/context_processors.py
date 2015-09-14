@@ -49,6 +49,8 @@ def theme(request):
             'favicon_dir': settings.STATIC_URL + u'img/favicon/',
             'course_default_thumbnail': settings.STATIC_URL + u'img/classroom.png',
             'course_overview_default_background': settings.STATIC_URL + u'img/course_bck.jpg',
+            'link_home': u'/',
+            'link_catalogue': u'/#catalogue',
             'link_tos': u'/tos',
             'link_privacy': u'/legal',
         }
@@ -159,17 +161,17 @@ def extra_settings(request):
         feature_sec_howitworks = settings.FEATURE_SEC_HOWITWORKS
     except AttributeError:
         feature_sec_howitworks = False
-        
+
     try:
         feature_sec_staff = settings.FEATURE_SEC_STAFF
     except AttributeError:
         feature_sec_staff = False
-        
+
     try:
         feature_sec_faq = settings.FEATURE_SEC_FAQ
     except AttributeError:
         feature_sec_faq = False
-        
+
     try:
         feature_sec_contact = settings.FEATURE_SEC_CONTACT
     except AttributeError:
@@ -204,7 +206,7 @@ def extra_settings(request):
         max_file_size = settings.ATTACHMENTS_MAX_SIZE
     except AttributeError:
         max_file_size = 5
-        
+
     try:
         profile_provider_url = settings.PROFILE_SERVICE_URL
     except AttributeError:
