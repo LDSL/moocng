@@ -15,7 +15,7 @@
             {% if feature_groups %}
             <li class="{% block nav-teacheradmin-groups %}{% endblock %}"><a href="{% url teacheradmin_groups course.slug %}">{% trans "Groups" %}</a></li>
             {% endif %}
-            <li class="{% block nav-teacheradmin-categories %}{% endblock %}"><a href="{% url teacheradmin_categories course.slug %}">{% trans "Categories" %}</a></li>
+            <!-- <li class="{% block nav-teacheradmin-categories %}{% endblock %}"><a href="{% url teacheradmin_categories course.slug %}">{% trans "Categories" %}</a></li> -->
 
             <li class="{% block nav-teacheradmin-badges %}{% endblock %}"><a href="{% url teacheradmin_badges course.slug %}">{% trans "Badges" %}</a></li>
             <!--<li class="{% block nav-teacheradmin-externalapps %}{% endblock %}"><a href="{% url externalapps_list course.slug %}">{% trans "External applications" %}</a></li>-->

@@ -121,10 +121,10 @@
 {% endif %}
     <header>
     <div class="row main-bar">
-      <h1 class="logo"><a href="{% url home %}" class="hide-text"><img src="{{ theme.logo }}" alt="logo {{ site.name }}" />{{ site.name }}. {% trans theme.subtitle %}</a></h1>
+      <h1 class="logo"><a href="{{ theme.link_home }}" class="hide-text"><img src="{{ theme.logo }}" alt="logo {{ site.name }}" />{{ site.name }}. {% trans theme.subtitle %}</a></h1>
       <img class="logo-mini" src="{{ theme.logo_mini }}" alt="logo {{ site.name }}" />
       <ul class="btn-link pull-left" id="meta-buttons">
-        <li><a href="{% url home %}#catalogue" class="btn btn-link">{% trans "Catalogue"%}</a></li>
+        <li><a href="{{ theme.link_catalogue }}" class="btn btn-link">{% trans "Catalogue"%}</a></li>
         {% if feature_teams %}
         	<li><a href="#" class="btn btn-link">{% trans "Teams" %}</a></li>
         {% endif %}

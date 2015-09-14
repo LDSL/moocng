@@ -77,14 +77,18 @@
         });
 
         $("form").submit(function(ev){
-            var pillsBadge = $("input[name=pillsBadge]");
-            if (pillsBadge.length > 0){
-                return true;
+            if($('input[name=criteriaType]:checked').val() === '1'){
+              var pillsBadge = $("input[name=pillsBadge]");
+              if (pillsBadge.length > 0){
+                  return true;
+              }else{
+                  ev.stopPropagation();
+                  ev.preventDefault();
+                  alert('{% trans 'Please, add a pill to the list using the "Add peer review" button' %}');
+                  return false;
+              }
             }else{
-                ev.stopPropagation();
-                ev.preventDefault();
-                alert('{% trans 'Please, add a pill to the list using the "Add peer review" button' %}');
-                return false;
+              return true;
             }
         });
 

@@ -419,8 +419,12 @@ MOOCNG_THEME = {
     #'bootstrap_css': u'',
     'moocng_css': STATIC_URL + u'brand/css/moocng.css',
     #'prefoot_template': u'prefoot.html',
+    #'link_home': 'https://ecolearning.eu',
+    #'link_catalogue': 'https://ecolearning.eu',
     #'link_tos': u'http://ecolearning.eu/terms-of-use/',
     #'link_privacy': u'http://ecolearning.eu/privacy-policy/',
+    #'header_right_logo': STATIC_URL + u'brand/img/logo_defensa_cab.png',
+    #'diploma_template': u'diploma.html'
 }
 
 ENABLED_COMUNICATIONS = (
@@ -637,6 +641,7 @@ NUM_MIGRATE_MARK_DAILY = 10000
 # Pagination
 
 PAGINATION_DEFAULT_PAGINATION = 10
+
 
 # ENABLED FEATURES
 

@@ -773,7 +773,7 @@ msgstr "Le"
 #: static/brand_difundi/templates/prefoot.html:13
 #: static/brand_eco/templates/prefoot.html:13
 msgid "and the"
-msgstr "Date et heure"
+msgstr ", "
 
 #: collected_static/brand/templates/prefoot.html:15
 #: collected_static/brand_difundi/templates/prefoot.html:15
@@ -782,7 +782,7 @@ msgstr "Date et heure"
 #: static/brand_difundi/templates/prefoot.html:15
 #: static/brand_eco/templates/prefoot.html:15
 msgid "the"
-msgstr "le"
+msgstr " "
 
 #: collected_static/brand/templates/prefoot.html:19
 #: collected_static/brand_difundi/templates/prefoot.html:19
@@ -800,7 +800,7 @@ msgstr "il collabore"
 #: static/brand_difundi/templates/prefoot.html:19
 #: static/brand_eco/templates/prefoot.html:19
 msgid "cooperate"
-msgstr "Collaborer"
+msgstr "Collaborent"
 
 #: collected_static/brand/templates/prefoot.html:19
 #: collected_static/brand_difundi/templates/prefoot.html:19
@@ -812,9 +812,8 @@ msgid ""
 "on the <strong>ECO</strong> platform to encourage the free participation on "
 "Open Access Massive Online Courses"
 msgstr ""
-"on the <strong>ECO</strong> platform to encourage the free participation on "
-"Open Access Massive Online Coursessur la plateforme <strong>ECO</strong> "
-"pour encourager la libre participation aux cours en ligne massifs et ouverts"
+"sur la plataforme <strong>ECO</strong> pour encourager la libre participation aux "
+"Cours en Ligne, Ouverts et Massifs"
 
 #: collected_static/brand/templates/prefoot.html:26
 #: collected_static/brand_difundi/templates/prefoot.html:26
@@ -891,7 +890,7 @@ msgstr "Contact"
 #: static/brand_difundi/templates/prefoot.html:73
 #: static/brand_eco/templates/prefoot.html:73
 msgid "Platform integrated into the"
-msgstr "La plateforme est intégrée au "
+msgstr "La plateforme est intégrée au project"
 
 #: collected_static/brand/templates/prefoot.html:73
 #: collected_static/brand_difundi/templates/prefoot.html:73
@@ -909,7 +908,7 @@ msgstr "ECO : Elearning, Communication and Open-data"
 #: static/brand_difundi/templates/prefoot.html:73
 #: static/brand_eco/templates/prefoot.html:73
 msgid "project"
-msgstr "projet"
+msgstr " "
 
 #: contact/forms.py:30 contact/forms.py:54
 msgid "See Terms of Use"

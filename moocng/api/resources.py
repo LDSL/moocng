@@ -237,7 +237,7 @@ class KnowledgeQuantumResource(BaseModelResource):
         return objects.filter(
             Q(unit__unittype='n') |
             Q(unit__start__isnull=True) |
-            Q(unit__start__isnull=False, unit__start__lte=datetime.now)
+            Q(unit__start__isnull=False) #, unit__start__lte=datetime.now)
         )
 
     def dispatch(self, request_type, request, **kwargs):
