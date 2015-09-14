@@ -27,8 +27,8 @@
     </ul>
     <div class="tab-content tab-content-no-overflow mb20">
         <div class="tab-pane active" id="tab-generalinfo">
-            {% if user.is_staff %}
-            <div class="">
+
+            <div {% if not user.is_staff %}class="hide"{% endif %}>
                 <div>
                     <fieldset>
                         <legend>{% trans 'Status' %}</legend>
@@ -41,7 +41,6 @@
                     </fieldset>
                 </div>
             </div>
-            {% endif %}
             <div class="">
                 <div>
                     <fieldset>
@@ -80,12 +79,12 @@
                                     <input type="date" name="end_date" id="id_end_date" value="{{ form.end_date.value|date:'Y-m-d' }}" class="input-xlarge" />
                                     {% if form.end_date.help_text %}<span class="help-inline">{{ form.end_date.help_text }}</span>{% endif %}
                                 </p>
-                                <!--<p>
+                                <p class="hide">
                                     {{ form.enrollment_method.errors }}
                                     {{ form.enrollment_method.label_tag }}
                                     {{ form.enrollment_method }}
                                     {% if form.enrollment_method.help_text %}<span class="help-inline">{{ form.enrollment_method.help_text }}</span>{% endif %}
-                                </p>-->
+                                </p>
                             </div>
                         </div>
                     </fieldset>
@@ -145,12 +144,12 @@
                 {{ form.estimated_effort }}
                 {% if form.estimated_effort.help_text %}<span class="help-inline">{{ form.estimated_effort.help_text }}</span>{% endif %}
             </p>
-            <!--<p>
+            <p class="hide">
                 {{ form.completion_badge.errors }}
                 {{ form.completion_badge.label_tag }}
                 {{ form.completion_badge }}
                 {% if form.completion_badge.help_text %}<span class="help-inline">{{ form.completion_badge.help_text }}</span>{% endif %}
-            </p>-->
+            </p>
             <p>
                 {{ form.ects.errors }}
                 {{ form.ects.label_tag }}
@@ -187,12 +186,12 @@
         </div>
         <div class="tab-pane" id="tab-appearance">
             <p>Appearance</p>
-            <!--<p>
+            <p class="hide">
                 {{ form.highlight.errors }}
                 {{ form.highlight }}
                 {{ form.highlight.label_tag }}
                 {% if form.highlight.help_text %}<span class="help-inline">{{ form.highlight.help_text }}</span>{% endif %}
-            </p>-->
+            </p>
             <p>
                 {{ form.promotion_media_content_type.errors }}
                 {{ form.promotion_media_content_type.label_tag }}
