@@ -199,14 +199,17 @@ def update_kq_mark(db, kq, user, threshold, new_mark_kq=None, new_mark_normalize
         if(badge.note <= course_mark):
             gotBadge = get_db().get_collection('badge').find_one({'id_badge': badge.id, "id_user": user.pk})
             if(not gotBadge):
-                evaluateUnit = Unit.objects.get(id=badge.criteria)
-                units = Unit.objects.filter(course_id=evaluateUnit.course_id, order__lte = evaluateUnit.order)
-                win = True
-                for aux in units:
-                    unit_kqs = aux.knowledgequantum_set.all()
-                    for kq in unit_kqs:
-                        if not kq.is_completed(user):
-                            win = False
+                try:
+                    evaluateUnit = Unit.objects.get(id=badge.criteria)
+                    units = Unit.objects.filter(course_id=evaluateUnit.course_id, order__lte = evaluateUnit.order)
+                    win = True
+                    for aux in units:
+                        unit_kqs = aux.knowledgequantum_set.all()
+                        for kq in unit_kqs:
+                            if not kq.is_completed(user):
+                                win = False
+                except:
+                    pass
 
         if(win):
             get_db().get_collection('badge').insert({"id_badge":badge.id, "id_user":user.pk, "title":badge.title, "description":badge.description, "color":badge.color, "date": today.isoformat()})
