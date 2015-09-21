@@ -4815,7 +4815,7 @@ msgstr "Añadir un recurso:"
 
 #: teacheradmin/templates/teacheradmin/units.html:148
 msgid "Transcriptions"
-msgstr "Descripción"
+msgstr "Transcripción"
 
 #: teacheradmin/templates/teacheradmin/units.html:182
 #: teacheradmin/templates/teacheradmin/units.html:244
