@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-14 09:29+0200\n"
+"POT-Creation-Date: 2015-09-21 09:11+0200\n"
 "PO-Revision-Date: 2015-04-27 15:08+0100\n"
 "Last-Translator: Javier Viñuales Gutiérrez <javigu@gmail.com>\n"
 "Language-Team: \n"
@@ -1182,11 +1182,11 @@ msgstr ""
 msgid "Pass threshold"
 msgstr ""
 
-#: courses/models.py:133 teacheradmin/templates/teacheradmin/info.html:166
+#: courses/models.py:133 teacheradmin/templates/teacheradmin/info.html:165
 msgid "Certification available"
 msgstr ""
 
-#: courses/models.py:136 teacheradmin/templates/teacheradmin/info.html:175
+#: courses/models.py:136 teacheradmin/templates/teacheradmin/info.html:174
 msgid "External certification available"
 msgstr ""
 
@@ -3991,7 +3991,7 @@ msgstr ""
 #: teacheradmin/templates/teacheradmin/badges.html:182
 #: teacheradmin/templates/teacheradmin/categories.html:31
 #: teacheradmin/templates/teacheradmin/groups.html:82
-#: teacheradmin/templates/teacheradmin/info.html:244
+#: teacheradmin/templates/teacheradmin/info.html:243
 #: teacheradmin/templates/teacheradmin/units.html:135
 #: teacheradmin/templates/teacheradmin/units.html:383
 msgid "Save"
@@ -4182,32 +4182,32 @@ msgstr ""
 msgid "Credits and diploma"
 msgstr ""
 
-#: teacheradmin/templates/teacheradmin/info.html:48
+#: teacheradmin/templates/teacheradmin/info.html:47
 msgid "General info"
 msgstr ""
 
-#: teacheradmin/templates/teacheradmin/info.html:125
+#: teacheradmin/templates/teacheradmin/info.html:124
 msgid "Extra field"
 msgstr ""
 
-#: teacheradmin/templates/teacheradmin/info.html:184
-#: teacheradmin/templates/teacheradmin/info.html:215
-#: teacheradmin/templates/teacheradmin/info.html:228
+#: teacheradmin/templates/teacheradmin/info.html:183
+#: teacheradmin/templates/teacheradmin/info.html:214
+#: teacheradmin/templates/teacheradmin/info.html:227
 msgid "Max file size"
 msgstr ""
 
-#: teacheradmin/templates/teacheradmin/info.html:204
+#: teacheradmin/templates/teacheradmin/info.html:203
 #: teacheradmin/templates/teacheradmin/units.html:178
 #: teacheradmin/templates/teacheradmin/units.html:325
 msgid "Content id or url"
 msgstr ""
 
-#: teacheradmin/templates/teacheradmin/info.html:209
+#: teacheradmin/templates/teacheradmin/info.html:208
 msgid "Course images"
 msgstr ""
 
-#: teacheradmin/templates/teacheradmin/info.html:215
-#: teacheradmin/templates/teacheradmin/info.html:228
+#: teacheradmin/templates/teacheradmin/info.html:214
+#: teacheradmin/templates/teacheradmin/info.html:227
 msgid "Recommended image size"
 msgstr ""
 

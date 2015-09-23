@@ -91,8 +91,8 @@ def free_enrollment(request, course_slug):
                     _(u'Congratulations, you have successfully enroll in the course %(course)s')
                     % {'course': unicode(course)})
 
-    return HttpResponseRedirect(reverse('course_overview',
-                                        args=(course.slug, )))
+    return HttpResponseRedirect(reverse('course_dashboard',
+                                       args=(course.slug, )))
 
 
 def free_unenrollment(request, course_slug):

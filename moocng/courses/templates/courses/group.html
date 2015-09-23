@@ -9,11 +9,11 @@
 		<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 bottom-line">
 			<h3 class="pull-left">{{ group.name }}</h3>
 			{% if feature_forum and group.forum_slug %}
-			<a class="pull-right" href="{{ forum_url }}/topic/{{group.forum_slug}}" target="_blank">
+			<!--<a class="pull-right" href="{{ forum_url }}/topic/{{group.forum_slug}}" target="_blank">
 				<img class="img_v_middle" src="{{ STATIC_URL }}img/ECO_icon_cab_foro.svg">
 				{% trans "Go to group's forum" %}
 				<img src="{{ STATIC_URL }}img/ECO_icon_flecha_enlace.svg">
-			</a>
+			</a>-->
 			{% endif %}
 		</div>
 	</div>
@@ -32,10 +32,10 @@
 					{% endfor %}
 				</div>
 			</p>
-				
-			
 
-			
+
+
+
 
 
 			{% if feature_groups_video %}<a href="#" class="button squared">{% trans "Videoconference" %}</a>
@@ -194,9 +194,9 @@
 				$dash.find('.content .tabs .content').width(width);
 			});
 		}
-		
+
 		$( window ).resize(resizeDashboard);
-		
+
 		$('.dash-box .content .tabs > li').click(function(){
 			$(this).parent().find('.selected').removeClass('selected');
 			$(this).addClass('selected');
