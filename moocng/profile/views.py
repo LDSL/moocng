@@ -215,10 +215,17 @@ def profile_posts(request, id, api=False, byid=False):
 				except:
 					course_slug = None
 			else:
-				geolocation = {
-                    'lat': float(request.POST['context_geo_lat']),
-                    'lon': float(request.POST['context_geo_lon'])
-                }
+				try:
+					geolocation = {
+                    	'lat': float(request.POST['context_geo_lat']),
+                    	'lon': float(request.POST['context_geo_lon'])
+                	}
+				except:
+					geolocation = {
+						'lat': 0.0,
+						'lon': 0.0
+					}
+					
 				course_slug = None
 
 			extra = {

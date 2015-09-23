@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-14 09:28+0200\n"
+"POT-Creation-Date: 2015-09-21 09:11+0200\n"
 "PO-Revision-Date: 2015-03-30 11:54-0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -1213,11 +1213,11 @@ msgstr "Fórum"
 msgid "Pass threshold"
 msgstr "Passar limite"
 
-#: courses/models.py:133 teacheradmin/templates/teacheradmin/info.html:166
+#: courses/models.py:133 teacheradmin/templates/teacheradmin/info.html:165
 msgid "Certification available"
 msgstr "Certificação disponível"
 
-#: courses/models.py:136 teacheradmin/templates/teacheradmin/info.html:175
+#: courses/models.py:136 teacheradmin/templates/teacheradmin/info.html:174
 msgid "External certification available"
 msgstr "Certificação externa disponível"
 
@@ -4151,7 +4151,7 @@ msgstr "Escolha uma cor para o emblema"
 #: teacheradmin/templates/teacheradmin/badges.html:182
 #: teacheradmin/templates/teacheradmin/categories.html:31
 #: teacheradmin/templates/teacheradmin/groups.html:82
-#: teacheradmin/templates/teacheradmin/info.html:244
+#: teacheradmin/templates/teacheradmin/info.html:243
 #: teacheradmin/templates/teacheradmin/units.html:135
 #: teacheradmin/templates/teacheradmin/units.html:383
 msgid "Save"
@@ -4363,35 +4363,35 @@ msgstr "professor do curso"
 msgid "Credits and diploma"
 msgstr ""
 
-#: teacheradmin/templates/teacheradmin/info.html:48
+#: teacheradmin/templates/teacheradmin/info.html:47
 #, fuzzy
 msgid "General info"
 msgstr "Informação geral"
 
-#: teacheradmin/templates/teacheradmin/info.html:125
+#: teacheradmin/templates/teacheradmin/info.html:124
 #, fuzzy
 msgid "Extra field"
 msgstr "Informação extra"
 
-#: teacheradmin/templates/teacheradmin/info.html:184
-#: teacheradmin/templates/teacheradmin/info.html:215
-#: teacheradmin/templates/teacheradmin/info.html:228
+#: teacheradmin/templates/teacheradmin/info.html:183
+#: teacheradmin/templates/teacheradmin/info.html:214
+#: teacheradmin/templates/teacheradmin/info.html:227
 msgid "Max file size"
 msgstr "Tamanho máximo do ficheiro"
 
-#: teacheradmin/templates/teacheradmin/info.html:204
+#: teacheradmin/templates/teacheradmin/info.html:203
 #: teacheradmin/templates/teacheradmin/units.html:178
 #: teacheradmin/templates/teacheradmin/units.html:325
 msgid "Content id or url"
 msgstr "ID do conteúdo ou url"
 
-#: teacheradmin/templates/teacheradmin/info.html:209
+#: teacheradmin/templates/teacheradmin/info.html:208
 #, fuzzy
 msgid "Course images"
 msgstr "Nome do curso"
 
-#: teacheradmin/templates/teacheradmin/info.html:215
-#: teacheradmin/templates/teacheradmin/info.html:228
+#: teacheradmin/templates/teacheradmin/info.html:214
+#: teacheradmin/templates/teacheradmin/info.html:227
 #, fuzzy
 msgid "Recommended image size"
 msgstr "Requisitos recomendados"

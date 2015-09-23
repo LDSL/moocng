@@ -41,7 +41,6 @@ def can_user_view_course(course, user):
     .. versionadded:: 0.1
     """
     if course.is_active:
-        print 'The course is active'
         return True, 'active'
 
     if user.is_superuser:
@@ -61,13 +60,10 @@ def can_user_view_course(course, user):
     # at this point you don't have permissions to see a course unless is always open
     if course.is_public:
         if course.is_outdated:
-            print 'The course is outdated'
             return False, 'not_active_outdated'
         elif course.is_always_open:
-            print 'The course is always open'
             return True, 'is_always_open'
         else:
-            print 'The course is no active yet'
             return False, 'not_active_yet'
     return False, 'not_active'
 
@@ -83,8 +79,7 @@ def check_user_can_view_course(course, request):
     """
     can_view, reason = can_user_view_course(course, request.user)
 
-    import pprint
-    pprint.pprint(reason)
+    #print 'The can_view is ' + str(can_view) + ' and the reason is ' + reason
 
     if can_view:
         if reason != 'active':
@@ -160,16 +155,16 @@ def get_courses_available_for_user(user):
 def get_related_courses_available_for_user(course, user):
     """
     Filter in a list of courses what courses related to one are available for the user
-    
+
     :returns: Object list
-    
+
     .. versionadded:: 0.2
     """
-    
+
     # Get categories from selected course
     if(len(course.categories.filter()) > 0):
         category = course.categories.all()[0].name
-        
+
         if user.is_superuser or user.is_staff:
         # Return every course that hasn't finished
             return Course.objects.exclude(end_date__lt=date.today(), status__in=['p','d','h']).filter(categories__name__contains=category).distinct()
@@ -250,7 +245,7 @@ def get_tasks_available_for_user(course, user, is_overview=False):
                 if (len(pr) > 0):
                     t = pr.all()[0]
                     ttype = 'p'
-            
+
             if t is not None:
                 done = q.is_completed(user)
                 task = {
@@ -281,7 +276,7 @@ def get_tasks_published(course, is_overview=False):
                 if (len(pr) > 0):
                     t = pr.all()[0]
                     ttype = 'p'
-            
+
             if t is not None:
                 task = {
                     'title': q.title,
