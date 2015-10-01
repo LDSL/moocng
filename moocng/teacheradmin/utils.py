@@ -16,6 +16,7 @@ from django.contrib.sites.models import get_current_site
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
+from moocng.mongodb import get_db
 from moocng.courses.utils import send_mail_wrapper
 
 
@@ -53,3 +54,24 @@ def send_removed_notification(request, email, course):
     }
     to = [email]
     send_mail_wrapper(subject, template, context, to)
+
+def get_num_passed_students(course):
+    return get_db().get_collection('marks_course').find({"course_id": course.id, "mark": {"$gte": float(course.threshold)}}).count()
+
+def get_num_completed_students(course):
+    pipeline = [
+        { "$match": { "kq_id": { "$in": [43,44,73,45,46,47] } } },
+        { "$group": { "_id": "$user_id", "completed": { "$sum": 1} } },
+        { "$match": { "completed": {"$gte": 6} } },
+        { "$group": { "_id": "$user_id", "total": {"$sum": 1}} }
+    ]
+    result = get_db().get_collection('marks_kq').aggregate(pipeline)
+    return result['result'][0]['total']
+
+def get_num_started_students(course):
+    pipeline = [
+        {"$match": {"course_id": 1}},
+        {"$group": {"_id": 1, "total": {"$sum": 1}}}
+    ]
+    result = get_db().get_collection('activity').aggregate(pipeline)
+    return result['result'][0]['total']

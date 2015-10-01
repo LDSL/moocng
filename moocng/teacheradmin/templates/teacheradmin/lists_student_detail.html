@@ -55,6 +55,9 @@
 			{% endfor %}
 		</tbody>
 	</table>
+  {% if accumulative_students %}
+  <p>{% trans "Cumulative total of students" %}: {% accumulative_students %}</p>
+  {% endif %}
 </section>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
 <script type="text/javascript" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
