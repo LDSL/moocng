@@ -60,7 +60,7 @@ def get_num_passed_students(course):
     return get_db().get_collection('marks_course').find({"course_id": course.id, "mark": {"$gte": float(course.threshold)}}).count()
 
 def get_num_completed_students(course):
-    kqs = KnowledgeQuantum.objects.filter(unit__course__id=activity_created[course.id])
+    kqs = KnowledgeQuantum.objects.filter(unit__course__id=course.id)
     kqs_ids = [kq.id for kq in kqs]
     pipeline = [
         { "$match": { "kq_id": { "$in": kqs_ids } } },
