@@ -302,8 +302,8 @@ def teacheradmin_stats_units(request, course_slug):
     course = get_object_or_404(Course, slug=course_slug)
     stats_unit = get_db().get_collection('stats_unit')
     data = []
-
-    for unit in course.unit_set.only('id', 'title').all():
+    units = Unit.objects.filter((Q(status='p') | Q(status='o') | Q(status='l')) & Q(course__id=course.id))
+    for unit in units:
         stats = stats_unit.find_one({'unit_id': unit.id})
 
         if stats is not None:
