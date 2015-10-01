@@ -1121,6 +1121,9 @@ def teacheradmin_lists_coursestudents(request, course_slug, format=None, filter=
     course = get_object_or_404(Course, slug=course_slug)
     is_enrolled = course.students.filter(id=request.user.id).exists()
     accumulative_students = get_num_students_started_course(course)
+    students = course.students.all()
+    if students.count() > accumulative_students:
+        accumulative_students = students.count()
 
     if not filter:
         students = course.students.all()
@@ -1167,6 +1170,9 @@ def teacheradmin_lists_coursestudentsmarks(request, course_slug, format=None, fi
     course = get_object_or_404(Course, slug=course_slug)
     is_enrolled = course.students.filter(id=request.user.id).exists()
     accumulative_students = get_num_students_started_course(course)
+    students = course.students.all()
+    if students.count() > accumulative_students:
+        accumulative_students = students.count()
 
     if not filter:
         students = course.students.all()
