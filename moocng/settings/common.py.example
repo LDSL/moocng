@@ -76,6 +76,10 @@ BADGES_ISSUER_URL = "http://devopenmooc.com"
 BADGES_ISSUER_DESCRIPTION = ""
 BADGES_ISSUER_IMAGE = ""
 BADGES_ISSUER_EMAIL = ""
+BADGES_HASH_SALT = "hello"
+#BADGES_DEFAULT_IMAGE_FILE = "ECO_icon_medalla.svg"
+#BADGES_DEFAULT_IMAGE_MIMETYPE = "image/svg+xml"
+BADGES_CRITERIA_URL = "score-help"
 
 PROFILE_SERVICE_URL = "http://devopenmooc.com/profile"
 
