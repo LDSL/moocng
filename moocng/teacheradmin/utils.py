@@ -15,7 +15,10 @@
 from django.contrib.sites.models import get_current_site
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 
+from moocng.courses.models import KnowledgeQuantum
+from moocng.mongodb import get_db
 from moocng.courses.utils import send_mail_wrapper
 
 
@@ -53,3 +56,69 @@ def send_removed_notification(request, email, course):
     }
     to = [email]
     send_mail_wrapper(subject, template, context, to)
+
+def get_num_students_passed_course(course):
+    return get_db().get_collection('marks_course').find({"course_id": course.id, "mark": {"$gte": float(course.threshold)}}).count()
+
+def get_num_students_completed_course(course):
+    kqs = KnowledgeQuantum.objects.filter((Q(unit__status='p') | Q(unit__status='o') | Q(unit__status='l')) & Q(unit__course__id=course.id))
+    kqs_ids = [kq.id for kq in kqs]
+    pipeline = [
+        { "$match": { "kq_id": { "$in": kqs_ids } } },
+        { "$group": { "_id": "$user_id", "completed": { "$sum": 1} } },
+        { "$match": { "completed": {"$gte": len(kqs_ids)} } },
+        { "$group": { "_id": "$user_id", "total": {"$sum": 1}} }
+    ]
+    result = get_db().get_collection('marks_kq').aggregate(pipeline)
+    if len(result['result']):
+        return result['result'][0]['total']
+    else:
+        return 0
+
+def get_num_students_started_course(course):
+    pipeline = [
+        {"$match": {"course_id": course.id}},
+        {"$group": {"_id": "$user_id"}}
+    ]
+    result = get_db().get_collection('activity').aggregate(pipeline)
+    if len(result['result']):
+        return len(result['result'])
+    else:
+        return 0
+
+def get_num_students_passed_unit(unit):
+    pipeline = [
+        {"$match": {"unit_id": unit.id}},
+        {"$group": {"_id": 1, "total": {"$sum": 1}}}
+    ]
+    result = get_db().get_collection('marks_unit').aggregate(pipeline)
+    if len(result['result']):
+        return result['result'][0]['total']
+    else:
+        return 0
+
+def get_num_students_completed_unit(unit):
+    kqs = KnowledgeQuantum.objects.filter((Q(unit__status='p') | Q(unit__status='o') | Q(unit__status='l')) & Q(unit__id=unit.id) )
+    kqs_ids = [kq.id for kq in kqs]
+    pipeline = [
+        { "$match": { "kq_id": { "$in": kqs_ids } } },
+        { "$group": { "_id": "$user_id", "completed": { "$sum": 1} } },
+        { "$match": { "completed": {"$gte": len(kqs_ids)} } },
+        { "$group": { "_id": "$user_id", "total": {"$sum": 1}} }
+    ]
+    result = get_db().get_collection('marks_kq').aggregate(pipeline)
+    if len(result['result']):
+        return result['result'][0]['total']
+    else:
+        return 0
+
+def get_num_students_started_unit(unit):
+    pipeline = [
+        {"$match": {"unit_id": unit.id}},
+        {"$group": {"_id": "$user_id"}}
+    ]
+    result = get_db().get_collection('activity').aggregate(pipeline)
+    if len(result['result']):
+        return len(result['result'])
+    else:
+        return 0

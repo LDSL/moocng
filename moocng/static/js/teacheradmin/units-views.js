@@ -192,7 +192,9 @@ if (_.isUndefined(window.MOOC)) {
         tinyMCEOptions = {
             mode: "exact",
             plugins: "link, paste, searchreplace",
-            paste_retain_style_properties: "color font-size"
+            paste_retain_style_properties: "color font-size",
+            relative_urls: false,
+            remove_script_host: false
             /*theme: "advanced",
             theme_advanced_resizing : true,
             theme_advanced_toolbar_location: "top",
@@ -1034,7 +1036,7 @@ if (_.isUndefined(window.MOOC)) {
                     width: "380", // bootstrap span5
                     elements: "kqsupplementary, kqcomments, reviewdescription"
                 });
-				tinyMCE.baseURL = '/static/tinymce';
+				        tinyMCE.baseURL = '/static/tinymce';
                 tinyMCE.init(options);
                 options = _.extend(_.clone(tinyMCEOptions), {
                     width: "780", // bootstrap span10
@@ -1132,7 +1134,9 @@ if (_.isUndefined(window.MOOC)) {
                 this.model.set("media_content_type", this.$el.find("select#kqmedia_content_type").val());
                 this.model.set("weight", parseInt(this.$el.find("input#kqweight").val(), 10));
                 this.model.set("supplementary_material", tinyMCE.get("kqsupplementary").getContent());
+                this.model.set("supplementary_material_"+lang, tinyMCE.get("kqsupplementary").getContent());
                 this.model.set("teacher_comments_"+lang, tinyMCE.get("kqcomments").getContent());
+                this.model.set("teacher_comments", tinyMCE.get("kqcomments").getContent());
 
                 if (this.model.has("questionInstance")) {
                     question = this.model.get("questionInstance");
