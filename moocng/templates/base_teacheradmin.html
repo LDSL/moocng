@@ -59,7 +59,9 @@
       <h1 class="logo"><a href="{{ theme.link_home }}" class="hide-text"><img src="{{ theme.logo }}" alt="logo {{ site.name }}" />{{ site.name }}</a></h1>
       <img class="logo-mini" src="{{ STATIC_URL }}img/logo_mini.png" alt="logo {{ site.name }}" />
       <div class="btn-link pull-left" id="meta-buttons">
+        {% if course.slug %}
         <a class="btn btn-link" href="{% url course_dashboard course.slug %}" target="_blank">{{ course.name }}</a>
+        {% endif %}
       </div>
       {% if user.is_authenticated %}
 
