@@ -69,7 +69,7 @@ def get_num_students_completed_course(course):
         { "$match": { "completed": {"$gte": len(kqs_ids)} } },
         { "$group": { "_id": "$user_id", "total": {"$sum": 1}} }
     ]
-    result = get_db().get_collection('marks_kq').aggregate(pipeline)
+    result = get_db().get_collection('activity').aggregate(pipeline)
     if len(result['result']):
         return result['result'][0]['total']
     else:
