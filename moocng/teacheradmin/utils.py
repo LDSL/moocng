@@ -16,6 +16,7 @@ from django.contrib.sites.models import get_current_site
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
+from moocng.courses.models import KnowledgeQuantum
 from moocng.mongodb import get_db
 from moocng.courses.utils import send_mail_wrapper
 
