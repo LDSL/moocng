@@ -100,6 +100,7 @@ def get_num_students_passed_unit(unit):
 def get_num_students_completed_unit(unit):
     kqs = KnowledgeQuantum.objects.filter((Q(unit__status='p') | Q(unit__status='o') | Q(unit__status='l')) & Q(unit__id=unit.id) )
     kqs_ids = [kq.id for kq in kqs]
+    print str(kqs_ids)
     pipeline = [
         { "$match": { "kq_id": { "$in": kqs_ids } } },
         { "$group": { "_id": "$user_id", "completed": { "$sum": 1} } },
