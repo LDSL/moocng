@@ -76,7 +76,7 @@ def get_num_completed_students(course):
 
 def get_num_started_students(course):
     pipeline = [
-        {"$match": {"course_id": 1}},
+        {"$match": {"course_id": course.id}},
         {"$group": {"_id": 1, "total": {"$sum": 1}}}
     ]
     result = get_db().get_collection('activity').aggregate(pipeline)
