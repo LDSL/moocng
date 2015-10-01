@@ -78,11 +78,11 @@ def get_num_students_completed_course(course):
 def get_num_students_started_course(course):
     pipeline = [
         {"$match": {"course_id": course.id}},
-        {"$group": {"_id": 1, "total": {"$sum": 1}}}
+        {"$group": {"_id": "$user_id"}}
     ]
     result = get_db().get_collection('activity').aggregate(pipeline)
     if len(result['result']):
-        return result['result'][0]['total']
+        return len(result['result'])
     else:
         return 0
 
@@ -115,10 +115,10 @@ def get_num_students_completed_unit(unit):
 def get_num_students_started_unit(unit):
     pipeline = [
         {"$match": {"unit_id": unit.id}},
-        {"$group": {"_id": 1, "total": {"$sum": 1}}}
+        {"$group": {"_id": "$user_id"}}
     ]
     result = get_db().get_collection('activity').aggregate(pipeline)
     if len(result['result']):
-        return result['result'][0]['total']
+        return len(result['result'])
     else:
         return 0
