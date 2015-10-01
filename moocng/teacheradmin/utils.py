@@ -69,7 +69,7 @@ def get_num_students_completed_course(course):
         { "$match": { "completed": {"$gte": len(kqs_ids)} } },
         { "$group": { "_id": "$user_id", "total": {"$sum": 1}} }
     ]
-    result = get_db().get_collection('marks_kq').aggregate(pipeline)
+    result = get_db().get_collection('activity').aggregate(pipeline)
     if len(result['result']):
         return result['result'][0]['total']
     else:
@@ -88,7 +88,7 @@ def get_num_students_started_course(course):
 
 def get_num_students_passed_unit(unit):
     pipeline = [
-        {"$match": {"unit_id": unit.id}},
+        {"$match": {"unit_id": unit.id, "mark": {"$gte": float(unit.course.threshold)} } },
         {"$group": {"_id": 1, "total": {"$sum": 1}}}
     ]
     result = get_db().get_collection('marks_unit').aggregate(pipeline)
@@ -106,7 +106,7 @@ def get_num_students_completed_unit(unit):
         { "$match": { "completed": {"$gte": len(kqs_ids)} } },
         { "$group": { "_id": "$user_id", "total": {"$sum": 1}} }
     ]
-    result = get_db().get_collection('marks_kq').aggregate(pipeline)
+    result = get_db().get_collection('activity').aggregate(pipeline)
     if len(result['result']):
         return result['result'][0]['total']
     else:

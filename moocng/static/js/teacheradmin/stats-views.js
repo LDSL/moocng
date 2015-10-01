@@ -145,15 +145,16 @@ if (_.isUndefined(window.MOOC)) {
                 key: MOOC.trans.evolution,
                 values: [
                     { x: 0, y: data.enrolled },
-                    { x: 1, y: data.started },
-                    { x: 2, y: data.completed }
+                    { x: 1, y: data.started }
                 ]
             }];
 
             // If the course has no threshold then there is no passed field
             if (!_.isUndefined(data.passed)) {
-                chartData[0].values.push({ x: 3, y: data.passed });
+                chartData[0].values.push({ x: 2, y: data.passed });
             }
+
+            chartData[0].values.push({ x: 3, y: data.completed });
 
             aux = {
                 0: MOOC.trans.enrolled,
