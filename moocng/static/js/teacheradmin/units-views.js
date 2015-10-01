@@ -192,7 +192,9 @@ if (_.isUndefined(window.MOOC)) {
         tinyMCEOptions = {
             mode: "exact",
             plugins: "link, paste, searchreplace",
-            paste_retain_style_properties: "color font-size"
+            paste_retain_style_properties: "color font-size",
+            relative_urls: false,
+            remove_script_host: false
             /*theme: "advanced",
             theme_advanced_resizing : true,
             theme_advanced_toolbar_location: "top",
