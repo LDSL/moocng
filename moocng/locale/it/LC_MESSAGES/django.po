@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-21 09:11+0200\n"
+"POT-Creation-Date: 2015-10-13 12:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -204,10 +204,10 @@ msgid "Your reservation has been modified"
 msgstr "La tua prenotazione è stata modificata"
 
 #: assets/views.py:48 assets/views.py:104 assets/views.py:136
-#: courses/views.py:323 courses/views.py:393 courses/views.py:491
-#: courses/views.py:532 courses/views.py:599 courses/views.py:656
-#: courses/views.py:796 courses/views.py:835 courses/views.py:874
-#: courses/views.py:926 courses/templates/courses/transcript_course.html:6
+#: courses/views.py:322 courses/views.py:392 courses/views.py:490
+#: courses/views.py:531 courses/views.py:598 courses/views.py:655
+#: courses/views.py:795 courses/views.py:834 courses/views.py:873
+#: courses/views.py:925 courses/templates/courses/transcript_course.html:6
 #: peerreview/views.py:53 peerreview/views.py:112 peerreview/views.py:163
 msgid "You are not enrolled in this course"
 msgstr "Non sei iscritto a questo corso"
@@ -381,7 +381,7 @@ msgid "Last name:"
 msgstr "Cognome:"
 
 #: auth_handlers/dbauth/templates/dbauth/profile.html:11 profile/models.py:45
-#: teacheradmin/views.py:1234
+#: teacheradmin/views.py:1263
 msgid "Organization"
 msgstr "Ente/Organizzazione"
 
@@ -988,8 +988,8 @@ msgstr "Vedi Condizioni di utilizzo"
 msgid "Username"
 msgstr "Nome utente"
 
-#: contact/forms.py:41 teacheradmin/models.py:36 teacheradmin/views.py:1111
-#: teacheradmin/views.py:1155 teacheradmin/views.py:1234
+#: contact/forms.py:41 teacheradmin/models.py:36 teacheradmin/views.py:1134
+#: teacheradmin/views.py:1183 teacheradmin/views.py:1263
 msgid "Email"
 msgstr "E-mail"
 
@@ -1015,7 +1015,7 @@ msgstr "Altro"
 
 #: contact/models.py:23 courses/forms.py:105 courses/models.py:394
 #: courses/models.py:472 courses/models.py:516 courses/models.py:614
-#: peerreview/models.py:90 teacheradmin/views.py:1197
+#: peerreview/models.py:90 teacheradmin/views.py:1226
 #: teacheradmin/templates/teacheradmin/units.html:104
 #: teacheradmin/templates/teacheradmin/units.html:157
 msgid "Title"
@@ -1630,54 +1630,54 @@ msgstr "opzioni"
 msgid "{0}.{1} ({2}: {3}) at {4} x {5}"
 msgstr ""
 
-#: courses/security.py:92 courses/security.py:120
+#: courses/security.py:87 courses/security.py:115
 msgid ""
 "This course is not public. Your have access to it because you are staff "
 "member"
 msgstr ""
 "Questo corso non è pubblico. Hai accesso in qualità di membro dello staff"
 
-#: courses/security.py:93 courses/security.py:121
+#: courses/security.py:88 courses/security.py:116
 msgid ""
 "This course is not public. Your have access to it because you are a super "
 "user"
 msgstr "Questo corso non è pubblico. Hai accesso in qualità di super utente"
 
-#: courses/security.py:94 courses/security.py:122
+#: courses/security.py:89 courses/security.py:117
 msgid ""
 "This course is not public. Your have access to it because you are a teacher "
 "of the course"
 msgstr ""
 "Questo corso non è pubblico. Hai accesso in qualità di docente del corso"
 
-#: courses/security.py:95 courses/security.py:123
+#: courses/security.py:90 courses/security.py:118
 msgid ""
 "This course is always open, but the last edition has finished. <a id="
 "\"alwaysopen_info\" href=\"#\">More info</a>."
 msgstr ""
 
-#: courses/security.py:103
+#: courses/security.py:98
 msgid "We're sorry, but the course has finished. "
 msgstr "Siamo spiacenti, ma il corso è terminato. "
 
-#: courses/security.py:105
+#: courses/security.py:100
 #, python-format
 msgid "You could see your transcript <a href=\"%s\">here</a>"
 msgstr "Puoi vedere la tua trascrizione <a href = \" %s \"> qui </a>"
 
-#: courses/security.py:129
+#: courses/security.py:124
 msgid "This course has not started yet"
 msgstr "Questo corso non è ancora pronto"
 
-#: courses/security.py:131
+#: courses/security.py:126
 msgid "This course has not started yet, but you can enroll into it"
 msgstr "Questo corso non è ancora iniziata, ma è possibile iscriversi in esso"
 
-#: courses/security.py:134
+#: courses/security.py:129
 msgid "This course has finished"
 msgstr "Questo corso è vuoto"
 
-#: courses/security.py:136
+#: courses/security.py:131
 msgid "This course is not public"
 msgstr "Questo corso non è ancora pronto"
 
@@ -1718,7 +1718,7 @@ msgstr "Il tuo corso \" %s \"è stato creato"
 msgid "The course was successfully created"
 msgstr "Il corso è stat"
 
-#: courses/views.py:1161
+#: courses/views.py:1160
 #, python-format
 msgid ""
 "We are cloning the activity from %(course)s. You will receive an email soon"
@@ -2480,24 +2480,29 @@ msgid "NEW POST"
 msgstr "NUOVO POST"
 
 #: courses/templates/courses/forum.html:41
+#: courses/templates/courses/forum_more_posts.html:15
 msgid "Unpin"
 msgstr ""
 
 #: courses/templates/courses/forum.html:43
+#: courses/templates/courses/forum_more_posts.html:17
 #, fuzzy
 msgid "Pin"
 msgstr "In attesa"
 
 #: courses/templates/courses/forum.html:47
+#: courses/templates/courses/forum_more_posts.html:21
 msgid "Pinned"
 msgstr ""
 
 #: courses/templates/courses/forum.html:58
+#: courses/templates/courses/forum_more_posts.html:32
 #, fuzzy
 msgid "Last reply"
 msgstr "Cognome:"
 
 #: courses/templates/courses/forum.html:79
+#: courses/templates/courses/forum_more_posts.html:53
 #, fuzzy
 msgid "There is no replies yet"
 msgstr "Non ci sono ancora risorse attive"
@@ -3980,31 +3985,31 @@ msgstr "massive e-mail"
 msgid "massive emails"
 msgstr "massive e-mail"
 
-#: teacheradmin/utils.py:23 teacheradmin/utils.py:35
+#: teacheradmin/utils.py:26 teacheradmin/utils.py:38
 #, python-format
 msgid "You have been invited to be a teacher in \"%s\""
 msgstr "Sei stato invitato ad essere un docente in \" %s \""
 
-#: teacheradmin/utils.py:47
+#: teacheradmin/utils.py:50
 #, python-format
 msgid "You have been removed as teacher from \"%s\""
 msgstr "Sei stato rimosso come docente da \" %s \""
 
-#: teacheradmin/views.py:101
+#: teacheradmin/views.py:113
 msgid "There are no statistics for this course."
 msgstr "Non ci sono statistiche per questo corso."
 
-#: teacheradmin/views.py:491
+#: teacheradmin/views.py:510
 #, python-format
 msgid "The KQ with the %s id doesn't exists"
 msgstr "Il KQ con il %s ID non esiste"
 
-#: teacheradmin/views.py:720 teacheradmin/views.py:754
-#: teacheradmin/views.py:796
+#: teacheradmin/views.py:739 teacheradmin/views.py:773
+#: teacheradmin/views.py:815
 msgid "Your changes were saved."
 msgstr "Le tue modifiche sono state salvate."
 
-#: teacheradmin/views.py:726 teacheradmin/views.py:788
+#: teacheradmin/views.py:745 teacheradmin/views.py:807
 msgid ""
 "There were problems with some data you introduced, please fix them and try "
 "again."
@@ -4012,11 +4017,11 @@ msgstr ""
 "Ci sono stati problemi con alcuni dati inseriti, si prega di correggerli e "
 "riprovare."
 
-#: teacheradmin/views.py:999
+#: teacheradmin/views.py:1018
 msgid "The announcement was created successfully."
 msgstr "L'annuncio è stato creato con successo."
 
-#: teacheradmin/views.py:1003 teacheradmin/views.py:1042
+#: teacheradmin/views.py:1022 teacheradmin/views.py:1061
 msgid ""
 "The email has been queued, and it will be send in batches to every student "
 "in the course."
@@ -4024,51 +4029,51 @@ msgstr ""
 "L'email è stata processata, sarà inviata in lotti a tutti gli studenti in "
 "corso."
 
-#: teacheradmin/views.py:1111 teacheradmin/views.py:1155
-#: teacheradmin/views.py:1234
+#: teacheradmin/views.py:1134 teacheradmin/views.py:1183
+#: teacheradmin/views.py:1263
 #, fuzzy
 msgid "First name"
 msgstr "Nome:"
 
-#: teacheradmin/views.py:1111 teacheradmin/views.py:1155
-#: teacheradmin/views.py:1234
+#: teacheradmin/views.py:1134 teacheradmin/views.py:1183
+#: teacheradmin/views.py:1263
 #, fuzzy
 msgid "Last name"
 msgstr "Cognome:"
 
-#: teacheradmin/views.py:1111 teacheradmin/views.py:1234
+#: teacheradmin/views.py:1134 teacheradmin/views.py:1263
 #, fuzzy
 msgid "Date joined"
 msgstr "Data"
 
-#: teacheradmin/views.py:1111 teacheradmin/views.py:1234
+#: teacheradmin/views.py:1134 teacheradmin/views.py:1263
 #, fuzzy
 msgid "Last login"
 msgstr "Accedi"
 
-#: teacheradmin/views.py:1111 teacheradmin/views.py:1155
-#: teacheradmin/views.py:1234
+#: teacheradmin/views.py:1134 teacheradmin/views.py:1183
+#: teacheradmin/views.py:1263
 #, fuzzy
 msgid "View details"
 msgstr "Revisione dei dettagli"
 
-#: teacheradmin/views.py:1118 teacheradmin/views.py:1125
-#: teacheradmin/views.py:1163 teacheradmin/views.py:1171
-#: teacheradmin/views.py:1241
+#: teacheradmin/views.py:1141 teacheradmin/views.py:1148
+#: teacheradmin/views.py:1191 teacheradmin/views.py:1199
+#: teacheradmin/views.py:1270
 msgid "Go"
 msgstr ""
 
-#: teacheradmin/views.py:1155
+#: teacheradmin/views.py:1183
 #: teacheradmin/templates/teacheradmin/lists_student_detail.html:24
 #, fuzzy
 msgid "Course mark"
 msgstr "Nome del corso"
 
-#: teacheradmin/views.py:1197
+#: teacheradmin/views.py:1226
 msgid "Mark"
 msgstr ""
 
-#: teacheradmin/views.py:1197
+#: teacheradmin/views.py:1226
 msgid "Relative mark"
 msgstr ""
 
@@ -4442,6 +4447,12 @@ msgstr "Requisiti consigliati"
 #, fuzzy
 msgid "Download CSV file"
 msgstr "Scarica Badge"
+
+#: teacheradmin/templates/teacheradmin/list_table.html:51
+#: teacheradmin/templates/teacheradmin/lists_student_detail.html:59
+#, fuzzy
+msgid "Cumulative total of students"
+msgstr "Totale revisioni inviate dagli studenti"
 
 #: teacheradmin/templates/teacheradmin/lists.html:20
 #, fuzzy
@@ -5212,13 +5223,13 @@ msgid "Catalogue"
 msgstr "Catalogo"
 
 #: templates/base.html:161 templates/base_bigheader.html:83
-#: templates/base_teacheradmin.html:71
+#: templates/base_teacheradmin.html:73
 #: templates/base_teacheradmin_deleteme.html:68
 msgid "Log in"
 msgstr "Accedi"
 
 #: templates/base.html:183 templates/base_bigheader.html:163
-#: templates/base_teacheradmin.html:87
+#: templates/base_teacheradmin.html:89
 #: templates/base_teacheradmin_deleteme.html:84
 msgid "Get help"
 msgstr ""

@@ -817,7 +817,7 @@ msgstr "Programme du cours"
 #: static/brand_difundi/templates/prefoot.html:11
 #: static/brand_digenin/templates/prefoot.html:11
 msgid "The"
-msgstr "Le"
+msgstr "L'"
 
 #: collected_static/brand/templates/prefoot.html:13
 #: collected_static/brand_difundi/templates/prefoot.html:13
@@ -847,7 +847,7 @@ msgstr " "
 #: static/brand_difundi/templates/prefoot.html:19
 #: static/brand_digenin/templates/prefoot.html:19
 msgid "cooperates"
-msgstr "il collabore"
+msgstr "collabore"
 
 #: collected_static/brand/templates/prefoot.html:19
 #: collected_static/brand_difundi/templates/prefoot.html:19
@@ -857,7 +857,7 @@ msgstr "il collabore"
 #: static/brand_difundi/templates/prefoot.html:19
 #: static/brand_digenin/templates/prefoot.html:19
 msgid "cooperate"
-msgstr "Collaborent"
+msgstr "collaborent"
 
 #: collected_static/brand/templates/prefoot.html:19
 #: collected_static/brand_difundi/templates/prefoot.html:19
@@ -5340,11 +5340,8 @@ msgstr "Documentation"
 #~ msgid "link to get a certification in this course"
 #~ msgstr "lien pour obtenir un certificat dans ce cours"
 
-#~ msgid ""
-#~ "A platform created to facilitate the search for open educational resources"
-#~ msgstr ""
-#~ "Une plateforme créée pour faciliter la recherche dans les ressources "
-#~ "éducatives libres"
+msgid "A platform created to facilitate the search for open educational resources"
+msgstr "Une plateforme créée pour faciliter la recherche de Ressources Éducatives Libres"
 
 #~ msgid "Extra"
 #~ msgstr "Suppléments"
