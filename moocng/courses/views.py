@@ -771,7 +771,7 @@ def course_forum_post_delete(request, course_slug, post_id):
         #TODO Alert: Can't delete
         return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
 
-def course_forum_load_more(request, course_slug, page, query, search=False, hashtag=False):
+def course_forum_load_more(request, course_slug, page, query=None, search=False, hashtag=False):
     f = Forum()
     page = int(page)
     listPost = None
@@ -782,7 +782,7 @@ def course_forum_load_more(request, course_slug, page, query, search=False, hash
     else:
         listPost = f.get_posts(course_slug, page)
 
-    return render_to_response('courses/forum_post.html', {
+    return render_to_response('courses/forum_more_posts.html', {
             'request': request,
             'posts': listPost
             }, context_instance=RequestContext(request))
