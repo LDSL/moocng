@@ -8,24 +8,6 @@ $(document).ready(function () {
         $(".postFrom").toggle();
         $(".addButton").show();
     });
-
-    var load = true;
-    var page = 10;
-    $(window).scroll(function() {
-        if($(window).scrollTop() + $(window).height() == $(document).height() && load) {
-            load = false;
-            $.ajax({
-                url : "/course/" + course_slug + "/forum/loadMorePosts/" + page,
-                success: function(response) {
-                    if(response.trim() != ""){
-                        $(".posts").append(response)
-                        page += 10;
-                        load = true;
-                    }
-                }
-            });
-        }
-    });
 });
 
 $(".reply").click(function(e){

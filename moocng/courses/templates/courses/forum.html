@@ -112,4 +112,23 @@
 	}, 2500);
 </script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/forum.js"></script>
+<script type="text/javascript">
+	var load = true;
+	var page = 10;
+	$(window).scroll(function() {
+			if($(window).scrollTop() + $(window).height() == $(document).height() && load) {
+					load = false;
+					$.ajax({
+							url : "/course/" + course_slug + "/forum/loadMorePosts/" + page,
+							success: function(response) {
+									if(response.trim() != ""){
+											$(".posts").append(response)
+											page += 10;
+											load = true;
+									}
+							}
+					});
+			}
+	});
+</script>
 {% endblock %}

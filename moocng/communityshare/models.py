@@ -28,7 +28,7 @@ class CommunityShareBase(object):
 	    	posts = postCollection.find({
 	    		"$and": [
 	    			{"$or": idsQuery, },
-	    			{"$or": [ {"is_child": {"$exists": False} }, {"is_child": False} ] },
+	    			{"$or": [ {"is_child": {"$exists": False}}, {"is_child": False} ] },
 	    			{"$or": [ {"deleted": {"$exists": False}}, {"deleted": False} ] },
 	    		]
 	    	})[page:page+10].sort([("pinned", pymongo.DESCENDING), ("date", pymongo.DESCENDING)])

@@ -416,7 +416,7 @@ div.button, a.button, input.button {
 	top: -110vh;
 	background: @white;
 	padding: 65px 30px;
-	z-index: 2;
+	z-index: 2002;
 	box-shadow: 0 1px 10px 0 rgba(0,0,0,.4);
 	transition: top ease-in-out .5s;
 
@@ -658,7 +658,7 @@ div.button, a.button, input.button {
 	height: 100%;
 	background: fade(@neutral_medium_1, 50%);
 	opacity: 0;
-	z-index: 1;
+	z-index: 2001;
 	transition: opacity ease .5s;
 
 	&.show {
@@ -1546,6 +1546,19 @@ div.course_overview {
 			padding-top: 3px;
 			color: inherit;
 			cursor: inherit;
+
+      &#enrollment_btn {
+        width: 100%;
+        height: 100%;
+        text-align: left;
+        padding: 10px 15px;
+
+        & + svg {
+          position: absolute;
+          top: 8px;
+          right: 15px;
+        }
+      }
 		}
 
 		img,object {
@@ -1562,6 +1575,11 @@ div.course_overview {
 	a.button:after {
 		display: none;
 	}
+
+  div.button {
+    padding: 0;
+    position: relative;
+  }
 
 	.course-header {
 		min-height: 220px;

@@ -617,7 +617,7 @@ def teacheradmin_teachers_delete(request, course_slug, email_or_id):
 @is_teacher_or_staff
 def teacheradmin_teachers_invite(request, course_slug):
     course = get_object_or_404(Course, slug=course_slug)
-    email_or_id = request.POST['data']
+    email_or_id = request.POST['data'].lower()
     user = None
     response = None
 

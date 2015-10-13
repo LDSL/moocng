@@ -1,0 +1,57 @@
+{% load i18n %}
+{% for post in posts %}
+  <div class="row post">
+    <div class="col-lg-2 col-md-2 col-sm-1 col-mob-1">
+      <img class="headerGravatar" src={{ post.avatar }}&s=128>
+    </div>
+    <div class="col-lg-10 col-md-6 col-sm-7 col-mob-3 relative">
+      <a href="{{ post.id }}" class="block">
+        {% autoescape off %}
+          <h4>{{ post.title }}</h4>
+          <p>{{ post.text }}</p>
+        {% endautoescape %}
+        {% if is_teacher or user.is_staff %}
+          {% if post.pinned %}
+            <a class="pinned" href="{{ post.id }}/pin"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_down_black.svg" alt="{% trans 'Unpin' %}"></a>
+          {% else %}
+            <a class="pinned" href="{{ post.id}}/pin"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_up_black.svg" alt="{% trans 'Pin' %}"></a>
+          {% endif %}
+        {% else %}
+          {% if post.pinned %}
+            <span class="pinned"><img src="{{ STATIC_URL }}img/ECO_icon_flecha_selector_down_black.svg" alt="{% trans 'Pinned' %}"></span>
+          {% endif %}
+        {% endif %}
+        <div class="repliesLength">
+          <img src="{{ STATIC_URL }}img/ECO_icon_comentar_foro.svg">
+          {{ post.replies|length }}
+        </div>
+      </a>
+    </div>
+    {% if post.replies|length %}
+    <div class="col-lg-4 col-md-4 col-sm-8 col-mob-4 info">
+      <h5>{% trans "Last reply" %}</h5>
+      {% with post.replies|last as lastpost %}
+      <a href="{{ post.id }}#{{ lastpost.id }}" class="block">
+        {% if show_username %}
+        <span class="userPost">{{ lastpost.username }}</span>
+        {% else %}
+        <span class="userPost">{{ lastpost.first_name }} {{ lastpost.last_name }}</span>
+        {% endif %}
+        <span class="datePost">[
+          {% if lastpost.original_date %}
+            {{ lastpost.original_date }}
+          {% else %}
+            {{ lastpost.date }}
+          {% endif %}
+        ]</span>
+        <p>{{ lastpost.text }}</p>
+      </a>
+      {% endwith %}
+    </div>
+    {% else %}
+    <div class="col-lg-4 col-md-4 col-sm-8 col-mob-4 info">
+      <h5>{% trans "There is no replies yet" %}</h5>
+    </div>
+    {% endif %}
+  </div>
+{% endfor %}
