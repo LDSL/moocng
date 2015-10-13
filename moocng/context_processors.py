@@ -218,6 +218,11 @@ def extra_settings(request):
         feature_geolocation = '#'
 
     try:
+        feature_certifications_template = settings.FEATURE_CERTIFICATIONS_TEMPLATE
+    except AttributeError:
+        feature_certifications_template = False
+
+    try:
         show_email = settings.SHOW_EMAIL
     except AttributeError:
         show_email = False
@@ -258,6 +263,7 @@ def extra_settings(request):
         'max_file_size': max_file_size,
         'profile_provider_url': profile_provider_url,
         'feature_geolocation': feature_geolocation,
+        'feature_certifications_template': feature_certifications_template,
         'show_username': show_username,
         'show_email': show_email,
         'show_logout': show_logout,

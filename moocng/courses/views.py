@@ -27,7 +27,7 @@ from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.core.validators import validate_email
 from django.forms.formsets import formset_factory
-from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseBadRequest, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseBadRequest, HttpResponse, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.utils.translation import get_language
@@ -984,7 +984,6 @@ def course_progress(request, course_slug):
     cert_url = None
     has_passed = has_user_passed_course(request.user, course)
     if(course.certification_available):
-        print "Course threshold %s" % (course.threshold)
         if has_passed:
             if course.external_certification_available:
                 cert_url = settings.CERTIFICATE_URL % {
@@ -998,8 +997,6 @@ def course_progress(request, course_slug):
                 except Award.DoesNotExist:
                     award = Award(badge=badge, user=request.user)
                     award.save()
-
-    print "course.external_certification_available = %s - certification_file = %s" % (course.external_certification_available, course.certification_file)
 
     return render_to_response('courses/progress.html', {
         'course': course,
@@ -1234,30 +1231,33 @@ def check_survey(request, course_slug, survey_id, survey_token):
 
 @login_required
 def course_diploma_pdf(request, course_slug):
-    user = request.user
-    course = get_course_if_user_can_view_or_404(course_slug, request)
-    is_enrolled = course.students.filter(id=user.id).exists()
-    is_teacher = is_teacher_test(user, course)
-    is_ready, ask_admin = is_course_ready(course)
-    if is_enrolled and has_user_passed_course(user, course):
-        total_mark, units_info = get_course_mark(course, request.user)
-        course_units = get_units_available_for_user(course, user)
-        context_dict = {
-            'pagesize': 'A4',
-            'user': user,
-            'course': course,
-            'course_mark': round(total_mark,2),
-            'course_units': course_units,
-        }
+    if settings.FEATURE_CERTIFICATIONS_TEMPLATE is True:
+        user = request.user
+        course = get_course_if_user_can_view_or_404(course_slug, request)
+        is_enrolled = course.students.filter(id=user.id).exists()
+        is_teacher = is_teacher_test(user, course)
+        is_ready, ask_admin = is_course_ready(course)
+        if is_enrolled and has_user_passed_course(user, course):
+            total_mark, units_info = get_course_mark(course, request.user)
+            course_units = get_units_available_for_user(course, user)
+            context_dict = {
+                'pagesize': 'A4',
+                'user': user,
+                'course': course,
+                'course_mark': round(total_mark,2),
+                'course_units': course_units,
+            }
 
-        if hasattr(settings, 'MOOCNG_THEME') and 'diploma_template' in settings.MOOCNG_THEME:
-            pdf = generate_pdf(request, 'diploma.html', context_dict)
-        else:
-            pdf = generate_pdf(request, 'courses/diploma.html', context_dict)
+            if hasattr(settings, 'MOOCNG_THEME') and 'diploma_template' in settings.MOOCNG_THEME:
+                pdf = generate_pdf(request, 'diploma.html', context_dict)
+            else:
+                pdf = generate_pdf(request, 'courses/diploma.html', context_dict)
 
-        if pdf:
-            return HttpResponse(pdf.getvalue(), mimetype='application/pdf')
+            if pdf:
+                return HttpResponse(pdf.getvalue(), mimetype='application/pdf')
+            else:
+                return HttpResponse('Error while generating pdf')
         else:
-            return HttpResponse('Error while generating pdf')
+            return HttpResponseForbidden()
     else:
-        return HttpResponseForbidden()
+        return HttpResponseNotFound()
