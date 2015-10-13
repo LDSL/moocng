@@ -146,6 +146,11 @@ class BaseAnnouncementForm(forms.ModelForm):
             instance.save()
         if self.cleaned_data.get('send_email', None):
             me = MassiveEmail.objects.create_from_announcement(instance, massive_email_type=self.massive_email_type)
+            if getattr(self, 'course', None):
+                me.subject = "%s - %s" % (self.course.name, me.subject)
+                print self.course.name
+                print me.subject
+                me.save()
             me.send_in_batches(send_massive_email_task)
         return instance
 
@@ -167,7 +172,7 @@ class AnnouncementForm(BaseAnnouncementForm, BootstrapMixin):
         exclude = ('slug', 'course',)
         widgets = {
             'title': forms.TextInput(attrs={'class': 'input-xxlarge'}),
-            'content': TinyMCE(attrs={'class': 'input-xxlarge'}),
+            'content': TinyMCE(attrs={'class': 'input-xxlarge', 'relative_urls': False, 'remove_script_host': False}),
         }
 
     def __init__(self, course, *args, **kwargs):
@@ -250,7 +255,7 @@ class MassiveEmailForm(BaseMassiveEmailForm, BootstrapMixin):
         exclude = ('course', 'massive_email_type')
         widgets = {
             'subject': forms.TextInput(attrs={'class': 'input-xxlarge'}),
-            'message': TinyMCE(attrs={'class': 'input-xxlarge'}),
+            'message': TinyMCE(attrs={'class': 'input-xxlarge', 'relative_urls': False, 'remove_script_host': False}),
         }
 
     def __init__(self, course, *args, **kwargs):
@@ -300,7 +305,7 @@ class StaticPageForm(TranslationModelForm, BootstrapMixin):
         include = ('title', 'body',)
         widgets = {
             'title': forms.TextInput(attrs={'class': 'wide'}),
-            'body': TinyMCE(attrs={'class': 'wide'}),
+            'body': TinyMCE(attrs={'class': 'wide', 'relative_urls': False, 'remove_script_host': False}),
         }
 
     def __init__(self, *args, **kwargs):
