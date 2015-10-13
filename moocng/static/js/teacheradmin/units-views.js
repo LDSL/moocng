@@ -365,7 +365,8 @@ if (_.isUndefined(window.MOOC)) {
                 return {
                     p: "label-success",
                     l: "label-info",
-                    d: ""
+                    d: "",
+                    h: ""
                 }[this.model.get("status")];
             },
 
@@ -381,7 +382,7 @@ if (_.isUndefined(window.MOOC)) {
                     "' title='" + MOOC.trans.unit[this.model.get("type")] + "'>" +
                     this.model.get("type").toUpperCase() + "</span> " +
                     "<span class='label " + this.getStatusLabel() + "'>" +
-                    MOOC.trans.unit[this.model.get("status")] + "</span> "];
+                    MOOC.trans.unit.status[this.model.get("status")] + "</span> "];
 
                 if (this.model.get("title").length > 40) {
                     header.push("<h3 title='" + this.model.get("title").replace("'", "") + "'>" + this.model.get("title").substring(0, 37) + "...</h3>");
