@@ -307,7 +307,7 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
                 $(selector).addClass("disabled");
             } else {
                 url = "unit" + unit.get("id") + "/kq" + aux.get("id");
-                if (!next && aux.has("question")) {
+                if (!next && aux.has("question") && aux.has("questionInstance")) {
                     var question = aux.get("questionInstance");
                     if(question.get("solution_media_content_id") || question.get("solutionText")) {
                         url += "/a";
