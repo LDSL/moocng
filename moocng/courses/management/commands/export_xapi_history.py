@@ -112,13 +112,13 @@ class Command(BaseCommand):
 					else:
 						page['name'] = ''
 						page['description'] = ''
-					
+
 					geolocation = {
 						'lat': history['lat'],
 						'lon': history['lon']
 					}
 					timestamp = time.gmtime(history['timestamp']/1000)
-					learnerAccessAPage(user, page, geolocation, timestamp)
+					learnerAccessAPage(user, page, course, geolocation, timestamp)
 				except:
 					self.error('ERROR sending a statement for user %s in history with timestamp %s' % (history['user_id'], time.strftime("%d/%m/%Y %H:%M:%S", timestamp)))
 					continue
