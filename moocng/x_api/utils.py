@@ -13,7 +13,7 @@ from moocng.courses.models import Course, KnowledgeQuantum
 
 def _sendStatement(verb):
 	try:
-		print "Statement: " + json.dumps(verb)
+		# print "Statement: " + json.dumps(verb)
 		headers = {
 			"Content-Type": "application/json",
 			"X-Experience-API-Version": "1.0.0",
