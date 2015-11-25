@@ -302,7 +302,7 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
         getUrlForOtherKQ = function (position, next) {
             var aux = unit.get("knowledgeQuantumList").getAdjacent(position, next),
                 url,
-				title;
+                title;
             if (_.isUndefined(aux)) {
                 $(selector).addClass("disabled");
             } else {
@@ -325,16 +325,20 @@ MOOC.views.KnowledgeQuantum = Backbone.View.extend({
 
         $(selector).unbind("click");
 
-        if (/#[\w\/]+\/q/.test(path)) { // Viewing question
-            target = next ? "answer" : "same";
-        } else if (/#[\w\/]+\/as/.test(path)) { // Viewing asset availability
-            target = next ? "next" : "same";
-        } else if (/#[\w\/]+\/p/.test(path)) { // Viewing peer review
-            target = next ? "next" : "same";
-        } else if (/#[\w\/]+\/a/.test(path)) { // Viewing answer
-            target = next ? "next" : "exercise";
-        } else { // Viewing kq
-            target = next ? "exercise" : "prev";
+        if(!MOOC.vars.hide_tasks){
+          if (/#[\w\/]+\/q/.test(path)) { // Viewing question
+              target = next ? "answer" : "same";
+          } else if (/#[\w\/]+\/as/.test(path)) { // Viewing asset availability
+              target = next ? "next" : "same";
+          } else if (/#[\w\/]+\/p/.test(path)) { // Viewing peer review
+              target = next ? "next" : "same";
+          } else if (/#[\w\/]+\/a/.test(path)) { // Viewing answer
+              target = next ? "next" : "exercise";
+          } else { // Viewing kq
+              target = next ? "exercise" : "prev";
+          }
+        }else{
+          target = next ? "next": "prev";
         }
         if (target === "exercise" && !kq.has("question") && !kq.has("peer_review_assignment") && !kq.has("asset_availability")) {
             target = "next";

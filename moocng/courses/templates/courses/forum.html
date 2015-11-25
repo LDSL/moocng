@@ -9,10 +9,13 @@
 				<div class="panel">
 					<div class="header">
 						<h3>{% trans "Posts" %}</h3>
+						{% if not is_outdated %}
 						{% if is_teacher or user.is_staff %}
 						<input class="addButton pull-right" type="button" value="{% trans "NEW POST" %}">
 						{% endif %}
+						{% endif %}
 					</div>
+					{% if not is_outdated %}
 					{% if is_teacher or user.is_staff %}
 					<form class="postFrom" method="post">
 						{% csrf_token %}
@@ -22,6 +25,7 @@
 						<input class="postButton" type="submit" value="{% trans "Send" %}">
 						<span class="cancelPost">{% trans "Cancel" %}</span>
 					</form>
+					{% endif %}
 					{% endif %}
 					<div class="content">
 						<div class="posts">

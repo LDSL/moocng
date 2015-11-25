@@ -20,6 +20,7 @@
 			{% autoescape off %}
 			<div class="postText">{{reply.text|linebreaks}}</div>
 			{% endautoescape %}
+			{% if not is_outdated %}
 			<div class="tools" data-id="{{reply.id}}">
 				<span class="reply">{% trans "Reply" %}</span>
 				<form class="postReply" method="post" action="{% url course_forum_reply course.slug post.id reply.id %}">
@@ -78,6 +79,7 @@
 					</a>
 				</span>
 			</div>
+			{% endif %}
 			{% if reply.replies|length %}
 			<div class="repliesToggle">
 				<img src="{{ STATIC_URL }}img/ECO_icon_comentar_foro.svg" alt="{% trans 'Toggle comments' %}" title="{% trans 'Toggle comments' %}">

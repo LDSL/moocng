@@ -408,6 +408,7 @@
         MOOC.vars = MOOC.vars || {};
         MOOC.vars.user_id = '{{ user.get_profile.sub }}';
         MOOC.vars.course_name = '{{ course.name }}';
+        MOOC.vars.hide_tasks = {{ is_outdated|yesno:"true,false,false" }};
         MOOC.init({{ course.id }}, true);
     </script>
 {% endblock %}

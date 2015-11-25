@@ -33,7 +33,7 @@ from django.template import RequestContext
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 from django.utils import simplejson
-from datetime import date
+from datetime import date, timedelta
 import requests
 from jsonrpc_requests import Server, TransportError
 import json
@@ -322,7 +322,7 @@ def course_classroom(request, course_slug):
         messages.error(request, _('You are not enrolled in this course'))
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
-    is_ready, ask_admin = is_course_ready(course)
+    is_ready, ask_admin, is_outdated = is_course_ready(course)
     is_teacher = is_teacher_test(request.user, course)
 
     if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
@@ -365,6 +365,8 @@ def course_classroom(request, course_slug):
         'tasks_done': tasks[1],
         'unit_list': units,
         'is_ready' : is_ready,
+        'is_outdated': is_outdated,
+        'can_review': date.today() < course.end_date+timedelta(days=14),
         'is_enrolled': is_enrolled,
         'is_teacher': is_teacher_test(request.user, course),
         'peer_review': peer_review,
@@ -392,7 +394,7 @@ def course_dashboard(request, course_slug):
         messages.error(request, _('You are not enrolled in this course'))
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
-    is_ready, ask_admin = is_course_ready(course)
+    is_ready, ask_admin, is_outdated = is_course_ready(course)
     is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
@@ -468,6 +470,8 @@ def course_dashboard(request, course_slug):
         'is_enrolled': is_enrolled,
         'is_teacher': is_teacher,
         'is_ready' : is_ready,
+        'is_outdated': is_outdated,
+        'can_review': date.today() < course.end_date+timedelta(days=14),
         'rating_form': rating_form,
         'rating_formset': rating_formset,
         'group': group,
@@ -490,7 +494,7 @@ def course_syllabus(request, course_slug):
         messages.error(request, _('You are not enrolled in this course'))
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
-    is_ready, ask_admin = is_course_ready(course)
+    is_ready, ask_admin, is_outdated = is_course_ready(course)
     is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
@@ -516,6 +520,8 @@ def course_syllabus(request, course_slug):
         'tasks_done': tasks[1],
         'is_enrolled' : is_enrolled,
         'is_ready' : is_ready,
+        'is_outdated': is_outdated,
+        'can_review': date.today() < course.end_date+timedelta(days=14),
         'is_teacher': is_teacher,
         'unit_list': get_sillabus_tree(course,request.user,minversion=False),
         'group': group,
@@ -531,7 +537,7 @@ def course_group(request, course_slug):
         messages.error(request, _('You are not enrolled in this course'))
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
-    is_ready, ask_admin = is_course_ready(course)
+    is_ready, ask_admin, is_outdated = is_course_ready(course)
     is_teacher = is_teacher_test(request.user, course)
 
     # if not is_ready and not request.user.is_superuser:
@@ -569,6 +575,8 @@ def course_group(request, course_slug):
         'tasks_done': tasks[1],
         'is_enrolled' : is_enrolled,
         'is_ready' : is_ready,
+        'is_outdated': is_outdated,
+        'can_review': date.today() < course.end_date+timedelta(days=14),
         'is_teacher': is_teacher,
         'group': group,
         'groups':groups,
@@ -598,7 +606,7 @@ def course_forum(request, course_slug):
             messages.error(request, _('You are not enrolled in this course'))
             return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
-        is_ready, ask_admin = is_course_ready(course)
+        is_ready, ask_admin, is_outdated = is_course_ready(course)
         is_teacher = is_teacher_test(request.user, course)
 
         # if not is_ready and not request.user.is_superuser:
@@ -626,6 +634,8 @@ def course_forum(request, course_slug):
             'tasks_done': tasks[1],
             'is_enrolled' : is_enrolled,
             'is_ready' : is_ready,
+            'is_outdated': is_outdated,
+            'can_review': date.today() < course.end_date+timedelta(days=14),
             'is_teacher': is_teacher,
             'group': group,
             'passed': has_passed,
@@ -655,7 +665,7 @@ def course_forum_post(request, course_slug, post_id):
             messages.error(request, _('You are not enrolled in this course'))
             return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
-        is_ready, ask_admin = is_course_ready(course)
+        is_ready, ask_admin, is_outdated = is_course_ready(course)
         is_teacher = is_teacher_test(request.user, course)
 
         # if not is_ready and not request.user.is_superuser:
@@ -686,6 +696,8 @@ def course_forum_post(request, course_slug, post_id):
             'tasks_done': tasks[1],
             'is_enrolled' : is_enrolled,
             'is_ready' : is_ready,
+            'is_outdated': is_outdated,
+            'can_review': date.today() < course.end_date+timedelta(days=14),
             'is_teacher': is_teacher,
             'group': group,
             'passed': has_passed,
@@ -795,7 +807,7 @@ def course_calendar(request, course_slug):
         messages.error(request, _('You are not enrolled in this course'))
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
-    is_ready, ask_admin = is_course_ready(course)
+    is_ready, ask_admin, is_outdated = is_course_ready(course)
     is_teacher = is_teacher_test(request.user, course)
     # if not is_ready and not request.user.is_superuser:
     if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
@@ -821,6 +833,8 @@ def course_calendar(request, course_slug):
         'tasks_done': tasks[1],
         'is_enrolled' : is_enrolled,
         'is_ready' : is_ready,
+        'is_outdated': is_outdated,
+        'can_review': date.today() < course.end_date+timedelta(days=14),
         'is_teacher': is_teacher,
         'group': group,
         'passed': has_passed,
@@ -834,7 +848,7 @@ def course_wiki(request, course_slug):
         messages.error(request, _('You are not enrolled in this course'))
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
-    is_ready, ask_admin = is_course_ready(course)
+    is_ready, ask_admin, is_outdated = is_course_ready(course)
     is_teacher = is_teacher_test(request.user, course)
     # if not is_ready and not request.user.is_superuser:
     if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
@@ -860,6 +874,8 @@ def course_wiki(request, course_slug):
         'tasks_done': tasks[1],
         'is_enrolled' : is_enrolled,
         'is_ready' : is_ready,
+        'is_outdated': is_outdated,
+        'can_review': date.today() < course.end_date+timedelta(days=14),
         'is_teacher': is_teacher,
         'group': group,
         'passed': has_passed,
@@ -873,7 +889,7 @@ def course_teachers(request, course_slug):
         messages.error(request, _('You are not enrolled in this course'))
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
-    is_ready, ask_admin = is_course_ready(course)
+    is_ready, ask_admin, is_outdated = is_course_ready(course)
     is_teacher = is_teacher_test(request.user, course)
 
     tasks = get_tasks_available_for_user(course, request.user)
@@ -901,6 +917,8 @@ def course_teachers(request, course_slug):
         'tasks_done': tasks[1],
         'is_enrolled' : is_enrolled,
         'is_ready' : is_ready,
+        'is_outdated': is_outdated,
+        'can_review': date.today() < course.end_date+timedelta(days=14),
         'is_teacher': is_teacher,
         'group': group,
         'passed': has_passed,
@@ -925,7 +943,7 @@ def course_progress(request, course_slug):
         messages.error(request, _('You are not enrolled in this course'))
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
-    is_ready, ask_admin = is_course_ready(course)
+    is_ready, ask_admin, is_outdated = is_course_ready(course)
     is_teacher = is_teacher_test(request.user, course)
 
     tasks = get_tasks_available_for_user(course, request.user)
@@ -938,6 +956,8 @@ def course_progress(request, course_slug):
             'tasks_done': tasks[1],
             'is_enrolled': is_enrolled,
             'is_ready' : is_ready,
+            'is_outdated': is_outdated,
+            'can_review': date.today() < course.end_date+timedelta(days=14),
             'ask_admin': ask_admin,
         }, context_instance=RequestContext(request))
 
@@ -1007,6 +1027,8 @@ def course_progress(request, course_slug):
         'unit_list_info': units_info_ordered,
         'is_enrolled': is_enrolled,  # required due course nav templatetag
         'is_ready' : is_ready,
+        'is_outdated': is_outdated,
+        'can_review': date.today() < course.end_date+timedelta(days=14),
         'is_teacher': is_teacher_test(request.user, course),
         'group': group,
         'passed': has_passed,
@@ -1051,7 +1073,7 @@ def announcement_detail(request, course_slug, announcement_id, announcement_slug
     course = get_course_if_user_can_view_or_404(course_slug, request)
     announcement = get_object_or_404(Announcement, id=announcement_id)
     is_enrolled = course.students.filter(id=request.user.id).exists()
-    is_ready, ask_admin = is_course_ready(course)
+    is_ready, ask_admin, is_outdated = is_course_ready(course)
     tasks = get_tasks_available_for_user(course, request.user)
     group = get_group_by_user_and_course(request.user.id, course.id)
     if is_enrolled:
@@ -1064,6 +1086,8 @@ def announcement_detail(request, course_slug, announcement_id, announcement_slug
         'progress': get_course_progress_for_user(course, request.user),
         'is_enrolled': is_enrolled,  # required due course nav templatetag
         'is_ready' : is_ready,
+        'is_outdated': is_outdated,
+        'can_review': date.today() < course.end_date+timedelta(days=14),
         'is_teacher': is_teacher_test(request.user, course),
         'group': group,
         'task_list': tasks[0],
@@ -1183,7 +1207,7 @@ def check_survey(request, course_slug, survey_id, survey_token):
     is_enrolled = course.students.filter(id=request.user.id).exists()
     tasks = get_tasks_available_for_user(course, request.user)
     is_teacher = is_teacher_test(user, course)
-    is_ready, ask_admin = is_course_ready(course)
+    is_ready, ask_admin, is_outdated = is_course_ready(course)
     group = get_group_by_user_and_course(request.user.id, course.id)
 
     try:
@@ -1224,6 +1248,8 @@ def check_survey(request, course_slug, survey_id, survey_token):
         'tasks_done': tasks[1],
         'is_teacher': is_teacher,
         'is_ready': is_ready,
+        'can_review': date.today() < course.end_date+timedelta(days=14),
+        'is_outdated': is_outdated,
         'group': group,
         'survey_token': survey_token,
         'survey_id': survey_id,
@@ -1235,8 +1261,6 @@ def course_diploma_pdf(request, course_slug):
         user = request.user
         course = get_course_if_user_can_view_or_404(course_slug, request)
         is_enrolled = course.students.filter(id=user.id).exists()
-        is_teacher = is_teacher_test(user, course)
-        is_ready, ask_admin = is_course_ready(course)
         if is_enrolled and has_user_passed_course(user, course):
             total_mark, units_info = get_course_mark(course, request.user)
             course_units = get_units_available_for_user(course, user)

@@ -28,6 +28,7 @@
 										<p class="postText">{{post.text|linebreaks}}</p>
 										{% endautoescape %}
 
+										{% if not is_outdated %}
 										<div class="tools" data-id="{{post.id}}">
 											<span class="reply">{% trans "Reply" %}</span>
 											<form class="postReply" method="post" action="{% url course_forum_reply course.slug post.id post.id %}">
@@ -87,6 +88,7 @@
 												</a>
 											</span>
 										</div>
+										{% endif %}
 									</div>
 								</div>
 								{% if post.replies|length > 0 %}

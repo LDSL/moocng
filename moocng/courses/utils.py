@@ -106,17 +106,19 @@ def is_course_ready(course):
     """
     has_content = course.unit_set.count() > 0
     is_ready = True
+    is_outdated = False
     ask_admin = False
     if course.start_date:
         is_ready = date.today() >= course.start_date
         if is_ready and not has_content:
             is_ready = False
             ask_admin = True
+        is_outdated = date.today() > course.end_date
     else:
         if not has_content:
             is_ready = False
             ask_admin = True
-    return (is_ready, ask_admin)
+    return (is_ready, ask_admin, is_outdated)
 
 
 def send_mail_wrapper(subject, template, context, to):

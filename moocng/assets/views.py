@@ -49,7 +49,7 @@ def course_reservations(request, course_slug):
         return HttpResponseRedirect(reverse('course_overview',
                                             args=[course_slug]))
 
-    is_ready, ask_admin = is_course_ready(course)
+    is_ready, ask_admin, is_outdated = is_course_ready(course)
 
     if not is_ready:
         return render_to_response('courses/no_content.html', {

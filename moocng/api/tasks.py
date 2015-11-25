@@ -21,6 +21,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from celery import task
+from celery.utils.log import get_task_logger
 
 from moocng.badges.models import BadgeByCourse
 from moocng.courses.models import KnowledgeQuantum
@@ -32,14 +33,19 @@ from moocng.courses.marks import get_course_mark, get_kq_mark
 
 from datetime import date
 
+logger = get_task_logger(__name__)
 
 @task
 def on_activity_created_task(activity_created, unit_activity, course_activity):
-    logger = on_activity_created_task.get_logger()
     db = get_db()
     kq = KnowledgeQuantum.objects.get(id=activity_created['kq_id'])
     kq_type = kq.kq_type()
-    up_kq, up_u, up_c, passed_kq, passed_unit, passed_course = update_mark(activity_created)
+    course = Course.objects.get(id=activity_created['course_id'])
+    logger.info(course.end_date)
+    if date.today() < course.end_date:
+        up_kq, up_u, up_c, passed_kq, passed_unit, passed_course = update_mark(activity_created)
+    else:
+        passed_kq = passed_unit = passed_course = False
     # KQ
     data = {
         'viewed': 1
