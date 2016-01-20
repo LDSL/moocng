@@ -28,6 +28,15 @@ def _sendStatement(verb):
 		print "  !!! Error sending statement"
 		print "      Unexpected error:", sys.exc_info()
 
+def _normalizeUrl(url):
+	# clear and unify url
+	url = re.sub(r"https?://", "https://", url)
+	url = re.sub(r"\?ecouserid=[0-9a-f]+", "", url)
+	url = re.sub(r"#$", "", url)
+	url = re.sub(r"#[0-9a-f]+$", "", url)
+
+	return url
+
 def _populateVerbAboutMOOC(user, course, geolocation, timestamp):
 	verb = {
 	    "actor": {
@@ -405,6 +414,8 @@ def learnerUnenrollsInMooc(user, course, geolocation, timestamp=None):
 	_sendStatement(verb)
 
 def learnerAccessAPage(user, resource, course, geolocation, timestamp=None):
+	resource['url'] = _normalizeUrl(resource['url'])
+
 	resource_types = {
 		"mooc": "http://adlnet.gov/expapi/activities/course",
 		"page": "http://activitystrea.ms/schema/1.0/page",
@@ -496,6 +507,8 @@ def learnerAccessAPage(user, resource, course, geolocation, timestamp=None):
 	_sendStatement(verb)
 
 def learnerSubmitsAResource(user, resource, course, geolocation, timestamp=None, result=None):
+	resource['url'] = _normalizeUrl(resource['url'])
+
 	resource_types = {
 		"task": "http://activitystrea.ms/schema/1.0/task",
 		"assessment": "http://adlnet.gov/expapi/activities/assessment",

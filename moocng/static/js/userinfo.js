@@ -159,6 +159,12 @@ function sendHistoryEntry(course_id, options){
 	if(options.url !== undefined)
 		url = options.url;
 
+	// Unify URL protocol and clear unused params
+	url = url.replace(/https?:\/\//,'https://');
+	url = url.replace(/\?ecouserid=[0-9a-f]+/,'');
+	url = url.replace(/#$/,'');
+	url = url.replace(/#[0-9a-f]+$/, '');
+
 	window.setTimeout(function(){
 		if (currentCourse){
 			var lat = 0.0;

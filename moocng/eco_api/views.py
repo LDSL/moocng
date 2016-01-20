@@ -19,7 +19,7 @@ def ListRecords(request, num="1"):
 	courses = Course.objects.filter(Q(status="p") | Q(status="o"))
 	# print(courses)
     # root = ElementTree.XML('<?xml version="1.0" encoding="ISO-8859-1"?><context><namespace><prefix>org.instantknowledge.com.</prefix><context>battery</context></namespace><data><state>86%</state><charging>false</charging></data></context>')
-	
+
 	# xml = dicttoxml.dicttoxml(to_json, attr_type=False, custom_root="OAI-PMH")
 	root = Element('OAI-PMH')
 	root.set('xmlns', 'http://www.openarchives.org/OAI/2.0/')
@@ -42,7 +42,7 @@ def ListRecords(request, num="1"):
 		header = SubElement(record, 'header')
 		if course.is_deactivated:
 			header.set('status', 'deleted')
-		identifier = SubElement(header, 'identifier') 
+		identifier = SubElement(header, 'identifier')
 		identifier.text = '.'.join(settings.API_URI.split(".")[::-1]) + ":" + str(course.id)
 		datestamp = SubElement(header, 'datestamp')   #TODO
 		if course.start_date:
@@ -59,30 +59,30 @@ def ListRecords(request, num="1"):
 		lentry = SubElement(lidentifier, 'lom:entry')
 		lentry.text=str(course.id)
 		ltitle = SubElement(general, 'lom:title')
-		
+
 		if(len(course.languages.all()) == 0):
-			lstring = SubElement(ltitle, 'lom:string')  
+			lstring = SubElement(ltitle, 'lom:string')
 			lstring.set('language', 'null')
 			lstring.text=course.name
 		else:
 			for language in course.languages.all():
 				translation.trans_real.activate(language.abbr)
-				lstring = SubElement(ltitle, 'lom:string')  
+				lstring = SubElement(ltitle, 'lom:string')
 				lstring.set('language', language.abbr)
 				lstring.text=course.name
-		
+
 
 		ldescription = SubElement(general, 'lom:description')
 		if(len(course.languages.all()) == 0):
-			lstring = SubElement(ldescription, 'lom:string')  
-			lstring.set('language', 'null') 
+			lstring = SubElement(ldescription, 'lom:string')
+			lstring.set('language', 'null')
 			lstring.text = re.sub('<[^<]+?>', '', course.description)
 
 		else:
 			for language in course.languages.all():
 				translation.trans_real.activate(language.abbr)
-				lstring = SubElement(ldescription, 'lom:string')  
-				lstring.set('language', language.abbr) 
+				lstring = SubElement(ldescription, 'lom:string')
+				lstring.set('language', language.abbr)
 				lstring.text = re.sub('<[^<]+?>', '', course.description)
 
 		if(len(course.languages.all()) == 0):
@@ -142,7 +142,7 @@ def ListRecords(request, num="1"):
 				if(years > 0):
 					duration.text += str(years) + "Y"
 					diff -= years * 8760
-			
+
 			if(diff >= 720):
 				months = diff/720
 				duration.text += str(months) + "M"
@@ -158,7 +158,7 @@ def ListRecords(request, num="1"):
 				duration.text += str(diff) + "H"
 
 		lifeCycle = SubElement(lom, 'lom:lifeCycle')
-		
+
 		organizations = []
 		for teacher in course.teachers.all():
 			lcontribute = SubElement(lifeCycle, 'lom:contribute')
@@ -174,7 +174,7 @@ def ListRecords(request, num="1"):
 			except:
 				pass
 			if organization not in organizations:
-				organizations.append(organization) 
+				organizations.append(organization)
 			lentity.text="<![CDATA[BEGIN:VCARD \r\nFN:" + teacher.first_name + " " + teacher.last_name + " \r\nUID:urn:uuid:" + str(teacher.get_profile().sub) + " \r\nEMAIL;TYPE=INTERNET:" + teacher.email + " \r\nORG:" + organization + " N:" + teacher.last_name +";" + teacher.first_name + " \r\nVERSION:3.0 \r\nEND:VCARD \r\n]]>"
 
 		for organization in organizations:
@@ -186,7 +186,7 @@ def ListRecords(request, num="1"):
 			lvalue.text = "content provider"
 			lentity = SubElement(lcontribute, 'lom:entity')
 			lentity.text="<![CDATA[BEGIN:VCARD \r\nORG:" + organization + " \r\nVERSION:3.0 \r\nEND:VCARD \r\n]]>"
-		
+
 		lclassification = SubElement(lom, 'lom:classification')
 		lpurpose = SubElement(lclassification, 'lom:purpose')
 		lsource = SubElement(lpurpose, 'lom:source')
@@ -206,7 +206,7 @@ def ListRecords(request, num="1"):
 			lentry = SubElement(ltaxon, 'lom:entry')
 			lstring = SubElement(lentry, 'lom:string')
 			lstring.text = categories[0].name
-		
+
 	return HttpResponse(tostring(root), mimetype='application/xml')
 
 
@@ -230,7 +230,7 @@ def courses_by_users(request,id):
 			current_pill = course.get_user_mark(user)
 			dates_info = get_course_activity_dates_for_user(course, user)
 			course_result = {
-				"id": str(course.id), 
+				"id": str(course.id),
 				"progressPercentage" : get_course_progress_for_user(course, user),
 			}
 			if "enrollDate" in dates_info:
@@ -248,8 +248,8 @@ def courses_by_users(request,id):
 def teacher(request,id):
 	teacher = CourseTeacher.objects.filter(teacher__userprofile__sub=id)[0].teacher
 	result = [{
-		"name":teacher.first_name + " " + teacher.last_name, 
-		"imageUrl":"http:" + gravatar_for_email(teacher.email), 
+		"name":teacher.first_name + " " + teacher.last_name,
+		"imageUrl":"http:" + gravatar_for_email(teacher.email),
 	}]
 	if teacher.get_profile().language and teacher.get_profile().bio:
 		result[0]["desc"] = {
@@ -257,7 +257,7 @@ def teacher(request,id):
 			"label": strip_tags(teacher.get_profile().bio)
 		}
 	return HttpResponse(simplejson.dumps(result), mimetype='application/json')
-	
+
 
 def heartbeat(request):
     return HttpResponse(simplejson.dumps({"alive_at": datetime.datetime.now().isoformat()}), mimetype='application/json')
