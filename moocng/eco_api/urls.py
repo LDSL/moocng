@@ -24,7 +24,7 @@ urlpatterns = patterns(
 
 
     url(r'^heartbeat', 'heartbeat', name='heartbeat'),
-    url(r'^users/(?P<id>[-\w]+)/courses', 'courses_by_users', name='heartbeat'),
+    url(r'^users/(?P<id>[-\w.]+)/courses', 'courses_by_users', name='heartbeat'),
     url(r'^teachers/(?P<id>[-\w]+)/', 'teacher', name='heartbeat'),
     url(r'^tasks/(?P<id>[-\w]+)/', 'tasks_by_course', name='tasks_by_course')
 )
