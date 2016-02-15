@@ -1,10 +1,12 @@
 from django.utils import simplejson, translation
 from django.http import HttpResponse
+from django.core.urlresolvers import reverse
 from django.utils.html import strip_tags
 import datetime
 import re
 from xml.etree.ElementTree import Element, SubElement, Comment, tostring
 from moocng.courses.models import Course, CourseTeacher
+from moocng.peerreview.models import PeerReviewAssignment
 from moocng.courses.security import (get_course_progress_for_user)
 from moocng.courses.utils import (get_course_activity_dates_for_user)
 from moocng.portal.templatetags.gravatar import (gravatar_for_email)
@@ -258,6 +260,36 @@ def teacher(request,id):
 		}
 	return HttpResponse(simplejson.dumps(result), mimetype='application/json')
 
+def tasks_by_course(request,id):
+	result = {};
+	try:
+		course = Course.objects.get(id=id)
+		tasks = []
+		for unit in course.unit_set.all():
+			for kq in unit.knowledgequantum_set.all():
+				for q in kq.question_set.all():
+					q_obj = {
+						"type": "http://activitystrea.ms/schema/1.0/task",
+						"id": "{0}#unit{1}/kq{2}/q".format(reverse('course_classroom', args=(course.slug,)),unit.id,kq.id),
+						"completedTimestamp": unit.deadline.isoformat() + 'Z' if unit.deadline else datetime.datetime.strptime(str(course.end_date), '%Y-%m-%d').isoformat()
+					}
+					tasks.append(q_obj)
+				pr_set = PeerReviewAssignment.objects.filter(kq=kq)
+				for pr in pr_set:
+					pr_obj = {
+						"type": "http://adlnet.gov/expapi/activities/assessment",
+						"id": "{0}#unit{1}/kq{2}/p".format(reverse('course_classroom', args=(course.slug,)),unit.id,kq.id),
+						"completedTimestamp": unit.deadline.isoformat() + 'Z' if unit.deadline else datetime.datetime.strptime(str(course.end_date), '%Y-%m-%d').isoformat()
+					}
+					tasks.append(pr_obj)
+		result = {
+			"moocId": 'oai:' + '.'.join(settings.API_URI.split(".")[::-1]) + ":" + str(course.id),
+			"tasks": tasks
+		}
+	except ObjectDoesNotExist:
+		pass
+
+	return HttpResponse(simplejson.dumps(result), mimetype='application/json')
 
 def heartbeat(request):
     return HttpResponse(simplejson.dumps({"alive_at": datetime.datetime.now().isoformat()}), mimetype='application/json')
