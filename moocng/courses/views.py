@@ -279,6 +279,11 @@ def course_overview(request, course_slug):
     else:
         has_passed= False
 
+    if course.start_date:
+        has_started = date.today() >= course.start_date;
+    else:
+        has_started = True
+
     return render_to_response('courses/overview.html', {
         'course': course,
         'permission': permission,
@@ -298,6 +303,7 @@ def course_overview(request, course_slug):
         'use_old_calculus': settings.COURSES_USING_OLD_TRANSCRIPT,
         'is_overview' : True,
         'passed': has_passed,
+        'has_started': has_started
     }, context_instance=RequestContext(request))
 
 

@@ -131,6 +131,11 @@
 						</a>
 						{% endif %}
 					{% endif %}
+					{% else %}
+						{% if not has_started %}
+							<p class="note">{% trans "You have already enrolled in this course." %} 
+							{% trans "Come back this" %} <strong>{{ course.start_date|date:"d/M/Y" }}</strong> {% trans "to start your classes." %}</p>
+						{% endif %}
 					{% endif %}
 				</div>
 			</div>
