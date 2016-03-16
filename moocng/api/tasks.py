@@ -261,7 +261,7 @@ def update_unit_mark(db, unit, user, threshold, new_mark_unit=None, new_mark_nor
 
     if completed:
         # badge unique unit
-        badges = BadgeByCourse.objects.filter(course_id=unit.course_id, criteria_type=2)
+        badges = BadgeByCourse.objects.filter(course_id=unit.course_id, criteria_type=2, criteria=unit.id)
         for badge in badges:
             win = False
             if(badge.note <= new_mark_unit):
