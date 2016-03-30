@@ -787,6 +787,7 @@ def course_forum_post_delete(request, course_slug, post_id):
         return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
     else:
         #TODO Alert: Can't delete
+        print "   ***   Can't delete forum post!!!    ***"
         return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
 
 def course_forum_load_more(request, course_slug, page, query=None, search=False, hashtag=False):
