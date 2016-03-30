@@ -631,7 +631,15 @@ def course_forum(request, course_slug):
         else:
             has_passed= False
 
-        list_posts = f.get_posts(course.slug, 0)
+        if hasattr(settings, 'FORUM_PAGINATED'):
+            forum_paginated = settings.FORUM_PAGINATED
+        else:
+            forum_paginated = False
+
+        if forum_paginated:
+            list_posts = f.get_posts(course.slug, 0)
+        else:
+            list_posts = f.get_all_posts(course.slug)
 
         return render_to_response('courses/forum.html', {
             'course': course,
@@ -647,6 +655,7 @@ def course_forum(request, course_slug):
             'passed': has_passed,
             'form': ForumPostForm(),
             'posts': list_posts,
+            'forum_paginated': forum_paginated
         }, context_instance=RequestContext(request))
 
 def course_forum_post(request, course_slug, post_id):
@@ -787,6 +796,7 @@ def course_forum_post_delete(request, course_slug, post_id):
         return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
     else:
         #TODO Alert: Can't delete
+        print "   ***   Can't delete forum post!!!    ***"
         return HttpResponseRedirect(reverse('course_forum_post', args=[course_slug, post_id]))
 
 def course_forum_load_more(request, course_slug, page, query=None, search=False, hashtag=False):
