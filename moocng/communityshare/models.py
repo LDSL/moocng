@@ -47,6 +47,31 @@ class CommunityShareBase(object):
 
 	    return self._process_post_list(posts_list)
 
+	def get_all_posts(self, idsQuery, show_children=False):
+		postCollection = get_db().get_collection(self.col_post)
+		if not show_children:
+			posts = postCollection.find({
+				"$and": [
+					{"$or": idsQuery, },
+					{"$or": [ {"is_child": {"$exists": False}}, {"is_child": False} ] },
+					{"$or": [ {"deleted": {"$exists": False}}, {"deleted": False} ] },
+				]
+			}).sort([("pinned", pymongo.DESCENDING), ("date", pymongo.DESCENDING)])
+		else:
+			posts = postCollection.find({
+				"$and": [
+					{"$or": idsQuery, },
+					{"$or": [ {"deleted": {"$exists": False} }, {"deleted": False} ] }
+				]
+			}).sort("date",pymongo.DESCENDING)
+		posts_list = []
+		for post in posts:
+			if len(post['children']) > 0:
+				self._process_post_children(post)
+			posts_list.append(post)
+
+		return self._process_post_list(posts_list)
+
 	def search_posts(self, query, page):
 	    postCollection = get_db().get_collection(self.col_post)
 	    mongoQuery = {'$regex': '.*%s.*' % (query)}
@@ -287,6 +312,10 @@ class Forum(CommunityShareBase):
 	def get_posts(self, category_slug, page):
 	    idsQuery=[{"category_slug": category_slug}]
 	    return super(Forum,self).get_posts(idsQuery, page)
+
+	def get_all_posts(self, category_slug):
+		idsQuery=[{"category_slug": category_slug}]
+		return super(Forum,self).get_all_posts(idsQuery)
 
 	def get_post_detail(self, post_id, user_id=None):
 		postCollection = get_db().get_collection(self.col_post)
