@@ -455,7 +455,7 @@ def on_peerreviewreview_created_task(review_created, user_reviews, extra):
     update_stats(data, data_kq, data_unit, data_course)
 
     # xAPI
-    user = User.objects.get(pk=review_created['author'])
+    user = User.objects.get(pk=review_created['reviewer'])
     course = Course.objects.get(pk=review_created['course'])
     kq = KnowledgeQuantum.objects.get(pk=review_created['kq'])
     resource = {
