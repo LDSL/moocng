@@ -9,11 +9,11 @@
 		<div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 bottom-line">
 			<h3 class="pull-left">{{ group.name }}</h3>
 			{% if feature_forum and group.forum_slug %}
-			<a class="pull-right" href="{{ forum_url }}/topic/{{group.forum_slug}}" target="_blank">
+			<!--<a class="pull-right" href="{{ forum_url }}/topic/{{group.forum_slug}}" target="_blank">
 				<img class="img_v_middle" src="{{ STATIC_URL }}img/ECO_icon_cab_foro.svg">
 				{% trans "Go to group's forum" %}
 				<img src="{{ STATIC_URL }}img/ECO_icon_flecha_enlace.svg">
-			</a>
+			</a>-->
 			{% endif %}
 		</div>
 	</div>
@@ -32,10 +32,10 @@
 					{% endfor %}
 				</div>
 			</p>
-				
-			
 
-			
+
+
+
 
 
 			{% if feature_groups_video %}<a href="#" class="button squared">{% trans "Videoconference" %}</a>
@@ -43,9 +43,17 @@
 			<ul class="userlist">
 				{% for member in group.members %}
 				<li class="bottom-line" id_user="{{member.id_user}}">
-					<a href="{%url profile_user%}{{member.username}}"><img class="avatar" src="{% gravatar_for_email member.email %}&s=64" alt="{% firstof member.first_name member.username %}"><a/>
+					{% url profile_user member.username as profile_user_url %}
+					{% url profile_user_byid member.id_user as profile_user_url_byid %}
+					<a href="{% if show_username %}{{ profile_user_url }}{% else %}{{ profile_user_url_byid }}{% endif %}">
+						<img class="avatar" src="{% gravatar_for_email member.email %}&s=64" alt="{% firstof member.first_name member.username %}">
+					</a>
 					<div>
-						<h4 class="bottom-line"><a href="{%url profile_user%}{{member.username}}">{{ member.first_name }} {{ member.last_name }}<span>@{{ member.username }}</a></h4>
+						<h4 class="bottom-line">
+							<a href="{% if show_username %}{{ profile_user_url }}{% else %}{{ profile_user_url_byid }}{% endif %}">{{ member.first_name }} {{ member.last_name }}
+								{% if show_username %}<span>@{{ member.username }}</span>{% endif %}
+							</a>
+						</h4>
 						{% if member.countries %}
 						<p class="tag pull-left"><img src="{{ STATIC_URL }}img/ECO_icon_info_localizacion.svg" alt="{% trans "Location"%}">{{ member.countries }}</p>
 						{% endif %}
@@ -186,9 +194,9 @@
 				$dash.find('.content .tabs .content').width(width);
 			});
 		}
-		
+
 		$( window ).resize(resizeDashboard);
-		
+
 		$('.dash-box .content .tabs > li').click(function(){
 			$(this).parent().find('.selected').removeClass('selected');
 			$(this).addClass('selected');
@@ -253,7 +261,11 @@
 					var $list_container = $('#dynamicfeed ul');
 					$list_container.empty();
 					for (post of result.posts){
+						{% if show_username %}
 						var userUrl = '{% url profile_posts %}'+ post.username.substr(1);
+						{% else %}
+						var userUrl = '{% url profile_posts %}'+ post.id_user;
+						{% endif %}
 						var date;
 						if (post.original_date) {
 							date = post.original_date;
@@ -261,9 +273,9 @@
 							date = post.date;
 						}
 						var postEl = '<li> \
-							<a href="'+userUrl+'"><img src="'+post.gravatar+'"></a> \
+							<a href="'+userUrl+'"><img src="'+post.avatar+'"></a> \
 							<div> \
-								<a href="'+userUrl+'"><h5>'+post.first_name+' '+post.last_name+' <span>'+post.username+'</span></h5></a> \
+								<a href="'+userUrl+'"><h5>'+post.first_name+' '+post.last_name + {% if show_username %}' <span>'+post.username+'</span>' + {% endif %} '</h5></a> \
 								<p class="date">'+date+'</p><br> \
 								<p class="text">'+post.text+'</p> \
 							</div> \

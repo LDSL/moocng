@@ -19,14 +19,17 @@
 					<div class="content">
 						<ol start="2">
 							{% for unit in unit_list %}
-								<li class="{% if unit.complete %}done{% endif %}"><a href="{{ unit.url }}">{{unit.title}}</a>
-								{% if unit.questions %}
+								<li class="{% if unit.complete %}done{% endif %} {% if unit.status != 'p' %}not_available{% endif %}">
+									<a {% if unit.status == 'p' or is_teacher or user.is_staff %}href="{{ unit.url }}"{% else %} title="{% trans 'Not available yet' %}"{% endif %}>{{unit.title}}</a>
+									{% if unit.questions %}
 									<ol>
 										{% for q in unit.questions %}
-										<li class="{% if q.completed %}done{% endif %} {% if q.current %} current {% endif %}"><a href="{{ q.url }}">{{q.title}}</a></li>
+										<li class="{% if q.completed %}done{% endif %} {% if q.current %} current {% endif %}">
+											<a {% if unit.status == 'p' or is_teacher or user.is_staff %}href="{{ q.url }}"{% else %} title="{% trans 'Not published yet' %}"{% endif %}>{{q.title}}</a>
+										</li>
 										{% endfor %}
 									</ol>
-								{% endif %}
+									{% endif %}
 								</li>
 							{% empty %}
 								<li class="empty">{% trans "There is no course content yet" %}</li>
@@ -40,6 +43,7 @@
 					</div>
 				</div>
 			</div>
+			{% if not is_outdated %}
 			<div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
 				<div class="dash-box">
 					<div class="title">
@@ -94,8 +98,10 @@
 					</div>
 				</div>
 			</div>
+			{% endif %}
 		</div>
 		<div class="row">
+			{% if not is_outdated %}
 			<div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
 				<div class="dash-box">
 					<div class="title">
@@ -110,9 +116,14 @@
 										{% for post in posts_list %}
 										<li>
 											{% url profile_posts post.username|cut:"@" as author_profile_url %}
-											<a href="{{ author_profile_url }}"><img src="{{ post.gravatar }}"></a>
+											{% url profile_posts_byid post.id_user as author_profile_url_byid %}
+											<a href="{% if show_username %}{{ author_profile_url }}{% else %}{{ author_profile_url_byid }}{% endif %}"><img src="{{ post.avatar }}"></a>
 											<div>
-												<a href="{{ author_profile_url }}"><h5>{{ post.first_name }} {{ post.last_name }} <span>{{ post.username }}</span></h5></a>
+												<a href="{% if show_username %}{{ author_profile_url }}{% else %}{{ author_profile_url_byid }}{% endif %}">
+													<h5>{{ post.first_name }} {{ post.last_name }}
+														{% if show_username %}<span>{{ post.username }}</span>{% endif %}
+													</h5>
+												</a>
 												<p class="date">
 													{% if post.original_date %}
 														{{post.original_date}}
@@ -120,6 +131,7 @@
 														{{post.date}}
 													{% endif %}
 												</p>
+												<br>
 												{% autoescape off %}
 												<p class="text">{{ post.text }}</p>
 												{% endautoescape %}
@@ -128,30 +140,6 @@
 										{% empty %}
 										<li class="empty">{% trans "There is no posts yet" %}</li>
 										{% endfor %}
-										<!--<li class="read">
-											<img src="{{ STATIC_URL }}img/profile_hector.png">
-											<div>
-												<h5>Héctor García <span>@hectorg</span></h5>
-												<p class="date">20 jul 2014</p>
-												<p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent tincidunt ligula sit amet enim tristique, malesuada iaculis erat vulputate.<span class="hashtag">#UNED_geocart01</span></p>
-											</div>
-										</li>
-										<li>
-											<img src="{{ STATIC_URL }}img/profile_hector.png">
-											<div>
-												<h5>Héctor García <span>@hectorg</span></h5>
-												<p class="date">20 jul 2014</p>
-												<p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent tincidunt ligula sit amet enim tristique, malesuada iaculis erat vulputate.<span class="hashtag">#UNED_geocart01</span></p>
-											</div>
-										</li>
-										<li>
-											<img src="{{ STATIC_URL }}img/profile_hector.png">
-											<div>
-												<h5>Héctor García <span>@hectorg</span></h5>
-												<p class="date">20 jul 2014</p>
-												<p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<span class="hashtag">#UNED_geocart01</span></p>
-											</div>
-										</li>-->
 									</ul>
 								</div>
 							</li>
@@ -188,7 +176,10 @@
 							</li>-->
 						</ul>
 						<div class="bottom-bar">
-							<a href="{% url profile_posts %}" class="button pull-right">@{{ user.username }}<img src="{{ STATIC_URL }}/img/ECO_icon_flecha_enlace.svg"></a>
+							<a href="{% url profile_posts %}" class="button pull-right">
+								{% trans "Go to my timeline" %}
+								<img src="{{ STATIC_URL }}/img/ECO_icon_flecha_enlace.svg">
+							</a>
 						</div>
 					</div>
 				</div>
@@ -296,7 +287,8 @@
 					</div>
 				</div>
 			</div>
-		</div>		
+			{% endif %}
+		</div>
 	</div>
 	<!--<div class="popup">
 		{% if progress > 60 and not rating %}
@@ -323,13 +315,13 @@
 				$dash.find('.content .tabs .content').first().height(height);*/
 			});
 		}
-		
+
 		$(function(){
 			resizeDashboard();
 		});
-		
+
 		$( window ).resize(resizeDashboard);
-		
+
 		$('.dash-box .content .tabs > li').click(function(){
 			$(this).parent().find('.selected').removeClass('selected');
 			$(this).addClass('selected');

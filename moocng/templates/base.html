@@ -8,30 +8,31 @@
   {% block extraheader %}{% endblock %}
   <meta name="viewport" content="width=device-width">
 
-  <link rel="apple-touch-icon" sizes="57x57" href="{{ STATIC_URL }}img/favicon/apple-touch-icon-57x57.png">
-  <link rel="apple-touch-icon" sizes="60x60" href="{{ STATIC_URL }}img/favicon/apple-touch-icon-60x60.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="{{ STATIC_URL }}img/favicon/apple-touch-icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="{{ STATIC_URL }}img/favicon/apple-touch-icon-76x76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="{{ STATIC_URL }}img/favicon/apple-touch-icon-114x114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="{{ STATIC_URL }}img/favicon/apple-touch-icon-120x120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="{{ STATIC_URL }}img/favicon/apple-touch-icon-144x144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="{{ STATIC_URL }}img/favicon/apple-touch-icon-152x152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="{{ STATIC_URL }}img/favicon/apple-touch-icon-180x180.png">
-  <link rel="icon" type="image/png" href="{{ STATIC_URL }}img/favicon/favicon-32x32.png" sizes="32x32">
-  <link rel="icon" type="image/png" href="{{ STATIC_URL }}img/favicon/android-chrome-192x192.png" sizes="192x192">
-  <link rel="icon" type="image/png" href="{{ STATIC_URL }}img/favicon/favicon-96x96.png" sizes="96x96">
-  <link rel="icon" type="image/png" href="{{ STATIC_URL }}img/favicon/favicon-16x16.png" sizes="16x16">
+  <link rel="apple-touch-icon" sizes="57x57" href="{{ theme.favicon_dir }}apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="{{ theme.favicon_dir }}apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="{{ theme.favicon_dir }}apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="{{ theme.favicon_dir }}apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="{{ theme.favicon_dir }}apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="{{ theme.favicon_dir }}apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="{{ theme.favicon_dir }}apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="{{ theme.favicon_dir }}apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ theme.favicon_dir }}apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="{{ theme.favicon_dir }}favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="{{ theme.favicon_dir }}android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="{{ theme.favicon_dir }}favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="{{ theme.favicon_dir }}favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/x-icon" href="{{ theme.favicon_dir }}favicon.ico">
   <meta name="msapplication-TileColor" content="#da532c">
-  <meta name="msapplication-TileImage" content="{{ STATIC_URL }}img/favicon/mstile-144x144.png">
+  <meta name="msapplication-TileImage" content="{{ theme.favicon_dir }}mstile-144x144.png">
   <meta name="theme-color" content="#ffffff">
 
   <!--<link rel="stylesheet" href="{{ theme.bootstrap_css }}">-->
   <!--<link rel="stylesheet" href="{{ theme.moocng_css }}">-->
-  
+
   <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400italic,400,700,800' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/grid.css" />
-  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/moocng.css"/>
-  {% block extracss %}{% endblock %}  
+  <link rel="stylesheet" type="text/css" href="{{ theme.moocng_css }}"/>
+  {% block extracss %}{% endblock %}
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/libs/jquery-1.7.2.min.js"><&#47;script>');</script>
@@ -92,6 +93,9 @@
       "footer":  "{% trans 'Come on, enter and learn more!' %}",
     };
   </script>
+  <script>
+    var noGeolocation = {% if not feature_geolocation %}true{% else %}false{% endif %};
+  </script>
   <script src="{{ STATIC_URL }}js/userinfo.js"></script>
   {% if google_analytics %}
     <script>
@@ -117,10 +121,10 @@
 {% endif %}
     <header>
     <div class="row main-bar">
-      <h1 class="logo"><a href="{% url home %}" class="hide-text"><img src="{{ theme.logo }}" alt="logo {{ site.name }}" />{{ site.name }}</a></h1>
-      <img class="logo-mini" src="{{ STATIC_URL }}img/logo_mini.png" alt="logo {{ site.name }}" />
+      <h1 class="logo"><a href="{{ theme.link_home }}" class="hide-text"><img src="{{ theme.logo }}" alt="logo {{ site.name }}" />{{ site.name }}. {% trans theme.subtitle %}</a></h1>
+      <img class="logo-mini" src="{{ theme.logo_mini }}" alt="logo {{ site.name }}" />
       <ul class="btn-link pull-left" id="meta-buttons">
-        <li><a href="{% url home %}#catalogue" class="btn btn-link">{% trans "Catalogue"%}</a></li>
+        <li><a href="{{ theme.link_catalogue }}" class="btn btn-link">{% trans "Catalogue"%}</a></li>
         {% if feature_teams %}
         	<li><a href="#" class="btn btn-link">{% trans "Teams" %}</a></li>
         {% endif %}
@@ -133,11 +137,16 @@
         	</a></li>
         {% endif %}
       </ul>
+      {%if theme.header_right_logo %}
+      <div class="extra-logo pull-right">
+        <img src="{{ theme.header_right_logo }}">
+      </div>
+      {% endif %}
       {% if user.is_authenticated %}
     		{% if is_enrolled and not is_overview%}
     			<h2 class="course-title pull-left">{{ course.name }}</h2>
     		{% endif %}
-		
+
         {% block useractions %}
             {% include "courses/include.useractions.html" %}
         {% endblock %}
@@ -153,7 +162,7 @@
       {% endif %}
       <div class="clearfix"></div>
     </header>
-    
+
     <div role="main" class="{% block mainclass %}{% endblock %}">
       {% if messages %}{% for message in messages %}
       <div class="alert {% if message.tags %} alert-{{ message.tags }} {% endif %}">
@@ -189,9 +198,9 @@
 	  		</p>
 	  		<div class="pull-right">
 			    <ul class="inline">
-			      <li><a href="http://ecolearning.eu/privacy-policy/">{% trans "Privacy Policy" %}</a></li>
+			      <li><a href="{{ theme.link_privacy }}">{% trans "Privacy Policy" %}</a></li>
 			      {% if show_tos %}
-			      <li><a href="http://ecolearning.eu/terms-of-use/">{% trans "Terms of Service" %}</a></li>
+			      <li><a href="{{ theme.link_tos }}">{% trans "Terms of Service" %}</a></li>
 			      {% endif %}
 			      <li>Powered by <a>{% trans "Open" %}{% trans "MOOC" %}</a></li>
 			    </ul>

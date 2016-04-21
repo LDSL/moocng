@@ -49,7 +49,13 @@ from moocng.teacheradmin.models import Invitation, MassiveEmail
 from moocng.teacheradmin.tasks import send_massive_email_task
 from moocng.teacheradmin.utils import (send_invitation_registered,
                                        send_removed_notification,
-                                       send_invitation_not_registered)
+                                       send_invitation_not_registered,
+                                       get_num_students_passed_course,
+                                       get_num_students_completed_course,
+                                       get_num_students_started_course,
+                                       get_num_students_passed_unit,
+                                       get_num_students_completed_unit,
+                                       get_num_students_started_unit)
 from moocng.videos.tasks import process_video_task
 
 from moocng.assets.utils import course_get_assets
@@ -62,6 +68,8 @@ import pprint
 
 from django.core import serializers
 from dateutil.relativedelta import relativedelta
+
+import boto
 
 @is_teacher_or_staff
 def teacheradmin_stats(request, course_slug):
@@ -76,10 +84,15 @@ def teacheradmin_stats(request, course_slug):
         for unit in course.unit_set.filter(Q(status='p') | Q(status='o') | Q(status='l')).all():
             num_kqs += unit.knowledgequantum_set.count()
 
+        enrolled = course.students.count()
+        started = get_num_students_started_course(course)
+        if started > enrolled:
+            enrolled = started
+
         data = {
-            'enrolled': course.students.count(),
-            'started': stats.get('started', -1),
-            'completed': stats.get('completed', -1),
+            'enrolled': enrolled,
+            'started': started,
+            'completed': get_num_students_completed_course(course),
             'num_units': course.unit_set.filter(Q(status='p') | Q(status='o') | Q(status='l')).count(),
             'num_kqs': num_kqs,
             'num_tasks': len(get_tasks_published(course))
@@ -88,7 +101,8 @@ def teacheradmin_stats(request, course_slug):
         if course.threshold is not None:
             #if the course doesn't support certification, then don't return the
             #'passed' stat since it doesn't apply
-            data['passed'] = stats.get('passed', -1)
+            passed = get_num_students_passed_course(course)
+            data['passed'] = passed
 
         return render_to_response('teacheradmin/stats.html', {
             'course': course,
@@ -104,8 +118,12 @@ def teacheradmin_stats(request, course_slug):
 @is_teacher_or_staff
 def teacheradmin_stats_students(request, course_slug):
     course = get_object_or_404(Course, slug=course_slug)
+    enrolled = course.students.count()
+    started = get_num_students_started_course(course)
+    if started > enrolled:
+        enrolled = started
     data = {
-        "enrolled": course.students.count(),
+        "enrolled": enrolled,
         "byCountry": {},
         "byLanguage": {},
         "byGender": {},
@@ -129,11 +147,12 @@ def teacheradmin_stats_students(request, course_slug):
     stats = stats_course.find_one({"course_id": course.id})
 
     if stats is not None:
-        data["started"] = stats.get("started", -1)
-        data["completed"] = stats.get("completed", -1)
+        data["started"] = started
+        data["completed"] = get_num_students_completed_course(course)
 
         if course.threshold is not None:
-            data["passed"] = stats.get("passed", -1)
+            passed = get_num_students_passed_course(course)
+            data["passed"] = passed
 
     data["byGender"]["male"] = CourseStudent.objects.filter(course=course,student__userprofile__gender='male').count()
     data["byGender"]["female"] = CourseStudent.objects.filter(course=course,student__userprofile__gender='female').count()
@@ -283,22 +302,23 @@ def teacheradmin_stats_units(request, course_slug):
     course = get_object_or_404(Course, slug=course_slug)
     stats_unit = get_db().get_collection('stats_unit')
     data = []
-
-    for unit in course.unit_set.only('id', 'title').all():
+    units = Unit.objects.filter((Q(status='p') | Q(status='o') | Q(status='l')) & Q(course__id=course.id))
+    for unit in units:
         stats = stats_unit.find_one({'unit_id': unit.id})
 
         if stats is not None:
             unit_data = {
                 'id': unit.id,
                 'title': unit.title,
-                'started': stats.get('started', -1),
-                'completed': stats.get('completed', -1),
+                'started': get_num_students_started_unit(unit),
+                'completed': get_num_students_completed_unit(unit),
             }
 
             if course.threshold is not None:
                 # if the course doesn't support certification, then don't return
                 # the 'passed' stat since it doesn't apply
-                unit_data['passed'] = stats.get('passed', -1)
+                passed = get_num_students_passed_unit(unit)
+                unit_data['passed'] = passed
 
             data.append(unit_data)
 
@@ -337,7 +357,8 @@ def teacheradmin_stats_kqs(request, course_slug):
             if course.threshold is not None:
                 # if the course doesn't support certification, then don't
                 # return the 'passed' stat since it doesn't apply
-                kq_data['passed'] = stats.get('passed', -1)
+                passed = get_num_students_passed_course(course)
+                kq_data['passed'] = passed
 
             data.append(kq_data)
 
@@ -431,6 +452,44 @@ def teacheradmin_units_transcription(request, course_slug):
         return HttpResponse(status=400)
 
 @is_teacher_or_staff
+def teacheradmin_units_s3upload(request, course_slug):
+    if request.method == 'POST':
+        if not 'kq' in request.GET:
+            return HttpResponse(status=400)
+        kq = get_object_or_404(KnowledgeQuantum, id=request.GET['kq'])
+
+        if not('file' in request.FILES.keys()):
+            return HttpResponse(status=400)
+
+        file_to_upload = request.FILES.get('file', None)
+
+        conn = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+        bucket = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+        k = boto.s3.key.Key(bucket)
+        name = "files/%s/%s" % (kq.id, file_to_upload.name)
+        k.key = name
+        k.set_contents_from_file(file_to_upload)
+        k.make_public()
+        url = k.generate_url(expires_in=0, query_auth=False)
+        print "Url for updated file: %s" % (url)
+        #Save multimedia_content_id and multimedia_content_type?
+
+        return HttpResponse(simplejson.dumps({'url': url}), mimetype="application/json")
+
+    elif request.method == 'DELETE':
+        if not 'transcription' in request.GET:
+            return HttpResponse(status=400)
+
+        transcription = get_object_or_404(Transcription,
+                                       id=request.GET['transcription'])
+        transcription.delete()
+
+        return HttpResponse()
+
+    else:
+        return HttpResponse(status=400)
+
+@is_teacher_or_staff
 def teacheradmin_units_question(request, course_slug, kq_id):
     kq = get_object_or_404(KnowledgeQuantum, id=kq_id)
     course = get_object_or_404(Course, slug=course_slug)
@@ -442,7 +501,8 @@ def teacheradmin_units_question(request, course_slug, kq_id):
         return HttpResponse(status=400)
 
     if 'HTTP_REFERER' in request.META:
-        goback = request.META['HTTP_REFERER']
+        goback = reverse('teacheradmin_units', args=(course.slug,)) + '#kq' + kq_id
+        # goback = request.META['HTTP_REFERER']
     else:
         goback = None
 
@@ -468,6 +528,7 @@ def teacheradmin_units_question(request, course_slug, kq_id):
                 } for opt in obj.option_set.all()]
         context = {
             'course': course,
+            'kq': kq,
             'is_enrolled': is_enrolled,
             'object_id': obj.id,
             'original': obj,
@@ -556,7 +617,7 @@ def teacheradmin_teachers_delete(request, course_slug, email_or_id):
 @is_teacher_or_staff
 def teacheradmin_teachers_invite(request, course_slug):
     course = get_object_or_404(Course, slug=course_slug)
-    email_or_id = request.POST['data']
+    email_or_id = request.POST['data'].lower()
     user = None
     response = None
 
@@ -819,15 +880,18 @@ def teacheradmin_badges(request, course_slug, badge_id=None):
     knowledgequantum = []
     pills = []
     if(units and len(units) > 0):
-        pills = units[0].knowledgequantum_set.all().order_by("order")
+        pills = units[0].knowledgequantum_set.filter(peerreviewassignment__isnull=False).order_by("order")
 
     badge = None
     if badge_id:
         badge = BadgeByCourse.objects.get(id=badge_id)
         if badge.criteria_type == 1:
-            criteria_list = [int(n) for n in badge.criteria.split(',')]
-            criteria_items = KnowledgeQuantum.objects.filter(id__in=criteria_list)
-            badge.criteria = criteria_items
+            try:
+                criteria_list = [int(n) for n in badge.criteria.split(',')]
+                criteria_items = KnowledgeQuantum.objects.filter(id__in=criteria_list)
+                badge.criteria = criteria_items
+            except:
+                pass
 
 
     return render_to_response('teacheradmin/badges.html', {
@@ -842,7 +906,7 @@ def teacheradmin_badges(request, course_slug, badge_id=None):
 def reload_pills(request,course_slug,id):
 
     result = {"result":[]};
-    pills = KnowledgeQuantum.objects.filter(unit_id = id).all().order_by("order")
+    pills = KnowledgeQuantum.objects.filter(unit_id = id).filter(peerreviewassignment__isnull=False).order_by("order")
     for pill in pills:
         result["result"].append({"id":pill.id, "title":pill.title})
 
@@ -1012,7 +1076,7 @@ def teacheradmin_lists(request, course_slug):
 
     return render_to_response('teacheradmin/lists.html', {
         'course': course,
-        'is_enrolled': is_enrolled,
+        'is_enrolled': is_enrolled
     }, context_instance=RequestContext(request))
 
 def _get_students_completed_kqs_filter(course):
@@ -1056,6 +1120,10 @@ def _get_students_by_filter(filter, course):
 def teacheradmin_lists_coursestudents(request, course_slug, format=None, filter=None):
     course = get_object_or_404(Course, slug=course_slug)
     is_enrolled = course.students.filter(id=request.user.id).exists()
+    accumulative_students = get_num_students_started_course(course)
+    students = course.students.all()
+    if students.count() > accumulative_students:
+        accumulative_students = students.count()
 
     if not filter:
         students = course.students.all()
@@ -1086,6 +1154,7 @@ def teacheradmin_lists_coursestudents(request, course_slug, format=None, filter=
             'is_enrolled': is_enrolled,
             'headers': headers,
             'elements': elements,
+            'accumulative_students': accumulative_students
         }, context_instance=RequestContext(request))
 
     elif format == 'csv':
@@ -1100,6 +1169,10 @@ def teacheradmin_lists_coursestudents(request, course_slug, format=None, filter=
 def teacheradmin_lists_coursestudentsmarks(request, course_slug, format=None, filter=None):
     course = get_object_or_404(Course, slug=course_slug)
     is_enrolled = course.students.filter(id=request.user.id).exists()
+    accumulative_students = get_num_students_started_course(course)
+    students = course.students.all()
+    if students.count() > accumulative_students:
+        accumulative_students = students.count()
 
     if not filter:
         students = course.students.all()
@@ -1132,6 +1205,7 @@ def teacheradmin_lists_coursestudentsmarks(request, course_slug, format=None, fi
             'is_enrolled': is_enrolled,
             'headers': headers,
             'elements': elements,
+            'accumulative_students': accumulative_students,
         }, context_instance=RequestContext(request))
 
     elif format == 'csv':

@@ -146,6 +146,11 @@ class BaseAnnouncementForm(forms.ModelForm):
             instance.save()
         if self.cleaned_data.get('send_email', None):
             me = MassiveEmail.objects.create_from_announcement(instance, massive_email_type=self.massive_email_type)
+            if getattr(self, 'course', None):
+                me.subject = "%s - %s" % (self.course.name, me.subject)
+                print self.course.name
+                print me.subject
+                me.save()
             me.send_in_batches(send_massive_email_task)
         return instance
 
@@ -167,7 +172,7 @@ class AnnouncementForm(BaseAnnouncementForm, BootstrapMixin):
         exclude = ('slug', 'course',)
         widgets = {
             'title': forms.TextInput(attrs={'class': 'input-xxlarge'}),
-            'content': TinyMCE(attrs={'class': 'input-xxlarge'}),
+            'content': TinyMCE(attrs={'class': 'input-xxlarge', 'relative_urls': False, 'remove_script_host': False}),
         }
 
     def __init__(self, course, *args, **kwargs):
@@ -230,6 +235,7 @@ class BaseMassiveEmailForm(forms.ModelForm):
         if getattr(self, 'course', None):
             instance.course = self.course
             instance.massive_email_type = 'course'
+            instance.subject = "%s - %s" % (self.course.name, instance.subject)
         instance.save()
         instance.send_in_batches(send_massive_email_task)
         return instance
@@ -249,7 +255,7 @@ class MassiveEmailForm(BaseMassiveEmailForm, BootstrapMixin):
         exclude = ('course', 'massive_email_type')
         widgets = {
             'subject': forms.TextInput(attrs={'class': 'input-xxlarge'}),
-            'message': TinyMCE(attrs={'class': 'input-xxlarge'}),
+            'message': TinyMCE(attrs={'class': 'input-xxlarge', 'relative_urls': False, 'remove_script_host': False}),
         }
 
     def __init__(self, course, *args, **kwargs):
@@ -298,8 +304,8 @@ class StaticPageForm(TranslationModelForm, BootstrapMixin):
         model = StaticPage
         include = ('title', 'body',)
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'input-xxlarge'}),
-            'body': TinyMCE(attrs={'class': 'input-xxlarge'}),
+            'title': forms.TextInput(attrs={'class': 'wide'}),
+            'body': TinyMCE(attrs={'class': 'wide', 'relative_urls': False, 'remove_script_host': False}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -307,7 +313,7 @@ class StaticPageForm(TranslationModelForm, BootstrapMixin):
         for field in self.fields.values():
             widget = field.widget
             if isinstance(widget, (forms.widgets.TextInput, forms.widgets.DateInput)):
-                widget.attrs['class'] = 'input-xxlarge'
+                widget.attrs['class'] = 'wide'
             elif isinstance(widget, forms.widgets.Textarea):
                 widget.mce_attrs['width'] = '780'  # bootstrap span10
 
@@ -317,4 +323,3 @@ class StaticPageForm(TranslationModelForm, BootstrapMixin):
 #     badgeTitle = forms.CharField(required=True)
 #     noteBadge = forms.CharField(required=True)
 #     unitBadge = forms.ChoiceField(widget=forms.Select, required=False, choices=[])
-

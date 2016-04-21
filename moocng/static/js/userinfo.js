@@ -1,19 +1,14 @@
-geolocation = null;
-deviceInfo = {
+var geolocation = null;
+var deviceInfo = {
 	type: "unknown",
 	os: "unknown",
 	orientation: "unknown"
 };
-geolocation_advised = false;
-geolocation_allowed = undefined;
-$(function(){
-	// Check geolocation permission
-	if(window.sessionStorage && window.localStorage){
-		geolocation_advised = sessionStorage.getItem('geolocation_advised') == "true";
-		geolocation_allowed = localStorage.getItem('geolocation_allowed');
-	}
+var geolocation_advised = false;
+var geolocation_allowed = undefined;
 
-    // Device Type
+$(function(){
+	// Device Type
     if(device.desktop()){
     	deviceInfo.type = "desktop";
     }else if(device.tablet()){
@@ -45,22 +40,30 @@ $(function(){
 	}
 
 	// Update geolocation
-    if(navigator.geolocation && (geolocation_advised || geolocation_allowed == 'true')){
-        navigator.geolocation.getCurrentPosition(function(position){
-        		localStorage.setItem('geolocation_allowed', true);
-            	geolocation = position;
-        	},function(error){
-        		if (error.code == error.PERMISSION_DENIED)
-        			localStorage.setItem('geolocation_allowed', false);
-        	},{timeout: 2000}
-        );
-    }else{
-    	showGeolocationAdvise();
-    }
+	if(!noGeolocation){
+		// Check geolocation permission
+		if(window.sessionStorage && window.localStorage){
+			geolocation_advised = sessionStorage.getItem('geolocation_advised') == "true";
+			geolocation_allowed = localStorage.getItem('geolocation_allowed');
+		}
+
+	    if(navigator.geolocation && (geolocation_advised || geolocation_allowed == 'true')){
+	        navigator.geolocation.getCurrentPosition(function(position){
+	        		localStorage.setItem('geolocation_allowed', true);
+	            	geolocation = position;
+	        	},function(error){
+	        		if (error.code == error.PERMISSION_DENIED)
+	        			localStorage.setItem('geolocation_allowed', false);
+	        	},{timeout: 2000}
+	        );
+	    }else{
+	    	showGeolocationAdvise();
+	    }
+	}
 });
 
 function getBrowserName(){
-    var ua= navigator.userAgent, tem, 
+    var ua= navigator.userAgent, tem,
     M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
     if(/trident/i.test(M[1])){
         tem=  /\brv[ :]+(\d+)/g.exec(ua) || [];
@@ -129,7 +132,7 @@ function showGeolocationAdvise(){
         backdrop: "static",
         keyboard: false
     });
-    setTimeout(function(){ confirmModal.modal("show"); }, 1000);    
+    setTimeout(function(){ confirmModal.modal("show"); }, 1000);
 
     $confirmDiv.find('.modal-header a').click(function(){
     	confirmModal.modal("hide");
@@ -145,8 +148,23 @@ function showGeolocationAdvise(){
 	sessionStorage.setItem('geolocation_advised', true);
 }
 
-function sendHistoryEntry(course_id){
+function sendHistoryEntry(course_id, options){
 	var currentCourse = course_id;
+	var delay = 2500;
+	var url = window.location.href;
+
+	options = options || {};
+	if(options.delay !== undefined)
+		delay = options.delay;
+	if(options.url !== undefined)
+		url = options.url;
+
+	// Unify URL protocol and clear unused params
+	url = url.replace(/https?:\/\//,'https://');
+	url = url.replace(/\?ecouserid=[0-9a-f]+/,'');
+	url = url.replace(/#$/,'');
+	url = url.replace(/#[0-9a-f]+$/, '');
+
 	window.setTimeout(function(){
 		if (currentCourse){
 			var lat = 0.0;
@@ -160,7 +178,7 @@ function sendHistoryEntry(course_id){
 				lat: lat,
 				lon: lon,
 				timestamp: new Date().getTime(),
-				url: window.location.href,
+				url: url,
 				dev_type: deviceInfo.type,
 				dev_os: deviceInfo.os,
 				dev_orientation: deviceInfo.orientation,
@@ -176,5 +194,5 @@ function sendHistoryEntry(course_id){
 		}else{
 			console.log('Current course not defined');
 		}
-	},2500);
+	}, delay);
 }

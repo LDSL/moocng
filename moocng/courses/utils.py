@@ -106,17 +106,19 @@ def is_course_ready(course):
     """
     has_content = course.unit_set.count() > 0
     is_ready = True
+    is_outdated = False
     ask_admin = False
     if course.start_date:
         is_ready = date.today() >= course.start_date
         if is_ready and not has_content:
             is_ready = False
             ask_admin = True
+        is_outdated = date.today() > course.end_date
     else:
         if not has_content:
             is_ready = False
             ask_admin = True
-    return (is_ready, ask_admin)
+    return (is_ready, ask_admin, is_outdated)
 
 
 def send_mail_wrapper(subject, template, context, to):
@@ -362,7 +364,7 @@ def get_sillabus_tree(course,user,minversion=True,incontext=False):
 
     current_mark_kq = course.get_user_mark(user)
 
-    course_units = get_units_available_for_user(course, user)
+    course_units = get_units_available_for_user(course, user, True)
 
     if len(course_units) > 0:
         if not incontext:
@@ -423,14 +425,17 @@ def get_unit_tree(unit, user, current_mark_kq, minversion=True):
         if not minversion:
             qa["has_video"] = get_media_type(q.media_content_type) == "video"
             qa["has_presentation"] = get_media_type(q.media_content_type) == "presentation"
+            qa["has_book"] = get_media_type(q.media_content_type) == "book"
             qa["has_attachments"] = len(q.attachment_set.filter()) > 0
             qa["has_test"] = len(q.question_set.filter()) > 0
+            qa["has_pr"] = q.kq_type() == "PeerReviewAssignment"
 
         questions.append(qa)
 
     unit = {
         'id': unit.id,
         'title': unit.title,
+        'status': unit.status,
         'url': "/course/"+unit.course.slug+"/classroom/#!unit"+str(unit.pk),
         'unittype': unit.unittype,
         'badge_class': get_unit_badge_class(unit),

@@ -8,12 +8,12 @@
 				<h3 class="noLowRes">Hashtag: <a href="{% url profile_posts_hashtag course.hashtag %}" id="hashtag">#{{ course.hashtag }}</a></h3>
 				{% endif %}
 			</div>
-			{% if is_ready %}
+			{% if is_ready and not is_outdated %}
 			<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4 alt-column top">
 				{% if task_list %}
 				<div class="progress-fraction">
 					<img src="{{ STATIC_URL }}img/ECO_icon_tareas.svg">
-					<p>{{ tasks_done }}<span>/{{ task_list|length }}</span></p>					
+					<p>{{ tasks_done }}<span>/{{ task_list|length }}</span></p>
 					<h4 class="noLowRes">{% trans "Total Tasks" %}</h4>
 				</div>
 				{% endif %}
@@ -54,11 +54,13 @@
 						</a>
 					</li>
 					{% if_has_peer_review_assignments course %}
+						{% if is_outdated and can_review or not is_outdated %}
                 	<li {% block nav-course-reviews %}{% endblock %}>
                 		{% url course_reviews course.slug as url_reviews %}
                     	<a href="{% url course_reviews course.slug %}" {% if request.path == url_reviews %} class="selected"{% endif %}>{% trans "Reviews" %}</a>
                 	</li>
-            		{% endif_has_peer_review_assignments %}
+						{% endif %}
+      		{% endif_has_peer_review_assignments %}
 					{% if feature_calendar %}
 					<li class="noLowRes">
 						{% url course_calendar course.slug as url_calendar %}
@@ -75,7 +77,7 @@
 						</a>
 					</li>
 					{% endif %}
-					{% if feature_groups and group %}
+					{% if feature_groups and group and not is_outdated %}
 					<li class="noLowRes">
 						{% url course_group course.slug as url_group %}
 						<a href="{{ url_group }}" {% if request.path == url_group %} class="selected"{% endif %}>
@@ -83,11 +85,15 @@
 						</a>
 					</li>
 					{% endif %}
-					{% if feature_forum and course.forum_slug %}
+					{% if feature_forum %}
 					<li class="noLowRes">
-						{% url course_forum course.forum_slug as url_forum %}
-						<a href="{{ forum_category_url }}{{course.forum_slug}}" target="_blank" {% if request.path == url_forum %} class="selected"{% endif %}>
-							{% trans "Forum" %}
+						{% url course_forum course.slug as url_forum %}
+						<a href="{{ url_forum }}" {% if url_forum in request.path %} class="selected"{% endif %}>
+							{% if not is_outdated %}
+								{% trans "Forum" %}
+							{% else %}
+								{% trans "Forum archive" %}
+							{% endif %}
 						</a>
 					</li>
 					{% endif %}
@@ -126,7 +132,7 @@
 								</a>
 							</li>
 							{% endif %}
-							{% if feature_groups and group %}
+							{% if feature_groups and group and not is_outdated %}
 							<li class="onlyLowRes">
 								{% url course_group course.slug as url_group %}
 								<a href="{{ url_group }}" {% if request.path == url_group %} class="selected"{% endif %}>
@@ -134,10 +140,10 @@
 								</a>
 							</li>
 							{% endif %}
-							{% if feature_forum and course.forum_slug %}
+							{% if feature_forum %}
 							<li class="onlyLowRes">
-								{% url course_forum course.forum_slug as url_forum %}
-								<a href="{{ forum_category_url }}{{course.forum_slug}}" target="_blank" {% if request.path == url_forum %} class="selected"{% endif %}>
+								{% url course_forum course.slug as url_forum %}
+								<a href="{{ url_forum }}" {% if url_forum in request.path %} class="selected"{% endif %}>
 									{% trans "Forum" %}
 								</a>
 							</li>
@@ -168,7 +174,7 @@
 					</li>
 				</ul>
 			</div>
-			{% if is_ready %}
+			{% if is_ready and not is_outdated %}
 			<div class="col-lg-4 col-md-4 col-sm-3 col-mob-4 alt-column bottom">
 				<div class="progress-bar">
 					<div>
@@ -185,9 +191,8 @@
 		</div>
 	</div>
 </div>
-<script>
-	$(function(){
-		var course_id = {{ course.id }}
-		sendHistoryEntry(course_id);
-	})
+<script type="text/javascript">
+	$("a#hashtag").click(function(e){
+		sendHistoryEntry({{ course.pk }}, {delay: 0, url: e.target.href});
+	});
 </script>

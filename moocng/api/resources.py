@@ -68,6 +68,9 @@ from moocng.peerreview.models import PeerReviewAssignment, EvaluationCriterion
 from moocng.peerreview.utils import (kq_get_peer_review_score,
                                      get_peer_review_review_score)
 
+from moocng.x_api.utils import (learnerSubmitsAResource)
+from django.core.urlresolvers import reverse
+
 
 STATS_QUEUE = 'stats'
 
@@ -234,7 +237,7 @@ class KnowledgeQuantumResource(BaseModelResource):
         return objects.filter(
             Q(unit__unittype='n') |
             Q(unit__start__isnull=True) |
-            Q(unit__start__isnull=False, unit__start__lte=datetime.now)
+            Q(unit__start__isnull=False) #, unit__start__lte=datetime.now)
         )
 
     def dispatch(self, request_type, request, **kwargs):
@@ -306,7 +309,7 @@ class KnowledgeQuantumResource(BaseModelResource):
     def build_filters(self, filters=None):
         if filters is None: #if you don't pass any filters at all
             filters = {}
-            
+
         orm_filters = super(KnowledgeQuantumResource, self).build_filters(filters)
         if('course' in filters):
             query = filters['course']
@@ -314,7 +317,7 @@ class KnowledgeQuantumResource(BaseModelResource):
                Q(unit__course__id=query)
             )
             orm_filters['course'] = qset
-            
+
         return orm_filters
 
     def apply_filters(self, request, applicable_filters):
@@ -608,7 +611,22 @@ class PeerReviewSubmissionsResource(BaseMongoResource):
         _id = insert_p2p_if_does_not_exists_or_raise(bundle.data, self._collection)
 
         bundle.obj = MongoObj(bundle.data)
-        self.send_created_signal(request.user.id, bundle.obj)
+
+        try:
+            geolocation = {
+                'lat': float(request.META['HTTP_GEO_LAT']),
+                'lon': float(request.META['HTTP_GEO_LON'])
+            }
+        except:
+            geolocation = {
+                'lat': 0.0,
+                'lon': 0.0
+            }
+        bundle.extra = {
+            'geolocation': geolocation
+        }
+
+        self.send_created_signal(request.user.id, bundle)
         bundle.obj.uuid = str(_id)
 
         bundle.uuid = bundle.obj.uuid
@@ -865,8 +883,25 @@ class AnswerResource(BaseMongoUserResource):
 
     def obj_create(self, bundle, request=None, **kwargs):
         bundle.data["date"] = datetime.utcnow()
+
+        # xAPI
+        try:
+            geolocation = {
+                'lat': float(request.META['HTTP_GEO_LAT']),
+                'lon': float(request.META['HTTP_GEO_LON'])
+            }
+        except:
+            geolocation = {
+                'lat': 0.0,
+                'lon': 0.0
+            }
+        bundle.extra = {
+            'geolocation': geolocation
+        }
+
         bundle = super(AnswerResource, self).obj_create(bundle, request)
         bundle.uuid = bundle.obj.question_id
+
         return bundle
 
     def obj_update(self, bundle, request=None, **kwargs):
@@ -886,7 +921,24 @@ class AnswerResource(BaseMongoUserResource):
             }, safe=True, new=True)
 
         bundle.obj = newobj
-        self.send_updated_signal(request.user.id, bundle.obj)
+
+        # xAPI
+        try:
+            geolocation = {
+                'lat': float(request.META['HTTP_GEO_LAT']),
+                'lon': float(request.META['HTTP_GEO_LON'])
+            }
+        except:
+            geolocation = {
+                'lat': 0.0,
+                'lon': 0.0
+            }
+        bundle.extra = {
+            'geolocation': geolocation
+        }
+
+        self.send_updated_signal(request.user.id, bundle)
+
         return bundle
 
 
@@ -1373,7 +1425,7 @@ api_task_logger = logging.getLogger("api_tasks")
 def on_activity_created(sender, user_id, mongo_object, **kwargs):
     api_task_logger.debug("activity created")
 
-    data = mongo_object.to_dict()
+    data = mongo_object.obj.to_dict()
     activity = get_db().get_collection('activity')
     unit_activity = activity.find({
         'user_id': data['user_id'],
@@ -1394,7 +1446,7 @@ def on_answer_created(sender, user_id, mongo_object, **kwargs):
     api_task_logger.debug("answer created")
 
     on_answer_created_task.apply_async(
-        args=[mongo_object.to_dict()],
+        args=[mongo_object.obj.to_dict(), mongo_object.extra],
         queue=STATS_QUEUE,
     )
 
@@ -1403,7 +1455,7 @@ def on_answer_updated(sender, user_id, mongo_object, **kwargs):
     api_task_logger.debug("answer updated")
 
     on_answer_updated_task.apply_async(
-        args=[mongo_object],  # it is already a dict
+        args=[mongo_object.obj, mongo_object.extra],  # mongo_object.obj is already a dict
         queue=STATS_QUEUE,
     )
 
@@ -1412,7 +1464,7 @@ def on_peerreviewsubmission_created(sender, user_id, mongo_object, **kwargs):
     api_task_logger.debug("peer review submission created")
 
     on_peerreviewsubmission_created_task.apply_async(
-        args=[mongo_object.to_dict()],
+        args=[mongo_object.obj.to_dict(), mongo_object.extra],
         queue=STATS_QUEUE,
     )
 
@@ -1420,7 +1472,7 @@ def on_history_created(sender, user_id, mongo_object, **kwargs):
     api_task_logger.debug("history created")
 
     on_history_created_task.apply_async(
-        args=[mongo_object.to_dict()],
+        args=[mongo_object.obj.to_dict()],
         queue=STATS_QUEUE,
     )
 

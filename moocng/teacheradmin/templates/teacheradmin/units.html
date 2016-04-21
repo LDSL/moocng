@@ -35,16 +35,19 @@
             emptyLong: "{% trans 'You need to add content to this course. Please, start adding a unit.' %}",
             unit: {
                 unit: "{% trans 'unit' %}",
-                d: "{% trans 'Draft' %}",
-                l: "{% trans 'Hidden' %}",
-                p: "{% trans 'Published' %}",
                 n: "{% trans 'Normal' %}",
                 h: "{% trans 'Homework' %}",
-                e: "{% trans 'Exam' %}"
+                e: "{% trans 'Exam' %}",
+                status: {
+                  d: "{% trans 'Draft' %}",
+                  h: "{% trans 'Hidden' %}",
+                  l: "{% trans 'Listable' %}",
+                  p: "{% trans 'Published' %}",
+                }
             },
             kq: {
                 teacher_comments: "{% trans "Instructor's comments" %}",
-                supplementary_material: "{% trans 'Supplementary material' %}",
+                supplementary_material: "{% trans 'Complementary material' %}",
                 kq: "{% trans 'nugget' %}",
                 question: "{% trans 'It has a question' %}",
                 pr: "{% trans 'PR' %}",
@@ -86,8 +89,11 @@
                 <label for="status-published" class="radio inline pointer">
                     <input type="radio" name="status" id="status-published" /> {% trans "Published" %}
                 </label>
+                <label for="status-hidden" class="radio inline pointer">
+                    <input type="radio" name="status" id="status-hidden" /> {% trans "Hidden" %}
+                </label>
                 <label for="status-listable" class="radio inline pointer">
-                    <input type="radio" name="status" id="status-listable" /> {% trans "Hidden" %}
+                    <input type="radio" name="status" id="status-listable" /> {% trans "Listable" %}
                 </label>
                 <label for="status-draft" class="radio inline pointer">
                     <input type="radio" name="status" id="status-draft" /> {% trans "Draft" %}
@@ -137,63 +143,84 @@
 </script>
 <script id="edit-kq-tpl" type="text/template">
 <form>
+    <legend><%= title %></legend>
     <ul class="nav nav-tabs">
         <li class="active"><a href="#nugget" data-toggle="tab">{% trans "Nugget" %}</a></li>
-        <li id="attachments-tab"><a href="#attachments" data-toggle="tab">{% trans "Attachments" %}</a></li>
-        <li id="transcriptions-tab"><a href="#transcriptions" data-toggle="tab">{% trans "Transcriptions" %}</a></li>
+        <li id="attachments-tab"><a href="#attachments" data-toggle="tab">{% trans "Complementary material" %}</a></li>
+        <li id="transcriptions-tab" class="hide"><a href="#transcriptions" data-toggle="tab">{% trans "Transcriptions" %}</a></li>
         <li id="question-tab" class="hide"><a href="#question" data-toggle="tab">{% trans "Question" %}</a></li>
         <li id="peer-review-assignment-tab" class="hide"><a href="#peer-review-assignment" data-toggle="tab">{% trans "Peer review" %}</a></li>
         <li id="asset-availability-tab" class="hide"><a href="#asset-availability" data-toggle="tab">{% trans "Asset Availability" %}</a></li>
     </ul>
-    <div class="tab-content"><fieldset class="tab-pane active" id="nugget">
-    <div class="row">
-        <div class="span4">
-            <label for="kqtitle" class="required">{% trans "Title" %}</label>
-            <input id="kqtitle" type="text" name="kqtitle" maxlength="200" class="input-xlarge" required="required" />
-        </div>
-        <div class="span4">
-            <label for="kqmedia_content_type" class="required">{% trans "Content type" %}</label>
-            <select id="kqmedia_content_type" name="kqmedia_content_type" class="input-xlarge" required="required">
-                {% for media_content_type in media_content_type_choices %}
-                    <option value='{{ media_content_type.0}}'>{{ media_content_type.1}}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="span4">
-            <label for="kqmedia_content_id" class="required">{% trans "Content id or url" %}</label>
-            <input id="kqmedia_content_id" type="text" name="kqmedia_content_id" maxlength="200" class="input-xlarge" required="required" />
-        </div>
-        <div class="span2">
-            <label for="kqweight" class="required">{% trans "Weight" %}</label>
-            <div class="input-append">
-                <input type="number" min="0" max="100" step="1" name="kqweight" id="kqweight" class="input-mini" required="required" />
-                <span class="add-on">%</span>
+    <div class="tab-content showOverflow">
+    <fieldset class="tab-pane tall active" id="nugget">
+        <div class="row">
+            <div class="col-lg-12 col-md-8 col-sm-4 col-mob-3">
+                <label for="kqtitle" class="required">{% trans "Title" %}</label>
+                <input id="kqtitle" type="text" name="kqtitle" maxlength="200" class="input-xxlarge" required="required" />
+            </div>
+            <div class="col-lg-2 col-md-1 col-sm-1 col-mob-2">
+                <label for="kqweight" class="required">{% trans "Weight" %}</label>
+                <div class="input-append">
+                    <input type="number" min="0" max="100" step="1" name="kqweight" id="kqweight" class="input-mini" required="required" />
+                    <span class="add-on">%</span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row nomargin">
-        <div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
-            <label for="kqsupplementary">{% trans "Supplementary material" %}</label>
-            <textarea id="kqsupplementary" name="kqsupplementary" class="span5" rows="5"></textarea>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-4 col-mob-4">
+                <label for="kqmedia_content_type" class="required">{% trans "Content type" %}</label>
+                <select id="kqmedia_content_type" name="kqmedia_content_type" class="input-xlarge" required="required">
+                    {% for media_content_type in media_content_type_choices %}
+                        <option value='{{ media_content_type.0}}'>{{ media_content_type.1}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-mob-4">
+                <label for="kqmedia_content_id" class="required">{% trans "Content id or url" %}</label>
+                <input id="kqmedia_content_id" type="text" name="kqmedia_content_id" maxlength="200" class="input-xlarge" required="required" />
+            </div>
+            <div class="span6" id="s3_upload_form">
+                <label for="id_file">{% trans "File" %}</label>
+                <div class="fileupload fileupload-new" data-provides="fileupload">
+                    <div class="input-append">
+                        <div class="uneditable-input span3">
+                            <span class="icon-file fileupload-exists"></span> <span class="fileupload-preview"></span>
+                        </div>
+                        <span class="btn btn-file">
+                            <span class="fileupload-new">{% trans "Select file" %}</span>
+                            <span class="fileupload-exists">{% trans "Change" %}</span>
+                            <input type="file" accept="video/mp4" name="kqmedia_s3_upload_file" id="kqmedia_s3_upload_file" />
+                        </span>
+                        <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">{% trans "Remove" %}</a>
+                    </div>
+                </div>
+                <button id="s3_upload_btn" class="btn">{% trans "Upload video" %}</button>
+                <progress></progress>
+            </div>
         </div>
-        <div class="col-lg-8 col-md-6 col-sm-8 col-mob-4">
-            <label for="kqcomments">{% trans "Instructor's comments" %}</label>
-            <textarea id="kqcomments" name="kqcomments" class="span5" rows="5"></textarea>
+        <div class="row nomargin">
+            <div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
+                <label for="kqcomments">{% trans "Instructor's comments" %}</label>
+                <textarea id="kqcomments" name="kqcomments" class="span5 tall" rows="5"></textarea>
+            </div>
         </div>
-    </div>
-    <div id="noquestion" class="mb20">
-        <div class="align-right">
-            <button id="addquestion" type="submit" class="btn btn-primary">{% trans "Save changes and add a question to this nugget" %}</button>
+        <div id="noquestion" class="mb20">
+            <div class="align-right">
+                <button id="addquestion" type="submit" class="btn btn-primary">{% trans "Add a question" %}</button>
+            </div>
         </div>
-    </div>
-    <div id="nopeerreviewassignment" class="mb20">
-        <div class="align-right">
-            <button id="addpeerreviewassignment" class="btn btn-primary" type="submit">{% trans "Save changes and add a peer review assignment to this nugget" %}</button>
+        <div id="nopeerreviewassignment" class="mb20">
+            <div class="align-right">
+                <button id="addpeerreviewassignment" class="btn btn-primary" type="submit">{% trans "Add a peer review assignment" %}</button>
+            </div>
         </div>
-    </div>
     </fieldset>
-    <fieldset class="tab-pane" id="attachments">
-        <label for="id_file">{% trans "File" %}</label>
+    <fieldset class="tab-pane tall" id="attachments">
+        <legend>{% trans "Complementary material" %}</legend>
+        <textarea id="kqsupplementary" name="kqsupplementary" class="span5 tall" rows="5"></textarea>
+
+        <legend>{% trans "Attachments" %}</legend>
         <div class="fileupload fileupload-new" data-provides="fileupload">
             <div class="input-append">
                 <div class="uneditable-input span3">
@@ -213,7 +240,7 @@
             </thead>
             <tbody></tbody>
         </table>
-        <div class="alert alert-info hide" id="attachment-empty">{% trans "There are no attachments yet." %}</div>
+        <div class="alert alert-info notfixed hide" id="attachment-empty">{% trans "There are no attachments yet." %}</div>
     </fieldset>
     <fieldset class="tab-pane" id="transcriptions">
         <label for="id_file">{% trans "File" %}</label>
@@ -261,7 +288,7 @@
                 <p><button id="force-process" class="hide btn">{% trans "Force processing the nugget's video" %}</button></p>
             </div>
             <div id="no-last-frame" class="hide">
-                <div class="alert alert-info">
+                <div class="alert alert-info notfixed">
                     <h4>{% trans "Using blank canvas" %}</h4>
                     <p>{% trans "You are using a blank canvas for the question instead of the last frame of the nugget's video." %}</p>
                 </div>
@@ -280,9 +307,10 @@
             <legend>{% trans "Question's solution" %}</legend>
             <div class="mb10">
                 <div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
-                    <div class="btn-group">
-                        <button class="btn active" id="use-solution-video-btn">{% trans "Use a media content as solution" %}</button>
-                        <button class="btn" id="use-solution-text-btn">{% trans "Use a text as solution" %}</button>
+                    <div class="btn-group inline">
+                        <button class="btn active" id="use-no-solution-btn">{% trans "Don't show an answer" %}</button>
+                        <button class="btn" id="use-solution-video-btn">{% trans "Use a media content as answer" %}</button>
+                        <button class="btn" id="use-solution-text-btn">{% trans "Use a text as answer" %}</button>
                     </div>
                 </div>
             </div>
@@ -310,18 +338,18 @@
     </div>
     <div class="row">
         <div class="align-right col-lg-16 col-md-12 col-sm-8 col-mob-4">
-            <button id="go2options" class="btn btn-primary" type="submit">{% trans "Save changes and edit question's options" %}</button>
+            <button id="go2options" class="btn btn-primary" type="submit">{% trans "Edit question's options" %}</button>
             <button id="delete-question" class="btn btn-danger">{% trans "Remove the question from this nugget" %}</button>
         </div>
     </div>
     </fieldset>
     <fieldset class="tab-pane" id="peer-review-assignment">
     <div>
-        <div class="col-lg-7 col-md-7 col-sm-8 col-mob-4">
+        <div class="col-lg-16 col-md-12 col-sm-8 col-mob-4 tall">
             <label for="reviewdescription" class="required">{% trans "Assignment description" %}</label>
-            <textarea id="reviewdescription" name="reviewdescription" class="span5" rows="5"></textarea>
+            <textarea id="reviewdescription" name="reviewdescription" class="span5 tall" rows="5"></textarea>
         </div>
-        <div class="col-lg-8 col-md-6 col-sm-4 col-mob-4">
+        <div class="col-lg-8 col-md-6 col-sm-4 col-mob-4 mb20">
             <label for="reviewminreviews" class="required">{% trans "Minimun reviewers" %}</label>
             <div class="input-append">
                 <input type="number" min="0" max="100" step="1" name="reviewminreviews" id="reviewminreviews" class="input-mini" required="required" />
@@ -330,12 +358,15 @@
     </div>
     <div class="cleaner">
       <div class="col-lg-16 col-md-12 col-sm-8 col-mob-4">
-        <legend>{% trans "Evaluation criterions" %}</legend>
+        <legend>
+            <span class="fleft">{% trans "Evaluation criterions" %}</span>
+            <button id="addcriterion" class="btn btn-primary fright" type="submit">{% trans "Add an evaluation criterion" %}</button>
+        </legend>
         <div id="reviewcriterions">
         </div>
         <div class="mt-20">
             <div class="align-right">
-                <button id="addcriterion" class="btn btn-primary" type="submit">{% trans "Save changes and add an evaluation criterion" %}</button>
+                <!--<button id="addcriterion" class="btn btn-primary" type="submit">{% trans "Add an evaluation criterion" %}</button>-->
             </div>
         </div>
       </div>
@@ -379,27 +410,45 @@
     <h4>{% trans "Success" %}</h4>
     <p>{% trans "A task for processing the video has been queued. Refresh in a few moments." %}</p>
 </div>
-<div class="alert alert-error hide" id="generic">
+<div class="alert alert-error alert-dismissible hide" id="generic">
+    <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
     <h4>{% trans "Error" %}</h4>
     <p>{% trans "Something went wrong, please try again later." %}</p>
 </div>
-<div class="alert alert-error hide" id="FileTooBig">
+<div class="alert alert-error alert-dismissible hide" id="FileTooBig">
+    <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
     <h4>{% trans "Error" %}</h4>
     <p>{% trans "The attached file size is too big, the max file size is" %} {{max_file_size}}Mb.</p>
 </div>
-<div class="alert alert-error hide" id="required">
+<div class="alert alert-error alert-dismissible hide" id="required">
+    <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
     <h4>{% trans "Error" %}</h4>
     <p>{% trans "A required field is empty." %}</p>
 </div>
-<div class="alert alert-error hide" id="media_content_id">
+<div class="alert alert-error alert-dismissible hide" id="media_content_id">
+    <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
     <h4>{% trans "Error" %}</h4>
     <p>{% trans "Invalid content id or url" %}</p>
 </div>
-<div class="alert alert-error hide" id="unsaved">
+<div class="alert alert-error alert-dismissible hide" id="unsaved">
+    <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
     <h4>{% trans "Error" %}</h4>
     <p>{% trans "This item is new and must be saved before going back." %}</p>
 </div>
-<div class="alert alert-error hide" id="wrong_dates">
+<div class="alert alert-error alert-dismissible hide" id="wrong_dates">
+    <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
     <h4>{% trans "Error" %}</h4>
     <p>{% trans "The start date must be lower than the end date" %}.</p>
 </div>

@@ -39,9 +39,9 @@ def free_enrollment(request, course_slug):
                 groupCollection = mongodb.get_db().get_collection('groups')
                 groups = groupCollection.find({ 'id_course': course.id, 'lang': language }).sort("size",pymongo.ASCENDING)
                 if groups:
-                    new_member = {"id_user": request.user.id, "username": request.user.username, 
-                                  "first_name":request.user.first_name, "last_name":request.user.last_name, 
-                                  "email": request.user.email, "karma": request.user.get_profile().karma, "country": request.user.get_profile().country, 
+                    new_member = {"id_user": request.user.id, "username": request.user.username,
+                                  "first_name":request.user.first_name, "last_name":request.user.last_name,
+                                  "email": request.user.email, "karma": request.user.get_profile().karma, "country": request.user.get_profile().country,
                                   "language": language}
                     if groups.count() > 0:
                         group = groups[0]
@@ -63,7 +63,7 @@ def free_enrollment(request, course_slug):
                         group = {"id_course": course.id, "name": groupNames[language] + str(groups.count()+1), "hashtag": course.hashtag+groupNames[language] + str(groups.count()+1), "lang": language, "size": 1, "members": []}
                         group["members"].append(new_member)
                         groupCollection.insert(group)
-           
+
             user = request.user
             lat = request.POST["latitude"]
             lon = request.POST["longitude"]
@@ -91,8 +91,8 @@ def free_enrollment(request, course_slug):
                     _(u'Congratulations, you have successfully enroll in the course %(course)s')
                     % {'course': unicode(course)})
 
-    return HttpResponseRedirect(reverse('course_overview',
-                                        args=(course.slug, )))
+    return HttpResponseRedirect(reverse('course_dashboard',
+                                       args=(course.slug, )))
 
 
 def free_unenrollment(request, course_slug):
@@ -113,13 +113,22 @@ def free_unenrollment(request, course_slug):
                 groupCollection.update({'_id': ObjectId(group["_id"])}, {"$set": {"members": group["members"], "size": group["size"]}})
 
         user = request.user
+        lat = request.POST["latitude"]
+        lon = request.POST["longitude"]
+        geolocation = {
+            'lat': lat,
+            'lon': lon
+        }
         course.students.through.objects.get(student=user,
                                             course=course).delete()
+
+        x_api.learnerUnenrollsInMooc(user, course, geolocation)
+
         success(request,
                 _(u'You have successfully unenroll in the course %(course)s')
                 % {'course': unicode(course)})
 
-        
+
 
     return HttpResponseRedirect(reverse('course_overview',
                                         args=(course.slug, )))

@@ -211,6 +211,7 @@ echo "Initializing databases..."
 cd /home/$hubname/moocng/
 echo "When it asks you about to create a new admin/root user, answer 'no' on the first time."
 ./manage.py syncdb --settings=moocng.settings
+./manage.py migrate moocng.courses
 ./manage.py migrate
 echo "Type a password for the admin user, followed by [ENTER]:"
 ./manage.py createsuperuser --username=root --email=admin.$hubname@ecolearning.eu

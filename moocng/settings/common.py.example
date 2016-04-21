@@ -76,6 +76,10 @@ BADGES_ISSUER_URL = "http://devopenmooc.com"
 BADGES_ISSUER_DESCRIPTION = ""
 BADGES_ISSUER_IMAGE = ""
 BADGES_ISSUER_EMAIL = ""
+BADGES_HASH_SALT = "hello"
+#BADGES_DEFAULT_IMAGE_FILE = "ECO_icon_medalla.svg"
+#BADGES_DEFAULT_IMAGE_MIMETYPE = "image/svg+xml"
+BADGES_CRITERIA_URL = "score-help"
 
 PROFILE_SERVICE_URL = "http://devopenmooc.com/profile"
 
@@ -409,18 +413,22 @@ GOOGLE_ANALYTICS_CODE = ''
 GRAVATAR_URL_PREFIX = '//www.gravatar.com/'
 
 MOOCNG_THEME = {
-    #'logo': u'',
-    #'subtitle': u'',
-    #'top_banner': u'',
-    #'top_banner_alt': _(''),
-    #'right_banner1': u'',
-    #'right_banner1_alt': _(''),
-    #'right_banner2': u'',
-    #'right_banner2_alt': _(''),
+    'logo': STATIC_URL + u'brand/img/logo.png',
+    'logo_big': STATIC_URL + u'brand/img/logo_big.png',
+    'logo_mini': STATIC_URL + u'brand/img/logo_mini.png',
+    'subtitle': u'We don\'t teach, we share knowledge',
+    'top_banner': STATIC_URL + u'brand/img/top_banner.png',
+    'top_banner_title': u'<strong>OpenMOOC</strong>',
+    'top_banner_subtitle': u'A platform created to facilitate the search for open educational resources',
     #'bootstrap_css': u'',
-    #'moocng_css': u'',
-    #'cert_banner': u'',
-    #'cert_banner_alt': _(''),
+    'moocng_css': STATIC_URL + u'brand/css/moocng.css',
+    #'prefoot_template': u'prefoot.html',
+    #'link_home': 'https://ecolearning.eu',
+    #'link_catalogue': 'https://ecolearning.eu',
+    #'link_tos': u'http://ecolearning.eu/terms-of-use/',
+    #'link_privacy': u'http://ecolearning.eu/privacy-policy/',
+    #'header_right_logo': STATIC_URL + u'brand/img/logo_defensa_cab.png',
+    #'diploma_template': u'diploma.html'
 }
 
 ENABLED_COMUNICATIONS = (
@@ -500,35 +508,48 @@ MEDIA_CONTENT_TYPES = [
         'name': 'YouTube',
         'handler': 'moocng.media_contents.handlers.youtube.YoutubeMediaContentHandler',
         'can_get_last_frame': True,
-        'type' : 'video'
+        'type' : 'video',
+        'can_upload_media': False
     },
     {
         'id': 'vimeo',
         'name': 'Vimeo',
         'handler': 'moocng.media_contents.handlers.vimeo.VimeoMediaContentHandler',
         'can_get_last_frame': False,
-        'type' : 'video'
+        'type' : 'video',
+        'can_upload_media': False
     },
     {
         'id': 'scribd',
         'name': 'Scribd',
         'handler': 'moocng.media_contents.handlers.scribd.ScribdMediaContentHandler',
         'can_get_last_frame': False,
-        'type' : 'presentation'
+        'type' : 'presentation',
+        'can_upload_media': False
     },
     {
         'id': 'prezi',
         'name': 'Prezi',
         'handler': 'moocng.media_contents.handlers.prezi.PreziMediaContentHandler',
         'can_get_last_frame': False,
-        'type' : 'presentation'
+        'type' : 'presentation',
+        'can_upload_media': False
     },
     {
         'id': 'ytaccesible',
         'name': 'YouTube Accesible',
         'handlers': 'moocng.media_contents.handlers.ytaccesible.YoutubeAccesibleMediaContentHandler',
         'can_get_last_frame': True,
-        'type': 'video'
+        'type': 'video',
+        'can_upload_media': False
+    },
+    {
+        'id': 's3video',
+        'name': 'S3 HTML5 Video',
+        'handler': 'moocng.media_contents.handlers.s3video.S3VideoMediaContentHandler',
+        'can_get_last_frame': False,
+        'type': 'video',
+        'can_upload_media': True
     },
 ]
 
@@ -625,14 +646,16 @@ NUM_MIGRATE_MARK_DAILY = 10000
 
 PAGINATION_DEFAULT_PAGINATION = 10
 
+
 # ENABLED FEATURES
 
 FEATURE_TEAMS = False
 FEATURE_CALENDAR = False
 FEATURE_WIKI = False
 FEATURE_GROUPS = False
-FEATURE_GROUPS_VIDEO = False;
+FEATURE_GROUPS_VIDEO = False
 FEATURE_FORUM = False
+FORUM_PAGINATED = True
 FEATURE_BLOG = False
 FEATURE_NOTIFICATIONS = False
 FEATURE_SEC_CATALOGUE = False
@@ -644,6 +667,10 @@ FEATURE_SEC_CONTACT = False
 FEATURE_SEC_TEACHERS = False
 FEATURE_SOCIAL = False
 FEATURE_ECTS = False
+FEATURE_GEOLOCATION = False
+SHOW_EMAIL = False
+SHOW_USERNAME =False
+SHOW_LOGOUT = True
 
 INSTITUTIONS = (
     ('UNED','logo_uned.png','http://www.uned.es'),

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 import urllib
 
 import boto
@@ -112,7 +112,7 @@ def course_reviews(request, course_slug, kq_id=None, ignore_langs=False):
         messages.error(request, _('You are not enrolled in this course'))
         return HttpResponseRedirect(reverse('course_overview', args=[course_slug]))
 
-    is_ready, ask_admin = is_course_ready(course)
+    is_ready, ask_admin, is_outdated = is_course_ready(course)
     is_teacher = is_teacher_test(request.user, course)
 
     if not is_ready and not is_teacher and not request.user.is_staff and not request.user.is_superuser:
@@ -144,6 +144,8 @@ def course_reviews(request, course_slug, kq_id=None, ignore_langs=False):
         'ignore_langs': ignore_langs,
         'is_enrolled': is_enrolled,
         'is_ready': is_ready,
+        'is_outdated': is_outdated,
+        'can_review': date.today() < course.end_date+timedelta(days=14),
         'task_list': tasks[0],
         'tasks_done': tasks[1],
         'progress': get_course_progress_for_user(course, request.user),
@@ -198,8 +200,25 @@ def course_review_review(request, course_slug, assignment_id):
                     'reviewer': user_id,
                     'kq': assignment.kq.id
                 }).count()
+
+                review_scores = [int(form.cleaned_data['value']) for form in criteria_formset]
+                if len(review_scores) > 0:
+                    score = float(sum(review_scores) / len(review_scores)) * 2 / 10
+                else:
+                    score = 1
+                extra = {
+                    'geolocation': {
+                        'lat': float(request.POST.get("context_geo_lat", "0.0")),
+                        'lon': float(request.POST.get("context_geo_lon", "0.0")),
+                    },
+                    'url': request.build_absolute_uri(),
+                    'result': {
+                        'score': score,
+                        'comment': submission_form.cleaned_data['comments']
+                    }
+                }
                 on_peerreviewreview_created_task.apply_async(
-                    args=[review, reviewed_count],
+                    args=[review, reviewed_count, extra],
                     queue='stats',
                 )
 
