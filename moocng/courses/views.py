@@ -1280,12 +1280,27 @@ def course_diploma_pdf(request, course_slug):
         if is_enrolled and has_user_passed_course(user, course):
             total_mark, units_info = get_course_mark(course, request.user)
             course_units = get_units_available_for_user(course, user)
+            course_teachers = CourseTeacher.objects.filter(course=course)
+            organizers = []
+            for teacher in course_teachers:
+                organization = teacher.teacher.get_profile().organization.all()
+                for v in organization:
+                    if(v not in organizers):
+                        organizers.append(v)
+            duration = None
+            if course.estimated_effort:
+                start_course = (course.start_date - timedelta(days=course.start_date.weekday()))
+                end_course = (course.end_date - timedelta(days=course.end_date.weekday()))
+                duration = int(((end_course - start_course).days / 7) * float(course.estimated_effort))
+
             context_dict = {
                 'pagesize': 'A4',
                 'user': user,
                 'course': course,
                 'course_mark': round(total_mark,2),
                 'course_units': course_units,
+                'institutions': organizers,
+                'duration': duration
             }
 
             if hasattr(settings, 'MOOCNG_THEME') and 'diploma_template' in settings.MOOCNG_THEME:
