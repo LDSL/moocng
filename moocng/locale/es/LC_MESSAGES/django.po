@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: moocng 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-03 14:01+0100\n"
+"POT-Creation-Date: 2016-04-27 10:55+0200\n"
 "PO-Revision-Date: 2015-03-10 09:07+0100\n"
 "Last-Translator: Raúl Yeguas <raul.yeguas@geographica.gs>\n"
 "Language-Team: es_ES <es_ES@li.org>\n"
@@ -201,9 +201,9 @@ msgstr "Su reserva ha sido modificada"
 
 #: assets/views.py:48 assets/views.py:104 assets/views.py:136
 #: courses/views.py:328 courses/views.py:400 courses/views.py:500
-#: courses/views.py:543 courses/views.py:612 courses/views.py:671
-#: courses/views.py:813 courses/views.py:854 courses/views.py:895
-#: courses/views.py:949 courses/templates/courses/transcript_course.html:6
+#: courses/views.py:543 courses/views.py:612 courses/views.py:680
+#: courses/views.py:823 courses/views.py:864 courses/views.py:905
+#: courses/views.py:959 courses/templates/courses/transcript_course.html:6
 #: peerreview/views.py:53 peerreview/views.py:112 peerreview/views.py:165
 msgid "You are not enrolled in this course"
 msgstr "No estás matriculado en este curso"
@@ -753,110 +753,108 @@ msgstr "Vacío"
 msgid "There are no courses with this category or categories associated yet."
 msgstr "No hay cursos aún que tengan esta categoría o categorías asociada."
 
-#: collected_static/brand/templates/diploma.html:159
-#: collected_static/brand_digenin/templates/diploma.html:159
+#: collected_static/brand_eco/templates/diploma.html:177
+#: static/brand_eco/templates/diploma.html:177
+msgid "with National ID number"
+msgstr ""
+
+#: collected_static/brand_eco/templates/diploma.html:180
 #: courses/templates/courses/diploma.html:148
-#: static/brand_digenin/templates/diploma.html:159
+#: static/brand_eco/templates/diploma.html:180
 msgid "has succesfully completed"
 msgstr "ha superado con éxito"
 
-#: collected_static/brand/templates/diploma.html:159
-#: collected_static/brand_digenin/templates/diploma.html:159
+#: collected_static/brand_eco/templates/diploma.html:181
 #: courses/templates/courses/diploma.html:148
-#: static/brand_digenin/templates/diploma.html:159
+#: static/brand_eco/templates/diploma.html:181
 msgid "with a score of"
 msgstr "con una calificación de"
 
-#: collected_static/brand/templates/diploma.html:161
-#: collected_static/brand_digenin/templates/diploma.html:161
-#: courses/templates/courses/diploma.html:150
-#: static/brand_digenin/templates/diploma.html:161
-msgid "authorized by"
+#: collected_static/brand_eco/templates/diploma.html:184
+#: static/brand_eco/templates/diploma.html:184
+msgid "a MOOC "
+msgstr "un MOOC "
+
+#: collected_static/brand_eco/templates/diploma.html:186
+#: static/brand_eco/templates/diploma.html:186
+msgid "of "
+msgstr "de "
+
+#: collected_static/brand_eco/templates/diploma.html:186
+#: static/brand_eco/templates/diploma.html:186
+msgid "hours "
+msgstr "horas "
+
+#: collected_static/brand_eco/templates/diploma.html:189
+#: static/brand_eco/templates/diploma.html:189
+msgid "organized by "
 msgstr "autorizado por"
 
-#: collected_static/brand/templates/diploma.html:161
-#: collected_static/brand_digenin/templates/diploma.html:161
-#: courses/templates/courses/diploma.html:150
-#: static/brand_digenin/templates/diploma.html:161
-msgid "and featured by"
-msgstr "y ofrecido a través de"
+#: collected_static/brand_eco/templates/diploma.html:194
+#: collected_static/brand_eco/templates/diploma.html:198
+#: collected_static/brand_eco/templates/prefoot.html:15
+#: static/brand_eco/templates/diploma.html:194
+#: static/brand_eco/templates/diploma.html:198
+#: static/brand_eco/templates/prefoot.html:15
+msgid "the"
+msgstr "la"
 
-#: collected_static/brand/templates/diploma.html:162
-#: collected_static/brand_digenin/templates/diploma.html:162
+#: collected_static/brand_eco/templates/diploma.html:196
+#: collected_static/brand_eco/templates/prefoot.html:13
+#: static/brand_eco/templates/diploma.html:196
+#: static/brand_eco/templates/prefoot.html:13
+msgid "and the"
+msgstr "y la"
+
+#: collected_static/brand_eco/templates/diploma.html:203
+#: static/brand_eco/templates/diploma.html:203
+msgid "the <em>ECO Teachers</em>"
+msgstr "los <em>ECO Teachers</em>"
+
+#: collected_static/brand_eco/templates/diploma.html:205
+#: static/brand_eco/templates/diploma.html:205
+msgid "and "
+msgstr "y "
+
+#: collected_static/brand_eco/templates/diploma.html:207
+#: static/brand_eco/templates/diploma.html:207
+msgid "featured by the <em>ECO Project</em>"
+msgstr "dentro de <em>ECO Project</em>"
+
+#: collected_static/brand_eco/templates/diploma.html:208
 #: courses/templates/courses/diploma.html:151
-#: static/brand_digenin/templates/diploma.html:162
+#: static/brand_eco/templates/diploma.html:208
 msgid "And therefore, this diploma is issued"
 msgstr "Y por ello, se expide el presente diploma"
 
-#: collected_static/brand/templates/diploma.html:165
-#: collected_static/brand_digenin/templates/diploma.html:165
+#: collected_static/brand_eco/templates/diploma.html:211
 #: courses/templates/courses/classroom.html:295
 #: courses/templates/courses/dashboard.html:17
 #: courses/templates/courses/diploma.html:154
 #: courses/templates/courses/include.courseactions.html:53
 #: courses/templates/courses/overview.html:361
 #: courses/templates/courses/syllabus.html:7
-#: static/brand_digenin/templates/diploma.html:165
+#: static/brand_eco/templates/diploma.html:211
 msgid "Syllabus"
 msgstr "Temario"
 
-#: collected_static/brand/templates/prefoot.html:11
-#: collected_static/brand_difundi/templates/prefoot.html:11
-#: collected_static/brand_digenin/templates/prefoot.html:11
 #: collected_static/brand_eco/templates/prefoot.html:11
-#: static/brand/templates/prefoot.html:11
-#: static/brand_difundi/templates/prefoot.html:11
-#: static/brand_digenin/templates/prefoot.html:11
+#: static/brand_eco/templates/prefoot.html:11
 msgid "The"
 msgstr "La"
 
-#: collected_static/brand/templates/prefoot.html:13
-#: collected_static/brand_difundi/templates/prefoot.html:13
-#: collected_static/brand_digenin/templates/prefoot.html:13
-#: collected_static/brand_eco/templates/prefoot.html:13
-#: static/brand/templates/prefoot.html:13
-#: static/brand_difundi/templates/prefoot.html:13
-#: static/brand_digenin/templates/prefoot.html:13
-msgid "and the"
-msgstr "y la"
-
-#: collected_static/brand/templates/prefoot.html:15
-#: collected_static/brand_difundi/templates/prefoot.html:15
-#: collected_static/brand_digenin/templates/prefoot.html:15
-#: collected_static/brand_eco/templates/prefoot.html:15
-#: static/brand/templates/prefoot.html:15
-#: static/brand_difundi/templates/prefoot.html:15
-#: static/brand_digenin/templates/prefoot.html:15
-msgid "the"
-msgstr "la"
-
-#: collected_static/brand/templates/prefoot.html:19
-#: collected_static/brand_difundi/templates/prefoot.html:19
-#: collected_static/brand_digenin/templates/prefoot.html:19
 #: collected_static/brand_eco/templates/prefoot.html:19
-#: static/brand/templates/prefoot.html:19
-#: static/brand_difundi/templates/prefoot.html:19
-#: static/brand_digenin/templates/prefoot.html:19
+#: static/brand_eco/templates/prefoot.html:19
 msgid "cooperates"
 msgstr "coopera"
 
-#: collected_static/brand/templates/prefoot.html:19
-#: collected_static/brand_difundi/templates/prefoot.html:19
-#: collected_static/brand_digenin/templates/prefoot.html:19
 #: collected_static/brand_eco/templates/prefoot.html:19
-#: static/brand/templates/prefoot.html:19
-#: static/brand_difundi/templates/prefoot.html:19
-#: static/brand_digenin/templates/prefoot.html:19
+#: static/brand_eco/templates/prefoot.html:19
 msgid "cooperate"
 msgstr "cooperan"
 
-#: collected_static/brand/templates/prefoot.html:19
-#: collected_static/brand_difundi/templates/prefoot.html:19
-#: collected_static/brand_digenin/templates/prefoot.html:19
 #: collected_static/brand_eco/templates/prefoot.html:19
-#: static/brand/templates/prefoot.html:19
-#: static/brand_difundi/templates/prefoot.html:19
-#: static/brand_digenin/templates/prefoot.html:19
+#: static/brand_eco/templates/prefoot.html:19
 msgid ""
 "on the <strong>ECO</strong> platform to encourage the free participation on "
 "Open Access Massive Online Courses"
@@ -864,109 +862,58 @@ msgstr ""
 "en la plataforma <strong>ECO</strong> para fomentar la participación "
 "gratuita en Cursos Online Masivos de Acceso Libre"
 
-#: collected_static/brand/templates/prefoot.html:26
-#: collected_static/brand_difundi/templates/prefoot.html:26
-#: collected_static/brand_digenin/templates/prefoot.html:26
 #: collected_static/brand_eco/templates/prefoot.html:26
-#: static/brand/templates/prefoot.html:26
-#: static/brand_difundi/templates/prefoot.html:26
-#: static/brand_digenin/templates/prefoot.html:26
+#: static/brand_eco/templates/prefoot.html:26
 msgid "Catalogue of courses"
 msgstr "Catálogo de cursos"
 
-#: collected_static/brand/templates/prefoot.html:29
-#: collected_static/brand_difundi/templates/prefoot.html:29
-#: collected_static/brand_digenin/templates/prefoot.html:29
 #: collected_static/brand_eco/templates/prefoot.html:29
-#: static/brand/templates/prefoot.html:29
-#: static/brand_difundi/templates/prefoot.html:29
-#: static/brand_digenin/templates/prefoot.html:29 templates/base.html:129
+#: static/brand_eco/templates/prefoot.html:29 templates/base.html:129
 #: templates/base_bigheader.html:62
 msgid "Teams"
 msgstr "Grupos"
 
-#: collected_static/brand/templates/prefoot.html:32
-#: collected_static/brand_difundi/templates/prefoot.html:32
-#: collected_static/brand_digenin/templates/prefoot.html:32
 #: collected_static/brand_eco/templates/prefoot.html:32
-#: static/brand/templates/prefoot.html:32
-#: static/brand_difundi/templates/prefoot.html:32
-#: static/brand_digenin/templates/prefoot.html:32 templates/base.html:132
+#: static/brand_eco/templates/prefoot.html:32 templates/base.html:132
 #: templates/base_bigheader.html:65
 msgid "About"
 msgstr "Acerca de"
 
-#: collected_static/brand/templates/prefoot.html:35
-#: collected_static/brand_difundi/templates/prefoot.html:35
-#: collected_static/brand_digenin/templates/prefoot.html:35
 #: collected_static/brand_eco/templates/prefoot.html:35
-#: static/brand/templates/prefoot.html:35
-#: static/brand_difundi/templates/prefoot.html:35
-#: static/brand_digenin/templates/prefoot.html:35 templates/base.html:136
+#: static/brand_eco/templates/prefoot.html:35 templates/base.html:136
 #: templates/base_bigheader.html:69
 msgid "How it works"
 msgstr "Cómo funciona"
 
-#: collected_static/brand/templates/prefoot.html:42
-#: collected_static/brand_difundi/templates/prefoot.html:42
-#: collected_static/brand_digenin/templates/prefoot.html:42
 #: collected_static/brand_eco/templates/prefoot.html:42
-#: static/brand/templates/prefoot.html:42
-#: static/brand_difundi/templates/prefoot.html:42
-#: static/brand_digenin/templates/prefoot.html:42
+#: static/brand_eco/templates/prefoot.html:42
 msgid "Staff"
 msgstr "Personal"
 
-#: collected_static/brand/templates/prefoot.html:45
-#: collected_static/brand_difundi/templates/prefoot.html:45
-#: collected_static/brand_digenin/templates/prefoot.html:45
 #: collected_static/brand_eco/templates/prefoot.html:45
-#: static/brand/templates/prefoot.html:45
-#: static/brand_difundi/templates/prefoot.html:45
-#: static/brand_digenin/templates/prefoot.html:45
+#: static/brand_eco/templates/prefoot.html:45
 msgid "FAQ"
 msgstr "Preguntas frecuentes"
 
-#: collected_static/brand/templates/prefoot.html:48
-#: collected_static/brand_difundi/templates/prefoot.html:48
-#: collected_static/brand_digenin/templates/prefoot.html:48
 #: collected_static/brand_eco/templates/prefoot.html:48
 #: contact/templates/contact/contact.html:6
-#: static/brand/templates/prefoot.html:48
-#: static/brand_difundi/templates/prefoot.html:48
-#: static/brand_digenin/templates/prefoot.html:48
+#: static/brand_eco/templates/prefoot.html:48
 #: teacheradmin/templates/teacheradmin/base_teacheradmin.html:50
-#: templates/base_teacheradmin_deleteme.html:92
 msgid "Contact"
 msgstr "Contacto"
 
-#: collected_static/brand/templates/prefoot.html:73
-#: collected_static/brand_difundi/templates/prefoot.html:73
-#: collected_static/brand_digenin/templates/prefoot.html:73
 #: collected_static/brand_eco/templates/prefoot.html:73
-#: static/brand/templates/prefoot.html:73
-#: static/brand_difundi/templates/prefoot.html:73
-#: static/brand_digenin/templates/prefoot.html:73
+#: static/brand_eco/templates/prefoot.html:73
 msgid "Platform integrated into the"
 msgstr "Plataforma integrada en el proyecto"
 
-#: collected_static/brand/templates/prefoot.html:73
-#: collected_static/brand_difundi/templates/prefoot.html:73
-#: collected_static/brand_digenin/templates/prefoot.html:73
 #: collected_static/brand_eco/templates/prefoot.html:73
-#: static/brand/templates/prefoot.html:73
-#: static/brand_difundi/templates/prefoot.html:73
-#: static/brand_digenin/templates/prefoot.html:73
+#: static/brand_eco/templates/prefoot.html:73
 msgid "ECO: Elearning, Communication and Open-data"
 msgstr "ECO: Elearning, Comunicación y Open-data"
 
-#: collected_static/brand/templates/prefoot.html:73
-#: collected_static/brand_difundi/templates/prefoot.html:73
-#: collected_static/brand_digenin/templates/prefoot.html:73
 #: collected_static/brand_eco/templates/prefoot.html:73
-#: static/brand/templates/prefoot.html:73
-#: static/brand_difundi/templates/prefoot.html:73
-#: static/brand_digenin/templates/prefoot.html:73
+#: static/brand_eco/templates/prefoot.html:73
 msgid "project"
 msgstr "PROYECTO"
 
@@ -1713,7 +1660,7 @@ msgstr "Su curso \"%s\" ha sido creado"
 msgid "The course was successfully created"
 msgstr "El curso se ha creado con éxito"
 
-#: courses/views.py:1187
+#: courses/views.py:1197
 #, python-format
 msgid ""
 "We are cloning the activity from %(course)s. You will receive an email soon"
@@ -2430,6 +2377,14 @@ msgstr "General"
 msgid "an online course of"
 msgstr "un curso online de"
 
+#: courses/templates/courses/diploma.html:150
+msgid "authorized by"
+msgstr "autorizado por"
+
+#: courses/templates/courses/diploma.html:150
+msgid "and featured by"
+msgstr "y ofrecido a través de"
+
 #: courses/templates/courses/email_new_course.txt:3
 #, python-format
 msgid ""
@@ -3033,7 +2988,6 @@ msgid "You have successfully unenroll in the course %(course)s"
 msgstr "Te has desmatriculado correctamente del curso %(course)s"
 
 #: enrollment/templates/enrollment/free_unenrollment_button.html:4
-#: enrollment/templates/enrollment/paypal_unenrollment_button.html:4
 msgid "Unenroll"
 msgstr "Desmatricúlame"
 
@@ -3604,15 +3558,15 @@ msgstr "Hombre"
 msgid "Female"
 msgstr "Mujer"
 
-#: profile/models.py:54 settings/common.py:132
+#: profile/models.py:54 settings/common.py:136
 msgid "Spanish"
 msgstr "Español"
 
-#: profile/models.py:55 settings/common.py:131
+#: profile/models.py:55 settings/common.py:135
 msgid "English"
 msgstr "Inglés"
 
-#: profile/models.py:56 settings/common.py:135
+#: profile/models.py:56 settings/common.py:139
 msgid "French"
 msgstr "Francés"
 
@@ -3620,11 +3574,11 @@ msgstr "Francés"
 msgid "Deutsch"
 msgstr ""
 
-#: profile/models.py:58 settings/common.py:133
+#: profile/models.py:58 settings/common.py:137
 msgid "Italian"
 msgstr "Italiano"
 
-#: profile/models.py:59 settings/common.py:134
+#: profile/models.py:59 settings/common.py:138
 msgid "Portuguese"
 msgstr "Portugués"
 
@@ -3847,11 +3801,11 @@ msgstr "Perfiles sociales"
 msgid "Interests areas"
 msgstr "Áreas de interés"
 
-#: settings/common.py:109
+#: settings/common.py:113
 msgid "Cloned course activity"
 msgstr "Clonada actividad del curso"
 
-#: settings/common.py:136
+#: settings/common.py:140
 msgid "German"
 msgstr "Alemán"
 
@@ -4231,18 +4185,15 @@ msgid "But this section is not available yet."
 msgstr "Pero esta sección aún no está disponible."
 
 #: teacheradmin/templates/teacheradmin/base_teacheradmin.html:45
-#: templates/base_teacheradmin_deleteme.html:87
 msgid "Legal"
 msgstr "Condiciones legales"
 
 #: teacheradmin/templates/teacheradmin/base_teacheradmin.html:46
 #: templates/base.html:197 templates/base_bigheader.html:167
-#: templates/base_teacheradmin_deleteme.html:88
 msgid "All rights reserved"
 msgstr "Todos los derechos reservados"
 
 #: teacheradmin/templates/teacheradmin/base_teacheradmin.html:48
-#: templates/base_teacheradmin_deleteme.html:90
 msgid "Terms of Use"
 msgstr "Términos de uso"
 
@@ -5226,13 +5177,11 @@ msgstr "Catálogo"
 
 #: templates/base.html:161 templates/base_bigheader.html:83
 #: templates/base_teacheradmin.html:73
-#: templates/base_teacheradmin_deleteme.html:68
 msgid "Log in"
 msgstr "Entrar"
 
 #: templates/base.html:183 templates/base_bigheader.html:163
 #: templates/base_teacheradmin.html:89
-#: templates/base_teacheradmin_deleteme.html:84
 msgid "Get help"
 msgstr "Obtenga ayuda"
 
