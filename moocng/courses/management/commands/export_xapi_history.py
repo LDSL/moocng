@@ -6,6 +6,7 @@ import traceback
 import json
 import re
 import time
+from datetime import datetime
 import calendar
 from optparse import make_option
 
@@ -17,7 +18,9 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.urlresolvers import reverse
 
 from moocng.users.models import User
-from moocng.courses.models import Course, CourseStudent
+from moocng.courses.models import Course, CourseStudent, KnowledgeQuantum
+from moocng.peerreview.models import PeerReviewAssignment
+from moocng.peerreview.utils import get_peer_review_review_score
 from moocng.x_api.utils import learnerAccessAPage, learnerEnrollsInMooc, learnerSubmitsAResource
 from moocng import mongodb
 
@@ -49,6 +52,26 @@ class Command(BaseCommand):
 					dest='forum',
 					default='',
 					help='Export forum entries'),
+		make_option('-t', '--tasks',
+					action='store_true',
+					dest='tasks',
+					default='',
+					help='Export tasks submission entries'),
+		make_option('-p', '--peerassessments',
+					action='store_true',
+					dest='peerassessments',
+					default='',
+					help='Export peer assesments submission entries'),
+		make_option('-r', '--peerreviews',
+					action='store_true',
+					dest='peerreviews',
+					default='',
+					help='Export peer reviews submission entries'),
+		make_option('-i', '--badges',
+					action='store_true',
+					dest='badges',
+					default='',
+					help='Export badges (insignia) attribution entries'),
 		make_option('--debug',
 					action='store_true',
 					dest='debug',
@@ -73,7 +96,7 @@ class Command(BaseCommand):
 		else:
 			min_timestamp = 0
 
-		if options['enrollments'] or (not options['accesses'] and not options['forum']):
+		if options['enrollments']:
 			# Get enrollments
 			enrollments = CourseStudent.objects.exclude(timestamp__lte=min_timestamp).filter(timestamp__lte=max_timestamp)
 			self.message("%d enrollments between %d and %d" % (enrollments.count(), min_timestamp, max_timestamp))
@@ -100,7 +123,7 @@ class Command(BaseCommand):
 
 			self.message('\nEnrollments succesfully exported')
 
-		if options['accesses'] or (not options['enrollments'] and not options['forum']):
+		if options['accesses']:
 			# Get history
 			history_col = mongodb.get_db().get_collection('history')
 			histories = history_col.find({'$and': [
@@ -214,3 +237,186 @@ class Command(BaseCommand):
 				bar.update()
 
 			self.message('\nForum succesfully exported')
+
+		if options['tasks']:
+			# Get tasks entries
+			if options['datebefore']:
+				max_date = datetime.fromtimestamp(time.mktime(time.strptime(options['datebefore'], '%d/%m/%Y %H:%M')))
+			else:
+				max_date = datetime.fromtimestamp(time.mktime(time.gmtime()))
+
+			if options['dateafter']:
+				min_date = datetime.fromtimestamp(time.mktime(time.strptime(options['dateafter'], '%d/%m/%Y %H:%M')))
+			else:
+				min_date = datetime.fromtimestamp(time.mktime(time.strptime('1970-01-01T00:00', '%d/%m/%Y %H:%M')))
+
+			tasks_col = mongodb.get_db().get_collection('answers')
+			tasks_entries = tasks_col.find({'$and': [
+        									{'date': {'$lte': max_date} },
+        									{'date': {'$gte': min_date} }
+        								]})
+			self.message("%d task submission entries between %s and %s" % (tasks_entries.count(), options['dateafter'], options['datebefore']))
+
+			# Send each task entry as xAPI Statement
+			bar = pyprind.ProgBar(tasks_entries.count())
+			for task in tasks_entries:
+				course = None
+				try:
+					user_id = str(int(task['user_id']))
+					user = User.objects.get(pk=user_id)
+					if 'course_id' in task:
+						course_id = int(task['course_id'])
+						course = Course.objects.get(pk=course_id)
+
+					page = {}
+					task_url = "https://%s%s#unit%s/kq%s/q" % (settings.API_URI, reverse('course_classroom', kwargs={'course_slug': course.slug}),task['unit_id'],task['kq_id']),
+					page['url'] = task_url[0]
+
+					page['type'] = 'task'
+
+					kq = KnowledgeQuantum.objects.get(pk=task['kq_id'])
+					page['name'] = kq.title
+					page['description'] = 'Task for course %s' % (course.name)
+
+					geolocation = {
+						'lat': 0.0,
+						'lon': 0.0
+					}
+
+					timestamp = task['date'].timetuple()
+					learnerSubmitsAResource(user, page, course, geolocation, timestamp)
+				except:
+					self.error('\nERROR sending a statement for user %s in task with timestamp %s' % (task['user_id'], task['date']))
+					if options['debug']:
+						exc_type, exc_value, exc_traceback = sys.exc_info()
+						self.error('Exception %s: %s' % (exc_type, exc_value))
+						traceback.print_tb(exc_traceback, limit=5, file=sys.stdout)
+					continue
+
+				bar.update()
+
+			self.message('\nTask submission entries succesfully exported')
+
+		if options['peerassessments']:
+			# Get peerassessments entries
+			if options['datebefore']:
+				max_date = datetime.fromtimestamp(time.mktime(time.strptime(options['datebefore'], '%d/%m/%Y %H:%M')))
+			else:
+				max_date = datetime.fromtimestamp(time.mktime(time.gmtime()))
+
+			if options['dateafter']:
+				min_date = datetime.fromtimestamp(time.mktime(time.strptime(options['dateafter'], '%d/%m/%Y %H:%M')))
+			else:
+				min_date = datetime.fromtimestamp(time.mktime(time.strptime('1970-01-01T00:00', '%d/%m/%Y %H:%M')))
+
+			prs_col = mongodb.get_db().get_collection('peer_review_submissions')
+			prs_entries = prs_col.find({'$and': [
+        									{'created': {'$lte': max_date} },
+        									{'created': {'$gte': min_date} }
+        								]})
+			self.message("%d peer review submission entries between %s and %s" % (prs_entries.count(), options['dateafter'], options['datebefore']))
+
+			# Send each peer review submission entry as xAPI Statement
+			bar = pyprind.ProgBar(prs_entries.count())
+			for pr in prs_entries:
+				course = None
+				try:
+					user_id = str(int(pr['author']))
+					user = User.objects.get(pk=user_id)
+					if 'course' in pr:
+						course_id = int(pr['course'])
+						course = Course.objects.get(pk=course_id)
+
+					page = {}
+					pr_url = "https://%s%s#unit%s/kq%s/p" % (settings.API_URI, reverse('course_classroom', kwargs={'course_slug': course.slug}),pr['unit'],pr['kq']),
+					page['url'] = pr_url[0]
+
+					page['type'] = 'assessment'
+
+					kq = KnowledgeQuantum.objects.get(pk=pr['kq'])
+					page['name'] = kq.title
+					page['description'] = 'Peer assesment for course %s' % (course.name)
+
+					geolocation = {
+						'lat': 0.0,
+						'lon': 0.0
+					}
+
+					timestamp = pr['created'].timetuple()
+					learnerSubmitsAResource(user, page, course, geolocation, timestamp)
+				except:
+					self.error('\nERROR sending a statement for user %s in peer review submission with timestamp %s' % (pr['author'], pr['created']))
+					if options['debug']:
+						exc_type, exc_value, exc_traceback = sys.exc_info()
+						self.error('Exception %s: %s' % (exc_type, exc_value))
+						traceback.print_tb(exc_traceback, limit=5, file=sys.stdout)
+					continue
+
+				bar.update()
+
+			self.message('\nPeer assessment submission entries succesfully exported')
+
+		if options['peerreviews']:
+			# Get peerassessments entries
+			if options['datebefore']:
+				max_date = datetime.fromtimestamp(time.mktime(time.strptime(options['datebefore'], '%d/%m/%Y %H:%M')))
+			else:
+				max_date = datetime.fromtimestamp(time.mktime(time.gmtime()))
+
+			if options['dateafter']:
+				min_date = datetime.fromtimestamp(time.mktime(time.strptime(options['dateafter'], '%d/%m/%Y %H:%M')))
+			else:
+				min_date = datetime.fromtimestamp(time.mktime(time.strptime('1970-01-01T00:00', '%d/%m/%Y %H:%M')))
+
+			prr_col = mongodb.get_db().get_collection('peer_review_reviews')
+			prr_entries = prr_col.find({'$and': [
+        									{'created': {'$lte': max_date} },
+        									{'created': {'$gte': min_date} }
+        								]})
+			self.message("%d peer review submission entries between %s and %s" % (prr_entries.count(), options['dateafter'], options['datebefore']))
+
+			# Send each peer review submission entry as xAPI Statement
+			bar = pyprind.ProgBar(prr_entries.count())
+			for pr in prr_entries:
+				course = None
+				try:
+					user_id = str(int(pr['reviewer']))
+					user = User.objects.get(pk=user_id)
+					if 'course' in pr:
+						course_id = int(pr['course'])
+						course = Course.objects.get(pk=course_id)
+					kq = KnowledgeQuantum.objects.get(pk=pr['kq'])
+					assignment = PeerReviewAssignment.objects.get(kq__id=pr['kq'])
+					page = {}
+					pr_url = "https://%s%s" % (settings.API_URI, reverse('course_review_review', kwargs={'course_slug': course.slug, 'assignment_id': assignment.id})),
+					page['url'] = pr_url[0]
+
+					page['type'] = 'peerfeedback'
+
+					page['name'] = kq.title
+					page['description'] = 'Peer assesment for course %s' % (course.name)
+
+					geolocation = {
+						'lat': 0.0,
+						'lon': 0.0
+					}
+
+					score = get_peer_review_review_score(pr) *2 / 10
+					result = {
+                        'score': score,
+                        'comment': pr['comment']
+                    }
+
+					timestamp = pr['created'].timetuple()
+					learnerSubmitsAResource(user, page, course, geolocation, timestamp, result=result)
+				except:
+					self.error('\nERROR sending a statement for user %s in peer review submission with timestamp %s' % (pr['author'], pr['created']))
+					if options['debug']:
+						exc_type, exc_value, exc_traceback = sys.exc_info()
+						self.error('Exception %s: %s' % (exc_type, exc_value))
+						traceback.print_tb(exc_traceback, limit=5, file=sys.stdout)
+					continue
+
+				bar.update()
+
+			self.message('\nPeer review submission entries succesfully exported')
