@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: moocng 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-27 10:55+0200\n"
+"POT-Creation-Date: 2016-04-27 20:38+0200\n"
 "PO-Revision-Date: 2015-03-10 09:07+0100\n"
 "Last-Translator: Raúl Yeguas <raul.yeguas@geographica.gs>\n"
 "Language-Team: es_ES <es_ES@li.org>\n"
@@ -759,10 +759,9 @@ msgid "with National ID number"
 msgstr ""
 
 #: collected_static/brand_eco/templates/diploma.html:180
-#: courses/templates/courses/diploma.html:148
 #: static/brand_eco/templates/diploma.html:180
-msgid "has succesfully completed"
-msgstr "ha superado con éxito"
+msgid "has succesfully completed the course"
+msgstr "ha superado con éxito el curso"
 
 #: collected_static/brand_eco/templates/diploma.html:181
 #: courses/templates/courses/diploma.html:148
@@ -788,7 +787,7 @@ msgstr "horas "
 #: collected_static/brand_eco/templates/diploma.html:189
 #: static/brand_eco/templates/diploma.html:189
 msgid "organized by "
-msgstr "autorizado por"
+msgstr "organizado por "
 
 #: collected_static/brand_eco/templates/diploma.html:194
 #: collected_static/brand_eco/templates/diploma.html:198
@@ -818,8 +817,8 @@ msgstr "y "
 
 #: collected_static/brand_eco/templates/diploma.html:207
 #: static/brand_eco/templates/diploma.html:207
-msgid "featured by the <em>ECO Project</em>"
-msgstr "dentro de <em>ECO Project</em>"
+msgid "featured by <em>ECO Project</em>"
+msgstr "ofrecido por <em>ECO Project</em>"
 
 #: collected_static/brand_eco/templates/diploma.html:208
 #: courses/templates/courses/diploma.html:151
@@ -2373,6 +2372,10 @@ msgstr "Notificaciones"
 msgid "General"
 msgstr "General"
 
+#: courses/templates/courses/diploma.html:148
+msgid "has succesfully completed"
+msgstr "ha superado con éxito"
+
 #: courses/templates/courses/diploma.html:150
 msgid "an online course of"
 msgstr "un curso online de"
@@ -3558,15 +3561,15 @@ msgstr "Hombre"
 msgid "Female"
 msgstr "Mujer"
 
-#: profile/models.py:54 settings/common.py:136
+#: profile/models.py:54 settings/common.py:126
 msgid "Spanish"
 msgstr "Español"
 
-#: profile/models.py:55 settings/common.py:135
+#: profile/models.py:55 settings/common.py:125
 msgid "English"
 msgstr "Inglés"
 
-#: profile/models.py:56 settings/common.py:139
+#: profile/models.py:56 settings/common.py:129
 msgid "French"
 msgstr "Francés"
 
@@ -3574,11 +3577,11 @@ msgstr "Francés"
 msgid "Deutsch"
 msgstr ""
 
-#: profile/models.py:58 settings/common.py:137
+#: profile/models.py:58 settings/common.py:127
 msgid "Italian"
 msgstr "Italiano"
 
-#: profile/models.py:59 settings/common.py:138
+#: profile/models.py:59 settings/common.py:128
 msgid "Portuguese"
 msgstr "Portugués"
 
@@ -3801,11 +3804,11 @@ msgstr "Perfiles sociales"
 msgid "Interests areas"
 msgstr "Áreas de interés"
 
-#: settings/common.py:113
+#: settings/common.py:103
 msgid "Cloned course activity"
 msgstr "Clonada actividad del curso"
 
-#: settings/common.py:140
+#: settings/common.py:130
 msgid "German"
 msgstr "Alemán"
 
@@ -5240,6 +5243,10 @@ msgstr "Pruebas"
 #: templates/admin/includes_grappelli/header.html:45
 msgid "Documentation"
 msgstr "Documentación"
+
+#, fuzzy
+#~ msgid "featured by the <em>ECO Project</em>"
+#~ msgstr "apoyado por <em>ECO Project</em>"
 
 #~ msgid ""
 #~ "A platform created to facilitate the search for open educational resources"

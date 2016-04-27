@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-27 10:55+0200\n"
+"POT-Creation-Date: 2016-04-27 20:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -766,7 +766,6 @@ msgstr ""
 
 #: collected_static/brand_eco/templates/diploma.html:180
 #: courses/templates/courses/diploma.html:148
-#: static/brand_eco/templates/diploma.html:180
 #, fuzzy
 msgid "has succesfully completed"
 msgstr "Il corso è stat"
@@ -829,7 +828,6 @@ msgid "and "
 msgstr "e la"
 
 #: collected_static/brand_eco/templates/diploma.html:207
-#: static/brand_eco/templates/diploma.html:207
 msgid "featured by the <em>ECO Project</em>"
 msgstr ""
 
@@ -3594,15 +3592,15 @@ msgstr "Maschio"
 msgid "Female"
 msgstr "Femmina"
 
-#: profile/models.py:54 settings/common.py:136
+#: profile/models.py:54 settings/common.py:131
 msgid "Spanish"
 msgstr "Spagnolo"
 
-#: profile/models.py:55 settings/common.py:135
+#: profile/models.py:55 settings/common.py:130
 msgid "English"
 msgstr "Inglese"
 
-#: profile/models.py:56 settings/common.py:139
+#: profile/models.py:56 settings/common.py:134
 msgid "French"
 msgstr "Francese"
 
@@ -3610,11 +3608,11 @@ msgstr "Francese"
 msgid "Deutsch"
 msgstr ""
 
-#: profile/models.py:58 settings/common.py:137
+#: profile/models.py:58 settings/common.py:132
 msgid "Italian"
 msgstr "Italiano"
 
-#: profile/models.py:59 settings/common.py:138
+#: profile/models.py:59 settings/common.py:133
 msgid "Portuguese"
 msgstr "Portoghese"
 
@@ -3841,12 +3839,21 @@ msgstr "Profili sociali"
 msgid "Interests areas"
 msgstr "Aree di Interesse"
 
-#: settings/common.py:113
+#: settings/common.py:108
 msgid "Cloned course activity"
 msgstr "L'attività del corso è stata clonata"
 
-#: settings/common.py:140
+#: settings/common.py:135
 msgid "German"
+msgstr ""
+
+#: static/brand_eco/templates/diploma.html:180
+#, fuzzy
+msgid "has succesfully completed the course"
+msgstr "Il corso è stat"
+
+#: static/brand_eco/templates/diploma.html:207
+msgid "featured by <em>ECO Project</em>"
 msgstr ""
 
 #: teacheradmin/admin.py:49
