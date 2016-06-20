@@ -19,7 +19,8 @@ from django.utils.translation import ugettext as _
 from moocng.courses.security import (get_courses_available_for_user,
 									get_courses_user_is_enrolled,
 									get_course_progress_for_user)
-from moocng.courses.utils import (is_teacher as is_teacher_test)
+from moocng.courses.utils import (is_teacher as is_teacher_test,
+								has_user_passed_course)
 from moocng.badges.utils import (get_user_badges_group_by_course)
 
 from moocng.slug import unique_slugify
@@ -76,6 +77,7 @@ def profile_courses(request, id, byid=False):
 			course.progress = get_course_progress_for_user(course, user)
 			if course.progress == 100:
 				courses_completed +=1
+			course.has_passed = has_user_passed_course(user, course)
 		else:
 			course.is_enrolled = False
 			course.is_teacher = False
@@ -225,7 +227,7 @@ def profile_posts(request, id, api=False, byid=False):
 						'lat': 0.0,
 						'lon': 0.0
 					}
-					
+
 				course_slug = None
 
 			extra = {
