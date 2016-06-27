@@ -7,7 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Translation sMOOC ES-DE\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
+"POT-Creation-Date: 2016-04-27 20:38+0200\n"
+=======
 "POT-Creation-Date: 2016-04-27 20:52+0200\n"
+>>>>>>> 85dbdc0b9d2f878c6b62791d95340c0b1e2f2488
 "PO-Revision-Date: 2015-03-28 18:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -774,9 +778,13 @@ msgid "with National ID number"
 msgstr ""
 
 #: collected_static/brand_eco/templates/diploma.html:180
+<<<<<<< HEAD
+#: static/brand_eco/templates/diploma.html:180
+=======
 #: courses/templates/courses/diploma.html:148
+>>>>>>> 85dbdc0b9d2f878c6b62791d95340c0b1e2f2488
 #, fuzzy
-msgid "has succesfully completed"
+msgid "has succesfully completed the course"
 msgstr "Der course wurde erfolgreich ergestellt"
 
 #: collected_static/brand_eco/templates/diploma.html:181
@@ -835,11 +843,20 @@ msgstr ""
 #, fuzzy
 msgid "and "
 msgstr "und"
+<<<<<<< HEAD
+
+#: collected_static/brand_eco/templates/diploma.html:207
+#: static/brand_eco/templates/diploma.html:207
+msgid "featured by <em>ECO Project</em>"
+msgstr ""
+
+=======
 
 #: collected_static/brand_eco/templates/diploma.html:207
 msgid "featured by the <em>ECO Project</em>"
 msgstr ""
 
+>>>>>>> 85dbdc0b9d2f878c6b62791d95340c0b1e2f2488
 #: collected_static/brand_eco/templates/diploma.html:208
 #: courses/templates/courses/diploma.html:151
 #: static/brand_eco/templates/diploma.html:208
@@ -2406,6 +2423,11 @@ msgstr "Benachrichtigungen"
 msgid "General"
 msgstr "generell"
 
+#: courses/templates/courses/diploma.html:148
+#, fuzzy
+msgid "has succesfully completed"
+msgstr "Der course wurde erfolgreich ergestellt"
+
 #: courses/templates/courses/diploma.html:150
 #, fuzzy
 msgid "an online course of"
@@ -3617,6 +3639,17 @@ msgstr "männlich"
 msgid "Female"
 msgstr "weiblich"
 
+<<<<<<< HEAD
+#: profile/models.py:54 settings/common.py:126
+msgid "Spanish"
+msgstr "Spanisch"
+
+#: profile/models.py:55 settings/common.py:125
+msgid "English"
+msgstr "Englisch"
+
+#: profile/models.py:56 settings/common.py:129
+=======
 #: profile/models.py:54 settings/common.py:131
 msgid "Spanish"
 msgstr "Spanisch"
@@ -3626,6 +3659,7 @@ msgid "English"
 msgstr "Englisch"
 
 #: profile/models.py:56 settings/common.py:134
+>>>>>>> 85dbdc0b9d2f878c6b62791d95340c0b1e2f2488
 msgid "French"
 msgstr "Französich"
 
@@ -3633,11 +3667,19 @@ msgstr "Französich"
 msgid "Deutsch"
 msgstr ""
 
+<<<<<<< HEAD
+#: profile/models.py:58 settings/common.py:127
+msgid "Italian"
+msgstr "Italienisch"
+
+#: profile/models.py:59 settings/common.py:128
+=======
 #: profile/models.py:58 settings/common.py:132
 msgid "Italian"
 msgstr "Italienisch"
 
 #: profile/models.py:59 settings/common.py:133
+>>>>>>> 85dbdc0b9d2f878c6b62791d95340c0b1e2f2488
 msgid "Portuguese"
 msgstr "Portugesisch"
 
@@ -3860,11 +3902,19 @@ msgstr "Profielen auf Social Media"
 msgid "Interests areas"
 msgstr "Interessegebiete"
 
+<<<<<<< HEAD
+#: settings/common.py:103
+msgid "Cloned course activity"
+msgstr "klonierte Kursaktivität"
+
+#: settings/common.py:130
+=======
 #: settings/common.py:108
 msgid "Cloned course activity"
 msgstr "klonierte Kursaktivität"
 
 #: settings/common.py:135
+>>>>>>> 85dbdc0b9d2f878c6b62791d95340c0b1e2f2488
 msgid "German"
 msgstr "Deutsch"
 
